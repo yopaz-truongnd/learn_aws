@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Global Infrastructure — SAA-C03</title>
+<style>
+:root{--bg:#F9F8F7;--card:#fff;--bd:#E6E5E3;--sub:#F9F8F7;--tx:#2C2C2B;--mu:#7D7A75;--bl:#2783DE;--blb:#E5F2FC;--gr:#46A171;--grb:#E8F1EC;--or:#D5803B;--orb:#FBEBDE;--rd:#E56458;--rdb:#FCE9E7;--gy:#F0EFED;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}}
+:root[data-theme="dark"]{--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);padding:32px 24px;min-height:100%}
+.top-nav{max-width:960px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between}
+.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--bl);text-decoration:none;padding:6px 12px;border-radius:6px;background:var(--blb)}
+.nav-back:hover{opacity:.85}
+.header{text-align:center;margin-bottom:36px}
+.badge{display:inline-block;background:var(--blb);color:var(--bl);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
+h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
+.header p{font-size:14px;color:var(--mu);margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05);min-width:0}
+.full{grid-column:1/-1}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.ci{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ct{font-size:15px;font-weight:700}
+.cs{font-size:12px;color:var(--mu);margin-top:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.it{border:1px solid var(--bd);border-radius:8px;padding:14px;background:var(--sub)}
+.in{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.id{font-size:12px;color:var(--mu);line-height:1.7}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;margin:2px 2px 2px 0}
+.tb{background:var(--blb);color:var(--bl)}.tg{background:var(--grb);color:var(--gr)}.to{background:var(--orb);color:var(--or)}.tr{background:var(--rdb);color:var(--rd)}.ty{background:var(--gy);color:var(--mu)}
+.lbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
+.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.flow:last-child{margin-bottom:0}
+.st{text-align:center;padding:10px 12px;border-radius:8px;flex:1;min-width:96px;border:1.5px solid var(--bd);background:var(--gy)}
+.st b{display:block;font-size:12px;font-weight:700}
+.st span{display:block;font-size:11px;margin-top:3px;color:var(--mu)}
+.s-b{background:var(--blb);border-color:var(--bl)}.s-b b{color:var(--bl)}
+.s-g{background:var(--grb);border-color:var(--gr)}.s-g b{color:var(--gr)}
+.s-o{background:var(--orb);border-color:var(--or)}.s-o b{color:var(--or)}
+.s-r{background:var(--rdb);border-color:var(--rd)}.s-r b{color:var(--rd)}
+.ar{color:var(--mu);font-size:18px;align-self:center}
+.cols{display:flex;gap:12px}
+.col{flex:1;min-width:0}
+.colt{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.pi{font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:6px;border:1px solid var(--bd);background:var(--sub)}
+.pi b{display:block;font-weight:600;margin-bottom:2px}
+.pi span{color:var(--mu);font-size:11px}
+.json{background:#1E1E1E;border-radius:8px;padding:14px 18px;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.7;color:#D4D4D4;margin-top:14px;overflow-x:auto;white-space:pre}
+.jk{color:#9CDCFE}.jv{color:#CE9178}.jc{color:#6A9955}.jp{color:#4EC9B0}
+.sl{list-style:none}
+.sl li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gy);font-size:13px;line-height:1.5}
+.sl li:last-child{border-bottom:none}
+.si{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sl b{display:block;font-weight:600;margin-bottom:2px}
+.sl span{color:var(--mu);font-size:12px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tool{border:1px solid var(--bd);border-radius:8px;padding:12px 14px;background:var(--sub)}
+.tn{font-size:12px;font-weight:700;margin-bottom:4px}
+.td{font-size:11px;color:var(--mu);line-height:1.5}
+.bp{list-style:none;display:flex;flex-direction:column;gap:10px}
+.bi{display:flex;gap:12px;background:var(--sub);border:1px solid var(--bd);border-radius:8px;padding:12px 14px}
+.bn{width:24px;height:24px;background:var(--bl);color:var(--card);border-radius:6px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bi b{font-size:13px;display:block;margin-bottom:3px}
+.bi span{font-size:12px;color:var(--mu);line-height:1.5}
+@media (max-width:640px){.grid,.g2,.tools{grid-template-columns:1fr}.full{grid-column:auto}.cols{flex-direction:column}.ar{display:none}}
+</style>
+</head>
+<body>
+<div class="top-nav">
+  <a href="index.html" class="nav-back">← Mục lục khóa học</a>
+  <span style="font-size:12px;color:var(--mu)">Section 3 · Udemy SAA-C03</span>
+</div>
+
+<div class="header">
+  <div class="badge">Global Foundation</div>
+  <h1>AWS Global Infrastructure</h1>
+  <p>Cơ sở hạ tầng toàn cầu: Regions, Availability Zones, Data Centers &amp; Edge Locations</p>
+</div>
+
+<div class="grid">
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🌐</div><div><div class="ct">1. Bốn cấp độ hạ tầng cốt lõi (Core Hierarchy)</div><div class="cs">Mối quan hệ vật lý &amp; luận lý giữa các thành phần</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in"><div class="dot" style="background:var(--bl)"></div>AWS Region</div><div class="id">Vùng địa lý riêng biệt trên thế giới (ví dụ <code>us-east-1</code>, <code>ap-southeast-1</code>). Mỗi Region có tối thiểu <b>3 Availability Zones</b>, hoàn toàn độc lập và cách nhau khoảng cách an toàn (tránh cùng gặp lũ lụt/động đất).<br><span class="tag tb">Địa lý độc lập</span><span class="tag tb">&gt;= 3 AZs</span><span class="tag ty">Data Sovereignty</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--gr)"></div>Availability Zone (AZ)</div><div class="id">Gồm <b>1 hoặc nhiều Data Centers</b> riêng biệt có nguồn điện, mạng và máy phát độc lập. Các AZ trong cùng một Region được nối với nhau qua cáp quang băng thông cao, độ trễ cực thấp (ultra-low latency &lt; 10ms).<br><span class="tag tg">1+ Data Centers</span><span class="tag tg">Độc lập nguồn &amp; mạng</span><span class="tag ty">&lt; 10ms latency</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--or)"></div>Data Center</div><div class="id">Tòa nhà vật lý chứa hàng chục nghìn máy chủ, thiết bị lưu trữ và switch mạng của AWS. Người dùng không bao giờ truy cập trực tiếp hay biết vị trí chính xác của từng Data Center.<br><span class="tag to">Phần cứng vật lý</span><span class="tag ty">Bảo mật cấp cao</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--rd)"></div>Edge Locations (PoP)</div><div class="id">Điểm hiện diện (Point of Presence) nằm ở hàng trăm thành phố toàn cầu. Dùng để cache nội dung qua <b>CloudFront</b> và phân giải DNS cực nhanh qua <b>Route 53</b>, giảm thiểu độ trễ tối đa cho end-user.<br><span class="tag tr">CloudFront / Route 53</span><span class="tag tr">Lowest Latency</span><span class="tag ty">Toàn cầu</span></div></div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--orb)">🗺️</div><div><div class="ct">Sơ đồ luồng phân cấp &amp; định tuyến truy cập</div><div class="cs">Cách dữ liệu di chuyển từ người dùng cuối vào trung tâm dữ liệu AWS</div></div></div>
+  <div class="lbl">Cấu trúc phân cấp hạ tầng AWS</div>
+  <div class="flow">
+    <div class="st s-b"><b>AWS Region</b><span>Ví dụ: ap-southeast-1</span></div><div class="ar">›</div>
+    <div class="st s-g"><b>Availability Zone</b><span>ap-southeast-1a / 1b / 1c</span></div><div class="ar">›</div>
+    <div class="st s-o"><b>Data Centers</b><span>1 hoặc nhiều tòa nhà vật lý</span></div><div class="ar">›</div>
+    <div class="st"><b>Server Racks</b><span>Phần cứng chạy EC2/EBS</span></div>
+  </div>
+  <div class="lbl">Luồng người dùng tối ưu độ trễ (Latency Optimization)</div>
+  <div class="flow">
+    <div class="st"><b>End Users</b><span>Người dùng toàn cầu</span></div><div class="ar">›</div>
+    <div class="st s-r"><b>Edge Location (PoP)</b><span>Gần người dùng nhất</span></div><div class="ar">›</div>
+    <div class="st s-b"><b>AWS Private Fiber</b><span>Đường trục cáp quang riêng</span></div><div class="ar">›</div>
+    <div class="st s-g"><b>Target AWS Region</b><span>EC2 / S3 / ALB</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--grb)">⚖️</div><div><div class="ct">2. Tiêu chí chọn AWS Region</div><div class="cs">4 yếu tố cốt lõi khi thiết kế giải pháp</div></div></div>
+  <div class="cols">
+    <div class="col"><div class="colt">Yếu tố kỹ thuật</div>
+      <div class="pi"><b>Latency (Độ trễ)</b><span>Chọn Region gần khách hàng nhất để có phản hồi ứng dụng nhanh nhất.</span></div>
+      <div class="pi"><b>Service Availability</b><span>Không phải Region nào cũng có đầy đủ 100% dịch vụ hoặc thế hệ phần cứng mới nhất.</span></div>
+    </div>
+    <div class="col"><div class="colt">Yếu tố kinh doanh</div>
+      <div class="pi"><b>Compliance / Legal</b><span>Luật lưu trữ dữ liệu nội địa (Data Sovereignty), GDPR tại Châu Âu, HIPAA tại Mỹ.</span></div>
+      <div class="pi"><b>Pricing (Chi phí)</b><span>Chi phí cùng 1 dịch vụ khác nhau theo từng Region do thuế và chi phí vận hành (ví dụ São Paulo &gt; US).</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🎯</div><div><div class="ct">3. Phạm vi dịch vụ (Service Scopes)</div><div class="cs">Global vs Regional vs AZ-scoped</div></div></div>
+  <div class="cols">
+    <div class="col"><div class="colt">Global Services</div>
+      <div class="pi"><b>IAM &amp; Organizations</b><span>Tài khoản, Users, Roles, SCPs</span></div>
+      <div class="pi"><b>Route 53 &amp; CloudFront</b><span>DNS toàn cầu và CDN caching</span></div>
+      <div class="pi"><b>WAF (Edge)</b><span>Tường lửa cấp CloudFront</span></div>
+    </div>
+    <div class="col"><div class="colt">Regional Services</div>
+      <div class="pi"><b>S3, DynamoDB, KMS</b><span>Tự động nhân bản đa AZ</span></div>
+      <div class="pi"><b>VPC, SQS, SNS, SES</b><span>Hạ tầng mạng &amp; Message queues</span></div>
+      <div class="pi"><b>Lambda</b><span>Serverless compute theo vùng</span></div>
+    </div>
+    <div class="col"><div class="colt">AZ-scoped Services</div>
+      <div class="pi"><b>EC2 Instances</b><span>Gắn chặt vào 1 AZ cụ thể</span></div>
+      <div class="pi"><b>EBS Volumes</b><span>Chỉ gắn được vào EC2 cùng AZ</span></div>
+      <div class="pi"><b>VPC Subnets</b><span>Mỗi Subnet nằm trọn vẹn trong 1 AZ</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--gy)">🏢</div><div><div class="ct">4. Mở rộng hạ tầng: Edge &amp; Hybrid Cloud</div><div class="cs">Đưa điện toán AWS ra ngoài Region truyền thống</div></div></div>
+  <div class="tools">
+    <div class="tool">
+      <div class="tn" style="color:var(--bl)">AWS Local Zones</div>
+      <div class="td">Đặt compute, storage, database trực tiếp tại các vùng đô thị lớn (không phải Region chính thức), giúp ứng dụng đạt độ trễ <b>single-digit millisecond (&lt; 10ms)</b> cho người dùng khu vực đó.</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--gr)">AWS Wavelength</div>
+      <div class="td">Nhúng trực tiếp tài nguyên AWS vào hạ tầng mạng viễn thông <b>5G</b> của các nhà mạng viễn thông. Dành riêng cho xe tự hành, AR/VR, stream game và IoT di động.</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--or)">AWS Outposts</div>
+      <div class="td">AWS đóng gói nguyên cả rack máy chủ vật lý và triển khai trực tiếp vào phòng máy <b>On-premises Data Center</b> của khách hàng. Quản trị hoàn toàn đồng nhất qua AWS Console.</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--rd)">AWS Dedicated Local Zones</div>
+      <div class="td">Khu vực Local Zone riêng biệt, vận hành theo yêu cầu bảo mật nghiêm ngặt của chính phủ hoặc khối tài chính, ngân hàng chuyên biệt.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">➕</div><div><div class="ct">Bổ sung hay gặp trong đề thi SAA-C03</div><div class="cs">Các bẫy câu hỏi và chi tiết kỹ thuật quan trọng</div></div></div>
+  <div class="g2">
+    <div class="it">
+      <div class="in">AZ Name Randomization (Ánh xạ AZ)</div>
+      <div class="id">Tên gọi như <code>us-east-1a</code> giữa 2 account AWS khác nhau có thể trỏ tới 2 Data Center vật lý khác nhau (AWS tráo đổi để cân bằng tải vật lý). Muốn 2 account dùng chung 1 AZ vật lý, phải dùng <b>AZ ID</b> (ví dụ <code>use1-az1</code>).</div>
+    </div>
+    <div class="it">
+      <div class="in">Đường truyền riêng AWS Backbone</div>
+      <div class="id">Mọi lưu lượng trao đổi giữa các AWS Regions đều đi qua <b>AWS Global Network Backbone</b> (hệ thống cáp quang ngầm riêng biệt của AWS), đảm bảo an toàn, bảo mật và độ trễ ổn định hơn so với Internet công cộng.</div>
+    </div>
+    <div class="it">
+      <div class="in">Khác biệt HA (High Availability) &amp; DR (Disaster Recovery)</div>
+      <div class="id"><b>Multi-AZ</b> giải quyết bài toán High Availability &amp; Fault Tolerance (chống sập cụm phần cứng/tòa nhà). <b>Multi-Region</b> giải quyết bài toán Disaster Recovery toàn diện (chống thiên tai xóa sổ cả vùng địa lý).</div>
+    </div>
+    <div class="it">
+      <div class="in">Sự cố AZ và thiết kế Subnet</div>
+      <div class="id">Mỗi Subnet trong VPC chỉ thuộc về đúng 1 AZ. Để ứng dụng chịu lỗi, bắt buộc phải tạo ít nhất <b>2 Subnets tại 2 AZs khác nhau</b> và đặt máy chủ / database phân tán đều giữa chúng.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🏆</div><div><div class="ct">5. Nguyên tắc vàng — SAA-C03</div><div class="cs">Ghi nhớ 4 nguyên tắc cốt lõi về hạ tầng</div></div></div>
+  <ul class="bp">
+    <li class="bi"><div class="bn">1</div><div><b>Multi-AZ là tiêu chuẩn bắt buộc cho High Availability</b><span>Bất kỳ kiến trúc chịu lỗi (Fault-Tolerant) nào trên AWS cũng phải triển khai trải rộng trên tối thiểu 2 Availability Zones.</span></div></li>
+    <li class="bi"><div class="bn">2</div><div><b>Ưu tiên Compliance trước, Latency theo sau</b><span>Khi chọn Region, rào cản pháp lý (Data Residency/Sovereignty) luôn đứng trước tối ưu độ trễ và chi phí.</span></div></li>
+    <li class="bi"><div class="bn">3</div><div><b>Tận dụng Edge Locations cho Global Traffic</b><span>Khi tệp người dùng trải rộng toàn cầu, giải pháp rẻ và hiệu quả nhất luôn là CloudFront caching hoặc Route 53 Geolocation routing, không cần dựng server ở tất cả các Region.</span></div></li>
+    <li class="bi"><div class="bn" style="background:var(--rd)">!</div><div><b style="color:var(--rd)">EBS Volume &amp; EC2 Instance bị khóa cứng theo AZ</b><span>Không thể gắn trực tiếp 1 EBS Volume vào EC2 ở AZ khác. Muốn chuyển dữ liệu sang AZ khác, phải tạo <b>EBS Snapshot</b> rồi khôi phục thành Volume mới ở target AZ.</span></div></li>
+  </ul>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🔗</div><div><div class="ct">6. Nguồn bài giảng tham chiếu (Udemy Lectures)</div><div class="cs">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in">Section 3 · Video bài giảng Udemy cốt lõi</div><div class="id">
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097978" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097978:</b> AWS Global Infrastructure Overview</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097980" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097980:</b> Regions, Availability Zones &amp; Latency</a>
+    </div></div>
+    <div class="it"><div class="in">Tài liệu kiến trúc chính thức từ AWS</div><div class="id">
+      • <a href="https://aws.amazon.com/about-aws/global-infrastructure/" target="_blank" style="color:var(--bl);text-decoration:none">AWS Global Infrastructure Map &amp; Edge Network</a><br>
+      • <a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/" target="_blank" style="color:var(--bl);text-decoration:none">AWS Whitepaper: Fault Isolation Boundaries</a><br>
+      • <a href="https://aws.amazon.com/local-zones/" target="_blank" style="color:var(--bl);text-decoration:none">AWS Local Zones &amp; Wavelength Product Center</a>
+    </div></div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

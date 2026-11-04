@@ -1,0 +1,65 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editor Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Python Artifacts & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Virtual Environments
+.env
+.env.local
+.venv
+env/
+venv/
+ENV/
+
+# CSV Data Files & Vocabulary Inputs
+*.csv
+
+# Anki Generated Packages, TSV Exports & Vocabulary Build Artifacts
+*.apkg
+*.tsv
+anki_*
+AWS_SAA_C03_*
+collection.anki2*
+*.anki2
+*.anki21
+media/
+tmp/
+temp/
+*.tmp
+*.temp

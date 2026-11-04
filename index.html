@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Certified Solutions Architect Associate (SAA-C03) — Lộ Trình &amp; Sơ Đồ Ôn Thi</title>
+<style>
+:root{--bg:#F9F8F7;--card:#fff;--bd:#E6E5E3;--sub:#F9F8F7;--tx:#2C2C2B;--mu:#7D7A75;--bl:#2783DE;--blb:#E5F2FC;--gr:#46A171;--grb:#E8F1EC;--or:#D5803B;--orb:#FBEBDE;--rd:#E56458;--rdb:#FCE9E7;--gy:#F0EFED;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}}
+:root[data-theme="dark"]{--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);padding:32px 24px;min-height:100%}
+.header{text-align:center;margin-bottom:32px}
+.badge{display:inline-block;background:var(--blb);color:var(--bl);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
+h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
+.header p{font-size:14px;color:var(--mu);margin-top:8px;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6}
+.container{max-width:960px;margin:0 auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05);min-width:0}
+.full{grid-column:1/-1}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.ci{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ct{font-size:16px;font-weight:700}
+.cs{font-size:12px;color:var(--mu);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-box{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;text-align:center}
+.stat-val{font-size:22px;font-weight:800;color:var(--bl)}
+.stat-lbl{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;margin:2px 2px 2px 0}
+.tb{background:var(--blb);color:var(--bl)}.tg{background:var(--grb);color:var(--gr)}.to{background:var(--orb);color:var(--or)}.tr{background:var(--rdb);color:var(--rd)}.ty{background:var(--gy);color:var(--mu)}
+.module-list{display:flex;flex-direction:column;gap:12px}
+.module-item{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:var(--sub);border:1px solid var(--bd);border-radius:10px;text-decoration:none;color:inherit;transition:all .15s ease}
+.module-item:hover{border-color:var(--bl);transform:translateY(-1px);box-shadow:0 3px 6px rgba(0,0,0,.04)}
+.module-left{display:flex;align-items:center;gap:14px;min-width:0}
+.module-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.module-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.module-desc{font-size:12px;color:var(--mu);margin-top:3px}
+.module-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.btn-open{font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;background:var(--bl);color:#fff;text-decoration:none;display:inline-block}
+.btn-open:hover{opacity:.9}
+.btn-pending{font-size:12px;font-weight:500;padding:6px 14px;border-radius:6px;background:var(--gy);color:var(--mu);display:inline-block}
+.domains{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.domain-card{padding:14px;border-radius:8px;border:1px solid var(--bd);background:var(--sub)}
+.domain-name{font-size:13px;font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between}
+.domain-pct{font-weight:800;color:var(--bl)}
+.domain-desc{font-size:11px;color:var(--mu);line-height:1.5}
+.vocab-sample{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.vocab-card{padding:10px 12px;border:1px solid var(--bd);border-radius:6px;background:var(--sub);font-size:12px}
+.vocab-word{font-weight:700;color:var(--bl);margin-bottom:2px}
+.vocab-mean{color:var(--tx);font-size:12px}
+.vocab-example{font-size:11px;color:var(--mu);margin-top:4px;font-style:italic}
+@media (max-width:768px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.domains{grid-template-columns:1fr}.vocab-sample{grid-template-columns:1fr}}
+@media (max-width:640px){.module-item{flex-direction:column;align-items:flex-start;gap:12px}.module-right{align-self:flex-end}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="badge">AWS Certified Solutions Architect Associate (SAA-C03)</div>
+  <h1>Lộ Trình Học &amp; Sơ Đồ Kiến Trúc AWS</h1>
+  <p>Tổng hợp sơ đồ tóm tắt kiến trúc, mẹo thi SAA-C03 và từ vựng tiếng Anh trích xuất từ khóa học Ultimate AWS Solutions Architect của Stephane Maarek.</p>
+</div>
+
+<!-- Thống kê nhanh -->
+<div class="stats">
+  <div class="stat-box">
+    <div class="stat-val">3</div>
+    <div class="stat-lbl">Chủ đề hoàn thành</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val">16</div>
+    <div class="stat-lbl">Chương trọng tâm</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val">86+</div>
+    <div class="stat-lbl">Từ vựng Subtitle</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val">100%</div>
+    <div class="stat-lbl">Offline / Tự Chứa</div>
+  </div>
+</div>
+
+<div class="grid">
+
+<!-- 4 Domains đề thi -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🎯</div>
+    <div>
+      <div class="ct">Cấu trúc 4 Trụ Cột Đề Thi SAA-C03 (Exam Domains)</div>
+      <div class="cs">Tỷ trọng câu hỏi chính thức từ AWS</div>
+    </div>
+  </div>
+  <div class="domains">
+    <div class="domain-card">
+      <div class="domain-name"><span>Domain 1: Design Secure Architectures</span><span class="domain-pct">30%</span></div>
+      <div class="domain-desc">Bảo mật tài khoản, IAM policies, VPC security groups &amp; NACLs, mã hóa KMS, WAF, Secrets Manager, Shield.</div>
+    </div>
+    <div class="domain-card">
+      <div class="domain-name"><span>Domain 2: Design Resilient Architectures</span><span class="domain-pct">26%</span></div>
+      <div class="domain-desc">Kiến trúc sẵn sàng cao Multi-AZ, Multi-Region, Auto Scaling, Elastic Load Balancing, S3, RDS Multi-AZ, Route 53 failover.</div>
+    </div>
+    <div class="domain-card">
+      <div class="domain-name"><span>Domain 3: Design High-Performing Architectures</span><span class="domain-pct">24%</span></div>
+      <div class="domain-desc">Tối ưu hiệu năng Compute (EC2, Lambda), Storage IOPS (EBS, EFS), Caching (ElastiCache, CloudFront), SQS, Kinesis streaming.</div>
+    </div>
+    <div class="domain-card">
+      <div class="domain-name"><span>Domain 4: Design Cost-Optimized Architectures</span><span class="domain-pct">20%</span></div>
+      <div class="domain-desc">Tối ưu chi phí S3 Storage Tiers, EC2 Spot/Reserved/Savings Plans, Data Transfer costs giữa AZ/Region, quyền định lượng AWS.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Danh sách các bài học -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📚</div>
+    <div>
+      <div class="ct">Danh Mục Cheat Sheet &amp; Sơ Đồ Kiến Trúc Theo Chương</div>
+      <div class="cs">Click để xem sơ đồ chi tiết, luồng xử lý và nguyên tắc vàng cho từng dịch vụ</div>
+    </div>
+  </div>
+
+  <div class="module-list">
+    
+    <!-- Section 3: Global Infrastructure -->
+    <a href="aws_global_infra.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">🌐</div>
+        <div>
+          <div class="module-title">Section 3: AWS Global Infrastructure <span class="tag tg">Đã có</span></div>
+          <div class="module-desc">Regions, Availability Zones, Data Centers, Edge Locations (PoP), Local Zones, Wavelength, Outposts.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">📚 Nguồn: Udemy Section 3 · Lectures 26097978, 26097980</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open">Mở bài học →</span>
+      </div>
+    </a>
+
+    <!-- Section 4: IAM -->
+    <a href="aws_iam.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">👤</div>
+        <div>
+          <div class="module-title">Section 4: IAM — Identity &amp; Access Management <span class="tag tg">Đã có</span></div>
+          <div class="module-desc">Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Least Privilege, SCPs.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">📚 Nguồn: Udemy Section 4 · Lectures 26097996, 26098020, 26098028, 26623458</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open">Mở bài học →</span>
+      </div>
+    </a>
+
+    <!-- Section 5: EC2 -->
+    <a href="aws_ec2.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">💻</div>
+        <div>
+          <div class="module-title">Section 5: EC2 — Elastic Compute Cloud <span class="tag tg">Đã có</span></div>
+          <div class="module-desc">Instance Types, Purchasing Options (On-Demand, Spot, RI, Savings Plans), Security Groups, User Data, IMDSv2.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">📚 Nguồn: Udemy Section 5 · Lectures 26098112, 26098122, 26098128, 26098134</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open">Mở bài học →</span>
+      </div>
+    </a>
+
+    <!-- Section 6: EC2 Storage -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">💾</div>
+        <div>
+          <div class="module-title">Section 6: EC2 Storage (EBS, EFS &amp; Instance Store) <span class="tag ty">Kế tiếp</span></div>
+          <div class="module-desc">So sánh gp3, io2 Block Express, EFS Multi-AZ POSIX network storage, Instance Store Ephemeral.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 6: EC2 - Instance Storage (EBS &amp; EFS)</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 7: High Availability (ELB & ASG) -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">⚖️</div>
+        <div>
+          <div class="module-title">Section 7: High Availability &amp; Scalability (ELB &amp; ASG) <span class="tag ty">Kế tiếp</span></div>
+          <div class="module-desc">Application Load Balancer (ALB), Network Load Balancer (NLB), Auto Scaling Groups, Scaling Policies.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 7: High Availability and Scalability: ELB &amp; ASG</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 8 & 20: Databases -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🗄️</div>
+        <div>
+          <div class="module-title">Section 8 &amp; 20: AWS Databases (RDS, Aurora, DynamoDB) <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">RDS Multi-AZ vs Read Replicas, Aurora Serverless &amp; Global Database, DynamoDB Single-digit latency.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 8 (RDS + Aurora + ElastiCache) &amp; Section 20 (Databases in AWS)</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 9: Route 53 -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🧭</div>
+        <div>
+          <div class="module-title">Section 9: Amazon Route 53 <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">DNS Routing Policies (Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, Multi-value).</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 9: Route 53</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 11 & 13: Amazon S3 -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🪣</div>
+        <div>
+          <div class="module-title">Section 11 &amp; 13: Amazon S3 &amp; Advanced Storage <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">Storage Classes (Standard, IA, Glacier Deep Archive), Lifecycle Policies, Versioning, Replication, S3 Select.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 11 (S3 Intro) &amp; Section 13 (Advanced S3)</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 14: CloudFront & Accelerator -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🚀</div>
+        <div>
+          <div class="module-title">Section 14: CloudFront &amp; AWS Global Accelerator <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">Edge Caching, Origin Shield, Signed URL/Cookies, Global Anycast IPs vs CDN.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 14: CloudFront &amp; AWS Global Accelerator</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 16: Decoupling -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">📬</div>
+        <div>
+          <div class="module-title">Section 16: Decoupling Applications (SQS, SNS, Kinesis, MQ) <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">Queue decoupling (SQS Standard vs FIFO), Pub/Sub Fan-out (SNS), Real-time streaming (Kinesis).</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 16: Decoupling Applications: SQS, SNS, Kinesis, Active MQ</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 17: Containers -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🐳</div>
+        <div>
+          <div class="module-title">Section 17: Containers on AWS (ECS, Fargate, ECR, EKS) <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">Docker container orchestration, ECS EC2 Launch Type vs Serverless Fargate, Kubernetes trên EKS.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 17: Containers on AWS: ECS, Fargate, ECR, EKS</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 18: Serverless -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">⚡</div>
+        <div>
+          <div class="module-title">Section 18 &amp; 19: Serverless (Lambda, API Gateway, Step Functions) <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">Event-driven compute, API Gateway REST/HTTP/WebSocket, Step Functions State Machine workflows.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 18 (Serverless Overviews) &amp; Section 19 (Serverless Solutions)</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+    <!-- Section 25: VPC & Networking -->
+    <div class="module-item" style="opacity:.85">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🌐</div>
+        <div>
+          <div class="module-title">Section 25: Networking — Virtual Private Cloud (VPC) <span class="tag ty">Dự kiến</span></div>
+          <div class="module-desc">CIDR, Public/Private Subnets, Internet Gateway, NAT Gateway, NACLs vs SG, VPC Peering, Transit Gateway.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">📚 Nguồn: Udemy Section 25: Networking - VPC</div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending">Sắp ra mắt</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Khu vực Từ vựng tiếng Anh -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">📖</div>
+    <div>
+      <div class="ct">Từ Vựng Tiếng Anh Chuyên Ngành (Khóa Học Stephane Maarek)</div>
+      <div class="cs">Trích xuất tự động từ phụ đề video bài giảng kèm ngữ cảnh đề thi (86+ từ trong lecturesub-tu-vung.csv)</div>
+    </div>
+  </div>
+
+  <div class="vocab-sample">
+    <div class="vocab-card">
+      <div class="vocab-word">Termination / Delete on Termination</div>
+      <div class="vocab-mean">Chấm dứt / Tự hủy khi xóa instance</div>
+      <div class="vocab-example">"To note in here is the delete on termination attribute."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="vocab-word">Latency</div>
+      <div class="vocab-mean">Độ trễ truyền tải mạng</div>
+      <div class="vocab-example">"And this will give you the lowest amount of latency for end users."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="vocab-word">Infrastructure</div>
+      <div class="vocab-mean">Cơ sở hạ tầng phần cứng &amp; mạng</div>
+      <div class="vocab-example">"Is called the AWS global infrastructure consisting of Regions and AZs."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="vocab-word">Inbound / Outbound</div>
+      <div class="vocab-mean">Chiều luồng mạng vào / Chiều luồng mạng ra</div>
+      <div class="vocab-example">"Whether or not some inbound traffic is authorized by the Security Group."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="vocab-word">Credentials</div>
+      <div class="vocab-mean">Thông tin xác thực danh tính (Key, Mật khẩu, Token)</div>
+      <div class="vocab-example">"You will see my security credentials for root user and temporary tokens."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="vocab-word">Accelerated Computing / Warehousing</div>
+      <div class="vocab-mean">Điện toán tăng tốc phần cứng / Kho bãi dữ liệu lớn</div>
+      <div class="vocab-example">"Accelerated computing and high frequency data warehousing applications."</div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;padding:16px;background:var(--sub);border:1px solid var(--bd);border-radius:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">🗂️</span>
+        <b style="font-size:14px">Bộ Flashcard Anki Chuẩn Format "4000 Essential English Words"</b>
+      </div>
+      <span class="tag tg">Chia 20 từ / Unit · Điền từ gõ phím (Type-in) · Cloze Deletion</span>
+    </div>
+    <p style="font-size:12px;color:var(--mu);line-height:1.6;margin-bottom:12px">
+      Toàn bộ 86 từ vựng đã được gom nhóm tự động thành <b>5 Units (mỗi Unit 20 từ)</b> và đóng gói trực tiếp vào file <code>AWS_SAA_C03_Vocabulary.apkg</code> theo đúng Note Type <b>4000Book1</b>: có số thẻ, gợi ý điền từ <code>t__ __ __ __n</code>, ô gõ phím kiểm tra chính tả (xanh khi đúng, đỏ khi sai), phiên âm quốc tế IPA và nút bấm mở video bài giảng Udemy đúng số phút/giây.
+    </p>
+    <div class="g2">
+      <div class="it">
+        <div class="in">Cách 1: Nhấp đúp mở ngay (Khuyên dùng)</div>
+        <div class="id">
+          Chỉ cần nhấp đúp trực tiếp vào file <b><code>AWS_SAA_C03_Vocabulary.apkg</code></b> trong thư mục dự án. Phần mềm Anki trên máy tính sẽ tự động mở và tạo deck <b>"AWS SAA-C03 Vocabulary (Stephane Maarek)"</b> với đầy đủ giao diện, màu sắc và tính năng gõ từ kiểm tra.
+        </div>
+      </div>
+      <div class="it">
+        <div class="in">Cách 2: Import file TSV 11 cột</div>
+        <div class="id">
+          Nếu bạn muốn đưa vào bộ thẻ có sẵn của mình, vào Anki chọn <b>File → Import...</b> và chọn file <b><code>anki_4000_format.tsv</code></b> (ánh xạ đủ 11 trường: №, Keyword, Suggestion, Short Vietnamese, Sound, Image, Transcription, Explanation, Full Vietnamese).
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--mu)">
+      💡 <b>Cập nhật khi có từ mới:</b> Chạy lệnh <code>python3 export_anki_4000.py</code> để tự động cập nhật lại file <code>.apkg</code> và <code>.tsv</code>.
+    </div>
+  </div>
+
+  <div style="margin-top:16px;text-align:center">
+    <span style="font-size:12px;color:var(--mu)">Dữ liệu từ vựng gốc: <code>lecturesub-tu-vung.csv</code> · Gói Anki hoàn chỉnh: <code>AWS_SAA_C03_Vocabulary.apkg</code> · File TSV 11 cột: <code>anki_4000_format.tsv</code></span>
+  </div>
+</div>
+
+</div>
+</div>
+</body>
+</html>

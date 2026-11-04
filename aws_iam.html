@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS IAM — SAA-C03</title>
+<style>
+:root{--bg:#F9F8F7;--card:#fff;--bd:#E6E5E3;--sub:#F9F8F7;--tx:#2C2C2B;--mu:#7D7A75;--bl:#2783DE;--blb:#E5F2FC;--gr:#46A171;--grb:#E8F1EC;--or:#D5803B;--orb:#FBEBDE;--rd:#E56458;--rdb:#FCE9E7;--gy:#F0EFED;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}}
+:root[data-theme="dark"]{--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);padding:32px 24px;min-height:100%}
+.top-nav{max-width:960px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between}
+.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--bl);text-decoration:none;padding:6px 12px;border-radius:6px;background:var(--blb)}
+.nav-back:hover{opacity:.85}
+.header{text-align:center;margin-bottom:36px}
+.badge{display:inline-block;background:var(--blb);color:var(--bl);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
+h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
+.header p{font-size:14px;color:var(--mu);margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05);min-width:0}
+.full{grid-column:1/-1}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.ci{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ct{font-size:15px;font-weight:700}
+.cs{font-size:12px;color:var(--mu);margin-top:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.it{border:1px solid var(--bd);border-radius:8px;padding:14px;background:var(--sub)}
+.in{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.id{font-size:12px;color:var(--mu);line-height:1.7}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;margin:2px 2px 2px 0}
+.tb{background:var(--blb);color:var(--bl)}.tg{background:var(--grb);color:var(--gr)}.to{background:var(--orb);color:var(--or)}.tr{background:var(--rdb);color:var(--rd)}.ty{background:var(--gy);color:var(--mu)}
+.lbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
+.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.flow:last-child{margin-bottom:0}
+.st{text-align:center;padding:10px 12px;border-radius:8px;flex:1;min-width:96px;border:1.5px solid var(--bd);background:var(--gy)}
+.st b{display:block;font-size:12px;font-weight:700}
+.st span{display:block;font-size:11px;margin-top:3px;color:var(--mu)}
+.s-b{background:var(--blb);border-color:var(--bl)}.s-b b{color:var(--bl)}
+.s-g{background:var(--grb);border-color:var(--gr)}.s-g b{color:var(--gr)}
+.s-o{background:var(--orb);border-color:var(--or)}.s-o b{color:var(--or)}
+.s-r{background:var(--rdb);border-color:var(--rd)}.s-r b{color:var(--rd)}
+.ar{color:var(--mu);font-size:18px;align-self:center}
+.cols{display:flex;gap:12px}
+.col{flex:1;min-width:0}
+.colt{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.pi{font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:6px;border:1px solid var(--bd);background:var(--sub)}
+.pi b{display:block;font-weight:600;margin-bottom:2px}
+.pi span{color:var(--mu);font-size:11px}
+.json{background:#1E1E1E;border-radius:8px;padding:14px 18px;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.7;color:#D4D4D4;margin-top:14px;overflow-x:auto;white-space:pre}
+.jk{color:#9CDCFE}.jv{color:#CE9178}.jc{color:#6A9955}.jp{color:#4EC9B0}
+.sl{list-style:none}
+.sl li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gy);font-size:13px;line-height:1.5}
+.sl li:last-child{border-bottom:none}
+.si{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sl b{display:block;font-weight:600;margin-bottom:2px}
+.sl span{color:var(--mu);font-size:12px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tool{border:1px solid var(--bd);border-radius:8px;padding:12px 14px;background:var(--sub)}
+.tn{font-size:12px;font-weight:700;margin-bottom:4px}
+.td{font-size:11px;color:var(--mu);line-height:1.5}
+.bp{list-style:none;display:flex;flex-direction:column;gap:10px}
+.bi{display:flex;gap:12px;background:var(--sub);border:1px solid var(--bd);border-radius:8px;padding:12px 14px}
+.bn{width:24px;height:24px;background:var(--bl);color:var(--card);border-radius:6px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bi b{font-size:13px;display:block;margin-bottom:3px}
+.bi span{font-size:12px;color:var(--mu);line-height:1.5}
+@media (max-width:640px){.grid,.g2,.tools{grid-template-columns:1fr}.full{grid-column:auto}.cols{flex-direction:column}.ar{display:none}}
+</style>
+</head>
+<body>
+<div class="top-nav">
+  <a href="index.html" class="nav-back">← Mục lục khóa học</a>
+  <span style="font-size:12px;color:var(--mu)">Section 4 · Udemy SAA-C03</span>
+</div>
+<div class="header">
+  <div class="badge">Global Service</div>
+  <h1>AWS IAM — Identity &amp; Access Management</h1>
+  <p>Kiến trúc phân quyền toàn diện cho AWS SAA-C03</p>
+</div>
+<div class="grid">
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">👤</div><div><div class="ct">1. Thực thể định danh (Identities)</div><div class="cs">Ai được phép tương tác với AWS?</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in"><div class="dot" style="background:var(--rd)"></div>Root User</div><div class="id">Full Administrator, tạo cùng tài khoản AWS.<br><span class="tag tr">Khóa Root</span><span class="tag to">Bật MFA</span><span class="tag ty">Không dùng hằng ngày</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--bl)"></div>IAM Users</div><div class="id">Đại diện 1 người hoặc ứng dụng cụ thể.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Gán quyền qua Groups</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--gr)"></div>IAM Groups</div><div class="id">Tập hợp Users (Developers, Admins, Auditors).<br><span class="tag tg">Chỉ chứa Users</span><span class="tag ty">Không chứa Group khác</span><span class="tag ty">Không có credentials</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--or)"></div>IAM Roles</div><div class="id">Danh tính tạm thời, cấp STS credentials ngắn hạn.<br><span class="tag to">EC2 Instance Profile</span><span class="tag to">Cross-Account</span><span class="tag to">Federation</span><span class="tag ty">Trust + Permissions Policy</span></div></div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--orb)">🔗</div><div><div class="ct">Luồng cấp quyền</div><div class="cs">Credential dài hạn so với credential tạm thời</div></div></div>
+  <div class="lbl">Users và Groups (dài hạn)</div>
+  <div class="flow">
+    <div class="st"><b>Managed Policy</b><span>Gán vào Group</span></div><div class="ar">›</div>
+    <div class="st s-g"><b>IAM Group</b><span>Developers</span></div><div class="ar">›</div>
+    <div class="st s-b"><b>IAM Users</b><span>Thành viên Group</span></div><div class="ar">›</div>
+    <div class="st"><b>Password + Keys</b><span>Console, CLI, SDK</span></div>
+  </div>
+  <div class="lbl">Roles (tạm thời)</div>
+  <div class="flow">
+    <div class="st"><b>EC2 / Account khác / Federation</b><span>Principal được Assume</span></div><div class="ar">›</div>
+    <div class="st"><b>STS AssumeRole</b><span>Credentials ngắn hạn</span></div><div class="ar">›</div>
+    <div class="st s-o"><b>IAM Role</b><span>Trust + Permissions</span></div><div class="ar">›</div>
+    <div class="st"><b>Tài nguyên AWS</b><span>S3, DynamoDB...</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--grb)">📋</div><div><div class="ct">2. Chính sách (Policies)</div><div class="cs">Tài liệu JSON: ai được làm gì?</div></div></div>
+  <div class="cols">
+    <div class="col"><div class="colt">Identity-based</div>
+      <div class="pi"><b>AWS Managed</b><span>AWS tạo và quản trị sẵn</span></div>
+      <div class="pi"><b>Customer Managed</b><span>Tự định nghĩa, có phiên bản</span></div>
+      <div class="pi"><b>Inline Policy</b><span>Nhúng vào 1 User/Group/Role</span></div></div>
+    <div class="col"><div class="colt">Resource-based</div>
+      <div class="pi"><b>S3 Bucket Policy</b><span>Gán vào bucket</span></div>
+      <div class="pi"><b>SQS Queue Policy</b><span>Gán vào queue</span></div>
+      <div class="pi"><b>KMS Key Policy</b><span>Gán vào KMS Key</span></div></div>
+  </div>
+<div class="json"><span class="jc">// Cấu trúc JSON Policy</span>
+{
+  <span class="jk">"Effect"</span>: <span class="jv">"Allow" | "Deny"</span>,
+  <span class="jk">"Principal"</span>: <span class="jp">/* chỉ Resource-based / Trust */</span>,
+  <span class="jk">"Action"</span>: <span class="jv">"s3:GetObject"</span>,
+  <span class="jk">"Resource"</span>: <span class="jv">"arn:aws:s3:::my-bucket/*"</span>,
+  <span class="jk">"Condition"</span>: { <span class="jv">/* IpAddress, MFA... */</span> }
+}</div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--rdb)">⚖️</div><div><div class="ct">Policy Evaluation Logic</div><div class="cs">Request được xét theo thứ tự nào?</div></div></div>
+  <div class="flow">
+    <div class="st s-r"><b>Explicit Deny</b><span>Chặn ngay</span></div><div class="ar">›</div>
+    <div class="st s-g"><b>Explicit Allow</b><span>Cho phép</span></div><div class="ar">›</div>
+    <div class="st"><b>Default Deny</b><span>Implicit Deny</span></div>
+  </div>
+  <div class="lbl">Quyền hiệu lực là phần giao của</div>
+  <div class="id"><span class="tag tb">SCP</span><span class="tag tb">Permissions boundary</span><span class="tag tb">Identity policy</span><br>Một lớp không cho phép thì request vẫn bị chặn, và Explicit Deny ở bất kỳ lớp nào cũng thắng tất cả.</div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--rdb)">🔐</div><div><div class="ct">3. Bảo mật &amp; Xác thực</div><div class="cs">Security &amp; Credentials</div></div></div>
+  <ul class="sl">
+    <li><div class="si" style="background:var(--rdb)">🛡️</div><div><b>Multi-Factor Authentication</b><span>Bắt buộc cho Root, khuyến nghị cho IAM Users<br>Virtual (Authy, Google Auth) · U2F/FIDO (YubiKey) · Hardware token (Gemalto)</span></div></li>
+    <li><div class="si" style="background:var(--blb)">🔑</div><div><b>Password Policy</b><span>Độ dài tối thiểu · Ký tự đặc biệt · Hết hạn mật khẩu</span></div></li>
+    <li><div class="si" style="background:var(--orb)">🗝️</div><div><b>Access Keys</b><span>CLI / SDK · Rotate định kỳ · <strong style="color:var(--rd)">Không hardcode vào source code</strong></span></div></li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--gy)">🔭</div><div><div class="ct">4. Giám sát &amp; Quản trị</div><div class="cs">Governance &amp; Tools</div></div></div>
+  <div class="tools">
+    <div class="tool"><div class="tn" style="color:var(--bl)">IAM Access Analyzer</div><div class="td">Quét tài nguyên có nguy cơ bị lộ ra bên ngoài</div></div>
+    <div class="tool"><div class="tn" style="color:var(--gr)">Credential Report</div><div class="td">CSV cấp account: mật khẩu, key, MFA</div></div>
+    <div class="tool"><div class="tn" style="color:var(--or)">Policy Simulator</div><div class="td">Debug quyền Policy trước khi triển khai</div></div>
+    <div class="tool"><div class="tn" style="color:var(--rd)">SCPs (Organizations)</div><div class="td">Chỉ giới hạn quyền tối đa, không cấp quyền</div></div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">➕</div><div><div class="ct">Bổ sung hay gặp trong đề thi</div><div class="cs">Ngoài tài liệu gốc</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in">Permissions boundary</div><div class="id">Giới hạn quyền tối đa của một User hoặc Role. Quyền hiệu lực là phần giao với Identity policy.</div></div>
+    <div class="it"><div class="in">Phạm vi của SCP</div><div class="id">Không áp dụng cho management account. SCP không cấp quyền, chỉ thu hẹp quyền.</div></div>
+    <div class="it"><div class="in">Cross-account + resource policy</div><div class="id">Cùng account: chỉ cần Allow ở một phía. Khác account: cần Allow ở cả hai phía.</div></div>
+    <div class="it"><div class="in">IAM Identity Center</div><div class="id">SSO tập trung cho nhiều account trong Organizations, thay cho việc tạo IAM Users rải rác.</div></div>
+    <div class="it"><div class="in">Access Advisor</div><div class="id">Cấp user: dịch vụ nào được dùng lần cuối khi nào, để thu hẹp quyền theo Least Privilege.</div></div>
+    <div class="it"><div class="in">IAM là dịch vụ Global</div><div class="id">Không gắn với Region; Users, Groups, Roles và Policies dùng được ở mọi Region.</div></div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🏆</div><div><div class="ct">5. Nguyên tắc vàng — SAA-C03</div><div class="cs">Ghi nhớ 4 nguyên tắc cốt lõi</div></div></div>
+  <ul class="bp">
+    <li class="bi"><div class="bn">1</div><div><b>Least Privilege</b><span>Chỉ cấp đúng và đủ quyền cần thiết để hoàn thành công việc.</span></div></li>
+    <li class="bi"><div class="bn">2</div><div><b>EC2 Instance Profiles: dùng IAM Role, không nhúng Access Key</b><span>Luôn gán IAM Role cho EC2 / Lambda thay vì hardcode Access Key vào server.</span></div></li>
+    <li class="bi"><div class="bn">3</div><div><b>Cross-Account: IAM Role + STS AssumeRole</b><span>Ưu tiên Role thay vì tạo IAM User trùng lặp ở tài khoản khác.</span></div></li>
+    <li class="bi"><div class="bn" style="background:var(--rd)">!</div><div><b style="color:var(--rd)">Explicit Deny luôn chiến thắng</b><span>Dù có bao nhiêu Allow, chỉ cần 1 Deny là request bị chặn ngay lập tức.</span></div></li>
+  </ul>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🔗</div><div><div class="ct">6. Nguồn bài giảng tham chiếu (Udemy Lectures)</div><div class="cs">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in">Section 4 · Video bài giảng Udemy cốt lõi</div><div class="id">
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097996:</b> IAM Overview &amp; Fundamentals</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098020:</b> Root User Security &amp; MFA</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098028:</b> IAM Users &amp; Security Credentials</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098070:</b> IAM Credential Report &amp; Access Advisor</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26623458:</b> IAM Policies in Depth (JSON Anatomy)</a>
+    </div></div>
+    <div class="it"><div class="in">Tài liệu kiến trúc chính thức từ AWS</div><div class="id">
+      • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS IAM User Guide — Identity and Access Management</a><br>
+      • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html" target="_blank" style="color:var(--bl);text-decoration:none">IAM Policy Evaluation Logic &amp; Explicit Deny</a><br>
+      • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html" target="_blank" style="color:var(--bl);text-decoration:none">Security Best Practices in IAM (Least Privilege)</a>
+    </div></div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS EC2 — Elastic Compute Cloud — SAA-C03</title>
+<style>
+:root{--bg:#F9F8F7;--card:#fff;--bd:#E6E5E3;--sub:#F9F8F7;--tx:#2C2C2B;--mu:#7D7A75;--bl:#2783DE;--blb:#E5F2FC;--gr:#46A171;--grb:#E8F1EC;--or:#D5803B;--orb:#FBEBDE;--rd:#E56458;--rdb:#FCE9E7;--gy:#F0EFED;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}}
+:root[data-theme="dark"]{--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);padding:32px 24px;min-height:100%}
+.top-nav{max-width:960px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between}
+.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--bl);text-decoration:none;padding:6px 12px;border-radius:6px;background:var(--blb)}
+.nav-back:hover{opacity:.85}
+.header{text-align:center;margin-bottom:36px}
+.badge{display:inline-block;background:var(--blb);color:var(--bl);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
+h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
+.header p{font-size:14px;color:var(--mu);margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05);min-width:0}
+.full{grid-column:1/-1}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.ci{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ct{font-size:15px;font-weight:700}
+.cs{font-size:12px;color:var(--mu);margin-top:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.it{border:1px solid var(--bd);border-radius:8px;padding:14px;background:var(--sub)}
+.in{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.id{font-size:12px;color:var(--mu);line-height:1.7}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;margin:2px 2px 2px 0}
+.tb{background:var(--blb);color:var(--bl)}.tg{background:var(--grb);color:var(--gr)}.to{background:var(--orb);color:var(--or)}.tr{background:var(--rdb);color:var(--rd)}.ty{background:var(--gy);color:var(--mu)}
+.lbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
+.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.flow:last-child{margin-bottom:0}
+.st{text-align:center;padding:10px 12px;border-radius:8px;flex:1;min-width:96px;border:1.5px solid var(--bd);background:var(--gy)}
+.st b{display:block;font-size:12px;font-weight:700}
+.st span{display:block;font-size:11px;margin-top:3px;color:var(--mu)}
+.s-b{background:var(--blb);border-color:var(--bl)}.s-b b{color:var(--bl)}
+.s-g{background:var(--grb);border-color:var(--gr)}.s-g b{color:var(--gr)}
+.s-o{background:var(--orb);border-color:var(--or)}.s-o b{color:var(--or)}
+.s-r{background:var(--rdb);border-color:var(--rd)}.s-r b{color:var(--rd)}
+.ar{color:var(--mu);font-size:18px;align-self:center}
+.cols{display:flex;gap:12px}
+.col{flex:1;min-width:0}
+.colt{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.pi{font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:6px;border:1px solid var(--bd);background:var(--sub)}
+.pi b{display:block;font-weight:600;margin-bottom:2px}
+.pi span{color:var(--mu);font-size:11px}
+.json{background:#1E1E1E;border-radius:8px;padding:14px 18px;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.7;color:#D4D4D4;margin-top:14px;overflow-x:auto;white-space:pre}
+.jk{color:#9CDCFE}.jv{color:#CE9178}.jc{color:#6A9955}.jp{color:#4EC9B0}
+.sl{list-style:none}
+.sl li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gy);font-size:13px;line-height:1.5}
+.sl li:last-child{border-bottom:none}
+.si{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sl b{display:block;font-weight:600;margin-bottom:2px}
+.sl span{color:var(--mu);font-size:12px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tool{border:1px solid var(--bd);border-radius:8px;padding:12px 14px;background:var(--sub)}
+.tn{font-size:12px;font-weight:700;margin-bottom:4px}
+.td{font-size:11px;color:var(--mu);line-height:1.5}
+.bp{list-style:none;display:flex;flex-direction:column;gap:10px}
+.bi{display:flex;gap:12px;background:var(--sub);border:1px solid var(--bd);border-radius:8px;padding:12px 14px}
+.bn{width:24px;height:24px;background:var(--bl);color:var(--card);border-radius:6px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bi b{font-size:13px;display:block;margin-bottom:3px}
+.bi span{font-size:12px;color:var(--mu);line-height:1.5}
+@media (max-width:640px){.grid,.g2,.tools{grid-template-columns:1fr}.full{grid-column:auto}.cols{flex-direction:column}.ar{display:none}}
+</style>
+</head>
+<body>
+<div class="top-nav">
+  <a href="index.html" class="nav-back">← Mục lục khóa học</a>
+  <span style="font-size:12px;color:var(--mu)">Section 5 · Udemy SAA-C03</span>
+</div>
+
+<div class="header">
+  <div class="badge">AZ-Scoped Compute</div>
+  <h1>AWS EC2 — Elastic Compute Cloud</h1>
+  <p>Máy chủ ảo hạ tầng IaaS: Instance Types, Purchasing Options, Security Groups &amp; Quản trị</p>
+</div>
+
+<div class="grid">
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">💻</div><div><div class="ct">1. Các họ Instance Types cốt lõi</div><div class="cs">Chọn đúng loại máy chủ theo đặc tính tải (Workload Characteristics)</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in"><div class="dot" style="background:var(--bl)"></div>General Purpose (t3, t4g, m5, m6i)</div><div class="id">Cân bằng tối ưu giữa CPU, RAM và Networking. Phù hợp cho web server, backend API, môi trường phát triển (Dev/Test) và cơ sở dữ liệu nhỏ.<br><span class="tag tb">Cân bằng</span><span class="tag tb">Burstable CPU (t-series)</span><span class="tag ty">Web Servers</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--gr)"></div>Compute Optimized (c5, c6g, c7g)</div><div class="id">Tập trung vi xử lý CPU hiệu năng cao. Lý tưởng cho xử lý dữ liệu hàng loạt (Batch Processing), mã hóa media (Transcoding), máy chủ game chuyên dụng và mô hình Machine Learning inference.<br><span class="tag tg">High CPU/Core</span><span class="tag tg">Batch Processing</span><span class="tag ty">Media Encoding</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--or)"></div>Memory Optimized (r5, r6g, x1, z1d)</div><div class="id">Dung lượng RAM cực lớn giúp xử lý khối dữ liệu khổng lồ trực tiếp trong bộ nhớ. Dùng cho In-memory Databases (Redis, Memcached), cơ sở dữ liệu quan hệ lớn và phân tích dữ liệu thời gian thực.<br><span class="tag to">High RAM</span><span class="tag to">Redis / Memcached</span><span class="tag ty">Real-time Big Data</span></div></div>
+    <div class="it"><div class="in"><div class="dot" style="background:var(--rd)"></div>Storage Optimized (i3, i4i, d2, d3, h1)</div><div class="id">Yêu cầu truy xuất đọc/ghi đĩa I/O cực cao với độ trễ thấp trên khối dữ liệu cục bộ. Sử dụng trực tiếp ổ NVMe SSD nội bộ cho Data Warehousing, Apache Cassandra, Hadoop distributed file systems.<br><span class="tag tr">High IOPS</span><span class="tag tr">NVMe SSD cục bộ</span><span class="tag ty">Data Warehousing</span></div></div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--grb)">💰</div><div><div class="ct">2. Các mô hình thanh toán (Purchasing Options)</div><div class="cs">Chiến lược tối ưu hóa chi phí (Cost Optimization) trong đề thi SAA-C03</div></div></div>
+  <div class="cols">
+    <div class="col"><div class="colt">Linh hoạt &amp; Tạm thời</div>
+      <div class="pi"><b>On-Demand</b><span>Trả theo giây/giờ sử dụng thực tế. Không cần cam kết trước. Chi phí cao nhất nhưng linh hoạt nhất cho workload mới, không dự đoán trước được thời gian chạy.</span></div>
+      <div class="pi"><b>Spot Instances</b><span>Đấu giá dung lượng máy chủ nhàn rỗi của AWS. <b>Giảm giá tới 90%</b> so với On-Demand. Có thể bị AWS thu hồi bất kỳ lúc nào với <b>cảnh báo trước 2 phút</b>. Dành cho Batch jobs, Stateless web app, Rendering video. Không dùng cho DB hoặc critical workloads!</span></div>
+      <div class="pi"><b>Capacity Reservations</b><span>Giữ chỗ trước phần cứng trong một AZ cụ thể. Không cần cam kết 1-3 năm. Tính phí theo giá On-Demand dù có chạy instance hay không.</span></div>
+    </div>
+    <div class="col"><div class="colt">Cam kết dài hạn (1 hoặc 3 năm)</div>
+      <div class="pi"><b>Reserved Instances (RI)</b><span>Cam kết 1 hoặc 3 năm. Giảm tới 72%.<br>• <i>Standard RI:</i> Không đổi được họ instance.<br>• <i>Convertible RI:</i> Được đổi họ instance, OS, tenancy (giảm giá ít hơn).<br>• Hình thức: All Upfront, Partial Upfront, No Upfront.</span></div>
+      <div class="pi"><b>Savings Plans</b><span>Cam kết chi tiêu theo mức tiền cố định mỗi giờ (ví dụ $10/h) trong 1 hoặc 3 năm. Linh hoạt vượt trội so với RI: tự động áp dụng khi chuyển đổi giữa các thế hệ máy chủ EC2, AWS Fargate và AWS Lambda!</span></div>
+    </div>
+    <div class="col"><div class="colt">Cách ly phần cứng (Hardware Isolation)</div>
+      <div class="pi"><b>Dedicated Hosts</b><span>Thuê nguyên một máy chủ vật lý riêng biệt của AWS. Kiểm soát trực tiếp số core/socket vật lý để tuân thủ giấy phép phần mềm theo core (BYOL: Bring Your Own License) và quy định pháp lý khắt khe.</span></div>
+      <div class="pi"><b>Dedicated Instances</b><span>Chạy trên phần cứng dành riêng cho một tài khoản khách hàng, nhưng AWS quản lý vị trí socket. Tính phí thêm theo mỗi giờ chạy instance.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--rdb)">🛡️</div><div><div class="ct">3. Security Groups (Tường lửa ảo)</div><div class="cs">Kiểm soát lưu lượng mạng ở cấp độ Instance</div></div></div>
+  <div class="flow">
+    <div class="st s-b"><b>Inbound Traffic</b><span>Internet / Nội bộ</span></div><div class="ar">›</div>
+    <div class="st s-o"><b>Security Group</b><span>Stateful Firewall</span></div><div class="ar">›</div>
+    <div class="st s-g"><b>EC2 Instance</b><span>Application / Port</span></div>
+  </div>
+  <ul class="sl">
+    <li><div class="si" style="background:var(--grb)">🔄</div><div><b>Stateful (Có lưu trạng thái)</b><span>Nếu traffic Inbound được cho phép đi vào, thì traffic Outbound phản hồi lại sẽ <b>tự động được cho phép</b> đi ra (và ngược lại), không cần mở port chiều ngược.</span></div></li>
+    <li><div class="si" style="background:var(--blb)">✅</div><div><b>Chỉ có ALLOW Rules</b><span>Security Group KHÔNG CÓ quy tắc DENY. Mặc định chặn tất cả Inbound (Default Deny) và cho phép tất cả Outbound (Allow All).</span></div></li>
+    <li><div class="si" style="background:var(--orb)">🔗</div><div><b>Security Group Reference (Cực kỳ quan trọng)</b><span>Một Security Group có thể tham chiếu đến một SG khác làm nguồn (Source). Thay vì mở dải IP, EC2 SG chỉ cho phép traffic xuất phát từ ALB SG!</span></div></li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="ci" style="background:var(--orb)">⚙️</div><div><div class="ct">4. User Data &amp; Instance Metadata</div><div class="cs">Bootstrapping &amp; IMDSv1 vs IMDSv2</div></div></div>
+  <div class="it" style="margin-bottom:12px">
+    <div class="in"><div class="dot" style="background:var(--or)"></div>EC2 User Data (Bootstrapping)</div>
+    <div class="id">Đoạn bash script tự động chạy với quyền <b>root</b> ở <b>lần khởi động đầu tiên duy nhất</b> của instance. Dùng để cài web server, kéo source code, cấu hình môi trường.<br><span class="tag to">Chạy 1 lần lúc tạo</span><span class="tag ty">Root privileges</span></div>
+  </div>
+  <div class="it">
+    <div class="in"><div class="dot" style="background:var(--bl)"></div>Instance Metadata Service (IMDS)</div>
+    <div class="id">Lấy thông tin nội bộ của máy chủ tại IP nội bộ <code>http://169.254.169.254/latest/meta-data/</code> (IP nội bộ, Public IP, Instance Type, IAM Role temporary credentials).<br>
+    <div class="flow" style="margin-top:8px;margin-bottom:0">
+      <div class="st s-r"><b>IMDSv1</b><span>GET trực tiếp (Dễ bị tấn công SSRF)</span></div><div class="ar">›</div>
+      <div class="st s-g"><b>IMDSv2</b><span>Bắt buộc PUT lấy Session Token trước</span></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🔑</div><div><div class="ct">5. Phương thức kết nối &amp; Quản trị EC2</div><div class="cs">So sánh SSH truyền thống, EC2 Instance Connect và SSM Session Manager</div></div></div>
+  <div class="cols">
+    <div class="col"><div class="colt">SSH / RDP truyền thống</div>
+      <div class="pi"><b>Yêu cầu kết nối</b><span>Port 22 (Linux) hoặc Port 3389 (Windows). Cần máy có Public IP hoặc thông qua Bastion Host trong Public Subnet.</span></div>
+      <div class="pi"><b>Xác thực</b><span>Dùng cặp Key Pair (.pem / .ppk). Quản trị viên phải chịu rủi ro mất hoặc lộ lọt Private Key.</span></div>
+    </div>
+    <div class="col"><div class="colt">EC2 Instance Connect</div>
+      <div class="pi"><b>Cơ chế hoạt động</b><span>Đẩy 1 Public Key tạm thời (thời hạn 60 giây) trực tiếp vào Instance Metadata qua AWS API.</span></div>
+      <div class="pi"><b>Ưu điểm</b><span>Kết nối trực tiếp từ trình duyệt trên AWS Console hoặc qua AWS CLI mà không cần chia sẻ file private key dài hạn. Vẫn cần mở port 22.</span></div>
+    </div>
+    <div class="col"><div class="colt">AWS Systems Manager Session Manager (Khuyên dùng)</div>
+      <div class="pi"><b>Bảo mật cao nhất</b><span><b>KHÔNG CẦN MỞ PORT 22</b>, không cần Public IP, không cần Bastion Host, không cần Key Pair.</span></div>
+      <div class="pi"><b>Cơ chế</b><span>Máy chủ cài SSM Agent + gắn IAM Role có quyền SSM. Kết nối qua kênh bảo mật HTTPS outbound tới AWS SSM service. Kiểm soát và ghi log toàn bộ lệnh gõ qua CloudTrail &amp; S3.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--gy)">📦</div><div><div class="ct">6. EC2 Placement Groups (Nhóm phân bổ phần cứng)</div><div class="cs">Kiểm soát vị trí vật lý của các instances trên rack máy chủ AWS</div></div></div>
+  <div class="tools">
+    <div class="tool">
+      <div class="tn" style="color:var(--bl)">Cluster Placement Group</div>
+      <div class="td">Gom tất cả các instances vào cùng 1 rack vật lý trong <b>1 Availability Zone duy nhất</b>. Đem lại độ trễ mạng cực thấp (&lt; 1ms) và băng thông mạng tối đa (10Gbps - 100Gbps). <i>Rủi ro:</i> Nếu rack phần cứng gặp sự cố, tất cả instances cùng chết. Phù hợp Big Data HPC, MPI.</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--gr)">Spread Placement Group</div>
+      <div class="td">Phân tán tuyệt đối từng instance ra các rack phần cứng vật lý hoàn toàn khác nhau (<b>tối đa 7 instances trên mỗi AZ</b>). Tối đa hóa khả năng chịu lỗi phần cứng. Dành cho các máy chủ tối quan trọng (Critical Applications, Primary/Standby DB).</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--or)">Partition Placement Group</div>
+      <div class="td">Chia AZ thành nhiều partitions độc lập (tối đa 7 partitions/AZ, mỗi partition chứa hàng trăm instance). Các partition không dùng chung rack vật lý. Khi 1 partition lỗi, các partition khác vẫn an toàn. Dành riêng cho Hadoop, HDFS, Cassandra, Kafka clusters.</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--rd)">Lưu ý thi cử</div>
+      <div class="td">Không thể gộp hoặc di chuyển một instance đang tồn tại vào một Placement Group trừ khi dùng CLI stop instance, sửa placement group rồi start lại. Cluster không thể trải dài qua nhiều AZs!</div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">➕</div><div><div class="ct">Bổ sung hay gặp trong đề thi SAA-C03</div><div class="cs">Những chi tiết thực chiến hay làm thí sinh mất điểm</div></div></div>
+  <div class="g2">
+    <div class="it">
+      <div class="in">Cờ "Delete on Termination"</div>
+      <div class="id">Mặc định khi tạo instance, <b>Root EBS Volume</b> được bật thuộc tính <code>DeleteOnTermination = true</code> (sẽ bị xóa khi xóa instance). Các ổ đĩa EBS phụ gắn thêm (Attached Volumes) mặc định là <code>false</code> (vẫn tồn tại sau khi terminate instance).</div>
+    </div>
+    <div class="it">
+      <div class="in">Termination Protection</div>
+      <div class="id">Tính năng khóa an toàn bảo vệ instance khỏi việc bị vô tình nhấn "Terminate" trên AWS Console hoặc gọi API. Muốn xóa, quản trị viên bắt buộc phải vào cấu hình tắt cờ Termination Protection trước.</div>
+    </div>
+    <div class="it">
+      <div class="in">Elastic IP vs Public IPv4</div>
+      <div class="id">Public IPv4 mặc định của EC2 sẽ bị thay đổi mỗi lần Stop và Start lại instance. <b>Elastic IP</b> là địa chỉ IPv4 cố định. Tuy nhiên trong kiến trúc tốt của AWS, nên dùng <b>Application Load Balancer (ALB) kết hợp Route 53</b> thay vì gán trực tiếp Elastic IP vào EC2.</div>
+    </div>
+    <div class="it">
+      <div class="in">Spot Fleet &amp; Spot Block</div>
+      <div class="id"><b>Spot Fleet</b> tự động duy trì một tập hợp các Spot Instances và On-Demand Instances theo chiến lược (lowestPrice, diversified, capacityOptimized) nhằm đạt mục tiêu dung lượng (Target Capacity) với chi phí thấp nhất.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🏆</div><div><div class="ct">7. Nguyên tắc vàng — SAA-C03</div><div class="cs">Ghi nhớ 4 nguyên tắc cốt lõi về EC2 Compute</div></div></div>
+  <ul class="bp">
+    <li class="bi"><div class="bn">1</div><div><b>Tuyệt đối không lưu Access Keys trên EC2</b><span>Luôn gắn IAM Role (Instance Profile) cho EC2 để máy chủ tự động nhận credentials ngắn hạn từ STS, không bao giờ nhúng AWS_ACCESS_KEY_ID vào source code hoặc disk.</span></div></li>
+    <li class="bi"><div class="bn">2</div><div><b>Bảo mật 3 tầng với Security Group Reference</b><span>Đặt Web/App server trong Private Subnet. Cấu hình Security Group của EC2 chỉ chấp nhận Inbound port 80/443 từ Security Group của ALB, chặn mọi truy cập trực tiếp từ Internet.</span></div></li>
+    <li class="bi"><div class="bn">3</div><div><b>Quản trị an toàn bằng SSM Session Manager</b><span>Ưu tiên SSM Session Manager để thay thế SSH/Bastion Host: không cần mở port 22, không cần Public IP và ghi vết audit toàn bộ lệnh người dùng.</span></div></li>
+    <li class="bi"><div class="bn" style="background:var(--rd)">!</div><div><b style="color:var(--rd)">Bắt buộc nâng cấp lên IMDSv2</b><span>Luôn cấu hình <code>HttpTokens=required</code> (IMDSv2) cho EC2 instance trong bài toán bảo mật ngân hàng/doanh nghiệp để triệt tiêu nguy cơ trích xuất IAM credentials qua lỗ hổng SSRF.</span></div></li>
+  </ul>
+</div>
+
+<div class="card full">
+  <div class="ch"><div class="ci" style="background:var(--blb)">🔗</div><div><div class="ct">8. Nguồn bài giảng tham chiếu (Udemy Lectures)</div><div class="cs">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</div></div></div>
+  <div class="g2">
+    <div class="it"><div class="in">Section 5 · Video bài giảng Udemy cốt lõi</div><div class="id">
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098112:</b> EC2 User Data (Bootstrapping)</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098122" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098122:</b> EC2 Instance Launch, Lifecycle &amp; Termination</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098128:</b> EC2 Instance Types Overview</a><br>
+      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098134:</b> Security Groups Deep Dive</a>
+    </div></div>
+    <div class="it"><div class="in">Tài liệu kiến trúc chính thức từ AWS</div><div class="id">
+      • <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS EC2 User Guide for Linux Instances</a><br>
+      • <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html" target="_blank" style="color:var(--bl);text-decoration:none">Configuring the Instance Metadata Service (IMDSv2)</a><br>
+      • <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS Systems Manager Session Manager Guide</a>
+    </div></div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
