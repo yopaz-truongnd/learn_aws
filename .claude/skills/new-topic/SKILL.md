@@ -14,7 +14,14 @@ Nếu `$ARGUMENTS` trống, hỏi người dùng chủ đề AWS muốn tạo r�
 
 1. **Đặt tên file**: `topics/aws_<slug>.html` (trong thư mục `topics/`; trang con dùng link `../index.html` để quay về Dashboard). `slug` viết thường, các từ nối bằng `_` (ví dụ `topics/aws_ec2.html`, `topics/aws_s3_storage_classes.html`). Nếu file đã tồn tại, hỏi người dùng muốn ghi đè, cập nhật hay đổi tên. Không tự ghi đè.
 
-2. **Đọc mẫu**: đọc toàn bộ `topics/aws_iam.html`, rồi **copy nguyên khối `<style>`** (gồm token màu `:root`, dark mode và media query mobile) sang file mới. Không đổi tên class, không thêm màu hard-code ngoài token. Chỉ thêm CSS mới khi không có component sẵn nào dùng được, và khi đó phải dùng token và cho vào media query `max-width:640px` nếu cần.
+2. **Liên kết tài nguyên dùng chung**:
+   - Trong thẻ `<head>`:
+     ```html
+     <link rel="stylesheet" href="../assets/css/style.css">
+     <script src="../assets/vendor/mermaid.min.js"></script> <!-- nếu có dùng diagram -->
+     <script src="../assets/js/app.js"></script>
+     ```
+   - Tuyệt đối không nhúng lại khối `<style>` hay code script trùng lặp vào file HTML con; toàn bộ design system, Dark/Light tokens, component matrix và logic song ngữ đã nằm trong `assets/`.
 
 3. **Thu thập nội dung & Nguồn bài giảng**:
    - Nếu người dùng đưa ghi chú hoặc nội dung nguồn trong lệnh, dùng nó làm chính.

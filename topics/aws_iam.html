@@ -4,90 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AWS IAM — SAA-C03</title>
-<script>
-(function(){
-  try {
-    var saved = localStorage.getItem('aws_study_lang') || 'vi';
-    document.documentElement.setAttribute('data-lang', saved);
-    document.documentElement.setAttribute('lang', saved);
-  } catch(e) {}
-})();
-</script>
-<style>
-:root{--bg:#F9F8F7;--card:#fff;--bd:#E6E5E3;--sub:#F9F8F7;--tx:#2C2C2B;--mu:#7D7A75;--bl:#2783DE;--blb:#E5F2FC;--gr:#46A171;--grb:#E8F1EC;--or:#D5803B;--orb:#FBEBDE;--rd:#E56458;--rdb:#FCE9E7;--gy:#F0EFED;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}}
-:root[data-theme="dark"]{--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);padding:32px 24px;min-height:100%}
-.top-nav{max-width:960px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between}
-.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--bl);text-decoration:none;padding:6px 12px;border-radius:6px;background:var(--blb)}
-.nav-back:hover{opacity:.85}
-
-/* Language Switcher */
-.lang-switch{display:inline-flex;align-items:center;background:var(--sub);border:1px solid var(--bd);border-radius:20px;padding:2px;gap:2px}
-.lang-btn{background:transparent;border:none;color:var(--mu);font-size:11px;font-weight:600;padding:3px 8px;border-radius:14px;cursor:pointer;transition:all .15s ease}
-.lang-btn:hover{color:var(--tx)}
-.lang-btn.active{background:var(--card);color:var(--bl);box-shadow:0 1px 2px rgba(0,0,0,.08)}
-
-/* Multi-language display rules */
-[data-lang="en"] .lang-vi{display:none !important}
-:root:not([data-lang="en"]) .lang-en{display:none !important}
-
-.header{text-align:center;margin-bottom:36px}
-.badge{display:inline-block;background:var(--blb);color:var(--bl);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
-h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
-.header p{font-size:14px;color:var(--mu);margin-top:6px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05);min-width:0}
-.full{grid-column:1/-1}
-.ch{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.ci{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.ct{font-size:15px;font-weight:700}
-.cs{font-size:12px;color:var(--mu);margin-top:2px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.it{border:1px solid var(--bd);border-radius:8px;padding:14px;background:var(--sub)}
-.in{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.id{font-size:12px;color:var(--mu);line-height:1.7}
-.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;margin:2px 2px 2px 0}
-.tb{background:var(--blb);color:var(--bl)}.tg{background:var(--grb);color:var(--gr)}.to{background:var(--orb);color:var(--or)}.tr{background:var(--rdb);color:var(--rd)}.ty{background:var(--gy);color:var(--mu)}
-.lbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
-.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.flow:last-child{margin-bottom:0}
-.st{text-align:center;padding:10px 12px;border-radius:8px;flex:1;min-width:96px;border:1.5px solid var(--bd);background:var(--gy)}
-.st b{display:block;font-size:12px;font-weight:700}
-.st span{display:block;font-size:11px;margin-top:3px;color:var(--mu)}
-.s-b{background:var(--blb);border-color:var(--bl)}.s-b b{color:var(--bl)}
-.s-g{background:var(--grb);border-color:var(--gr)}.s-g b{color:var(--gr)}
-.s-o{background:var(--orb);border-color:var(--or)}.s-o b{color:var(--or)}
-.s-r{background:var(--rdb);border-color:var(--rd)}.s-r b{color:var(--rd)}
-.ar{color:var(--mu);font-size:18px;align-self:center}
-.cols{display:flex;gap:12px}
-.col{flex:1;min-width:0}
-.colt{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
-.pi{font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:6px;border:1px solid var(--bd);background:var(--sub)}
-.pi b{display:block;font-weight:600;margin-bottom:2px}
-.pi span{color:var(--mu);font-size:11px}
-.json{background:#1E1E1E;border-radius:8px;padding:14px 18px;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.7;color:#D4D4D4;margin-top:14px;overflow-x:auto;white-space:pre}
-.jk{color:#9CDCFE}.jv{color:#CE9178}.jc{color:#6A9955}.jp{color:#4EC9B0}
-.sl{list-style:none}
-.sl li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gy);font-size:13px;line-height:1.5}
-.sl li:last-child{border-bottom:none}
-.si{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.sl b{display:block;font-weight:600;margin-bottom:2px}
-.sl span{color:var(--mu);font-size:12px}
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tool{border:1px solid var(--bd);border-radius:8px;padding:12px 14px;background:var(--sub)}
-.tn{font-size:12px;font-weight:700;margin-bottom:4px}
-.td{font-size:11px;color:var(--mu);line-height:1.5}
-.bp{list-style:none;display:flex;flex-direction:column;gap:10px}
-.bi{display:flex;gap:12px;background:var(--sub);border:1px solid var(--bd);border-radius:8px;padding:12px 14px}
-.bn{width:24px;height:24px;background:var(--bl);color:var(--card);border-radius:6px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.bi b{font-size:13px;display:block;margin-bottom:3px}
-.bi span{font-size:12px;color:var(--mu);line-height:1.5}
-@media (max-width:640px){.grid,.g2,.tools{grid-template-columns:1fr}.full{grid-column:auto}.cols{flex-direction:column}.ar{display:none}}
-</style>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
 </head>
 <body>
 <div class="top-nav">
@@ -152,74 +71,85 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
   </div>
 </div>
 
-<!-- Flows -->
+<!-- DIAGRAM 1: Decision Tree -->
 <div class="card full">
   <div class="ch">
-    <div class="ci" style="background:var(--orb)">🔗</div>
+    <div class="ci" style="background:var(--grb)">🌳</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">Luồng cấp quyền</span>
-        <span class="lang-en">Permission Delegation Flows</span>
+        <span class="lang-vi">Cây ra quyết định: Lựa chọn giải pháp cấp quyền (Access Decision Tree)</span>
+        <span class="lang-en">Decision Tree: Selecting the Right Access Solution</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Credential dài hạn so với credential tạm thời</span>
-        <span class="lang-en">Long-term credentials vs temporary STS credentials</span>
+        <span class="lang-vi">Thuật toán rẽ nhánh xử lý câu hỏi tình huống trong đề thi SAA-C03</span>
+        <span class="lang-en">Branching logic for situational SAA-C03 exam scenarios</span>
       </div>
     </div>
   </div>
-  <div class="lbl">
-    <span class="lang-vi">Users và Groups (dài hạn)</span>
-    <span class="lang-en">Users &amp; Groups (Long-term)</span>
+
+  <div class="mermaid-diagram" id="diag-decision-tree">
+    <div class="mermaid-src lang-vi" style="display:none">
+graph TD
+    A[Cần cấp quyền truy cập?] --> B{Ai / Cái gì cần quyền?}
+    B -->|Tài khoản người dùng nội bộ| C[IAM User / Group]
+    B -->|EC2 / Lambda / Service| D[IAM Role + Instance Profile]
+    B -->|Tài khoản AWS khác| E[IAM Role + STS AssumeRole]
+    B -->|Người dùng ngoài: Google / AD| F[IAM Role + Identity Federation]
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+graph TD
+    A[Need to grant access?] --> B{Who / What needs access?}
+    B -->|Internal Human Users| C[IAM User / Group]
+    B -->|EC2 / Lambda / AWS Services| D[IAM Role + Instance Profile]
+    B -->|Another AWS Account| E[IAM Role + STS AssumeRole]
+    B -->|External Identity: Google / AD| F[IAM Role + Identity Federation]
+    </div>
+    <div class="mermaid-output"></div>
   </div>
-  <div class="flow">
-    <div class="st">
-      <b>Managed Policy</b>
-      <span class="lang-vi">Gán vào Group</span>
-      <span class="lang-en">Attached to Group</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-g">
-      <b>IAM Group</b>
-      <span>Developers</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-b">
-      <b>IAM Users</b>
-      <span class="lang-vi">Thành viên Group</span>
-      <span class="lang-en">Group Members</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st">
-      <b>Password + Keys</b>
-      <span>Console, CLI, SDK</span>
+</div>
+
+<!-- DIAGRAM 3: Sequence Diagram -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Sơ đồ tương tác luồng dữ liệu (Architecture &amp; Sequence Diagram)</span>
+        <span class="lang-en">Architecture &amp; Sequence Diagram: Role-based Delegation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cơ chế EC2 mượn quyền qua IAM Role &amp; AWS STS để truy cập S3 an toàn</span>
+        <span class="lang-en">How EC2 instances assume IAM Roles via AWS STS to securely access S3</span>
+      </div>
     </div>
   </div>
-  <div class="lbl">
-    <span class="lang-vi">Roles (tạm thời)</span>
-    <span class="lang-en">Roles (Temporary)</span>
-  </div>
-  <div class="flow">
-    <div class="st">
-      <b>EC2 / Cross-Account</b>
-      <span class="lang-vi">Principal được Assume</span>
-      <span class="lang-en">Trusted Principal</span>
+
+  <div class="mermaid-diagram" id="diag-sequence">
+    <div class="mermaid-src lang-vi" style="display:none">
+sequenceDiagram
+    autonumber
+    participant EC2 as EC2 Instance
+    participant STS as AWS STS Service
+    participant S3 as AWS S3 Bucket
+
+    EC2->>STS: Yêu cầu lấy Temporary Credentials (Role)
+    STS-->>EC2: Cấp Short-term Credentials (Token hết hạn sau vài giờ)
+    EC2->>S3: Gửi request đính kèm Token
+    S3-->>EC2: Trả về dữ liệu (Thành công 200 OK)
     </div>
-    <div class="ar">›</div>
-    <div class="st">
-      <b>STS AssumeRole</b>
-      <span class="lang-vi">Credentials ngắn hạn</span>
-      <span class="lang-en">Short-term tokens</span>
+    <div class="mermaid-src lang-en" style="display:none">
+sequenceDiagram
+    autonumber
+    participant EC2 as EC2 Instance
+    participant STS as AWS STS Service
+    participant S3 as AWS S3 Bucket
+
+    EC2->>STS: Request Temporary Credentials (Role)
+    STS-->>EC2: Issue Short-term Credentials (Expiring Token)
+    EC2->>S3: Send API Request signed with Token
+    S3-->>EC2: Return Data (Success 200 OK)
     </div>
-    <div class="ar">›</div>
-    <div class="st s-o">
-      <b>IAM Role</b>
-      <span>Trust + Permissions</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st">
-      <span class="lang-vi"><b>Tài nguyên AWS</b><span>S3, DynamoDB...</span></span>
-      <span class="lang-en"><b>AWS Resources</b><span>S3, DynamoDB...</span></span>
-    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
@@ -286,37 +216,43 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
 }</div>
 </div>
 
-<!-- Evaluation Logic -->
+<!-- DIAGRAM 2: Evaluation Flowchart -->
 <div class="card">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⚖️</div>
     <div>
-      <div class="ct">Policy Evaluation Logic</div>
+      <div class="ct">
+        <span class="lang-vi">Sơ đồ luồng đánh giá logic (Policy Evaluation)</span>
+        <span class="lang-en">Logic Evaluation Flowchart</span>
+      </div>
       <div class="cs">
         <span class="lang-vi">Request được xét theo thứ tự nào?</span>
-        <span class="lang-en">How is a request evaluated?</span>
+        <span class="lang-en">Exact decision order for incoming requests</span>
       </div>
     </div>
   </div>
-  <div class="flow">
-    <div class="st s-r">
-      <b>Explicit Deny</b>
-      <span class="lang-vi">Chặn ngay</span>
-      <span class="lang-en">Immediate Deny</span>
+
+  <div class="mermaid-diagram" id="diag-eval-flow">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Start([Có request gửi đến]) --> Q1{Có Explicit Deny không?}
+    Q1 -- Có --> Deny([DENY: Chặn ngay lập tức])
+    Q1 -- Không --> Q2{Có Explicit Allow không?}
+    Q2 -- Có --> Allow([ALLOW: Cho phép truy cập])
+    Q2 -- Không --> ImpDeny([DENY: Mặc định từ chối - Implicit Deny])
     </div>
-    <div class="ar">›</div>
-    <div class="st s-g">
-      <b>Explicit Allow</b>
-      <span class="lang-vi">Cho phép</span>
-      <span class="lang-en">Allowed</span>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Start([Incoming Request]) --> Q1{Any Explicit Deny?}
+    Q1 -- Yes --> Deny([DENY: Immediately Blocked])
+    Q1 -- No --> Q2{Any Explicit Allow?}
+    Q2 -- Yes --> Allow([ALLOW: Access Granted])
+    Q2 -- No --> ImpDeny([DENY: Implicit Deny by Default])
     </div>
-    <div class="ar">›</div>
-    <div class="st">
-      <b>Default Deny</b>
-      <span>Implicit Deny</span>
-    </div>
+    <div class="mermaid-output"></div>
   </div>
-  <div class="lbl">
+
+  <div class="lbl" style="margin-top:14px">
     <span class="lang-vi">Quyền hiệu lực là phần giao của</span>
     <span class="lang-en">Effective permissions are the intersection of</span>
   </div>
@@ -324,6 +260,113 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
     <span class="tag tb">SCP</span><span class="tag tb">Permissions boundary</span><span class="tag tb">Identity policy</span><br>
     <span class="lang-vi">Một lớp không cho phép thì request vẫn bị chặn, và Explicit Deny ở bất kỳ lớp nào cũng thắng tất cả.</span>
     <span class="lang-en">If any layer does not allow, the request is denied. An Explicit Deny in ANY layer overrides all allows.</span>
+  </div>
+</div>
+
+<!-- DIAGRAM 4: Comparison Matrix Table -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📊</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận so sánh: IAM User vs IAM Role vs Resource-based Policy</span>
+        <span class="lang-en">Comparison Matrix: IAM User vs IAM Role vs Resource-based Policy</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hệ quy chiếu phân biệt các khái niệm dễ nhầm lẫn trong phòng thi</span>
+        <span class="lang-en">Side-by-side evaluation matrix across critical decision axes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th class="col-crit">
+            <span class="lang-vi">Tiêu chí</span>
+            <span class="lang-en">Criteria</span>
+          </th>
+          <th>IAM User</th>
+          <th>IAM Role</th>
+          <th>Resource-based Policy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Bản chất</span>
+            <span class="lang-en">Nature</span>
+          </td>
+          <td>
+            <span class="lang-vi">Danh tính cố định dài hạn (Permanent)</span>
+            <span class="lang-en">Permanent long-term identity</span>
+          </td>
+          <td>
+            <span class="lang-vi">Danh tính tạm thời (Temporary)</span>
+            <span class="lang-en">Temporary short-term identity</span>
+          </td>
+          <td>
+            <span class="lang-vi">Chính sách gắn trực tiếp lên tài nguyên AWS</span>
+            <span class="lang-en">Policy attached directly to AWS resources</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Xác thực</span>
+            <span class="lang-en">Credentials</span>
+          </td>
+          <td>
+            <span class="lang-vi">Mật khẩu Console, Access Key ID / Secret</span>
+            <span class="lang-en">Console Password, Access Key ID / Secret Key</span>
+          </td>
+          <td>
+            <span class="lang-vi">Token tạm thời sinh bởi AWS STS (15m - 12h)</span>
+            <span class="lang-en">Short-term STS tokens (15m - 12h validity)</span>
+          </td>
+          <td>
+            <span class="lang-vi">Không có credentials riêng (dựa vào Principal gọi tới)</span>
+            <span class="lang-en">No credentials of its own (evaluates caller Principal)</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Khi nào dùng?</span>
+            <span class="lang-en">Use Cases</span>
+          </td>
+          <td>
+            <span class="lang-vi">Người thật thao tác Console, lập trình viên CLI cá nhân</span>
+            <span class="lang-en">Human operators in Console, individual CLI developers</span>
+          </td>
+          <td>
+            <span class="lang-vi">EC2, Lambda, dịch vụ AWS, Cross-Account, SSO Federation</span>
+            <span class="lang-en">EC2, Lambda, AWS services, Cross-Account, SSO Federation</span>
+          </td>
+          <td>
+            <span class="lang-vi">Cần cấp quyền trực tiếp cho S3 Bucket, SQS Queue, KMS Key</span>
+            <span class="lang-en">Direct access control for S3 Buckets, SQS Queues, KMS Keys</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Nguyên tắc thi</span>
+            <span class="lang-en">Exam Rule</span>
+          </td>
+          <td>
+            <span class="lang-vi"><span class="tag tr">Hạn chế Access Key</span> Không gán cho server tự động</span>
+            <span class="lang-en"><span class="tag tr">Restrict Keys</span> Never assign to automated servers</span>
+          </td>
+          <td>
+            <span class="lang-vi"><span class="tag tg">Khuyên dùng</span> Instance Profile thay cho hardcode keys</span>
+            <span class="lang-en"><span class="tag tg">Recommended</span> Instance Profiles over hardcoded keys</span>
+          </td>
+          <td>
+            <span class="lang-vi"><span class="tag tb">Cross-account</span> Cho phép gọi trực tiếp không cần đổi Role</span>
+            <span class="lang-en"><span class="tag tb">Cross-account</span> Allows direct access without Role hopping</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -557,24 +600,5 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
 </div>
 
 </div>
-
-<script>
-function setLanguage(lang) {
-  try {
-    document.documentElement.setAttribute('data-lang', lang);
-    document.documentElement.setAttribute('lang', lang);
-    localStorage.setItem('aws_study_lang', lang);
-  } catch(e) {}
-  document.querySelectorAll('.lang-btn').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-lang-val') === lang);
-  });
-}
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    var lang = localStorage.getItem('aws_study_lang') || 'vi';
-    setLanguage(lang);
-  } catch(e) {}
-});
-</script>
 </body>
 </html>

@@ -30,6 +30,10 @@ Kho tài liệu tự học và ôn thi chứng chỉ **AWS Certified Solutions A
 learn_aws/
 ├── index.html          # Dashboard trung tâm (entry point, nằm ở gốc)
 ├── topics/             # Cheat sheet từng Section: aws_<topic>.html
+├── assets/             # Tài nguyên dùng chung tự chứa (không kéo CDN)
+│   ├── css/style.css   #   Design system, tokens, dark/light, components
+│   ├── js/app.js       #   Xử lý ngôn ngữ, theme listener, auto-render Mermaid
+│   └── vendor/         #   Thư viện nội bộ (mermaid.min.js)
 ├── scripts/            # Script tiện ích: export_anki_4000.py
 ├── data/               # Dữ liệu đầu vào: lecturesub-tu-vung.csv (gitignored)
 ├── dist/               # Output sinh tự động: .apkg, .tsv (gitignored)
@@ -40,7 +44,9 @@ learn_aws/
 
 ### Quy tắc đặt file (bắt buộc)
 - **Trang cheat sheet mới** → luôn đặt trong `topics/`, không đặt ở gốc. Chỉ `index.html` nằm ở gốc.
-- **Link tương đối:** trang trong `topics/` trỏ về Dashboard bằng `../index.html`; `index.html` trỏ tới trang con bằng `topics/aws_<topic>.html`.
+- **Link CSS/JS tương đối:**
+  - Trang gốc: `<link rel="stylesheet" href="assets/css/style.css">` và `<script src="assets/js/app.js"></script>`.
+  - Trang con trong `topics/`: `<link rel="stylesheet" href="../assets/css/style.css">`, `<script src="../assets/js/app.js"></script>` và nếu dùng diagram thì thêm `<script src="../assets/vendor/mermaid.min.js"></script>`.
 - **Script/công cụ** → `scripts/`. Đường dẫn mặc định trong script phải tính theo gốc dự án (`os.path.dirname(__file__)`), không phụ thuộc thư mục hiện hành.
 - **Dữ liệu đầu vào** (CSV…) → `data/`; **file sinh ra** (`.apkg`, `.tsv`, …) → `dist/`. Cả hai đều bị `.gitignore` — không commit, không xoá file trong `data/` khi chưa hỏi người dùng.
 - File CSV có thể không tồn tại trên máy (repo vừa clone). Khi cần đọc mà không có, báo người dùng chép vào `data/lecturesub-tu-vung.csv` thay vì tự tạo dữ liệu giả.
@@ -50,8 +56,11 @@ learn_aws/
 | :--- | :--- | :--- |
 | `index.html` | **Trang Dashboard trung tâm:** Thống kê tiến độ, 4 Domain đề thi SAA-C03, bảng mục lục 16 Section liên kết đến từng cheat sheet, trích đoạn từ vựng nổi bật và hướng dẫn Anki. | Hoàn thành |
 | `topics/aws_global_infra.html` | **Section 3:** AWS Global Infrastructure (Regions, AZs, Data Centers, Edge Locations / PoP, Local Zones, Wavelength, Outposts). | Hoàn thành |
-| `topics/aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules). **File mẫu chuẩn** về thiết kế. | Hoàn thành |
+| `topics/aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules, Decision Tree, Sequence, Matrix). **File mẫu chuẩn**. | Hoàn thành |
 | `topics/aws_ec2.html` | **Section 5:** AWS EC2 (Instance Types, Purchasing Options, Security Groups, User Data, IMDSv2, SSM Session Manager, Placement Groups). | Hoàn thành |
+| `assets/css/style.css` | **Hệ thống Design System dùng chung:** Tokens màu, Dark/Light mode, typography, cards, grids, flows, matrix tables, mermaid containers. | Hoàn thành |
+| `assets/js/app.js` | **Xử lý ứng dụng client-side:** Nhận diện và chuyển đổi song ngữ VI/EN, lưu `localStorage`, render tự động sơ đồ Mermaid theo theme/lang. | Hoàn thành |
+| `assets/vendor/mermaid.min.js` | **Thư viện Mermaid.js nội bộ (100% offline):** Dùng để render Decision Trees, Sequence Diagrams, Logic Flowcharts mà không kéo CDN. | Hoàn thành |
 | `scripts/export_anki_4000.py` | **Script CSV → Anki (tự chứa 100%):** Tự sinh SQLite và đóng gói `.apkg` + `.tsv`, không cần file `.apkg` mẫu. Cú pháp: `python3 scripts/export_anki_4000.py [input.csv] [output.apkg] [output.tsv]`. | Hoàn thành |
 | `data/lecturesub-tu-vung.csv` | **Bộ từ vựng trích xuất từ phụ đề bài giảng:** UTF-8 with BOM, trường bọc ngoặc kép (`"Từ"`, `"Nghĩa"`, `"Nguồn"`, `"Đích"`, `"Câu gốc"`, `"Bài học"`, `"Giây"`, `"Liên kết"`). Đọc bằng CSV parser (có trường chứa dấu phẩy/xuống dòng). | Đang duy trì (86+ từ), gitignored |
 | `dist/AWS_SAA_C03_Vocabulary.apkg` | **Gói Anki chuẩn Note Type 4000Book1:** Cloze, ô gõ kiểm tra (`type:cloze`), chia 20 từ/Unit, IPA và link Udemy. | Sinh bởi script |

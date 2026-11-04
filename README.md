@@ -19,6 +19,10 @@ learn_aws/
 │   ├── aws_global_infra.html       #   Section 3 — Global Infrastructure
 │   ├── aws_iam.html                #   Section 4 — IAM (file mẫu chuẩn về thiết kế)
 │   └── aws_ec2.html                #   Section 5 — EC2
+├── assets/                         # Tài nguyên dùng chung tự chứa (chạy offline)
+│   ├── css/style.css               #   CSS Design System, tokens màu, dark/light mode, components
+│   ├── js/app.js                   #   Logic song ngữ VI/EN, lưu preference, auto-render Mermaid
+│   └── vendor/mermaid.min.js       #   Thư viện Mermaid.js nội bộ (không kéo CDN)
 ├── scripts/
 │   └── export_anki_4000.py         # CSV → .apkg + .tsv (Python 3 thuần, không cần thư viện ngoài)
 ├── data/                           # Dữ liệu đầu vào (gitignored, tự đặt vào)
@@ -35,8 +39,11 @@ learn_aws/
 | :--- | :--- |
 | [`index.html`](index.html) | Dashboard: thống kê tiến độ, 4 Domain đề thi, mục lục 16 Section, trích đoạn từ vựng, hướng dẫn Anki. |
 | [`topics/aws_global_infra.html`](topics/aws_global_infra.html) | Regions, AZs, Data Centers, Edge Locations / PoP, Local Zones, Wavelength, Outposts. |
-| [`topics/aws_iam.html`](topics/aws_iam.html) | Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules. |
+| [`topics/aws_iam.html`](topics/aws_iam.html) | Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules, Decision Tree, Sequence, Matrix. |
 | [`topics/aws_ec2.html`](topics/aws_ec2.html) | Instance Types, Purchasing Options (Spot/RI/Savings Plans), Security Groups, User Data, IMDSv2, SSM Session Manager, Placement Groups. |
+| [`assets/css/style.css`](assets/css/style.css) | Toàn bộ CSS Design System dùng chung, tokens màu, Dark/Light mode, typography, components, matrix tables. |
+| [`assets/js/app.js`](assets/js/app.js) | Script xử lý chuyển đổi song ngữ VI/EN tức thì, lưu `localStorage`, render tự động Mermaid. |
+| [`assets/vendor/mermaid.min.js`](assets/vendor/mermaid.min.js) | Thư viện Mermaid.js nội bộ 100% offline vẽ sơ đồ tư duy, decision tree, sequence diagrams. |
 | [`scripts/export_anki_4000.py`](scripts/export_anki_4000.py) | Sinh SQLite Anki và đóng gói `.apkg` tự chứa 100% (không cần file `.apkg` mẫu). |
 | `data/lecturesub-tu-vung.csv` | UTF-8 with BOM, các cột: `Từ`, `Nghĩa`, `Nguồn`, `Đích`, `Câu gốc`, `Bài học`, `Giây`, `Liên kết`. |
 | `dist/*` | Kết quả build — không commit, sinh lại bất cứ lúc nào bằng script. |
