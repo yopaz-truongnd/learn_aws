@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AWS IAM — SAA-C03</title>
+<script>
+(function(){
+  try {
+    var saved = localStorage.getItem('aws_study_lang') || 'vi';
+    document.documentElement.setAttribute('data-lang', saved);
+    document.documentElement.setAttribute('lang', saved);
+  } catch(e) {}
+})();
+</script>
 <style>
 :root{--bg:#F9F8F7;--card:#fff;--bd:#E6E5E3;--sub:#F9F8F7;--tx:#2C2C2B;--mu:#7D7A75;--bl:#2783DE;--blb:#E5F2FC;--gr:#46A171;--grb:#E8F1EC;--or:#D5803B;--orb:#FBEBDE;--rd:#E56458;--rdb:#FCE9E7;--gy:#F0EFED;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b1a;--card:#262524;--bd:#3a3836;--sub:#2d2b2a;--tx:#ecebe8;--mu:#a3a09a;--bl:#6db3f2;--blb:#1d3347;--gr:#6fcb9b;--grb:#1e3329;--or:#e8a263;--orb:#3a2b1c;--rd:#f0897f;--rdb:#3d2220;--gy:#353331}}
@@ -14,6 +23,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .top-nav{max-width:960px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between}
 .nav-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--bl);text-decoration:none;padding:6px 12px;border-radius:6px;background:var(--blb)}
 .nav-back:hover{opacity:.85}
+
+/* Language Switcher */
+.lang-switch{display:inline-flex;align-items:center;background:var(--sub);border:1px solid var(--bd);border-radius:20px;padding:2px;gap:2px}
+.lang-btn{background:transparent;border:none;color:var(--mu);font-size:11px;font-weight:600;padding:3px 8px;border-radius:14px;cursor:pointer;transition:all .15s ease}
+.lang-btn:hover{color:var(--tx)}
+.lang-btn.active{background:var(--card);color:var(--bl);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* Multi-language display rules */
+[data-lang="en"] .lang-vi{display:none !important}
+:root:not([data-lang="en"]) .lang-en{display:none !important}
+
 .header{text-align:center;margin-bottom:36px}
 .badge{display:inline-block;background:var(--blb);color:var(--bl);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
 h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
@@ -71,136 +91,490 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
 </head>
 <body>
 <div class="top-nav">
-  <a href="../index.html" class="nav-back">← Mục lục khóa học</a>
-  <span style="font-size:12px;color:var(--mu)">Section 4 · Udemy SAA-C03</span>
+  <a href="../index.html" class="nav-back">
+    <span class="lang-vi">← Mục lục khóa học</span>
+    <span class="lang-en">← Course Hub</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 4 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
 </div>
+
 <div class="header">
   <div class="badge">Global Service</div>
   <h1>AWS IAM — Identity &amp; Access Management</h1>
-  <p>Kiến trúc phân quyền toàn diện cho AWS SAA-C03</p>
+  <p class="lang-vi">Kiến trúc phân quyền toàn diện cho AWS SAA-C03</p>
+  <p class="lang-en">Comprehensive identity and access management architecture for AWS SAA-C03</p>
 </div>
+
 <div class="grid">
 
+<!-- 1. Identities -->
 <div class="card full">
-  <div class="ch"><div class="ci" style="background:var(--blb)">👤</div><div><div class="ct">1. Thực thể định danh (Identities)</div><div class="cs">Ai được phép tương tác với AWS?</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">👤</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Thực thể định danh (Identities)</span>
+        <span class="lang-en">1. IAM Identities</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Ai được phép tương tác với AWS?</span>
+        <span class="lang-en">Who is allowed to interact with AWS?</span>
+      </div>
+    </div>
+  </div>
   <div class="g2">
-    <div class="it"><div class="in"><div class="dot" style="background:var(--rd)"></div>Root User</div><div class="id">Full Administrator, tạo cùng tài khoản AWS.<br><span class="tag tr">Khóa Root</span><span class="tag to">Bật MFA</span><span class="tag ty">Không dùng hằng ngày</span></div></div>
-    <div class="it"><div class="in"><div class="dot" style="background:var(--bl)"></div>IAM Users</div><div class="id">Đại diện 1 người hoặc ứng dụng cụ thể.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Gán quyền qua Groups</span></div></div>
-    <div class="it"><div class="in"><div class="dot" style="background:var(--gr)"></div>IAM Groups</div><div class="id">Tập hợp Users (Developers, Admins, Auditors).<br><span class="tag tg">Chỉ chứa Users</span><span class="tag ty">Không chứa Group khác</span><span class="tag ty">Không có credentials</span></div></div>
-    <div class="it"><div class="in"><div class="dot" style="background:var(--or)"></div>IAM Roles</div><div class="id">Danh tính tạm thời, cấp STS credentials ngắn hạn.<br><span class="tag to">EC2 Instance Profile</span><span class="tag to">Cross-Account</span><span class="tag to">Federation</span><span class="tag ty">Trust + Permissions Policy</span></div></div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Root User</div>
+      <div class="id lang-vi">Full Administrator, tạo cùng tài khoản AWS.<br><span class="tag tr">Khóa Root</span><span class="tag to">Bật MFA</span><span class="tag ty">Không dùng hằng ngày</span></div>
+      <div class="id lang-en">Full Administrator created with the AWS account.<br><span class="tag tr">Lock Root</span><span class="tag to">Enable MFA</span><span class="tag ty">No daily use</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>IAM Users</div>
+      <div class="id lang-vi">Đại diện 1 người hoặc ứng dụng cụ thể.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Gán quyền qua Groups</span></div>
+      <div class="id lang-en">Represents an individual person or service.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Assign permissions via Groups</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>IAM Groups</div>
+      <div class="id lang-vi">Tập hợp Users (Developers, Admins, Auditors).<br><span class="tag tg">Chỉ chứa Users</span><span class="tag ty">Không chứa Group khác</span><span class="tag ty">Không có credentials</span></div>
+      <div class="id lang-en">Collection of Users (Developers, Admins, Auditors).<br><span class="tag tg">Users only</span><span class="tag ty">No nested Groups</span><span class="tag ty">No credentials</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>IAM Roles</div>
+      <div class="id lang-vi">Danh tính tạm thời, cấp STS credentials ngắn hạn.<br><span class="tag to">EC2 Instance Profile</span><span class="tag to">Cross-Account</span><span class="tag to">Federation</span><span class="tag ty">Trust + Permissions Policy</span></div>
+      <div class="id lang-en">Temporary identity issuing short-term STS credentials.<br><span class="tag to">EC2 Instance Profile</span><span class="tag to">Cross-Account</span><span class="tag to">Federation</span><span class="tag ty">Trust + Permissions Policy</span></div>
+    </div>
   </div>
 </div>
 
+<!-- Flows -->
 <div class="card full">
-  <div class="ch"><div class="ci" style="background:var(--orb)">🔗</div><div><div class="ct">Luồng cấp quyền</div><div class="cs">Credential dài hạn so với credential tạm thời</div></div></div>
-  <div class="lbl">Users và Groups (dài hạn)</div>
-  <div class="flow">
-    <div class="st"><b>Managed Policy</b><span>Gán vào Group</span></div><div class="ar">›</div>
-    <div class="st s-g"><b>IAM Group</b><span>Developers</span></div><div class="ar">›</div>
-    <div class="st s-b"><b>IAM Users</b><span>Thành viên Group</span></div><div class="ar">›</div>
-    <div class="st"><b>Password + Keys</b><span>Console, CLI, SDK</span></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Luồng cấp quyền</span>
+        <span class="lang-en">Permission Delegation Flows</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Credential dài hạn so với credential tạm thời</span>
+        <span class="lang-en">Long-term credentials vs temporary STS credentials</span>
+      </div>
+    </div>
   </div>
-  <div class="lbl">Roles (tạm thời)</div>
+  <div class="lbl">
+    <span class="lang-vi">Users và Groups (dài hạn)</span>
+    <span class="lang-en">Users &amp; Groups (Long-term)</span>
+  </div>
   <div class="flow">
-    <div class="st"><b>EC2 / Account khác / Federation</b><span>Principal được Assume</span></div><div class="ar">›</div>
-    <div class="st"><b>STS AssumeRole</b><span>Credentials ngắn hạn</span></div><div class="ar">›</div>
-    <div class="st s-o"><b>IAM Role</b><span>Trust + Permissions</span></div><div class="ar">›</div>
-    <div class="st"><b>Tài nguyên AWS</b><span>S3, DynamoDB...</span></div>
+    <div class="st">
+      <b>Managed Policy</b>
+      <span class="lang-vi">Gán vào Group</span>
+      <span class="lang-en">Attached to Group</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st s-g">
+      <b>IAM Group</b>
+      <span>Developers</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st s-b">
+      <b>IAM Users</b>
+      <span class="lang-vi">Thành viên Group</span>
+      <span class="lang-en">Group Members</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st">
+      <b>Password + Keys</b>
+      <span>Console, CLI, SDK</span>
+    </div>
+  </div>
+  <div class="lbl">
+    <span class="lang-vi">Roles (tạm thời)</span>
+    <span class="lang-en">Roles (Temporary)</span>
+  </div>
+  <div class="flow">
+    <div class="st">
+      <b>EC2 / Cross-Account</b>
+      <span class="lang-vi">Principal được Assume</span>
+      <span class="lang-en">Trusted Principal</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st">
+      <b>STS AssumeRole</b>
+      <span class="lang-vi">Credentials ngắn hạn</span>
+      <span class="lang-en">Short-term tokens</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st s-o">
+      <b>IAM Role</b>
+      <span>Trust + Permissions</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st">
+      <span class="lang-vi"><b>Tài nguyên AWS</b><span>S3, DynamoDB...</span></span>
+      <span class="lang-en"><b>AWS Resources</b><span>S3, DynamoDB...</span></span>
+    </div>
   </div>
 </div>
 
+<!-- 2. Policies -->
 <div class="card">
-  <div class="ch"><div class="ci" style="background:var(--grb)">📋</div><div><div class="ct">2. Chính sách (Policies)</div><div class="cs">Tài liệu JSON: ai được làm gì?</div></div></div>
-  <div class="cols">
-    <div class="col"><div class="colt">Identity-based</div>
-      <div class="pi"><b>AWS Managed</b><span>AWS tạo và quản trị sẵn</span></div>
-      <div class="pi"><b>Customer Managed</b><span>Tự định nghĩa, có phiên bản</span></div>
-      <div class="pi"><b>Inline Policy</b><span>Nhúng vào 1 User/Group/Role</span></div></div>
-    <div class="col"><div class="colt">Resource-based</div>
-      <div class="pi"><b>S3 Bucket Policy</b><span>Gán vào bucket</span></div>
-      <div class="pi"><b>SQS Queue Policy</b><span>Gán vào queue</span></div>
-      <div class="pi"><b>KMS Key Policy</b><span>Gán vào KMS Key</span></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📋</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Chính sách (Policies)</span>
+        <span class="lang-en">2. IAM Policies</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu JSON: ai được làm gì?</span>
+        <span class="lang-en">JSON document: who is allowed to do what?</span>
+      </div>
+    </div>
   </div>
-<div class="json"><span class="jc">// Cấu trúc JSON Policy</span>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">Identity-based</div>
+      <div class="pi">
+        <b>AWS Managed</b>
+        <span class="lang-vi">AWS tạo và quản trị sẵn</span>
+        <span class="lang-en">Created &amp; maintained by AWS</span>
+      </div>
+      <div class="pi">
+        <b>Customer Managed</b>
+        <span class="lang-vi">Tự định nghĩa, có phiên bản</span>
+        <span class="lang-en">Custom defined with versioning</span>
+      </div>
+      <div class="pi">
+        <b>Inline Policy</b>
+        <span class="lang-vi">Nhúng vào 1 User/Group/Role</span>
+        <span class="lang-en">Embedded 1:1 into entity</span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="colt">Resource-based</div>
+      <div class="pi">
+        <b>S3 Bucket Policy</b>
+        <span class="lang-vi">Gán trực tiếp vào bucket</span>
+        <span class="lang-en">Attached directly to bucket</span>
+      </div>
+      <div class="pi">
+        <b>SQS Queue Policy</b>
+        <span class="lang-vi">Gán trực tiếp vào queue</span>
+        <span class="lang-en">Attached directly to queue</span>
+      </div>
+      <div class="pi">
+        <b>KMS Key Policy</b>
+        <span class="lang-vi">Gán trực tiếp vào KMS Key</span>
+        <span class="lang-en">Attached directly to KMS key</span>
+      </div>
+    </div>
+  </div>
+<div class="json"><span class="jc">// JSON Policy Structure</span>
 {
   <span class="jk">"Effect"</span>: <span class="jv">"Allow" | "Deny"</span>,
-  <span class="jk">"Principal"</span>: <span class="jp">/* chỉ Resource-based / Trust */</span>,
+  <span class="jk">"Principal"</span>: <span class="jp">/* Resource-based / Trust only */</span>,
   <span class="jk">"Action"</span>: <span class="jv">"s3:GetObject"</span>,
   <span class="jk">"Resource"</span>: <span class="jv">"arn:aws:s3:::my-bucket/*"</span>,
   <span class="jk">"Condition"</span>: { <span class="jv">/* IpAddress, MFA... */</span> }
 }</div>
 </div>
 
+<!-- Evaluation Logic -->
 <div class="card">
-  <div class="ch"><div class="ci" style="background:var(--rdb)">⚖️</div><div><div class="ct">Policy Evaluation Logic</div><div class="cs">Request được xét theo thứ tự nào?</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⚖️</div>
+    <div>
+      <div class="ct">Policy Evaluation Logic</div>
+      <div class="cs">
+        <span class="lang-vi">Request được xét theo thứ tự nào?</span>
+        <span class="lang-en">How is a request evaluated?</span>
+      </div>
+    </div>
+  </div>
   <div class="flow">
-    <div class="st s-r"><b>Explicit Deny</b><span>Chặn ngay</span></div><div class="ar">›</div>
-    <div class="st s-g"><b>Explicit Allow</b><span>Cho phép</span></div><div class="ar">›</div>
-    <div class="st"><b>Default Deny</b><span>Implicit Deny</span></div>
+    <div class="st s-r">
+      <b>Explicit Deny</b>
+      <span class="lang-vi">Chặn ngay</span>
+      <span class="lang-en">Immediate Deny</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st s-g">
+      <b>Explicit Allow</b>
+      <span class="lang-vi">Cho phép</span>
+      <span class="lang-en">Allowed</span>
+    </div>
+    <div class="ar">›</div>
+    <div class="st">
+      <b>Default Deny</b>
+      <span>Implicit Deny</span>
+    </div>
   </div>
-  <div class="lbl">Quyền hiệu lực là phần giao của</div>
-  <div class="id"><span class="tag tb">SCP</span><span class="tag tb">Permissions boundary</span><span class="tag tb">Identity policy</span><br>Một lớp không cho phép thì request vẫn bị chặn, và Explicit Deny ở bất kỳ lớp nào cũng thắng tất cả.</div>
+  <div class="lbl">
+    <span class="lang-vi">Quyền hiệu lực là phần giao của</span>
+    <span class="lang-en">Effective permissions are the intersection of</span>
+  </div>
+  <div class="id">
+    <span class="tag tb">SCP</span><span class="tag tb">Permissions boundary</span><span class="tag tb">Identity policy</span><br>
+    <span class="lang-vi">Một lớp không cho phép thì request vẫn bị chặn, và Explicit Deny ở bất kỳ lớp nào cũng thắng tất cả.</span>
+    <span class="lang-en">If any layer does not allow, the request is denied. An Explicit Deny in ANY layer overrides all allows.</span>
+  </div>
 </div>
 
+<!-- 3. Security & Credentials -->
 <div class="card">
-  <div class="ch"><div class="ci" style="background:var(--rdb)">🔐</div><div><div class="ct">3. Bảo mật &amp; Xác thực</div><div class="cs">Security &amp; Credentials</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">🔐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Bảo mật &amp; Xác thực</span>
+        <span class="lang-en">3. Security &amp; Credentials</span>
+      </div>
+      <div class="cs">Authentication &amp; Credentials</div>
+    </div>
+  </div>
   <ul class="sl">
-    <li><div class="si" style="background:var(--rdb)">🛡️</div><div><b>Multi-Factor Authentication</b><span>Bắt buộc cho Root, khuyến nghị cho IAM Users<br>Virtual (Authy, Google Auth) · U2F/FIDO (YubiKey) · Hardware token (Gemalto)</span></div></li>
-    <li><div class="si" style="background:var(--blb)">🔑</div><div><b>Password Policy</b><span>Độ dài tối thiểu · Ký tự đặc biệt · Hết hạn mật khẩu</span></div></li>
-    <li><div class="si" style="background:var(--orb)">🗝️</div><div><b>Access Keys</b><span>CLI / SDK · Rotate định kỳ · <strong style="color:var(--rd)">Không hardcode vào source code</strong></span></div></li>
+    <li>
+      <div class="si" style="background:var(--rdb)">🛡️</div>
+      <div>
+        <b>Multi-Factor Authentication (MFA)</b>
+        <span class="lang-vi">Bắt buộc cho Root, khuyến nghị cho IAM Users<br>Virtual (Authy, Google Auth) · U2F/FIDO (YubiKey) · Hardware token (Gemalto)</span>
+        <span class="lang-en">Mandatory for Root, strongly advised for all IAM Users<br>Virtual (Authy, Google Auth) · U2F/FIDO (YubiKey) · Hardware token (Gemalto)</span>
+      </div>
+    </li>
+    <li>
+      <div class="si" style="background:var(--blb)">🔑</div>
+      <div>
+        <b>Password Policy</b>
+        <span class="lang-vi">Độ dài tối thiểu · Ký tự đặc biệt · Hết hạn mật khẩu định kỳ</span>
+        <span class="lang-en">Minimum length · Special characters · Periodic password expiration</span>
+      </div>
+    </li>
+    <li>
+      <div class="si" style="background:var(--orb)">🗝️</div>
+      <div>
+        <b>Access Keys</b>
+        <span class="lang-vi">CLI / SDK · Rotate định kỳ · <strong style="color:var(--rd)">Không hardcode vào source code</strong></span>
+        <span class="lang-en">CLI / SDK access · Rotate regularly · <strong style="color:var(--rd)">Never hardcode into source code</strong></span>
+      </div>
+    </li>
   </ul>
 </div>
 
+<!-- 4. Governance & Tools -->
 <div class="card">
-  <div class="ch"><div class="ci" style="background:var(--gy)">🔭</div><div><div class="ct">4. Giám sát &amp; Quản trị</div><div class="cs">Governance &amp; Tools</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--gy)">🔭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Giám sát &amp; Quản trị</span>
+        <span class="lang-en">4. Governance &amp; Tools</span>
+      </div>
+      <div class="cs">Auditing &amp; Management Tools</div>
+    </div>
+  </div>
   <div class="tools">
-    <div class="tool"><div class="tn" style="color:var(--bl)">IAM Access Analyzer</div><div class="td">Quét tài nguyên có nguy cơ bị lộ ra bên ngoài</div></div>
-    <div class="tool"><div class="tn" style="color:var(--gr)">Credential Report</div><div class="td">CSV cấp account: mật khẩu, key, MFA</div></div>
-    <div class="tool"><div class="tn" style="color:var(--or)">Policy Simulator</div><div class="td">Debug quyền Policy trước khi triển khai</div></div>
-    <div class="tool"><div class="tn" style="color:var(--rd)">SCPs (Organizations)</div><div class="td">Chỉ giới hạn quyền tối đa, không cấp quyền</div></div>
+    <div class="tool">
+      <div class="tn" style="color:var(--bl)">IAM Access Analyzer</div>
+      <div class="td lang-vi">Quét tài nguyên có nguy cơ bị lộ ra bên ngoài</div>
+      <div class="td lang-en">Identifies resources shared with external entities</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--gr)">Credential Report</div>
+      <div class="td lang-vi">CSV cấp account: mật khẩu, key, MFA</div>
+      <div class="td lang-en">Account-level CSV audit of credentials &amp; MFA status</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--or)">Policy Simulator</div>
+      <div class="td lang-vi">Debug quyền Policy trước khi triển khai</div>
+      <div class="td lang-en">Test and debug policies before production deployment</div>
+    </div>
+    <div class="tool">
+      <div class="tn" style="color:var(--rd)">SCPs (Organizations)</div>
+      <div class="td lang-vi">Chỉ giới hạn quyền tối đa, không cấp quyền</div>
+      <div class="td lang-en">Guardrails specifying max permissions; never grants rights</div>
+    </div>
   </div>
 </div>
 
+<!-- Bổ sung thi cử -->
 <div class="card full">
-  <div class="ch"><div class="ci" style="background:var(--blb)">➕</div><div><div class="ct">Bổ sung hay gặp trong đề thi</div><div class="cs">Ngoài tài liệu gốc</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">➕</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bổ sung hay gặp trong đề thi SAA-C03</span>
+        <span class="lang-en">High-Yield SAA-C03 Exam Traps &amp; Insights</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các chi tiết kiến trúc chuyên sâu</span>
+        <span class="lang-en">Architectural nuances &amp; corner cases</span>
+      </div>
+    </div>
+  </div>
   <div class="g2">
-    <div class="it"><div class="in">Permissions boundary</div><div class="id">Giới hạn quyền tối đa của một User hoặc Role. Quyền hiệu lực là phần giao với Identity policy.</div></div>
-    <div class="it"><div class="in">Phạm vi của SCP</div><div class="id">Không áp dụng cho management account. SCP không cấp quyền, chỉ thu hẹp quyền.</div></div>
-    <div class="it"><div class="in">Cross-account + resource policy</div><div class="id">Cùng account: chỉ cần Allow ở một phía. Khác account: cần Allow ở cả hai phía.</div></div>
-    <div class="it"><div class="in">IAM Identity Center</div><div class="id">SSO tập trung cho nhiều account trong Organizations, thay cho việc tạo IAM Users rải rác.</div></div>
-    <div class="it"><div class="in">Access Advisor</div><div class="id">Cấp user: dịch vụ nào được dùng lần cuối khi nào, để thu hẹp quyền theo Least Privilege.</div></div>
-    <div class="it"><div class="in">IAM là dịch vụ Global</div><div class="id">Không gắn với Region; Users, Groups, Roles và Policies dùng được ở mọi Region.</div></div>
+    <div class="it">
+      <div class="in">Permissions boundary</div>
+      <div class="id lang-vi">Giới hạn quyền tối đa của một User hoặc Role. Quyền hiệu lực là phần giao với Identity policy.</div>
+      <div class="id lang-en">Sets maximum allowable permissions for a User or Role. Effective permissions equal the intersection with Identity policy.</div>
+    </div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">Phạm vi của SCP</span>
+        <span class="lang-en">SCP Scope &amp; Guardrails</span>
+      </div>
+      <div class="id lang-vi">Không áp dụng cho management account. SCP không cấp quyền, chỉ thu hẹp quyền.</div>
+      <div class="id lang-en">Does not apply to the Management Account. SCPs never grant permissions, only restrict boundaries.</div>
+    </div>
+    <div class="it">
+      <div class="in">Cross-account + resource policy</div>
+      <div class="id lang-vi">Cùng account: chỉ cần Allow ở một phía. Khác account: cần Allow ở cả hai phía (Identity policy + Resource policy).</div>
+      <div class="id lang-en">Same account: Allow on one side suffices. Cross-account: Allow required on BOTH sides (Identity policy + Resource policy).</div>
+    </div>
+    <div class="it">
+      <div class="in">IAM Identity Center</div>
+      <div class="id lang-vi">SSO tập trung cho nhiều account trong Organizations, thay cho việc tạo IAM Users rải rác.</div>
+      <div class="id lang-en">Centralized Single Sign-On (SSO) across AWS Organizations, replacing sprawling IAM Users across accounts.</div>
+    </div>
+    <div class="it">
+      <div class="in">Access Advisor</div>
+      <div class="id lang-vi">Cấp user: dịch vụ nào được dùng lần cuối khi nào, để thu hẹp quyền theo Least Privilege.</div>
+      <div class="id lang-en">User-level visibility into service last-accessed timestamps, enabling least-privilege permission pruning.</div>
+    </div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">IAM là dịch vụ Global</span>
+        <span class="lang-en">IAM is a Global Service</span>
+      </div>
+      <div class="id lang-vi">Không gắn với Region; Users, Groups, Roles và Policies dùng được ở mọi Region trên toàn cầu.</div>
+      <div class="id lang-en">Not tied to any AWS Region; Users, Groups, Roles, and Policies apply globally across all Regions.</div>
+    </div>
   </div>
 </div>
 
+<!-- 5. Nguyên tắc vàng -->
 <div class="card full">
-  <div class="ch"><div class="ci" style="background:var(--blb)">🏆</div><div><div class="ct">5. Nguyên tắc vàng — SAA-C03</div><div class="cs">Ghi nhớ 4 nguyên tắc cốt lõi</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Nguyên tắc vàng — SAA-C03</span>
+        <span class="lang-en">5. Golden Rules — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Ghi nhớ 4 nguyên tắc cốt lõi</span>
+        <span class="lang-en">4 core architectural rules to memorize</span>
+      </div>
+    </div>
+  </div>
   <ul class="bp">
-    <li class="bi"><div class="bn">1</div><div><b>Least Privilege</b><span>Chỉ cấp đúng và đủ quyền cần thiết để hoàn thành công việc.</span></div></li>
-    <li class="bi"><div class="bn">2</div><div><b>EC2 Instance Profiles: dùng IAM Role, không nhúng Access Key</b><span>Luôn gán IAM Role cho EC2 / Lambda thay vì hardcode Access Key vào server.</span></div></li>
-    <li class="bi"><div class="bn">3</div><div><b>Cross-Account: IAM Role + STS AssumeRole</b><span>Ưu tiên Role thay vì tạo IAM User trùng lặp ở tài khoản khác.</span></div></li>
-    <li class="bi"><div class="bn" style="background:var(--rd)">!</div><div><b style="color:var(--rd)">Explicit Deny luôn chiến thắng</b><span>Dù có bao nhiêu Allow, chỉ cần 1 Deny là request bị chặn ngay lập tức.</span></div></li>
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b>Least Privilege</b>
+        <span class="lang-vi">Chỉ cấp đúng và đủ quyền cần thiết để hoàn thành công việc.</span>
+        <span class="lang-en">Grant only the minimum permissions necessary to perform the specified job.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">EC2 Instance Profiles: dùng IAM Role, không nhúng Access Key</b>
+        <b class="lang-en">EC2 Instance Profiles: Use IAM Roles, Never Hardcode Access Keys</b>
+        <span class="lang-vi">Luôn gán IAM Role cho EC2 / Lambda thay vì hardcode Access Key vào server.</span>
+        <span class="lang-en">Always attach IAM Roles to EC2 / Lambda instances instead of storing static Access Keys on disk or source code.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b>Cross-Account: IAM Role + STS AssumeRole</b>
+        <span class="lang-vi">Ưu tiên Role thay vì tạo IAM User trùng lặp ở tài khoản khác.</span>
+        <span class="lang-en">Prefer assuming IAM Roles via STS over maintaining redundant IAM Users across different accounts.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Explicit Deny luôn chiến thắng</span>
+          <span class="lang-en">Explicit Deny Always Wins</span>
+        </b>
+        <span class="lang-vi">Dù có bao nhiêu Allow, chỉ cần 1 Deny là request bị chặn ngay lập tức.</span>
+        <span class="lang-en">No matter how many Allows exist, a single Explicit Deny anywhere immediately rejects the request.</span>
+      </div>
+    </li>
   </ul>
 </div>
 
+<!-- 6. Nguồn bài giảng -->
 <div class="card full">
-  <div class="ch"><div class="ci" style="background:var(--blb)">🔗</div><div><div class="ct">6. Nguồn bài giảng tham chiếu (Udemy Lectures)</div><div class="cs">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</div></div></div>
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Nguồn bài giảng tham chiếu (Udemy Lectures)</span>
+        <span class="lang-en">6. Reference Lectures &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
+      </div>
+    </div>
+  </div>
   <div class="g2">
-    <div class="it"><div class="in">Section 4 · Video bài giảng Udemy cốt lõi</div><div class="id">
-      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097996:</b> IAM Overview &amp; Fundamentals</a><br>
-      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098020:</b> Root User Security &amp; MFA</a><br>
-      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098028:</b> IAM Users &amp; Security Credentials</a><br>
-      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098070:</b> IAM Credential Report &amp; Access Advisor</a><br>
-      • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26623458:</b> IAM Policies in Depth (JSON Anatomy)</a>
-    </div></div>
-    <div class="it"><div class="in">Tài liệu kiến trúc chính thức từ AWS</div><div class="id">
-      • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS IAM User Guide — Identity and Access Management</a><br>
-      • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html" target="_blank" style="color:var(--bl);text-decoration:none">IAM Policy Evaluation Logic &amp; Explicit Deny</a><br>
-      • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html" target="_blank" style="color:var(--bl);text-decoration:none">Security Best Practices in IAM (Least Privilege)</a>
-    </div></div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">Section 4 · Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">Section 4 · Core Udemy Lectures</span>
+      </div>
+      <div class="id">
+        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097996:</b> IAM Overview &amp; Fundamentals</a><br>
+        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098020:</b> Root User Security &amp; MFA</a><br>
+        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098028:</b> IAM Users &amp; Security Credentials</a><br>
+        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098070:</b> IAM Credential Report &amp; Access Advisor</a><br>
+        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26623458:</b> IAM Policies in Depth (JSON Anatomy)</a>
+      </div>
+    </div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">Official AWS Architecture Documentation</span>
+      </div>
+      <div class="id">
+        • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS IAM User Guide — Identity and Access Management</a><br>
+        • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html" target="_blank" style="color:var(--bl);text-decoration:none">IAM Policy Evaluation Logic &amp; Explicit Deny</a><br>
+        • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html" target="_blank" style="color:var(--bl);text-decoration:none">Security Best Practices in IAM (Least Privilege)</a>
+      </div>
+    </div>
   </div>
 </div>
 
 </div>
+
+<script>
+function setLanguage(lang) {
+  try {
+    document.documentElement.setAttribute('data-lang', lang);
+    document.documentElement.setAttribute('lang', lang);
+    localStorage.setItem('aws_study_lang', lang);
+  } catch(e) {}
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-lang-val') === lang);
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    var lang = localStorage.getItem('aws_study_lang') || 'vi';
+    setLanguage(lang);
+  } catch(e) {}
+});
+</script>
 </body>
 </html>

@@ -4,8 +4,8 @@ Dự án cá nhân tổng hợp kiến thức ôn thi chứng chỉ **AWS Certif
 
 Dự án gồm 3 phần:
 
-1. **Dashboard trung tâm** (`index.html`): quản lý lộ trình 16 Section, tiến độ học, 4 Domain đề thi SAA-C03.
-2. **Cheat sheet trực quan** cho từng dịch vụ AWS (`topics/`): thuần HTML/CSS, tự chứa, hỗ trợ Dark/Light mode, responsive, chạy offline.
+1. **Dashboard trung tâm** (`index.html`): quản lý lộ trình 16 Section, tiến độ học, 4 Domain đề thi SAA-C03, tích hợp bộ chuyển đổi song ngữ (Tiếng Việt & English).
+2. **Cheat sheet trực quan** cho từng dịch vụ AWS (`topics/`): thuần HTML/CSS, tự chứa, hỗ trợ Dark/Light mode, song ngữ VI/EN, responsive, chạy offline.
 3. **Bộ từ vựng tiếng Anh chuyên ngành** trích từ phụ đề bài giảng (`data/`) và **script đóng gói thành deck Anki** (`scripts/` → `dist/`).
 
 ---

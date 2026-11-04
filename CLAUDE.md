@@ -19,7 +19,8 @@ Kho tài liệu tự học và ôn thi chứng chỉ **AWS Certified Solutions A
 
 Đặc trưng kỹ thuật:
 - Hoàn toàn **tự chứa (self-contained)**: Không build system, không package manager, không linter/test suite. Script Python chỉ dùng thư viện chuẩn (Python 3).
-- Trang HTML không dùng JavaScript, không kéo font/CSS/ảnh từ CDN; mở trực tiếp trên trình duyệt (`open index.html`).
+- Trang HTML không dùng thư viện ngoài (CDN, Google Fonts, external JS/CSS); mở trực tiếp trên trình duyệt (`open index.html`).
+- **Hỗ trợ Song ngữ (Bilingual VI/EN)**: Toàn bộ Dashboard và các trang Cheat sheet hỗ trợ chuyển đổi tức thì giữa Tiếng Việt và Tiếng Anh qua nút chuyển ngôn ngữ (`localStorage`).
 
 ---
 
@@ -140,17 +141,32 @@ Khi tạo mới hoặc cập nhật một trang `topics/aws_<topic>.html`:
   - Tuyệt đối không dùng mã hex màu trực tiếp ngoài token (ngoại trừ thẻ code `.json`).
 
 ### 2. Cấu trúc khung trang chuẩn
-1. **Thanh điều hướng trên cùng (`.top-nav`)**:
+1. **Thanh điều hướng trên cùng (`.top-nav`) & Nút chuyển ngôn ngữ**:
    ```html
    <div class="top-nav">
-     <a href="../index.html" class="nav-back">← Mục lục khóa học</a>
-     <span style="font-size:12px;color:var(--mu)">Section X · Udemy SAA-C03</span>
+     <a href="../index.html" class="nav-back">
+       <span class="lang-vi">← Mục lục khóa học</span>
+       <span class="lang-en">← Course Hub</span>
+     </a>
+     <div style="display:flex;align-items:center;gap:12px">
+       <span style="font-size:12px;color:var(--mu)">Section X · Udemy SAA-C03</span>
+       <div class="lang-switch" role="group" aria-label="Language selector">
+         <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+         <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+       </div>
+     </div>
    </div>
    ```
 2. **Tiêu đề (`.header`)**:
    - `.badge`: Phạm vi dịch vụ (`Global Service` / `Regional Service` / `AZ-Scoped`).
    - `h1`: Tên chính thức của dịch vụ AWS.
-   - `p`: Một câu tóm tắt giá trị kiến trúc bằng tiếng Việt.
+   - `p`: Một câu tóm tắt giá trị kiến trúc (có cặp `<p class="lang-vi">` và `<p class="lang-en">`).
+3. **Quy tắc song ngữ (Bilingual)**:
+   - Các đoạn văn bản/tiêu đề dùng cặp `<span class="lang-vi">` / `<span class="lang-en">` hoặc `<div class="lang-vi">` / `<div class="lang-en">`.
+   - CSS tự động ẩn/hiện theo thuộc tính `data-lang` trên thẻ `<html>`:
+     `[data-lang="en"] .lang-vi{display:none !important}`
+     `:root:not([data-lang="en"]) .lang-en{display:none !important}`
+   - Trạng thái ngôn ngữ được lưu tự động trong `localStorage` key `'aws_study_lang'`.
 3. **Lưới thẻ (`.grid`)**: Chứa các thẻ `.card` (dùng thêm class `.full` cho thẻ trải rộng cả 2 cột).
 4. **Các component tái sử dụng**:
    - `.g2` + `.it`: Lưới 2 cột cho định nghĩa thực thể/khái niệm.
