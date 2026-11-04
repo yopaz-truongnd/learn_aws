@@ -11,23 +11,23 @@ Chuyển đổi dữ liệu từ vựng tiếng Anh từ file CSV sang gói th�
 > **Đặc điểm nổi bật:** Hoàn toàn **tự chứa (Self-Contained)**. Không cần bất kỳ file mẫu `.apkg` nào bên ngoài (bạn có thể xóa an toàn file mẫu `4000_Essential_English_Words_1_-_Vietnamese.apkg` để tiết kiệm dung lượng).
 
 - **Tham số:** `$ARGUMENTS`
-  - Tham số 1 (tùy chọn): Đường dẫn file CSV đầu vào (mặc định: `lecturesub-tu-vung.csv`).
-  - Tham số 2 (tùy chọn): Tên file `.apkg` xuất ra (mặc định: `AWS_SAA_C03_Vocabulary.apkg`).
+  - Tham số 1 (tùy chọn): Đường dẫn file CSV đầu vào (mặc định: `data/lecturesub-tu-vung.csv`).
+  - Tham số 2 (tùy chọn): Tên file `.apkg` xuất ra (mặc định: `dist/AWS_SAA_C03_Vocabulary.apkg`).
 
 ---
 
 ## Các bước thực hiện
 
 1. **Xác định đường dẫn tệp**:
-   - Tệp CSV nguồn: `$ARGUMENTS` (phần tử đầu tiên) hoặc mặc định `lecturesub-tu-vung.csv`.
-   - Tệp APKG đích: `$ARGUMENTS` (phần tử thứ hai) hoặc mặc định `AWS_SAA_C03_Vocabulary.apkg`.
-   - Tệp TSV bổ trợ: `anki_4000_format.tsv`.
+   - Tệp CSV nguồn: `$ARGUMENTS` (phần tử đầu tiên) hoặc mặc định `data/lecturesub-tu-vung.csv`.
+   - Tệp APKG đích: `$ARGUMENTS` (phần tử thứ hai) hoặc mặc định `dist/AWS_SAA_C03_Vocabulary.apkg`.
+   - Tệp TSV bổ trợ: `dist/anki_4000_format.tsv`.
    - Kiểm tra xem file CSV nguồn có tồn tại không. Nếu không, thông báo lỗi bằng tiếng Việt và dừng lại.
 
 2. **Chạy script xuất dữ liệu tự chứa**:
    Thực thi lệnh Python:
    ```bash
-   python3 export_anki_4000.py "<input_csv>" "<output_apkg>" "<output_tsv>"
+   python3 scripts/export_anki_4000.py "<input_csv>" "<output_apkg>" "<output_tsv>"
    ```
    - Script tự động khởi tạo cơ sở dữ liệu SQLite theo đúng chuẩn Anki và nhúng sẵn định nghĩa Note Type `4000Book1`, cấu hình CSS, và phân chia phân cấp.
    - Tự động gom nhóm **cứ 20 từ thành 1 Unit** (Unit 01, Unit 02, Unit 03...).

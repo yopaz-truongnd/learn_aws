@@ -11,93 +11,117 @@ Tài liệu hướng dẫn dành cho AI Agent (Claude Code / Antigravity) và nh
 
 ## Mục tiêu dự án (Project Scope)
 
-Kho tài liệu tự học và ôn thi chứng chỉ **AWS Certified Solutions Architect - Associate (SAA-C03)** dựa trên giáo trình khóa học Udemy *"Ultimate AWS Certified Solutions Architect Associate"* của Stephane Maarek.
+Kho tài liệu tự học và ôn thi chứng chỉ **AWS Certified Solutions Architect - Associate (SAA-C03)** dựa trên giáo trình khóa học Udemy *"Ultimate AWS Certified Solutions Architect Associate"* của Stephane Maarek. Gồm 3 phần:
+
+1. **Dashboard** `index.html` — mục lục 16 Section, tiến độ, 4 Domain đề thi.
+2. **Cheat sheet** `topics/aws_<topic>.html` — mỗi Section một trang HTML/CSS tự chứa.
+3. **Từ vựng & Anki** — CSV từ vựng trích từ phụ đề (`data/`) → script (`scripts/`) → deck Anki (`dist/`).
 
 Đặc trưng kỹ thuật:
-- Hoàn toàn **tự chứa (self-contained)**: Không dùng build system, không package manager, không linter/test suite phức tạp.
-- Không dùng JavaScript bên ngoài, không kéo font/CSS từ CDN; mở trực tiếp file HTML trên trình duyệt (`open <file>.html`) hoặc mở file CSV bằng Excel/Numbers.
+- Hoàn toàn **tự chứa (self-contained)**: Không build system, không package manager, không linter/test suite. Script Python chỉ dùng thư viện chuẩn (Python 3).
+- Trang HTML không dùng JavaScript, không kéo font/CSS/ảnh từ CDN; mở trực tiếp trên trình duyệt (`open index.html`).
 
 ---
 
 ## Cấu trúc thư mục & Danh mục tệp (File Inventory)
 
+```
+learn_aws/
+├── index.html          # Dashboard trung tâm (entry point, nằm ở gốc)
+├── topics/             # Cheat sheet từng Section: aws_<topic>.html
+├── scripts/            # Script tiện ích: export_anki_4000.py
+├── data/               # Dữ liệu đầu vào: lecturesub-tu-vung.csv (gitignored)
+├── dist/               # Output sinh tự động: .apkg, .tsv (gitignored)
+├── .claude/skills/     # Skill: new-topic, csv-to-apkg
+├── CLAUDE.md           # Tài liệu này
+└── README.md           # Giới thiệu dự án cho người đọc
+```
+
+### Quy tắc đặt file (bắt buộc)
+- **Trang cheat sheet mới** → luôn đặt trong `topics/`, không đặt ở gốc. Chỉ `index.html` nằm ở gốc.
+- **Link tương đối:** trang trong `topics/` trỏ về Dashboard bằng `../index.html`; `index.html` trỏ tới trang con bằng `topics/aws_<topic>.html`.
+- **Script/công cụ** → `scripts/`. Đường dẫn mặc định trong script phải tính theo gốc dự án (`os.path.dirname(__file__)`), không phụ thuộc thư mục hiện hành.
+- **Dữ liệu đầu vào** (CSV…) → `data/`; **file sinh ra** (`.apkg`, `.tsv`, …) → `dist/`. Cả hai đều bị `.gitignore` — không commit, không xoá file trong `data/` khi chưa hỏi người dùng.
+- File CSV có thể không tồn tại trên máy (repo vừa clone). Khi cần đọc mà không có, báo người dùng chép vào `data/lecturesub-tu-vung.csv` thay vì tự tạo dữ liệu giả.
+- Khi đổi tên/di chuyển file: cập nhật đồng thời `index.html`, `README.md`, `CLAUDE.md` và các `.claude/skills/*/SKILL.md`.
+
 | Tệp tin | Vai trò & Mô tả | Trạng thái |
 | :--- | :--- | :--- |
-| `index.html` | **Trang Dashboard trung tâm:** Thống kê tiến độ, 4 Domain đề thi SAA-C03, bảng mục lục 16 Section liên kết đến từng cheat sheet, trích đoạn từ vựng nổi bật và nguồn bài giảng Udemy. | Hoàn thành |
-| `aws_global_infra.html` | **Section 3:** AWS Global Infrastructure (Regions, AZs, Data Centers, Edge Locations / PoP, Local Zones, Wavelength, Outposts, nguồn bài giảng Udemy). | Hoàn thành |
-| `aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules, nguồn bài giảng Udemy). | Hoàn thành |
-| `aws_ec2.html` | **Section 5:** AWS EC2 (Instance Types, Purchasing Options, Security Groups, User Data, IMDSv2, SSM Session Manager, Placement Groups, nguồn bài giảng Udemy). | Hoàn thành |
-| `lecturesub-tu-vung.csv` | **Bộ từ vựng trích xuất từ phụ đề bài giảng:** UTF-8 with BOM, trường bọc ngoặc kép (`"Từ"`, `"Nghĩa"`, `"Nguồn"`, `"Đích"`, `"Câu gốc"`, `"Bài học"`, `"Giây"`, `"Liên kết"`). | Đang duy trì (86+ từ) |
-| `AWS_SAA_C03_Vocabulary.apkg` | **Gói Anki hoàn chỉnh chuẩn format 4000Book1:** Tự chứa 100%, đóng gói sẵn Note Type Cloze, kiểm tra gõ phím (`type:cloze`), chia 20 từ/Unit, IPA và link Udemy. | Sẵn sàng mở |
-| `anki_4000_format.tsv` | **Bộ Flashcard dạng TSV 11 cột:** Chuẩn 11 trường của model `4000Book1` để import vào bất kỳ deck Anki nào. | Sẵn sàng import |
-| `export_anki_4000.py` | **Script chuyển đổi tự động (Tự chứa 100%):** Tự sinh SQLite và đóng gói `AWS_SAA_C03_Vocabulary.apkg`, không phụ thuộc bất kỳ file mẫu ngoài nào. | Hoàn thành |
-| `.claude/skills/new-topic/` | Skill tự động sinh khung cheat sheet chủ đề mới theo mẫu chuẩn. | Sẵn sàng |
-| `.claude/skills/csv-to-apkg/` | Skill chuyển đổi file CSV từ vựng sang gói Anki `.apkg` chuẩn model 4000Book1 (tự chứa 100%). | Sẵn sàng |
+| `index.html` | **Trang Dashboard trung tâm:** Thống kê tiến độ, 4 Domain đề thi SAA-C03, bảng mục lục 16 Section liên kết đến từng cheat sheet, trích đoạn từ vựng nổi bật và hướng dẫn Anki. | Hoàn thành |
+| `topics/aws_global_infra.html` | **Section 3:** AWS Global Infrastructure (Regions, AZs, Data Centers, Edge Locations / PoP, Local Zones, Wavelength, Outposts). | Hoàn thành |
+| `topics/aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules). **File mẫu chuẩn** về thiết kế. | Hoàn thành |
+| `topics/aws_ec2.html` | **Section 5:** AWS EC2 (Instance Types, Purchasing Options, Security Groups, User Data, IMDSv2, SSM Session Manager, Placement Groups). | Hoàn thành |
+| `scripts/export_anki_4000.py` | **Script CSV → Anki (tự chứa 100%):** Tự sinh SQLite và đóng gói `.apkg` + `.tsv`, không cần file `.apkg` mẫu. Cú pháp: `python3 scripts/export_anki_4000.py [input.csv] [output.apkg] [output.tsv]`. | Hoàn thành |
+| `data/lecturesub-tu-vung.csv` | **Bộ từ vựng trích xuất từ phụ đề bài giảng:** UTF-8 with BOM, trường bọc ngoặc kép (`"Từ"`, `"Nghĩa"`, `"Nguồn"`, `"Đích"`, `"Câu gốc"`, `"Bài học"`, `"Giây"`, `"Liên kết"`). Đọc bằng CSV parser (có trường chứa dấu phẩy/xuống dòng). | Đang duy trì (86+ từ), gitignored |
+| `dist/AWS_SAA_C03_Vocabulary.apkg` | **Gói Anki chuẩn Note Type 4000Book1:** Cloze, ô gõ kiểm tra (`type:cloze`), chia 20 từ/Unit, IPA và link Udemy. | Sinh bởi script |
+| `dist/anki_4000_format.tsv` | **Flashcard dạng TSV 11 cột** của model `4000Book1` để import vào deck Anki bất kỳ. | Sinh bởi script |
+| `.claude/skills/new-topic/` | Skill `/new-topic`: sinh trang cheat sheet mới trong `topics/` theo mẫu chuẩn. | Sẵn sàng |
+| `.claude/skills/csv-to-apkg/` | Skill `/csv-to-apkg`: chạy script chuyển CSV từ vựng sang `.apkg` và kiểm tra kết quả. | Sẵn sàng |
 
 ---
 
 ## Lộ trình các chủ đề tiếp theo (Roadmap for Next Sessions)
 
-Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
+Đã hoàn thành: **Section 3** (Global Infrastructure), **Section 4** (IAM), **Section 5** (EC2). Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
 
-1. **Section 6: EC2 Instance Storage (`aws_storage.html`)**
+1. **Section 6: EC2 Instance Storage (`topics/aws_storage.html`)**
    - *Nguồn:* Udemy Section 6 (EC2 - Instance Storage: EBS & EFS)
    - EBS volume types (gp3, gp2, io2 Block Express, st1, sc1), EBS Snapshots, Multi-Attach.
    - EFS (Elastic File System): Multi-AZ, POSIX, EFS One Zone, Storage classes (Standard, IA).
    - EC2 Instance Store: Ephemeral storage, IOPS siêu cao, mất dữ liệu khi stop/terminate.
-2. **Section 7: High Availability & Scalability (`aws_elb_asg.html`)**
+2. **Section 7: High Availability & Scalability (`topics/aws_elb_asg.html`)**
    - *Nguồn:* Udemy Section 7 (High Availability and Scalability: ELB & ASG)
    - Elastic Load Balancing: ALB (Layer 7), NLB (Layer 4 - Ultra performance), GWLB (Layer 3 - Firewalls).
    - Target Groups, Health Checks, Cross-Zone Load Balancing, SNI (Server Name Indication).
    - Auto Scaling Groups (ASG): Dynamic scaling, Predictive scaling, Lifecycle hooks, Target tracking.
-3. **Section 8 & 20: AWS Databases (`aws_databases.html`)**
+3. **Section 8 & 20: AWS Databases (`topics/aws_databases.html`)**
    - *Nguồn:* Udemy Section 8 (RDS + Aurora + ElastiCache) & Section 20 (Databases in AWS)
    - RDS: Multi-AZ (DR/Failover) vs Read Replicas (Scale Reads, async).
    - Amazon Aurora: 6 bản sao trên 3 AZs, Aurora Serverless v2, Global Database.
    - In-memory Caching: ElastiCache (Redis vs Memcached), MemoryDB.
    - NoSQL & Special: DynamoDB (DAX, Global Tables), Redshift, OpenSearch, DocumentDB, Neptune.
-4. **Section 9: Amazon Route 53 (`aws_route53.html`)**
+4. **Section 9: Amazon Route 53 (`topics/aws_route53.html`)**
    - *Nguồn:* Udemy Section 9 (Route 53)
    - Routing Policies: Simple, Weighted, Latency, Failover (Health checks), Geolocation, Geoproximity, Multi-Value Answer.
-5. **Section 11 & 13: Amazon S3 & Advanced S3 (`aws_s3.html`)**
+5. **Section 11 & 13: Amazon S3 & Advanced S3 (`topics/aws_s3.html`)**
    - *Nguồn:* Udemy Section 11 (S3 Intro) & Section 13 (Advanced S3)
    - S3 Storage Classes: Standard, Standard-IA, One Zone-IA, Glacier Instant/Flexible/Deep Archive, Intelligent-Tiering.
    - S3 Security: Bucket Policies, KMS encryption, Object Lock, Versioning, S3 Replication (CRR/SRR).
-6. **Section 14: CloudFront & Global Accelerator (`aws_cloudfront.html`)**
+6. **Section 14: CloudFront & Global Accelerator (`topics/aws_cloudfront.html`)**
    - *Nguồn:* Udemy Section 14 (CloudFront & AWS Global Accelerator)
    - CloudFront: Caching, TTL, Origin Shield, Signed URL/Cookies, OAC (Origin Access Control) cho S3.
    - AWS Global Accelerator: Anycast IP, định tuyến qua mạng AWS Backbone (so sánh với CloudFront).
-7. **Section 16: Decoupling Applications (`aws_decoupling.html`)**
+7. **Section 16: Decoupling Applications (`topics/aws_decoupling.html`)**
    - *Nguồn:* Udemy Section 16 (Decoupling Applications: SQS, SNS, Kinesis, Active MQ)
    - Amazon SQS: Standard (at-least-once) vs FIFO (exactly-once, order), DLQ (Dead Letter Queue), Visibility Timeout.
    - Amazon SNS: Pub/Sub Fan-out pattern, Topic Subscriptions.
    - Amazon Kinesis: Data Streams (shards, real-time), Firehose (near real-time S3/Redshift loader), Data Analytics.
-8. **Section 17: Containers on AWS (`aws_containers.html`)**
+8. **Section 17: Containers on AWS (`topics/aws_containers.html`)**
    - *Nguồn:* Udemy Section 17 (Containers on AWS: ECS, Fargate, ECR, EKS)
    - ECS (Elastic Container Service): EC2 Launch Type vs Fargate (Serverless container).
    - ECR (Elastic Container Registry), EKS (Elastic Kubernetes Service).
-9. **Section 18 & 19: Serverless Architecture (`aws_serverless.html`)**
+9. **Section 18 & 19: Serverless Architecture (`topics/aws_serverless.html`)**
    - *Nguồn:* Udemy Section 18 (Serverless Overviews) & Section 19 (Serverless Solutions)
    - AWS Lambda: Concurrency, Cold start, Destinations, Execution limits (15 phút, 10GB RAM).
    - Amazon API Gateway: REST API, HTTP API, WebSocket, Throttling, API Keys, Caching.
    - AWS Step Functions: State machines for workflow orchestration.
-10. **Section 23: Monitoring, Audit & Governance (`aws_monitoring.html`)**
+10. **Section 23: Monitoring, Audit & Governance (`topics/aws_monitoring.html`)**
     - *Nguồn:* Udemy Section 23 (AWS Monitoring & Audit)
     - CloudWatch: Metrics, Alarms, Logs, Synthetics, Container Insights.
     - CloudTrail: Ghi nhận mọi API calls, Trail bảo mật, phân tích sự cố.
     - EventBridge: Phản ứng sự kiện thời gian thực (Rule & Target, cron scheduler).
-11. **Section 24: Security, Encryption & Compliance (`aws_security.html`)**
+11. **Section 24: Security, Encryption & Compliance (`topics/aws_security.html`)**
     - *Nguồn:* Udemy Section 24 (AWS Security & Encryption)
     - AWS KMS: Customer Master Keys (CMK), Symmetric vs Asymmetric, Automatic Key Rotation.
     - Secrets Manager (tự động rotate password RDS) vs SSM Parameter Store.
     - AWS WAF, AWS Shield Standard/Advanced, AWS Network Firewall, AWS GuardDuty, AWS Inspector, AWS Macie.
-12. **Section 25: Networking — Virtual Private Cloud (`aws_vpc.html`)**
+12. **Section 25: Networking — Virtual Private Cloud (`topics/aws_vpc.html`)**
     - *Nguồn:* Udemy Section 25 (Networking - VPC)
     - CIDR, Public Subnets, Private Subnets, Internet Gateway (IGW), Route Tables.
     - NAT Gateway (quản lý bởi AWS, Multi-AZ) vs NAT Instance.
     - Network ACL (NACL - Stateless, Subnet-level, có Deny rules) vs Security Group (SG - Stateful, Instance-level).
     - VPC Peering, VPC Endpoints (Gateway vs Interface Endpoints / PrivateLink), Transit Gateway.
-13. **Section 26: Disaster Recovery & Data Migration (`aws_disaster_recovery.html`)**
+13. **Section 26: Disaster Recovery & Data Migration (`topics/aws_disaster_recovery.html`)**
     - *Nguồn:* Udemy Section 26 (Disaster Recovery & Migrations)
     - 4 chiến lược DR: Backup & Restore, Pilot Light, Warm Standby, Multi-Region Active-Active.
     - AWS DRS (Elastic Disaster Recovery), AWS DMS (Database Migration Service), AWS Snow Family, DataSync.
@@ -106,10 +130,10 @@ Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các S
 
 ## Quy ước thiết kế & Thành phần HTML (Design System)
 
-Khi tạo mới hoặc cập nhật một trang `aws_<topic>.html`:
+Khi tạo mới hoặc cập nhật một trang `topics/aws_<topic>.html`:
 
 ### 1. Token CSS & Chế độ màu (Dark/Light mode)
-- Copy nguyên vẹn khối `<style>` từ [`aws_iam.html`](file:///private/var/www/learn_aws/aws_iam.html).
+- Copy nguyên vẹn khối `<style>` từ [`topics/aws_iam.html`](file:///private/var/www/learn_aws/topics/aws_iam.html).
 - Sử dụng triệt để các biến CSS `:root`:
   - Nền & Thẻ: `--bg`, `--card`, `--bd`, `--sub`, `--tx`, `--mu`, `--gy`.
   - Cặp màu trạng thái (Chữ / Nền): Xanh lam (`--bl` / `--blb`), Xanh lá (`--gr` / `--grb`), Cam (`--or` / `--orb`), Đỏ (`--rd` / `--rdb`).
@@ -119,7 +143,7 @@ Khi tạo mới hoặc cập nhật một trang `aws_<topic>.html`:
 1. **Thanh điều hướng trên cùng (`.top-nav`)**:
    ```html
    <div class="top-nav">
-     <a href="index.html" class="nav-back">← Mục lục khóa học</a>
+     <a href="../index.html" class="nav-back">← Mục lục khóa học</a>
      <span style="font-size:12px;color:var(--mu)">Section X · Udemy SAA-C03</span>
    </div>
    ```
@@ -139,16 +163,18 @@ Khi tạo mới hoặc cập nhật một trang `aws_<topic>.html`:
    - Card **"Bổ sung hay gặp trong đề thi SAA-C03"**: Điểm danh các bẫy đề thi, số liệu quan trọng, sự cố thực tế.
    - Card **"Nguyên tắc vàng — SAA-C03"**: Dạng `.bp` / `.bi`, mục cảnh báo cốt lõi dùng số `.bn` màu đỏ `--rd`.
    - Card **"Nguồn bài giảng tham chiếu (Udemy Lectures)"** (BẮT BUỘC): Liệt kê 2 cột dạng `.g2/.it`:
-     - Cột 1: Video bài giảng Udemy cốt lõi kèm link chính xác từ `lecturesub-tu-vung.csv` (`https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/<id>`).
+     - Cột 1: Video bài giảng Udemy cốt lõi kèm link chính xác từ `data/lecturesub-tu-vung.csv` (`https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/<id>`).
      - Cột 2: Tài liệu chính thức từ AWS Documentation / Architecture Whitepaper liên quan.
 
 ### 3. Quy trình thực hiện khi tạo bài mới (Workflow)
-1. Tạo file `aws_<topic>.html` ở thư mục gốc.
-2. Tra cứu `lecturesub-tu-vung.csv` để lấy danh sách từ vựng, câu ngữ cảnh và link video bài giảng tương ứng đưa vào nội dung và khối Nguồn tham chiếu.
+1. Tạo file `topics/aws_<topic>.html` (trong thư mục `topics/`).
+2. Tra cứu `data/lecturesub-tu-vung.csv` để lấy danh sách từ vựng, câu ngữ cảnh và link video bài giảng tương ứng đưa vào nội dung và khối Nguồn tham chiếu.
 3. Bổ sung card "Nguồn bài giảng tham chiếu (Udemy Lectures)" với đầy đủ liên kết video bài giảng và AWS Documentation.
 4. Đảm bảo toàn bộ HTML đóng thẻ hợp lệ (kiểm tra bằng script python validator).
 5. **Cập nhật `index.html`**:
+   - Thêm/sửa link tới `topics/aws_<topic>.html` (đường dẫn có tiền tố `topics/`).
    - Thêm dòng chú thích nguồn bài giảng `📚 Nguồn: Udemy Section X · Lectures...`.
    - Sửa trạng thái mục bài học từ `btn-pending` / `Kế tiếp` sang `btn-open` / `Đã có`.
    - Tăng biến đếm "Chủ đề hoàn thành" trong khối `.stats`.
-6. Báo cáo lại cho người dùng và mở kiểm tra bằng lệnh `open aws_<topic>.html`.
+6. **Cập nhật `README.md`**: đánh dấu `[x]` Section trong mục Lộ trình, thêm dòng vào bảng file và cây thư mục; cập nhật bảng File Inventory + dòng "Đã hoàn thành" trong `CLAUDE.md`.
+7. Báo cáo lại cho người dùng và mở kiểm tra bằng lệnh `open topics/aws_<topic>.html`.

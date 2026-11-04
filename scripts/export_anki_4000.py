@@ -263,9 +263,14 @@ def make_deck(deck_id, name, desc=""):
     }
 
 def main():
-    input_csv = sys.argv[1] if len(sys.argv) > 1 else "lecturesub-tu-vung.csv"
-    output_apkg = sys.argv[2] if len(sys.argv) > 2 else "AWS_SAA_C03_Vocabulary.apkg"
-    output_tsv = sys.argv[3] if len(sys.argv) > 3 else "anki_4000_format.tsv"
+    # Đường dẫn mặc định tính theo thư mục gốc dự án (chạy được từ bất kỳ thư mục nào)
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    input_csv = sys.argv[1] if len(sys.argv) > 1 else os.path.join(root, "data", "lecturesub-tu-vung.csv")
+    output_apkg = sys.argv[2] if len(sys.argv) > 2 else os.path.join(root, "dist", "AWS_SAA_C03_Vocabulary.apkg")
+    output_tsv = sys.argv[3] if len(sys.argv) > 3 else os.path.join(root, "dist", "anki_4000_format.tsv")
+    for out_path in (output_apkg, output_tsv):
+        out_dir = os.path.dirname(os.path.abspath(out_path))
+        os.makedirs(out_dir, exist_ok=True)
 
     if not os.path.exists(input_csv):
         print(f"❌ Lỗi: Không tìm thấy file CSV đầu vào tại '{input_csv}'.")

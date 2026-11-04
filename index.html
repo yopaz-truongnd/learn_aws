@@ -127,7 +127,7 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
   <div class="module-list">
     
     <!-- Section 3: Global Infrastructure -->
-    <a href="aws_global_infra.html" class="module-item">
+    <a href="topics/aws_global_infra.html" class="module-item">
       <div class="module-left">
         <div class="module-icon" style="background:var(--blb)">🌐</div>
         <div>
@@ -142,7 +142,7 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
     </a>
 
     <!-- Section 4: IAM -->
-    <a href="aws_iam.html" class="module-item">
+    <a href="topics/aws_iam.html" class="module-item">
       <div class="module-left">
         <div class="module-icon" style="background:var(--blb)">👤</div>
         <div>
@@ -157,7 +157,7 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
     </a>
 
     <!-- Section 5: EC2 -->
-    <a href="aws_ec2.html" class="module-item">
+    <a href="topics/aws_ec2.html" class="module-item">
       <div class="module-left">
         <div class="module-icon" style="background:var(--blb)">💻</div>
         <div>
@@ -330,7 +330,7 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
     <div class="ci" style="background:var(--orb)">📖</div>
     <div>
       <div class="ct">Từ Vựng Tiếng Anh Chuyên Ngành (Khóa Học Stephane Maarek)</div>
-      <div class="cs">Trích xuất tự động từ phụ đề video bài giảng kèm ngữ cảnh đề thi (86+ từ trong lecturesub-tu-vung.csv)</div>
+      <div class="cs">Trích xuất tự động từ phụ đề video bài giảng kèm ngữ cảnh đề thi (86+ từ trong data/lecturesub-tu-vung.csv)</div>
     </div>
   </div>
 
@@ -376,29 +376,29 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
       <span class="tag tg">Chia 20 từ / Unit · Điền từ gõ phím (Type-in) · Cloze Deletion</span>
     </div>
     <p style="font-size:12px;color:var(--mu);line-height:1.6;margin-bottom:12px">
-      Toàn bộ 86 từ vựng đã được gom nhóm tự động thành <b>5 Units (mỗi Unit 20 từ)</b> và đóng gói trực tiếp vào file <code>AWS_SAA_C03_Vocabulary.apkg</code> theo đúng Note Type <b>4000Book1</b>: có số thẻ, gợi ý điền từ <code>t__ __ __ __n</code>, ô gõ phím kiểm tra chính tả (xanh khi đúng, đỏ khi sai), phiên âm quốc tế IPA và nút bấm mở video bài giảng Udemy đúng số phút/giây.
+      Toàn bộ 86 từ vựng đã được gom nhóm tự động thành <b>5 Units (mỗi Unit 20 từ)</b> và đóng gói trực tiếp vào file <code>dist/AWS_SAA_C03_Vocabulary.apkg</code> theo đúng Note Type <b>4000Book1</b>: có số thẻ, gợi ý điền từ <code>t__ __ __ __n</code>, ô gõ phím kiểm tra chính tả (xanh khi đúng, đỏ khi sai), phiên âm quốc tế IPA và nút bấm mở video bài giảng Udemy đúng số phút/giây.
     </p>
     <div class="g2">
       <div class="it">
         <div class="in">Cách 1: Nhấp đúp mở ngay (Khuyên dùng)</div>
         <div class="id">
-          Chỉ cần nhấp đúp trực tiếp vào file <b><code>AWS_SAA_C03_Vocabulary.apkg</code></b> trong thư mục dự án. Phần mềm Anki trên máy tính sẽ tự động mở và tạo deck <b>"AWS SAA-C03 Vocabulary (Stephane Maarek)"</b> với đầy đủ giao diện, màu sắc và tính năng gõ từ kiểm tra.
+          Chỉ cần nhấp đúp trực tiếp vào file <b><code>dist/AWS_SAA_C03_Vocabulary.apkg</code></b> trong thư mục dự án. Phần mềm Anki trên máy tính sẽ tự động mở và tạo deck <b>"AWS SAA-C03 Vocabulary (Stephane Maarek)"</b> với đầy đủ giao diện, màu sắc và tính năng gõ từ kiểm tra.
         </div>
       </div>
       <div class="it">
         <div class="in">Cách 2: Import file TSV 11 cột</div>
         <div class="id">
-          Nếu bạn muốn đưa vào bộ thẻ có sẵn của mình, vào Anki chọn <b>File → Import...</b> và chọn file <b><code>anki_4000_format.tsv</code></b> (ánh xạ đủ 11 trường: №, Keyword, Suggestion, Short Vietnamese, Sound, Image, Transcription, Explanation, Full Vietnamese).
+          Nếu bạn muốn đưa vào bộ thẻ có sẵn của mình, vào Anki chọn <b>File → Import...</b> và chọn file <b><code>dist/anki_4000_format.tsv</code></b> (ánh xạ đủ 11 trường: №, Keyword, Suggestion, Short Vietnamese, Sound, Image, Transcription, Explanation, Full Vietnamese).
         </div>
       </div>
     </div>
     <div style="margin-top:12px;padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--mu)">
-      💡 <b>Cập nhật khi có từ mới:</b> Chạy lệnh <code>python3 export_anki_4000.py</code> để tự động cập nhật lại file <code>.apkg</code> và <code>.tsv</code>.
+      💡 <b>Cập nhật khi có từ mới:</b> Chạy lệnh <code>python3 scripts/export_anki_4000.py</code> để tự động cập nhật lại file <code>.apkg</code> và <code>.tsv</code>.
     </div>
   </div>
 
   <div style="margin-top:16px;text-align:center">
-    <span style="font-size:12px;color:var(--mu)">Dữ liệu từ vựng gốc: <code>lecturesub-tu-vung.csv</code> · Gói Anki hoàn chỉnh: <code>AWS_SAA_C03_Vocabulary.apkg</code> · File TSV 11 cột: <code>anki_4000_format.tsv</code></span>
+    <span style="font-size:12px;color:var(--mu)">Dữ liệu từ vựng gốc: <code>data/lecturesub-tu-vung.csv</code> · Gói Anki hoàn chỉnh: <code>dist/AWS_SAA_C03_Vocabulary.apkg</code> · File TSV 11 cột: <code>dist/anki_4000_format.tsv</code></span>
   </div>
 </div>
 
