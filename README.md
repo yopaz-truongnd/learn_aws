@@ -37,13 +37,13 @@ learn_aws/
 
 | Đường dẫn | Mô tả |
 | :--- | :--- |
-| [`index.html`](index.html) | Dashboard: thống kê tiến độ, 4 Domain đề thi, mục lục 16 Section, trích đoạn từ vựng, hướng dẫn Anki. |
-| [`topics/aws_global_infra.html`](topics/aws_global_infra.html) | Regions, AZs, Data Centers, Edge Locations / PoP, Local Zones, Wavelength, Outposts. |
-| [`topics/aws_iam.html`](topics/aws_iam.html) | Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules, Decision Tree, Sequence, Matrix. |
-| [`topics/aws_ec2.html`](topics/aws_ec2.html) | Instance Types, Purchasing Options (Spot/RI/Savings Plans), Security Groups, User Data, IMDSv2, SSM Session Manager, Placement Groups. |
+| [`index.html`](index.html) | Dashboard: thống kê tiến độ, 4 Domain đề thi SAA-C03, mục lục 16 Section, trích đoạn từ vựng, hướng dẫn Anki. |
+| [`topics/aws_global_infra.html`](topics/aws_global_infra.html) | Regions, AZs, Data Centers, Edge PoP, Sơ đồ Mermaid định tuyến, Ma trận chi phí Data Transfer, AZ ID vs AZ Name, Local Zones, Wavelength, Outposts, Direct Connect, Whitepapers. |
+| [`topics/aws_iam.html`](topics/aws_iam.html) | Users, Groups, Roles, Policies JSON, Sơ đồ Mermaid đánh giá logic, Ma trận Cross-Account AssumeRole vs Resource Policy, Top Condition Keys, Bộ 3 công cụ Audit, SCPs, Golden Rules. |
+| [`topics/aws_ec2.html`](topics/aws_ec2.html) | Instance Types, Sơ đồ Mermaid vòng đời Lifecycle &amp; Hibernate, Ma trận 7 mô hình Purchasing Options &amp; Spot Fleet, Ma trận SG vs NACL, ENA/EFA, Nitro System, SSM Session Manager. |
 | [`assets/css/style.css`](assets/css/style.css) | Toàn bộ CSS Design System dùng chung, tokens màu, Dark/Light mode, typography, components, matrix tables. |
 | [`assets/js/app.js`](assets/js/app.js) | Script xử lý chuyển đổi song ngữ VI/EN tức thì, lưu `localStorage`, render tự động Mermaid. |
-| [`assets/vendor/mermaid.min.js`](assets/vendor/mermaid.min.js) | Thư viện Mermaid.js nội bộ 100% offline vẽ sơ đồ tư duy, decision tree, sequence diagrams. |
+| [`assets/vendor/mermaid.min.js`](assets/vendor/mermaid.min.js) | Thư viện Mermaid.js nội bộ 100% offline vẽ sơ đồ tư duy, decision tree, sequence diagrams, state diagrams. |
 | [`scripts/export_anki_4000.py`](scripts/export_anki_4000.py) | Sinh SQLite Anki và đóng gói `.apkg` tự chứa 100% (không cần file `.apkg` mẫu). |
 | `data/lecturesub-tu-vung.csv` | UTF-8 with BOM, các cột: `Từ`, `Nghĩa`, `Nguồn`, `Đích`, `Câu gốc`, `Bài học`, `Giây`, `Liên kết`. |
 | `dist/*` | Kết quả build — không commit, sinh lại bất cứ lúc nào bằng script. |
@@ -121,17 +121,27 @@ Chi tiết nội dung cần có của từng Section xem trong [`CLAUDE.md`](CLA
 
 ## ✍️ Thêm chủ đề mới
 
-1. Tạo `topics/aws_<topic>.html` — copy khối `<style>` từ `topics/aws_iam.html` (hoặc chạy skill `/new-topic <chủ đề>` trong Claude Code).
-2. Link quay về Dashboard dùng đường dẫn tương đối `../index.html`.
-3. Cập nhật `index.html`: link `topics/aws_<topic>.html`, đổi trạng thái sang **Đã có**, tăng bộ đếm "Chủ đề hoàn thành".
-4. Đánh dấu `[x]` trong mục Lộ trình ở README này.
+1. Tạo `topics/aws_<topic>.html` (hoặc chạy skill `/new-topic <chủ đề>` trong Claude Code).
+2. Nhúng tài nguyên dùng chung tự chứa trong `<head>`:
+   ```html
+   <link rel="stylesheet" href="../assets/css/style.css">
+   <script src="../assets/vendor/mermaid.min.js"></script>
+   <script src="../assets/js/app.js"></script>
+   ```
+3. Link quay về Dashboard dùng đường dẫn tương đối `../index.html`.
+4. Bổ sung đầy đủ các khối cốt lõi: Khái niệm &rarr; Sơ đồ kiến trúc Mermaid &rarr; Bảng ma trận so sánh &rarr; Bổ sung hay gặp trong đề thi SAA-C03 &rarr; Nguyên tắc vàng &rarr; **Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)** ở cuối trang.
+5. Cập nhật `index.html`: link `topics/aws_<topic>.html`, đổi trạng thái sang **Đã có**, tăng bộ đếm "Chủ đề hoàn thành".
+6. Đánh dấu `[x]` trong mục Lộ trình ở README này và cập nhật `CLAUDE.md`.
 
-Quy ước thiết kế đầy đủ (token màu, component, card bắt buộc): xem [`CLAUDE.md`](CLAUDE.md).
+Quy ước thiết kế chi tiết: xem [`CLAUDE.md`](CLAUDE.md).
 
 ---
 
 ## 🎨 Chuẩn thiết kế Cheat Sheet
 
-- Tự chứa: không JavaScript, không CDN/font/ảnh ngoài — tải nhanh và chạy offline.
-- Tự chuyển Sáng / Tối theo hệ thống qua CSS Custom Properties (`:root`), không hard-code mã màu.
-- Responsive trên máy tính bảng và điện thoại (không cuộn ngang ở màn hình hẹp).
+- **100% Tự chứa &amp; Chạy Offline:** Không kéo thư viện ngoài (CDN, Google Fonts, external JS/CSS); toàn bộ thư viện Mermaid và Design System đều nằm cục bộ trong `assets/`.
+- **Hỗ trợ Song ngữ toàn diện (Bilingual VI / EN):** Toàn bộ tiêu đề, nội dung và sơ đồ đều hỗ trợ chuyển đổi tức thì giữa Tiếng Việt và Tiếng Anh qua nút chuyển ngôn ngữ (`localStorage`).
+- **Thích ứng Sáng / Tối (Dark / Light mode):** Tự động thích ứng theo hệ thống qua CSS Custom Properties (`:root`), không hard-code mã màu trực tiếp.
+- **Sơ đồ tư duy &amp; Ma trận chuyên sâu:** Sử dụng Mermaid.js để vẽ flowchart, sequence diagram, state machine và bảng ma trận đa chiều giúp ghi nhớ sâu kiến trúc.
+- **Responsive:** Hiển thị tối ưu trên máy tính bảng và điện thoại (không cuộn ngang ở màn hình hẹp).
+- **Liên kết tài liệu chuẩn xác:** Luôn đính kèm nguồn bài giảng Udemy (kèm lecture ID) và tài liệu chính thức AWS Whitepapers/Docs tương ứng.

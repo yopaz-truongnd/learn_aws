@@ -35,7 +35,7 @@ Nếu `$ARGUMENTS` trống, hỏi người dùng chủ đề AWS muốn tạo r�
    - `.grid` gồm các `.card` (dùng `.full` cho card cần rộng). Mỗi card có `.ch` với icon emoji trong `.ci` (nền bằng token `--*b`), `.ct` tiêu đề đánh số, `.cs` phụ đề.
    - Dùng lại component có sẵn cho hợp nội dung: `.g2/.it` (khái niệm), `.flow/.st/.ar` (luồng xử lý, thứ tự), `.cols/.pi` (so sánh), `.tag` (từ khóa), `.sl` (danh sách có icon), `.tools` (công cụ), `.json` (cấu hình/policy, tô màu bằng `.jk/.jv/.jc/.jp`).
    - Hỗ trợ song ngữ (Bilingual) xuyên suốt nội dung bằng các thẻ `.lang-vi` và `.lang-en`.
-   - Nên có các phần: khái niệm cốt lõi → cách hoạt động/kiến trúc → so sánh các lựa chọn → bảo mật/giám sát nếu liên quan → card **"Bổ sung hay gặp trong đề thi"** → card **"Nguyên tắc vàng — SAA-C03"** dạng `.bp/.bi` (mục cảnh báo quan trọng nhất dùng `.bn` nền `--rd`) → card **"Nguồn bài giảng tham chiếu (Udemy Lectures)"** (link các lecture Udemy và AWS docs).
+   - Nên có các phần: khái niệm cốt lõi → cách hoạt động/kiến trúc → so sánh các lựa chọn → bảo mật/giám sát nếu liên quan → card **"Bổ sung hay gặp trong đề thi"** → card **"Nguyên tắc vàng — SAA-C03"** dạng `.bp/.bi` (mục cảnh báo quan trọng nhất dùng `.bn` nền `--rd`) → card **"Nguồn bài giảng & Tài liệu tìm hiểu thêm (Further Study Resources)"** (3 cột: Video bài giảng Udemy, AWS Docs/Whitepapers, và Cheat Sheet bổ trợ).
    - Tên dịch vụ và thuật ngữ AWS giữ tiếng Anh. Escape `&` thành `&amp;`.
    - Cơ chế tự chứa (self-contained), không kéo tài nguyên ngoài (CDN, Google Fonts, external CSS/JS). Script chuyển ngôn ngữ inline siêu gọn và lưu qua `localStorage`.
 

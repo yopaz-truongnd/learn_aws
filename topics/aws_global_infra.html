@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AWS Global Infrastructure — SAA-C03</title>
 <link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
 <script src="../assets/js/app.js"></script>
 </head>
 <body>
@@ -25,8 +26,8 @@
 <div class="header">
   <div class="badge">Global Foundation</div>
   <h1>AWS Global Infrastructure</h1>
-  <p class="lang-vi">Cơ sở hạ tầng toàn cầu: Regions, Availability Zones, Data Centers &amp; Edge Locations</p>
-  <p class="lang-en">AWS Global Infrastructure: Regions, Availability Zones, Data Centers &amp; Edge Locations</p>
+  <p class="lang-vi">Cơ sở hạ tầng toàn cầu: Regions, Availability Zones, Data Centers, Edge Locations &amp; Hybrid Cloud</p>
+  <p class="lang-en">AWS Global Infrastructure: Regions, Availability Zones, Data Centers, Edge Locations &amp; Hybrid Cloud</p>
 </div>
 
 <div class="grid">
@@ -41,104 +42,134 @@
         <span class="lang-en">1. Four Core Infrastructure Tiers (Core Hierarchy)</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Mối quan hệ vật lý &amp; luận lý giữa các thành phần</span>
-        <span class="lang-en">Physical &amp; logical relationships between components</span>
+        <span class="lang-vi">Mối quan hệ vật lý &amp; luận lý giữa các thành phần hạ tầng AWS</span>
+        <span class="lang-en">Physical &amp; logical relationships between AWS infrastructure components</span>
       </div>
     </div>
   </div>
   <div class="g2">
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--bl)"></div>AWS Region</div>
-      <div class="id lang-vi">Vùng địa lý riêng biệt trên thế giới (ví dụ <code>us-east-1</code>, <code>ap-southeast-1</code>). Mỗi Region có tối thiểu <b>3 Availability Zones</b>, hoàn toàn độc lập và cách nhau khoảng cách an toàn (tránh cùng gặp lũ lụt/động đất).<br><span class="tag tb">Địa lý độc lập</span><span class="tag tb">&gt;= 3 AZs</span><span class="tag ty">Data Sovereignty</span></div>
-      <div class="id lang-en">Separate geographical area in the world (e.g. <code>us-east-1</code>, <code>ap-southeast-1</code>). Each Region has a minimum of <b>3 Availability Zones</b>, isolated and separated by meaningful physical distance.<br><span class="tag tb">Geographically Isolated</span><span class="tag tb">&gt;= 3 AZs</span><span class="tag ty">Data Sovereignty</span></div>
+      <div class="id lang-vi">Vùng địa lý riêng biệt trên thế giới (ví dụ <code>us-east-1</code>, <code>ap-southeast-1</code>). Mỗi Region có tối thiểu <b>3 Availability Zones</b>, hoàn toàn độc lập và cách nhau khoảng cách an toàn (tránh cùng gặp lũ lụt/động đất/mất điện diện rộng).<br><span class="tag tb">Địa lý độc lập</span><span class="tag tb">&ge; 3 AZs</span><span class="tag ty">Data Sovereignty</span></div>
+      <div class="id lang-en">Separate geographical area in the world (e.g. <code>us-east-1</code>, <code>ap-southeast-1</code>). Each Region has a minimum of <b>3 Availability Zones</b>, isolated and separated by meaningful physical distance.<br><span class="tag tb">Geographically Isolated</span><span class="tag tb">&ge; 3 AZs</span><span class="tag ty">Data Sovereignty</span></div>
     </div>
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--gr)"></div>Availability Zone (AZ)</div>
-      <div class="id lang-vi">Gồm <b>1 hoặc nhiều Data Centers</b> riêng biệt có nguồn điện, mạng và máy phát độc lập. Các AZ trong cùng một Region được nối với nhau qua cáp quang băng thông cao, độ trễ cực thấp (ultra-low latency &lt; 10ms).<br><span class="tag tg">1+ Data Centers</span><span class="tag tg">Độc lập nguồn &amp; mạng</span><span class="tag ty">&lt; 10ms latency</span></div>
+      <div class="id lang-vi">Gồm <b>1 hoặc nhiều Data Centers</b> riêng biệt có nguồn điện, mạng và máy phát độc lập. Các AZ trong cùng một Region được nối với nhau qua mạng cáp quang riêng băng thông cao, độ trễ cực thấp (ultra-low latency &lt; 10ms).<br><span class="tag tg">1+ Data Centers</span><span class="tag tg">Độc lập nguồn &amp; mạng</span><span class="tag ty">&lt; 10ms latency</span></div>
       <div class="id lang-en">Composed of <b>one or more discrete Data Centers</b> with redundant power, networking, and connectivity. AZs in a Region are interconnected with high-throughput, ultra-low latency private fiber (&lt; 10ms).<br><span class="tag tg">1+ Data Centers</span><span class="tag tg">Redundant Power &amp; Net</span><span class="tag ty">&lt; 10ms latency</span></div>
     </div>
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--or)"></div>Data Center</div>
-      <div class="id lang-vi">Tòa nhà vật lý chứa hàng chục nghìn máy chủ, thiết bị lưu trữ và switch mạng của AWS. Người dùng không bao giờ truy cập trực tiếp hay biết vị trí chính xác của từng Data Center.<br><span class="tag to">Phần cứng vật lý</span><span class="tag ty">Bảo mật cấp cao</span></div>
+      <div class="id lang-vi">Tòa nhà vật lý chứa hàng chục nghìn máy chủ, thiết bị lưu trữ và switch mạng của AWS. Người dùng không bao giờ truy cập trực tiếp hay biết vị trí chính xác của từng Data Center vì lý do an ninh quốc tế.<br><span class="tag to">Phần cứng vật lý</span><span class="tag ty">Bảo mật cấp cao</span></div>
       <div class="id lang-en">Physical building housing tens of thousands of AWS servers, storage arrays, and network switches. Users never access physical facilities or know exact physical locations.<br><span class="tag to">Physical Hardware</span><span class="tag ty">High-Grade Security</span></div>
     </div>
     <div class="it">
-      <div class="in"><div class="dot" style="background:var(--rd)"></div>Edge Locations (PoP)</div>
-      <div class="id lang-vi">Điểm hiện diện (Point of Presence) nằm ở hàng trăm thành phố toàn cầu. Dùng để cache nội dung qua <b>CloudFront</b> và phân giải DNS cực nhanh qua <b>Route 53</b>, giảm thiểu độ trễ tối đa cho end-user.<br><span class="tag tr">CloudFront / Route 53</span><span class="tag tr">Lowest Latency</span><span class="tag ty">Toàn cầu</span></div>
-      <div class="id lang-en">Points of Presence (PoP) in hundreds of cities worldwide. Used for edge caching via <b>CloudFront</b> and ultra-fast DNS resolution via <b>Route 53</b>, ensuring lowest latency for end users.<br><span class="tag tr">CloudFront / Route 53</span><span class="tag tr">Lowest Latency</span><span class="tag ty">Global Edge</span></div>
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Edge Locations (PoP - Point of Presence)</div>
+      <div class="id lang-vi">Hơn 400+ điểm hiện diện nằm ở hàng trăm thành phố toàn cầu. Dùng để cache nội dung qua <b>CloudFront</b>, tăng tốc mạng qua <b>Global Accelerator</b> và phân giải DNS cực nhanh qua <b>Route 53</b>, giảm thiểu độ trễ tối đa cho end-user.<br><span class="tag tr">CloudFront / Route 53</span><span class="tag tr">Lowest Latency</span><span class="tag ty">400+ Toàn cầu</span></div>
+      <div class="id lang-en">Over 400+ Points of Presence across cities worldwide. Used for edge caching via <b>CloudFront</b>, network acceleration via <b>Global Accelerator</b>, and fast DNS via <b>Route 53</b>.<br><span class="tag tr">CloudFront / Route 53</span><span class="tag tr">Lowest Latency</span><span class="tag ty">400+ Worldwide</span></div>
     </div>
   </div>
 </div>
 
-<!-- Sơ đồ luồng -->
+<!-- DIAGRAM: Global Routing & Resiliency Mermaid -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🗺️</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">Sơ đồ luồng phân cấp &amp; định tuyến truy cập</span>
-        <span class="lang-en">Hierarchy &amp; Traffic Routing Architecture</span>
+        <span class="lang-vi">Sơ đồ kiến trúc định tuyến toàn cầu &amp; phân tầng chịu lỗi</span>
+        <span class="lang-en">Global Routing &amp; Fault-Tolerant Architecture Diagram</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Cách dữ liệu di chuyển từ người dùng cuối vào trung tâm dữ liệu AWS</span>
-        <span class="lang-en">How traffic flows from end users into AWS data centers</span>
+        <span class="lang-vi">Luồng dữ liệu từ người dùng toàn cầu qua Edge Network vào Multi-AZ VPC trong AWS Region</span>
+        <span class="lang-en">Traffic flow from global users via Edge Network into Multi-AZ VPC within an AWS Region</span>
       </div>
     </div>
   </div>
-  <div class="lbl">
-    <span class="lang-vi">Cấu trúc phân cấp hạ tầng AWS</span>
-    <span class="lang-en">AWS Infrastructure Hierarchy</span>
-  </div>
-  <div class="flow">
-    <div class="st s-b">
-      <b>AWS Region</b>
-      <span>ap-southeast-1</span>
+
+  <div class="mermaid-diagram" id="diag-global-infra">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TB
+    subgraph GlobalUsers["Người Dùng Toàn Cầu"]
+        U1["Khách hàng Đông Nam Á"]
+        U2["Khách hàng Bắc Mỹ"]
+        U3["Khách hàng Châu Âu"]
+    end
+
+    subgraph EdgeLayer["Tầng Mạng Biên (Edge Network)"]
+        R53["Amazon Route 53 (Anycast DNS)"]
+        CF["CloudFront PoP Edge Locations (Cache Static Content)"]
+        GA["AWS Global Accelerator (Static Anycast IPs)"]
+    end
+
+    subgraph AWSBackbone["Mạng Trục Riêng AWS (Private Global Backbone Fiber)"]
+        Backbone["Hệ thống cáp quang ngầm riêng biệt của AWS - Băng thông siêu cao, bảo mật"]
+    end
+
+    subgraph Region["AWS Region (Ví dụ: ap-southeast-1 Singapore)"]
+        subgraph VPC["Virtual Private Cloud (VPC)"]
+            subgraph AZ1["Availability Zone 1 (ap-southeast-1a)"]
+                Sub1["Public Subnet A<br/>ALB Node A"]
+                Sub2["Private Subnet A<br/>EC2 App / RDS Primary"]
+            end
+            subgraph AZ2["Availability Zone 2 (ap-southeast-1b)"]
+                Sub3["Public Subnet B<br/>ALB Node B"]
+                Sub4["Private Subnet B<br/>EC2 App / RDS Standby (Sync Replication)"]
+            end
+        end
+    end
+
+    U1 & U2 & U3 --> R53
+    R53 --> CF & GA
+    CF --> Backbone
+    GA --> Backbone
+    Backbone --> Sub1 & Sub3
+    Sub1 -.-> Sub2
+    Sub3 -.-> Sub4
+    Sub2 <== "Đồng bộ độ trễ thấp &lt; 10ms" ==> Sub4
     </div>
-    <div class="ar">›</div>
-    <div class="st s-g">
-      <b>Availability Zone</b>
-      <span>ap-southeast-1a / 1b / 1c</span>
+
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TB
+    subgraph GlobalUsers["Global End Users"]
+        U1["Southeast Asia Users"]
+        U2["North America Users"]
+        U3["Europe Users"]
+    end
+
+    subgraph EdgeLayer["Edge Network Tier"]
+        R53["Amazon Route 53 (Anycast DNS)"]
+        CF["CloudFront PoP Edge Locations (Cache Static Content)"]
+        GA["AWS Global Accelerator (Static Anycast IPs)"]
+    end
+
+    subgraph AWSBackbone["AWS Private Global Backbone Network"]
+        Backbone["AWS-Owned Dedicated Terabit Fiber Network - Encrypted &amp; Low Latency"]
+    end
+
+    subgraph Region["AWS Region (e.g., ap-southeast-1 Singapore)"]
+        subgraph VPC["Virtual Private Cloud (VPC)"]
+            subgraph AZ1["Availability Zone 1 (ap-southeast-1a)"]
+                Sub1["Public Subnet A<br/>ALB Node A"]
+                Sub2["Private Subnet A<br/>EC2 App / RDS Primary"]
+            end
+            subgraph AZ2["Availability Zone 2 (ap-southeast-1b)"]
+                Sub3["Public Subnet B<br/>ALB Node B"]
+                Sub4["Private Subnet B<br/>EC2 App / RDS Standby (Sync Replication)"]
+            end
+        end
+    end
+
+    U1 & U2 & U3 --> R53
+    R53 --> CF & GA
+    CF --> Backbone
+    GA --> Backbone
+    Backbone --> Sub1 & Sub3
+    Sub1 -.-> Sub2
+    Sub3 -.-> Sub4
+    Sub2 <== "Low-latency Sync &lt; 10ms" ==> Sub4
     </div>
-    <div class="ar">›</div>
-    <div class="st s-o">
-      <b>Data Centers</b>
-      <span class="lang-vi">1 hoặc nhiều tòa nhà vật lý</span>
-      <span class="lang-en">1+ physical buildings</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st">
-      <b>Server Racks</b>
-      <span class="lang-vi">Phần cứng chạy EC2/EBS</span>
-      <span class="lang-en">EC2 / EBS hardware</span>
-    </div>
-  </div>
-  <div class="lbl">
-    <span class="lang-vi">Luồng người dùng tối ưu độ trễ (Latency Optimization)</span>
-    <span class="lang-en">Latency Optimization Traffic Flow</span>
-  </div>
-  <div class="flow">
-    <div class="st">
-      <b>End Users</b>
-      <span class="lang-vi">Người dùng toàn cầu</span>
-      <span class="lang-en">Global users</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-r">
-      <b>Edge Location (PoP)</b>
-      <span class="lang-vi">Gần người dùng nhất</span>
-      <span class="lang-en">Nearest to users</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-b">
-      <b>AWS Private Fiber</b>
-      <span class="lang-vi">Đường trục cáp quang riêng</span>
-      <span class="lang-en">Private backbone network</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-g">
-      <b>Target AWS Region</b>
-      <span>EC2 / S3 / ALB</span>
-    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
@@ -152,7 +183,7 @@
         <span class="lang-en">2. Selecting an AWS Region</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">4 yếu tố cốt lõi khi thiết kế giải pháp</span>
+        <span class="lang-vi">4 yếu tố cốt lõi khi ra quyết định thiết kế kiến trúc</span>
         <span class="lang-en">4 core architectural decision factors</span>
       </div>
     </div>
@@ -164,30 +195,30 @@
         <span class="lang-en">Technical Factors</span>
       </div>
       <div class="pi">
-        <b>Latency</b>
-        <span class="lang-vi">Chọn Region gần khách hàng nhất để có phản hồi ứng dụng nhanh nhất.</span>
-        <span class="lang-en">Choose the Region closest to users for minimal application round-trip time.</span>
+        <b>Latency (Độ trễ mạng)</b>
+        <span class="lang-vi">Chọn Region gần người dùng cuối nhất để đạt tốc độ phản hồi nhanh nhất (Round-Trip Time thấp nhất).</span>
+        <span class="lang-en">Choose the Region closest to end users for minimal round-trip response latency.</span>
       </div>
       <div class="pi">
-        <b>Service Availability</b>
-        <span class="lang-vi">Không phải Region nào cũng có đầy đủ 100% dịch vụ hoặc thế hệ phần cứng mới nhất.</span>
-        <span class="lang-en">Not all Regions provide 100% of services or newest instance generations.</span>
+        <b>Service Availability (Dịch vụ hỗ trợ)</b>
+        <span class="lang-vi">Không phải Region nào cũng có đầy đủ 100% dịch vụ hoặc thế hệ phần cứng mới nhất (ví dụ chip Graviton 3/4, Mac instances).</span>
+        <span class="lang-en">Not all Regions offer 100% of services or newest instance generations (e.g. Graviton 3/4, Mac instances).</span>
       </div>
     </div>
     <div class="col">
       <div class="colt">
-        <span class="lang-vi">Yếu tố kinh doanh</span>
-        <span class="lang-en">Business Factors</span>
+        <span class="lang-vi">Yếu tố pháp lý &amp; kinh doanh</span>
+        <span class="lang-en">Legal &amp; Business Factors</span>
       </div>
       <div class="pi">
-        <b>Compliance / Legal</b>
-        <span class="lang-vi">Luật lưu trữ dữ liệu nội địa (Data Sovereignty), GDPR tại Châu Âu, HIPAA tại Mỹ.</span>
-        <span class="lang-en">Data Sovereignty laws, GDPR in Europe, HIPAA regulations in the US.</span>
+        <b>Compliance / Data Sovereignty</b>
+        <span class="lang-vi">Luật cư trú dữ liệu: dữ liệu tài chính, y tế, chính phủ không được phép ra khỏi biên giới quốc gia (GDPR, HIPAA, luật an ninh mạng). <b>Đây là ưu tiên số 1!</b></span>
+        <span class="lang-en">Data Residency laws: financial, healthcare, and government data must not leave national borders. <b>Top priority!</b></span>
       </div>
       <div class="pi">
-        <b>Pricing</b>
-        <span class="lang-vi">Chi phí dịch vụ khác nhau theo từng Region do thuế và chi phí vận hành (ví dụ São Paulo &gt; US).</span>
-        <span class="lang-en">Service costs vary per Region due to local taxes and operations (e.g. São Paulo &gt; US).</span>
+        <b>Pricing (Chi phí theo vùng)</b>
+        <span class="lang-vi">Chi phí dịch vụ khác nhau theo từng Region do thuế, điện lực và chi phí vận hành địa phương (ví dụ: São Paulo, Sydney đắt hơn us-east-1).</span>
+        <span class="lang-en">Service costs vary per Region due to local taxes and operations (e.g. São Paulo &gt; us-east-1).</span>
       </div>
     </div>
   </div>
@@ -210,99 +241,222 @@
       <div class="colt">Global Services</div>
       <div class="pi">
         <b>IAM &amp; Organizations</b>
-        <span class="lang-vi">Tài khoản, Users, Roles, SCPs</span>
-        <span class="lang-en">Accounts, Users, Roles, SCPs</span>
+        <span class="lang-vi">Tài khoản, Users, Roles, SCPs dùng chung toàn cầu</span>
+        <span class="lang-en">Accounts, Users, Roles, SCPs applied globally</span>
       </div>
       <div class="pi">
         <b>Route 53 &amp; CloudFront</b>
-        <span class="lang-vi">DNS toàn cầu và CDN caching</span>
-        <span class="lang-en">Global DNS and CDN caching</span>
+        <span class="lang-vi">DNS toàn cầu và mạng phân phối nội dung CDN</span>
+        <span class="lang-en">Global DNS and content delivery CDN</span>
       </div>
       <div class="pi">
-        <b>WAF (Edge)</b>
-        <span class="lang-vi">Tường lửa cấp CloudFront</span>
-        <span class="lang-en">CloudFront-level firewall</span>
+        <b>WAF (Edge) &amp; Shield</b>
+        <span class="lang-vi">Tường lửa ứng dụng web và chống DDoS cấp Edge</span>
+        <span class="lang-en">Application firewall and DDoS defense at Edge</span>
       </div>
     </div>
     <div class="col">
       <div class="colt">Regional Services</div>
       <div class="pi">
-        <b>S3, DynamoDB, KMS</b>
-        <span class="lang-vi">Tự động nhân bản đa AZ</span>
-        <span class="lang-en">Automatic multi-AZ replication</span>
+        <b>S3 &amp; DynamoDB</b>
+        <span class="lang-vi">Tự động nhân bản dữ liệu trên tối thiểu 3 AZs</span>
+        <span class="lang-en">Automatically replicate across at least 3 AZs</span>
       </div>
       <div class="pi">
         <b>VPC, SQS, SNS, SES</b>
-        <span class="lang-vi">Hạ tầng mạng &amp; Message queues</span>
-        <span class="lang-en">Networking &amp; messaging</span>
+        <span class="lang-vi">Mạng ảo VPC và các dịch vụ truyền tin theo Region</span>
+        <span class="lang-en">Virtual network and messaging within a Region</span>
       </div>
       <div class="pi">
-        <b>Lambda</b>
-        <span class="lang-vi">Serverless compute theo vùng</span>
-        <span class="lang-en">Region-level serverless compute</span>
+        <b>AWS KMS</b>
+        <span class="lang-vi">Mã hóa dữ liệu độc lập theo từng Region</span>
+        <span class="lang-en">Encryption keys scoped to individual Regions</span>
       </div>
     </div>
     <div class="col">
       <div class="colt">AZ-scoped Services</div>
       <div class="pi">
         <b>EC2 Instances</b>
-        <span class="lang-vi">Gắn chặt vào 1 AZ cụ thể</span>
-        <span class="lang-en">Tied to 1 specific AZ</span>
+        <span class="lang-vi">Gắn chặt vào 1 AZ cụ thể (sập AZ = sập máy ảo)</span>
+        <span class="lang-en">Tied to 1 specific AZ (AZ outage halts instance)</span>
       </div>
       <div class="pi">
         <b>EBS Volumes</b>
-        <span class="lang-vi">Chỉ gắn vào EC2 cùng AZ</span>
-        <span class="lang-en">Attach only to EC2 in same AZ</span>
+        <span class="lang-vi">Chỉ gắn được vào EC2 trong cùng 1 AZ</span>
+        <span class="lang-en">Attach only to EC2 within the exact same AZ</span>
       </div>
       <div class="pi">
         <b>VPC Subnets</b>
-        <span class="lang-vi">Mỗi Subnet nằm trọn trong 1 AZ</span>
-        <span class="lang-en">Each subnet resides in 1 AZ</span>
+        <span class="lang-vi">Mỗi Subnet nằm trọn vẹn trong đúng 1 AZ</span>
+        <span class="lang-en">Each Subnet resides entirely within 1 AZ</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 4. Edge & Hybrid -->
+<!-- 4. Data Transfer Pricing Matrix (Exam High Yield) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">💵</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Ma trận chi phí truyền dữ liệu (Data Transfer Pricing Matrix)</span>
+        <span class="lang-en">4. Data Transfer Pricing Matrix (High-Yield Exam Topic)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy tối ưu chi phí (Cost Optimization) thường xuyên xuất hiện trong đề thi SAA-C03</span>
+        <span class="lang-en">Critical cost optimization traps frequently tested in SAA-C03</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th class="col-crit">
+            <span class="lang-vi">Loại luồng dữ liệu (Traffic Type)</span>
+            <span class="lang-en">Traffic Flow Type</span>
+          </th>
+          <th>
+            <span class="lang-vi">Mức phí AWS</span>
+            <span class="lang-en">Pricing Model</span>
+          </th>
+          <th>
+            <span class="lang-vi">Địa chỉ IP sử dụng</span>
+            <span class="lang-en">IP Address Used</span>
+          </th>
+          <th>
+            <span class="lang-vi">Lời khuyên kiến trúc trong phòng thi</span>
+            <span class="lang-en">Exam Architectural Recommendation</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-crit">
+            <b>Inbound từ Internet vào EC2/S3</b>
+          </td>
+          <td><span class="tag tg">MIỄN PHÍ ($0.00 / GB)</span></td>
+          <td>Public IP / Elastic IP</td>
+          <td>
+            <span class="lang-vi">AWS không tính tiền dữ liệu nạp vào. Tự do đẩy dữ liệu lớn vào đám mây.</span>
+            <span class="lang-en">AWS never charges for data ingress. Free to ingest bulk data into cloud.</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <b>Outbound từ EC2 ra Internet</b>
+          </td>
+          <td><span class="tag tr">CÓ PHÍ (~$0.09 / GB)</span></td>
+          <td>Public IP / NAT Gateway</td>
+          <td>
+            <span class="lang-vi">Bẫy thi: Dùng <b>CloudFront</b> để cache nội dung ra Edge Locations sẽ giảm đáng kể chi phí truyền dữ liệu ra Internet so với kéo trực tiếp từ EC2/S3.</span>
+            <span class="lang-en">Exam trap: Use <b>CloudFront</b> edge caching to drastically reduce egress costs compared to direct EC2/S3 outbound.</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <b>Giữa 2 EC2 trong CÙNG 1 AZ</b>
+          </td>
+          <td><span class="tag tg">MIỄN PHÍ ($0.00 / GB)*</span></td>
+          <td>Private IP nội bộ</td>
+          <td>
+            <span class="lang-vi"><b>*Bẫy thi nguy hiểm:</b> Nếu giao tiếp qua Private IP thì MIỄN PHÍ; nhưng nếu giao tiếp bằng Public IP hoặc Elastic IP dù cùng AZ vẫn bị tính phí $0.01/GB!</span>
+            <span class="lang-en"><b>*Critical trap:</b> FREE when using Private IP; but charged $0.01/GB if communication goes through Public IP or Elastic IP even in the same AZ!</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <b>Giữa 2 EC2 KHÁC AZs (Cùng Region)</b>
+          </td>
+          <td><span class="tag to">$0.01 / GB mỗi chiều</span></td>
+          <td>Private IP qua VPC</td>
+          <td>
+            <span class="lang-vi">Tính cả 2 đầu: $0.01 Ingress + $0.01 Egress = <b>$0.02 / GB khứ hồi</b>. Cân nhắc giữa High Availability (đa AZ) và chi phí mạng.</span>
+            <span class="lang-en">Charged both ways: $0.01 Ingress + $0.01 Egress = <b>$0.02 / GB round trip</b>. Balance HA across AZs against transfer costs.</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <b>Giữa 2 AWS Regions (Cross-Region)</b>
+          </td>
+          <td><span class="tag tr">$0.02 / GB Egress</span></td>
+          <td>AWS Backbone Fiber</td>
+          <td>
+            <span class="lang-vi">Dữ liệu đi qua cáp ngầm riêng AWS Backbone. Chỉ dùng Cross-Region Replication cho bài toán Disaster Recovery hoặc tuân thủ đa quốc gia.</span>
+            <span class="lang-en">Travels via private AWS Backbone. Restrict Cross-Region replication to Disaster Recovery or multi-country compliance.</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 5. Edge & Hybrid Cloud Comparison -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--gy)">🏢</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">4. Mở rộng hạ tầng: Edge &amp; Hybrid Cloud</span>
-        <span class="lang-en">4. Infrastructure Extension: Edge &amp; Hybrid Cloud</span>
+        <span class="lang-vi">5. Mở rộng hạ tầng: Edge Computing &amp; Hybrid Cloud</span>
+        <span class="lang-en">5. Infrastructure Extension: Edge Computing &amp; Hybrid Cloud</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Đưa điện toán AWS ra ngoài Region truyền thống</span>
-        <span class="lang-en">Extending AWS compute beyond traditional Regions</span>
+        <span class="lang-vi">Đưa điện toán AWS ra ngoài Region truyền thống tới gần thiết bị người dùng</span>
+        <span class="lang-en">Extending AWS compute beyond traditional Regions close to user devices</span>
       </div>
     </div>
   </div>
   <div class="tools">
     <div class="tool">
       <div class="tn" style="color:var(--bl)">AWS Local Zones</div>
-      <div class="td lang-vi">Đặt compute, storage, database trực tiếp tại các vùng đô thị lớn (không phải Region chính thức), giúp ứng dụng đạt độ trễ <b>single-digit millisecond (&lt; 10ms)</b> cho người dùng khu vực đó.</div>
-      <div class="td lang-en">Places compute, storage, and database services in major metro areas close to users, achieving <b>single-digit millisecond latency (&lt; 10ms)</b>.</div>
+      <div class="td lang-vi">
+        Đặt tài nguyên compute, storage, DB trực tiếp tại các vùng đô thị lớn đông dân cư (ví dụ Los Angeles, Chicago). Đem lại độ trễ <b>single-digit millisecond (&lt; 10ms)</b> cho người dùng khu vực mà không cần dựng nguyên cả Region.<br>
+        <span class="tag tb">Độ trễ &lt; 10ms</span><span class="tag ty">Đô thị lớn</span>
+      </div>
+      <div class="td lang-en">
+        Places compute, storage, and DB directly in major populated metro areas (e.g. LA, Chicago), achieving <b>single-digit millisecond latency (&lt; 10ms)</b>.<br>
+        <span class="tag tb">&lt; 10ms Latency</span><span class="tag ty">Major Metro</span>
+      </div>
     </div>
     <div class="tool">
       <div class="tn" style="color:var(--gr)">AWS Wavelength</div>
-      <div class="td lang-vi">Nhúng trực tiếp tài nguyên AWS vào hạ tầng mạng viễn thông <b>5G</b> của các nhà mạng viễn thông. Dành riêng cho xe tự hành, AR/VR, stream game và IoT di động.</div>
-      <div class="td lang-en">Embeds AWS compute and storage directly within telecommunications <b>5G networks</b> for autonomous vehicles, AR/VR, gaming, and mobile IoT.</div>
+      <div class="td lang-vi">
+        Nhúng trực tiếp tài nguyên compute và storage AWS vào <b>trạm phát sóng viễn thông 5G</b> của các nhà mạng (Verizon, Vodafone). Traffic từ thiết bị di động không cần đi ra Internet công cộng mà xử lý ngay tại trạm 5G.<br>
+        <span class="tag tg">Mạng 5G viễn thông</span><span class="tag ty">Xe tự hành / AR / VR</span>
+      </div>
+      <div class="td lang-en">
+        Embeds AWS compute and storage directly within telecom <b>5G network data centers</b>. Traffic from 5G devices never leaves the telco network to hit public internet.<br>
+        <span class="tag tg">5G Telecom Edge</span><span class="tag ty">Autonomous Cars / AR / VR</span>
+      </div>
     </div>
     <div class="tool">
       <div class="tn" style="color:var(--or)">AWS Outposts</div>
-      <div class="td lang-vi">AWS đóng gói nguyên cả rack máy chủ vật lý và triển khai trực tiếp vào phòng máy <b>On-premises Data Center</b> của khách hàng. Quản trị hoàn toàn đồng nhất qua AWS Console.</div>
-      <div class="td lang-en">Delivers fully managed AWS server racks deployed directly into customer <b>On-premises Data Centers</b>, seamlessly operated via AWS Console.</div>
+      <div class="td lang-vi">
+        AWS mang nguyên cả tủ rack máy chủ phần cứng vật lý đặt trực tiếp vào <b>On-premises Data Center</b> của doanh nghiệp. Vận hành, bảo trì bởi AWS; kết nối đồng nhất với VPC trên đám mây qua AWS Console/API.<br>
+        <span class="tag to">On-Premises Hardware</span><span class="tag ty">Hybrid Cloud thuần túy</span>
+      </div>
+      <div class="td lang-en">
+        Delivers physical AWS server racks deployed directly into the customer's <b>On-premises Data Center</b>. Fully managed by AWS; seamlessly connects to cloud VPC.<br>
+        <span class="tag to">On-Premises Hardware</span><span class="tag ty">True Hybrid Cloud</span>
+      </div>
     </div>
     <div class="tool">
-      <div class="tn" style="color:var(--rd)">AWS Dedicated Local Zones</div>
-      <div class="td lang-vi">Khu vực Local Zone riêng biệt, vận hành theo yêu cầu bảo mật nghiêm ngặt của chính phủ hoặc khối tài chính, ngân hàng chuyên biệt.</div>
-      <div class="td lang-en">Fully managed private Local Zones dedicated for regulatory, government, or specialized financial security compliance.</div>
+      <div class="tn" style="color:var(--rd)">AWS Direct Connect (DX)</div>
+      <div class="td lang-vi">
+        Đường dây cáp quang vật lý riêng biệt chuyên dụng (Dedicated physical network connection) nối từ phòng máy On-Premises của công ty tới AWS. Băng thông 1Gbps / 10Gbps / 100Gbps, không đi qua mạng Internet công cộng.<br>
+        <span class="tag tr">Đường truyền riêng</span><span class="tag ty">Không qua Internet</span>
+      </div>
+      <div class="td lang-en">
+        Dedicated physical private network connection linking customer on-premises to AWS. Delivers consistent bandwidth (1/10/100 Gbps) completely bypassing public internet.<br>
+        <span class="tag tr">Private Fiber</span><span class="tag ty">Bypasses Internet</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Bổ sung thi cử -->
+<!-- 6. Bổ sung thi cử -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">➕</div>
@@ -312,58 +466,64 @@
         <span class="lang-en">High-Yield SAA-C03 Exam Traps &amp; Insights</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Các bẫy câu hỏi và chi tiết kỹ thuật quan trọng</span>
-        <span class="lang-en">Key exam traps and critical architectural details</span>
+        <span class="lang-vi">Các bẫy câu hỏi và chi tiết kiến trúc tinh tế</span>
+        <span class="lang-en">Key exam traps and subtle architectural nuances</span>
       </div>
     </div>
   </div>
   <div class="g2">
     <div class="it">
       <div class="in">
-        <span class="lang-vi">AZ Name Randomization (Ánh xạ AZ)</span>
-        <span class="lang-en">AZ Name Randomization</span>
+        <span class="lang-vi">AZ Name Randomization vs AZ ID (Cực kỳ quan trọng)</span>
+        <span class="lang-en">AZ Name Randomization vs AZ ID (Critical Exam Concept)</span>
       </div>
-      <div class="id lang-vi">Tên gọi như <code>us-east-1a</code> giữa 2 account AWS khác nhau có thể trỏ tới 2 Data Center vật lý khác nhau (AWS tráo đổi để cân bằng tải vật lý). Muốn 2 account dùng chung 1 AZ vật lý, phải dùng <b>AZ ID</b> (ví dụ <code>use1-az1</code>).</div>
-      <div class="id lang-en">Names like <code>us-east-1a</code> across different AWS accounts can map to different physical Data Centers (randomized to balance load). To ensure 2 accounts share the same physical AZ, reference the immutable <b>AZ ID</b> (e.g. <code>use1-az1</code>).</div>
+      <div class="id lang-vi">
+        Tên gọi như <code>us-east-1a</code> giữa 2 account AWS khác nhau có thể trỏ tới 2 Data Center vật lý hoàn toàn khác nhau (AWS tráo đổi tên để cân bằng tải vật lý).<br>
+        👉 <b>Bẫy thi:</b> Khi dùng <b>AWS Resource Access Manager (RAM)</b> để chia sẻ Subnet giữa các account, hoặc muốn 2 account đặt server cùng 1 data center để có độ trễ thấp nhất, phải đối chiếu qua <b>AZ ID</b> bất biến (ví dụ <code>use1-az1</code>).
+      </div>
+      <div class="id lang-en">
+        Names like <code>us-east-1a</code> across different AWS accounts can map to completely different physical data centers (randomized by AWS to balance physical capacity).<br>
+        👉 <b>Exam Trap:</b> When sharing Subnets across accounts via <b>AWS RAM</b> or placing instances in the exact same physical facility for lowest latency, match them using immutable <b>AZ IDs</b> (e.g. <code>use1-az1</code>).
+      </div>
     </div>
     <div class="it">
       <div class="in">
-        <span class="lang-vi">Đường truyền riêng AWS Backbone</span>
-        <span class="lang-en">Private AWS Network Backbone</span>
+        <span class="lang-vi">Mạng trục riêng AWS Global Network Backbone</span>
+        <span class="lang-en">Private AWS Global Network Backbone</span>
       </div>
-      <div class="id lang-vi">Mọi lưu lượng trao đổi giữa các AWS Regions đều đi qua <b>AWS Global Network Backbone</b> (hệ thống cáp quang ngầm riêng biệt của AWS), đảm bảo an toàn, bảo mật và độ trễ ổn định hơn so với Internet công cộng.</div>
-      <div class="id lang-en">Cross-region traffic travels over the private <b>AWS Global Network Backbone</b> (AWS-owned private fiber network), providing superior security, consistency, and lower latency than public Internet.</div>
+      <div class="id lang-vi">Mọi lưu lượng trao đổi giữa các AWS Regions hoặc từ CloudFront/Global Accelerator về Region đều đi qua <b>AWS Global Backbone</b> (hệ thống cáp quang ngầm riêng xuyên lục địa), đảm bảo an toàn tuyệt đối, mã hóa và độ trễ ổn định hơn hẳn Internet công cộng.</div>
+      <div class="id lang-en">Cross-region traffic and ingress from CloudFront/Global Accelerator travels over the private <b>AWS Global Backbone</b> (trans-oceanic private fiber), providing superior security, automatic encryption, and consistent low latency.</div>
     </div>
     <div class="it">
       <div class="in">
         <span class="lang-vi">Khác biệt HA (High Availability) &amp; DR (Disaster Recovery)</span>
         <span class="lang-en">HA (High Availability) vs DR (Disaster Recovery)</span>
       </div>
-      <div class="id lang-vi"><b>Multi-AZ</b> giải quyết bài toán High Availability &amp; Fault Tolerance (chống sập cụm phần cứng/tòa nhà). <b>Multi-Region</b> giải quyết bài toán Disaster Recovery toàn diện (chống thiên tai xóa sổ cả vùng địa lý).</div>
-      <div class="id lang-en"><b>Multi-AZ</b> provides High Availability &amp; Fault Tolerance against data center facility failures. <b>Multi-Region</b> provides comprehensive Disaster Recovery against regional disasters and mass outages.</div>
+      <div class="id lang-vi"><b>Multi-AZ</b> giải quyết bài toán High Availability &amp; Fault Tolerance (chống sập cụm phần cứng/tòa nhà). <b>Multi-Region</b> giải quyết bài toán Disaster Recovery toàn diện (chống thiên tai động đất, chiến tranh hoặc sự cố mất điện xóa sổ cả vùng địa lý).</div>
+      <div class="id lang-en"><b>Multi-AZ</b> delivers High Availability &amp; Fault Tolerance against data center facilities failure. <b>Multi-Region</b> delivers Disaster Recovery against regional catastrophes or total grid blackouts.</div>
     </div>
     <div class="it">
       <div class="in">
-        <span class="lang-vi">Sự cố AZ và thiết kế Subnet</span>
-        <span class="lang-en">AZ Failure &amp; Subnet Design</span>
+        <span class="lang-vi">Sự cố AZ và thiết kế Subnet trong VPC</span>
+        <span class="lang-en">AZ Failure &amp; Subnet Design in VPC</span>
       </div>
-      <div class="id lang-vi">Mỗi Subnet trong VPC chỉ thuộc về đúng 1 AZ. Để ứng dụng chịu lỗi, bắt buộc phải tạo ít nhất <b>2 Subnets tại 2 AZs khác nhau</b> và đặt máy chủ / database phân tán đều giữa chúng.</div>
-      <div class="id lang-en">Every VPC Subnet resides within exactly one AZ. For fault tolerance, always provision at least <b>2 Subnets across 2 separate AZs</b> and distribute compute/DB workloads evenly across them.</div>
+      <div class="id lang-vi">Mỗi Subnet trong VPC chỉ thuộc về đúng 1 AZ. Để ứng dụng chịu lỗi, bắt buộc phải tạo ít nhất <b>2 Subnets tại 2 AZs khác nhau</b> và đặt máy chủ EC2 / database RDS phân tán đều giữa chúng kết hợp Application Load Balancer.</div>
+      <div class="id lang-en">Every VPC Subnet is strictly bounded to 1 AZ. For high availability, provision at least <b>2 Subnets across 2 separate AZs</b> and distribute EC2/RDS instances behind an Application Load Balancer.</div>
     </div>
   </div>
 </div>
 
-<!-- 5. Nguyên tắc vàng -->
+<!-- 7. Nguyên tắc vàng -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🏆</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">5. Nguyên tắc vàng — SAA-C03</span>
-        <span class="lang-en">5. Golden Rules — SAA-C03</span>
+        <span class="lang-vi">7. Nguyên tắc vàng — SAA-C03</span>
+        <span class="lang-en">7. Golden Rules — SAA-C03</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Ghi nhớ 4 nguyên tắc cốt lõi về hạ tầng</span>
+        <span class="lang-vi">Ghi nhớ 4 nguyên tắc cốt lõi về hạ tầng toàn cầu</span>
         <span class="lang-en">4 core infrastructure principles to memorize</span>
       </div>
     </div>
@@ -373,9 +533,9 @@
       <div class="bn">1</div>
       <div>
         <b class="lang-vi">Multi-AZ là tiêu chuẩn bắt buộc cho High Availability</b>
-        <b class="lang-en">Multi-AZ is the Baseline Requirement for High Availability</b>
-        <span class="lang-vi">Bất kỳ kiến trúc chịu lỗi (Fault-Tolerant) nào trên AWS cũng phải triển khai trải rộng trên tối thiểu 2 Availability Zones.</span>
-        <span class="lang-en">Every fault-tolerant AWS architecture must be deployed across at least 2 Availability Zones.</span>
+        <b class="lang-en">Multi-AZ is the Mandatory Baseline for High Availability</b>
+        <span class="lang-vi">Bất kỳ kiến trúc chịu lỗi (Fault-Tolerant) nào trên AWS cũng phải triển khai trải rộng trên tối thiểu 2 Availability Zones. Khi 1 AZ sập hoàn toàn, ứng dụng vẫn vận hành bình thường.</span>
+        <span class="lang-en">Every fault-tolerant AWS architecture must be deployed across at least 2 Availability Zones. If an entire AZ fails, the application continues running seamlessly.</span>
       </div>
     </li>
     <li class="bi">
@@ -383,8 +543,8 @@
       <div>
         <b class="lang-vi">Ưu tiên Compliance trước, Latency theo sau</b>
         <b class="lang-en">Prioritize Compliance First, Latency Second</b>
-        <span class="lang-vi">Khi chọn Region, rào cản pháp lý (Data Residency/Sovereignty) luôn đứng trước tối ưu độ trễ và chi phí.</span>
-        <span class="lang-en">When choosing an AWS Region, legal compliance (Data Residency/Sovereignty) strictly comes before latency and pricing.</span>
+        <span class="lang-vi">Khi chọn Region, rào cản pháp lý (Data Residency/Sovereignty) luôn đứng trước tối ưu độ trễ và chi phí. Không được phép vi phạm luật lưu trữ dữ liệu nội địa.</span>
+        <span class="lang-en">When choosing an AWS Region, legal compliance (Data Residency/Sovereignty) strictly overrides latency and pricing. Never violate statutory sovereign data residency mandates.</span>
       </div>
     </li>
     <li class="bi">
@@ -410,41 +570,78 @@
   </ul>
 </div>
 
-<!-- 6. Nguồn bài giảng -->
+<!-- 8. Nguồn bài giảng & Tài liệu tìm hiểu thêm -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🔗</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">6. Nguồn bài giảng tham chiếu (Udemy Lectures)</span>
-        <span class="lang-en">6. Reference Lectures &amp; Documentation</span>
+        <span class="lang-vi">8. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">8. Lecture References &amp; Further Study Resources</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
-        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Docs</span>
       </div>
     </div>
   </div>
-  <div class="g2">
-    <div class="it">
-      <div class="in">
-        <span class="lang-vi">Section 3 · Video bài giảng Udemy cốt lõi</span>
-        <span class="lang-en">Section 3 · Core Udemy Lectures</span>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
-      <div class="id">
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097978" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097978:</b> AWS Global Infrastructure Overview</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097980" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097980:</b> Regions, Availability Zones &amp; Latency</a>
+      <div class="pi">
+        <b>Section 3 · Lecture 26097978</b>
+        <span class="lang-vi">Tổng quan hạ tầng toàn cầu: Regions, AZs, Data Centers.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097978" target="_blank" style="color:var(--bl)">▶ Mở bài giảng trên Udemy</a></span>
+        <span class="lang-en">Global Infrastructure Overview: Regions, AZs, Data Centers.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097978" target="_blank" style="color:var(--bl)">▶ Open Udemy Lecture</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 3 · Lecture 26097980</b>
+        <span class="lang-vi">Độ trễ, cách chọn Region phù hợp &amp; Edge Locations.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097980" target="_blank" style="color:var(--bl)">▶ Mở bài giảng trên Udemy</a></span>
+        <span class="lang-en">Latency considerations, Region selection &amp; Edge Locations.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097980" target="_blank" style="color:var(--bl)">▶ Open Udemy Lecture</a></span>
       </div>
     </div>
-    <div class="it">
-      <div class="in">
-        <span class="lang-vi">Tài liệu kiến trúc chính thức từ AWS</span>
-        <span class="lang-en">Official AWS Architecture Documentation</span>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 AWS Whitepapers &amp; Kiến trúc chính thức</span>
+        <span class="lang-en">📑 Official AWS Whitepapers &amp; Architecture</span>
       </div>
-      <div class="id">
-        • <a href="https://aws.amazon.com/about-aws/global-infrastructure/" target="_blank" style="color:var(--bl);text-decoration:none">AWS Global Infrastructure Map &amp; Edge Network</a><br>
-        • <a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/" target="_blank" style="color:var(--bl);text-decoration:none">AWS Whitepaper: Fault Isolation Boundaries</a><br>
-        • <a href="https://aws.amazon.com/local-zones/" target="_blank" style="color:var(--bl);text-decoration:none">AWS Local Zones &amp; Wavelength Product Center</a>
+      <div class="pi">
+        <b>AWS Fault Isolation Boundaries</b>
+        <span class="lang-vi">Tài liệu phân tích ranh giới cô lập sự cố vật lý giữa AZs và Regions.<br><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/" target="_blank" style="color:var(--bl)">📖 Đọc AWS Whitepaper</a></span>
+        <span class="lang-en">In-depth paper on physical fault isolation between AZs and Regions.<br><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/" target="_blank" style="color:var(--bl)">📖 Read AWS Whitepaper</a></span>
+      </div>
+      <div class="pi">
+        <b>Well-Architected: Reliability Pillar</b>
+        <span class="lang-vi">Khung thiết kế độ tin cậy, nguyên lý phục hồi và phân tán Multi-AZ/Multi-Region.<br><a href="https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/" target="_blank" style="color:var(--bl)">📖 Đọc Reliability Pillar</a></span>
+        <span class="lang-en">Architectural principles for resilience, Multi-AZ and Multi-Region failover.<br><a href="https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/" target="_blank" style="color:var(--bl)">📖 Read Reliability Pillar</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Data Transfer Pricing &amp; Optimization</b>
+        <span class="lang-vi">Chi tiết bảng giá và hướng dẫn tối ưu chi phí truyền tải dữ liệu trên AWS.<br><a href="https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer_Pricing" target="_blank" style="color:var(--bl)">📖 Tra cứu Data Transfer Pricing</a></span>
+        <span class="lang-en">Comprehensive pricing and optimization guide for AWS Data Transfer.<br><a href="https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer_Pricing" target="_blank" style="color:var(--bl)">📖 View Data Transfer Pricing</a></span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>AWS Global Infrastructure Interactive Map</b>
+        <span class="lang-vi">Bản đồ tương tác trực quan 3D các Region, AZ và cáp ngầm toàn cầu.<br><a href="https://infrastructure.aws/" target="_blank" style="color:var(--bl)">🌐 Khám phá Infrastructure Map</a></span>
+        <span class="lang-en">Interactive 3D map of Regions, AZs, and trans-oceanic cables.<br><a href="https://infrastructure.aws/" target="_blank" style="color:var(--bl)">🌐 Explore Infrastructure Map</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Local Zones &amp; Wavelength Hub</b>
+        <span class="lang-vi">Trang chủ sản phẩm Edge Computing và thông số kỹ thuật độ trễ 5G.<br><a href="https://aws.amazon.com/local-zones/" target="_blank" style="color:var(--bl)">🏢 Xem AWS Local Zones</a> · <a href="https://aws.amazon.com/wavelength/" target="_blank" style="color:var(--bl)">5G Wavelength</a></span>
+        <span class="lang-en">Official edge computing portals and 5G latency specs.<br><a href="https://aws.amazon.com/local-zones/" target="_blank" style="color:var(--bl)">🏢 AWS Local Zones</a> · <a href="https://aws.amazon.com/wavelength/" target="_blank" style="color:var(--bl)">5G Wavelength</a></span>
+      </div>
+      <div class="pi">
+        <b>Tutorials Dojo SAA-C03 Cheat Sheet</b>
+        <span class="lang-vi">Tóm tắt các điểm cần nhớ và câu hỏi mẫu về Global Infrastructure.<br><a href="https://tutorialsdojo.com/aws-global-infrastructure/" target="_blank" style="color:var(--bl)">📝 Đọc Tutorials Dojo Cheat Sheet</a></span>
+        <span class="lang-en">High-yield summary and sample exam questions for Global Infrastructure.<br><a href="https://tutorialsdojo.com/aws-global-infrastructure/" target="_blank" style="color:var(--bl)">📝 Read Tutorials Dojo Cheat Sheet</a></span>
       </div>
     </div>
   </div>

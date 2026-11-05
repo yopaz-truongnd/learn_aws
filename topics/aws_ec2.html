@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AWS EC2 — Elastic Compute Cloud — SAA-C03</title>
 <link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
 <script src="../assets/js/app.js"></script>
 </head>
 <body>
@@ -25,8 +26,8 @@
 <div class="header">
   <div class="badge">AZ-Scoped Compute</div>
   <h1>AWS EC2 — Elastic Compute Cloud</h1>
-  <p class="lang-vi">Máy chủ ảo hạ tầng IaaS: Instance Types, Purchasing Options, Security Groups &amp; Quản trị</p>
-  <p class="lang-en">Virtual compute IaaS: Instance Types, Purchasing Options, Security Groups &amp; Management</p>
+  <p class="lang-vi">Máy chủ ảo hạ tầng IaaS: Vòng đời máy chủ, Purchasing Options, Tường lửa SG/NACL &amp; Mạng nâng cao</p>
+  <p class="lang-en">Virtual Compute IaaS: Instance Lifecycle, Purchasing Options, SG/NACL Firewalls &amp; Enhanced Networking</p>
 </div>
 
 <div class="grid">
@@ -41,307 +42,433 @@
         <span class="lang-en">1. Core Instance Types Families</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Chọn đúng loại máy chủ theo đặc tính tải (Workload Characteristics)</span>
-        <span class="lang-en">Match instance families to workload characteristics</span>
+        <span class="lang-vi">Chọn đúng họ máy chủ theo đặc tính tải công việc (Workload Characteristics)</span>
+        <span class="lang-en">Match instance families to specific workload characteristics</span>
       </div>
     </div>
   </div>
   <div class="g2">
     <div class="it">
-      <div class="in"><div class="dot" style="background:var(--bl)"></div>General Purpose (t3, t4g, m5, m6i)</div>
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>General Purpose (t3, t4g, m5, m6i, m7g)</div>
       <div class="id lang-vi">Cân bằng tối ưu giữa CPU, RAM và Networking. Phù hợp cho web server, backend API, môi trường phát triển (Dev/Test) và cơ sở dữ liệu nhỏ.<br><span class="tag tb">Cân bằng</span><span class="tag tb">Burstable CPU (t-series)</span><span class="tag ty">Web Servers</span></div>
       <div class="id lang-en">Optimized balance of compute, memory, and networking. Ideal for web servers, backend APIs, Dev/Test environments, and small databases.<br><span class="tag tb">Balanced</span><span class="tag tb">Burstable CPU (t-series)</span><span class="tag ty">Web Servers</span></div>
     </div>
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--gr)"></div>Compute Optimized (c5, c6g, c7g)</div>
-      <div class="id lang-vi">Tập trung vi xử lý CPU hiệu năng cao. Lý tưởng cho xử lý dữ liệu hàng loạt (Batch Processing), mã hóa media (Transcoding), máy chủ game chuyên dụng và mô hình Machine Learning inference.<br><span class="tag tg">High CPU/Core</span><span class="tag tg">Batch Processing</span><span class="tag ty">Media Encoding</span></div>
-      <div class="id lang-en">High-performance compute processors. Ideal for compute-intensive batch processing, media transcoding, gaming servers, and ML inference models.<br><span class="tag tg">High CPU/Core</span><span class="tag tg">Batch Processing</span><span class="tag ty">Media Encoding</span></div>
+      <div class="id lang-vi">Tập trung vi xử lý CPU hiệu năng cao. Lý tưởng cho xử lý dữ liệu hàng loạt (Batch Processing), mã hóa media (Transcoding), máy chủ game chuyên dụng và Machine Learning inference.<br><span class="tag tg">High CPU/Core</span><span class="tag tg">Batch Processing</span><span class="tag ty">Media Encoding</span></div>
+      <div class="id lang-en">High-performance compute processors. Ideal for compute-intensive batch processing, media transcoding, gaming servers, and ML inference.<br><span class="tag tg">High CPU/Core</span><span class="tag tg">Batch Processing</span><span class="tag ty">Media Encoding</span></div>
     </div>
     <div class="it">
-      <div class="in"><div class="dot" style="background:var(--or)"></div>Memory Optimized (r5, r6g, x1, z1d)</div>
-      <div class="id lang-vi">Dung lượng RAM cực lớn giúp xử lý khối dữ liệu khổng lồ trực tiếp trong bộ nhớ. Dùng cho In-memory Databases (Redis, Memcached), cơ sở dữ liệu quan hệ lớn và phân tích dữ liệu thời gian thực.<br><span class="tag to">High RAM</span><span class="tag to">Redis / Memcached</span><span class="tag ty">Real-time Big Data</span></div>
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Memory Optimized (r5, r6g, r7g, x1, z1d)</div>
+      <div class="id lang-vi">Dung lượng RAM cực lớn giúp xử lý khối dữ liệu khổng lồ trực tiếp trong bộ nhớ. Dùng cho In-memory Databases (Redis, Memcached), cơ sở dữ liệu quan hệ doanh nghiệp và Big Data thời gian thực.<br><span class="tag to">High RAM</span><span class="tag to">Redis / Memcached</span><span class="tag ty">Real-time Big Data</span></div>
       <div class="id lang-en">Delivers high memory capacity for memory-intensive workloads. Used for in-memory caches (Redis, Memcached), enterprise relational DBs, and real-time big data.<br><span class="tag to">High RAM</span><span class="tag to">Redis / Memcached</span><span class="tag ty">Real-time Big Data</span></div>
     </div>
     <div class="it">
-      <div class="in"><div class="dot" style="background:var(--rd)"></div>Storage Optimized (i3, i4i, d2, d3, h1)</div>
-      <div class="id lang-vi">Yêu cầu truy xuất đọc/ghi đĩa I/O cực cao với độ trễ thấp trên khối dữ liệu cục bộ. Sử dụng trực tiếp ổ NVMe SSD nội bộ cho Data Warehousing, Apache Cassandra, Hadoop distributed file systems.<br><span class="tag tr">High IOPS</span><span class="tag tr">NVMe SSD cục bộ</span><span class="tag ty">Data Warehousing</span></div>
-      <div class="id lang-en">Sequential and random read/write I/O with ultra-low latency on massive datasets. Uses direct-attached NVMe SSDs for Data Warehousing, Apache Cassandra, Hadoop clusters.<br><span class="tag tr">High IOPS</span><span class="tag tr">Local NVMe SSD</span><span class="tag ty">Data Warehousing</span></div>
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Storage Optimized (i3, i4i, d2, d3)</div>
+      <div class="id lang-vi">Yêu cầu truy xuất đọc/ghi đĩa I/O cực cao với độ trễ thấp trên khối dữ liệu cục bộ. Sử dụng trực tiếp ổ NVMe SSD nội bộ (Instance Store) cho Data Warehousing, Apache Cassandra, Elasticsearch.<br><span class="tag tr">High IOPS</span><span class="tag tr">NVMe SSD cục bộ</span><span class="tag ty">Data Warehousing</span></div>
+      <div class="id lang-en">Sequential and random read/write I/O with ultra-low latency on massive datasets. Uses direct-attached NVMe SSDs for Data Warehousing, Apache Cassandra, Elasticsearch.<br><span class="tag tr">High IOPS</span><span class="tag tr">Local NVMe SSD</span><span class="tag ty">Data Warehousing</span></div>
     </div>
   </div>
 </div>
 
-<!-- 2. Purchasing Options -->
+<!-- DIAGRAM: EC2 Lifecycle & Hibernation State Machine -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Sơ đồ máy trạng thái vòng đời EC2 &amp; Cơ chế Hibernate</span>
+        <span class="lang-en">EC2 Instance Lifecycle &amp; Hibernation State Machine</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Biến đổi trạng thái của IP, RAM, ổ đĩa EBS và Instance Store qua từng giai đoạn</span>
+        <span class="lang-en">State transitions impacting IP, RAM, EBS volumes, and Instance Store</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-ec2-lifecycle">
+    <div class="mermaid-src lang-vi" style="display:none">
+stateDiagram-v2
+    [*] --> Pending: Launch Instance
+    Pending --> Running: Khởi tạo xong (Tính phí Compute)
+    Running --> Stopping: Stop Instance
+    Stopping --> Stopped: Đã tắt hoàn toàn
+    Stopped --> Pending: Start Instance (Nhận Public IP MỚI)
+    Running --> ShuttingDown: Terminate Instance
+    Stopped --> ShuttingDown: Terminate Instance
+    ShuttingDown --> Terminated: Đã xóa hoàn toàn
+
+    state Running {
+        [*] --> NormalState
+        NormalState --> Hibernating: Bật Hibernate (Dump RAM vào Root EBS)
+        Hibernating --> Stopped: Tạm dừng (Giữ nguyên RAM trên đĩa mã hóa)
+    }
+
+    note right of Stopped
+        • Không tính phí Compute (chỉ tính phí EBS Storage)
+        • Mất Public IPv4 (nhận IP mới khi Start lại)
+        • Private IP giữ nguyên không đổi
+        • DỮ LIỆU INSTANCE STORE BỊ MẤT HOÀN TOÀN!
+    end note
+
+    note left of Terminated
+        • Root EBS xóa nếu DeleteOnTermination = true
+        • Attached EBS volumes giữ nguyên (mặc định)
+        • Elastic IP được giải phóng
+    end note
+    </div>
+
+    <div class="mermaid-src lang-en" style="display:none">
+stateDiagram-v2
+    [*] --> Pending: Launch Instance
+    Pending --> Running: Fully Initialized (Billed for Compute)
+    Running --> Stopping: Stop Instance
+    Stopping --> Stopped: Completely Stopped
+    Stopped --> Pending: Start Instance (Gets NEW Public IPv4)
+    Running --> ShuttingDown: Terminate Instance
+    Stopped --> ShuttingDown: Terminate Instance
+    ShuttingDown --> Terminated: Permanently Deleted
+
+    state Running {
+        [*] --> NormalState
+        NormalState --> Hibernating: Trigger Hibernate (Dumps RAM to Root EBS)
+        Hibernating --> Stopped: Suspended (RAM state preserved on encrypted disk)
+    }
+
+    note right of Stopped
+        • Zero compute charge (only EBS storage billed)
+        • Public IPv4 released (new IP assigned upon start)
+        • Private IP remains unchanged
+        • INSTANCE STORE DATA IS PERMANENTLY LOST!
+    end note
+
+    note left of Terminated
+        • Root EBS deleted if DeleteOnTermination = true
+        • Secondary EBS volumes preserved by default
+        • Elastic IP unassociated
+    end note
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Purchasing Options Comprehensive Matrix -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--grb)">💰</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">2. Các mô hình thanh toán (Purchasing Options)</span>
-        <span class="lang-en">2. EC2 Purchasing Options</span>
+        <span class="lang-vi">2. Ma trận các mô hình thanh toán EC2 (Purchasing Options Matrix)</span>
+        <span class="lang-en">2. EC2 Purchasing Options Decision Matrix</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Chiến lược tối ưu hóa chi phí (Cost Optimization) trong đề thi SAA-C03</span>
-        <span class="lang-en">Cost optimization strategies for SAA-C03</span>
+        <span class="lang-vi">Chiến lược tối ưu hóa chi phí (Cost Optimization) trọng tâm trong đề thi SAA-C03</span>
+        <span class="lang-en">Core cost optimization strategies tested heavily in SAA-C03</span>
       </div>
     </div>
   </div>
-  <div class="cols">
-    <div class="col">
-      <div class="colt">
-        <span class="lang-vi">Linh hoạt &amp; Tạm thời</span>
-        <span class="lang-en">Flexible &amp; Short-Term</span>
-      </div>
-      <div class="pi">
-        <b>On-Demand</b>
-        <span class="lang-vi">Trả theo giây/giờ sử dụng thực tế. Không cần cam kết trước. Chi phí cao nhất nhưng linh hoạt nhất cho workload mới, không dự đoán trước được thời gian chạy.</span>
-        <span class="lang-en">Pay for compute capacity per second or hour with no upfront commitments. Highest cost per unit, best for unpredictable, short-term workloads.</span>
-      </div>
-      <div class="pi">
-        <b>Spot Instances</b>
-        <span class="lang-vi">Đấu giá dung lượng máy chủ nhàn rỗi của AWS. <b>Giảm giá tới 90%</b> so với On-Demand. Có thể bị AWS thu hồi bất kỳ lúc nào với <b>cảnh báo trước 2 phút</b>. Dành cho Batch jobs, Stateless web app, Rendering video. Không dùng cho DB hoặc critical workloads!</span>
-        <span class="lang-en">Bid on spare AWS compute capacity. <b>Up to 90% discount</b> over On-Demand. Instances can be reclaimed at any time with a <b>2-minute warning</b>. Ideal for batch jobs, stateless web tiers, video rendering. Never for databases!</span>
-      </div>
-      <div class="pi">
-        <b>Capacity Reservations</b>
-        <span class="lang-vi">Giữ chỗ trước phần cứng trong một AZ cụ thể. Không cần cam kết 1-3 năm. Tính phí theo giá On-Demand dù có chạy instance hay không.</span>
-        <span class="lang-en">Reserve compute capacity in a specific AZ without 1-3 year commitments. Charged On-Demand rate whether instances are actively running or idle.</span>
-      </div>
-    </div>
-    <div class="col">
-      <div class="colt">
-        <span class="lang-vi">Cam kết dài hạn (1 hoặc 3 năm)</span>
-        <span class="lang-en">Long-Term Commitments (1 or 3 Years)</span>
-      </div>
-      <div class="pi">
-        <b>Reserved Instances (RI)</b>
-        <span class="lang-vi">Cam kết 1 hoặc 3 năm. Giảm tới 72%.<br>• <i>Standard RI:</i> Không đổi được họ instance.<br>• <i>Convertible RI:</i> Được đổi họ instance, OS, tenancy (giảm giá ít hơn).<br>• Hình thức: All Upfront, Partial Upfront, No Upfront.</span>
-        <span class="lang-en">1 or 3-year commitment. Up to 72% discount.<br>• <i>Standard RI:</i> Cannot change instance family.<br>• <i>Convertible RI:</i> Can change instance family, OS, tenancy (lower discount).<br>• Options: All Upfront, Partial Upfront, No Upfront.</span>
-      </div>
-      <div class="pi">
-        <b>Savings Plans</b>
-        <span class="lang-vi">Cam kết chi tiêu theo mức tiền cố định mỗi giờ (ví dụ $10/h) trong 1 hoặc 3 năm. Linh hoạt vượt trội so với RI: tự động áp dụng khi chuyển đổi giữa các thế hệ máy chủ EC2, AWS Fargate và AWS Lambda!</span>
-        <span class="lang-en">Commit to a fixed hourly spend (e.g. $10/hr) for 1 or 3 years. Outstanding flexibility over RIs: applies automatically across EC2 instance generations, AWS Fargate, and AWS Lambda!</span>
-      </div>
-    </div>
-    <div class="col">
-      <div class="colt">
-        <span class="lang-vi">Cách ly phần cứng (Hardware Isolation)</span>
-        <span class="lang-en">Hardware Isolation &amp; Tenancy</span>
-      </div>
-      <div class="pi">
-        <b>Dedicated Hosts</b>
-        <span class="lang-vi">Thuê nguyên một máy chủ vật lý riêng biệt của AWS. Kiểm soát trực tiếp số core/socket vật lý để tuân thủ giấy phép phần mềm theo core (BYOL: Bring Your Own License) và quy định pháp lý khắt khe.</span>
-        <span class="lang-en">Physical server dedicated entirely to your use. Complete control over sockets and physical cores to support core-bound software licensing (BYOL) and strict compliance mandates.</span>
-      </div>
-      <div class="pi">
-        <b>Dedicated Instances</b>
-        <span class="lang-vi">Chạy trên phần cứng dành riêng cho một tài khoản khách hàng, nhưng AWS quản lý vị trí socket. Tính phí thêm theo mỗi giờ chạy instance.</span>
-        <span class="lang-en">Instances running on hardware dedicated to a single customer, but socket layout is managed by AWS. Billed an additional hourly tenancy fee.</span>
-      </div>
-    </div>
+
+  <div class="matrix-wrap">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th class="col-crit">
+            <span class="lang-vi">Mô hình</span>
+            <span class="lang-en">Option</span>
+          </th>
+          <th>
+            <span class="lang-vi">Mức giảm giá</span>
+            <span class="lang-en">Discount</span>
+          </th>
+          <th>
+            <span class="lang-vi">Cam kết</span>
+            <span class="lang-en">Commitment</span>
+          </th>
+          <th>
+            <span class="lang-vi">Đặc tính kiến trúc &amp; Thu hồi</span>
+            <span class="lang-en">Key Characteristics &amp; Interruption</span>
+          </th>
+          <th>
+            <span class="lang-vi">Khi nào chọn trong đề thi SAA-C03?</span>
+            <span class="lang-en">Exam Scenario Match</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-crit"><b>On-Demand</b></td>
+          <td>0% (Giá chuẩn)</td>
+          <td>Không cam kết (trả theo giây/giờ)</td>
+          <td>Khởi tạo tức thì, linh hoạt nhất, không bị gián đoạn trừ khi chủ động tắt.</td>
+          <td>Workload ngắn hạn, ứng dụng mới chưa dự đoán được lưu lượng, Dev/Test.</td>
+        </tr>
+        <tr>
+          <td class="col-crit"><b>Spot Instances</b></td>
+          <td><span class="tag tg">Giảm tới 90%</span></td>
+          <td>Không cam kết</td>
+          <td>Dung lượng nhàn rỗi của AWS. <b>Có thể bị thu hồi bất kỳ lúc nào với cảnh báo trước 2 phút!</b></td>
+          <td>Batch jobs, xử lý video, phân tích dữ liệu, stateless web tier. <b>Tuyệt đối không dùng cho Database!</b></td>
+        </tr>
+        <tr>
+          <td class="col-crit"><b>Compute Savings Plans</b></td>
+          <td><span class="tag tb">Giảm tới 66%</span></td>
+          <td>1 hoặc 3 năm ($/giờ cố định)</td>
+          <td><b>Linh hoạt nhất:</b> Tự động áp dụng xuyên suốt các họ EC2, đổi OS, Region, và áp dụng cả cho <b>AWS Fargate &amp; AWS Lambda</b>!</td>
+          <td>Doanh nghiệp có mức chi tiêu ổn định nhưng muốn tự do nâng cấp thế hệ CPU, chuyển dịch container/serverless.</td>
+        </tr>
+        <tr>
+          <td class="col-crit"><b>EC2 Instance Savings Plans</b></td>
+          <td><span class="tag tb">Giảm tới 72%</span></td>
+          <td>1 hoặc 3 năm ($/giờ cố định)</td>
+          <td>Cam kết theo 1 họ máy chủ cụ thể (ví dụ M5) trong 1 Region, nhưng được đổi size (m5.xlarge sang m5.2xlarge) và đổi OS.</td>
+          <td>Workload ổn định, xác định gắn bó lâu dài với một họ máy chủ nhất định.</td>
+        </tr>
+        <tr>
+          <td class="col-crit"><b>Convertible Reserved Instances</b></td>
+          <td><span class="tag to">Giảm tới 66%</span></td>
+          <td>1 hoặc 3 năm</td>
+          <td>Cho phép chuyển đổi họ máy chủ, hệ điều hành và tenancy nhưng đòi hỏi giá trị hợp đồng mới &ge; hợp đồng cũ.</td>
+          <td>Doanh nghiệp cần cam kết tài chính nhưng cần linh hoạt thay đổi cấu hình phần cứng khi ứng dụng phát triển.</td>
+        </tr>
+        <tr>
+          <td class="col-crit"><b>Dedicated Hosts</b></td>
+          <td>Có chiết khấu qua RI</td>
+          <td>Thuê nguyên server vật lý</td>
+          <td><b>Kiểm soát vật lý cấp core/socket.</b> Hỗ trợ bản quyền phần mềm theo socket/core (BYOL: Windows Server, SQL Server).</td>
+          <td>Tuân thủ quy định pháp lý khắt khe và tận dụng giấy phép phần mềm theo core (Bring Your Own License).</td>
+        </tr>
+        <tr>
+          <td class="col-crit"><b>Dedicated Instances</b></td>
+          <td>Tính thêm phí mỗi giờ</td>
+          <td>Cách ly phần cứng</td>
+          <td>Chạy trên phần cứng không chia sẻ với khách hàng khác, nhưng do AWS tự động sắp xếp socket.</td>
+          <td>Yêu cầu tuân thủ bảo mật không được chung phần cứng với tenant khác, không cần BYOL theo socket.</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
-<!-- 3. Security Groups -->
-<div class="card">
+<!-- 3. Security Groups vs NACL Comparison Matrix -->
+<div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">🛡️</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">3. Security Groups (Tường lửa ảo)</span>
-        <span class="lang-en">3. Security Groups (Virtual Firewalls)</span>
+        <span class="lang-vi">3. Ma trận so sánh: Security Group vs Network ACL (NACL)</span>
+        <span class="lang-en">3. Comparison Matrix: Security Groups vs Network ACLs (NACL)</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Kiểm soát lưu lượng mạng ở cấp độ Instance</span>
-        <span class="lang-en">Instance-level virtual firewall traffic filtering</span>
+        <span class="lang-vi">Hai tầng tường lửa ảo cốt lõi trong kiến trúc VPC — Luôn có trong đề thi SAA-C03</span>
+        <span class="lang-en">Two foundational virtual firewall layers in VPC — Mandatory exam knowledge</span>
       </div>
     </div>
   </div>
-  <div class="flow">
-    <div class="st s-b">
-      <b>Inbound Traffic</b>
-      <span class="lang-vi">Internet / Nội bộ</span>
-      <span class="lang-en">Internet / Internal</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-o">
-      <b>Security Group</b>
-      <span>Stateful Firewall</span>
-    </div>
-    <div class="ar">›</div>
-    <div class="st s-g">
-      <b>EC2 Instance</b>
-      <span>Application / Port</span>
-    </div>
+
+  <div class="matrix-wrap">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th class="col-crit">
+            <span class="lang-vi">Tiêu chí phân biệt</span>
+            <span class="lang-en">Feature</span>
+          </th>
+          <th>
+            <b>Security Group (SG)</b>
+          </th>
+          <th>
+            <b>Network ACL (NACL)</b>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Phạm vi hoạt động (Scope)</span>
+            <span class="lang-en">Operating Level</span>
+          </td>
+          <td>
+            <b>Cấp độ Instance / ENI</b> (Gắn trực tiếp vào card mạng ảo của máy chủ EC2)
+          </td>
+          <td>
+            <b>Cấp độ Subnet</b> (Là chốt chặn cửa ngõ của toàn bộ Subnet)
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Trạng thái kết nối (Statefulness)</span>
+            <span class="lang-en">Statefulness</span>
+          </td>
+          <td>
+            <span class="tag tg">Stateful (Có lưu trạng thái)</span><br>
+            Traffic Inbound được vào thì gói tin phản hồi Outbound <b>tự động được ra</b>, không cần mở rule chiều về.
+          </td>
+          <td>
+            <span class="tag tr">Stateless (Không lưu trạng thái)</span><br>
+            Gói tin phản hồi về bị đánh giá lại hoàn toàn độc lập! <b>Bắt buộc phải mở Ephemeral Ports (1024-65535)</b> ở chiều về.
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Loại quy tắc hỗ trợ</span>
+            <span class="lang-en">Supported Rules</span>
+          </td>
+          <td>
+            <b>Chỉ hỗ trợ ALLOW</b> (Không có quy tắc Deny). Mặc định: Chặn toàn bộ Inbound (Default Deny) và Cho phép toàn bộ Outbound.
+          </td>
+          <td>
+            <b>Hỗ trợ cả ALLOW và DENY</b>. Có thể chặn đích danh 1 IP xấu cụ thể (IP Blacklisting).
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Thứ tự xử lý quy tắc</span>
+            <span class="lang-en">Rule Evaluation</span>
+          </td>
+          <td>
+            Đánh giá <b>tất cả các rules đồng thời</b> trước khi quyết định cấp quyền.
+          </td>
+          <td>
+            Xử lý tuần tự theo <b>số thứ tự từ nhỏ đến lớn (1 - 32766)</b>. Rule số 100 khớp trước thì dừng lại, bỏ qua các rule lớn hơn.
+          </td>
+        </tr>
+        <tr>
+          <td class="col-crit">
+            <span class="lang-vi">Tham chiếu Security Group</span>
+            <span class="lang-en">Security Group Reference</span>
+          </td>
+          <td>
+            <span class="tag tb">HỖ TRỢ</span>: Có thể điền SG ID khác làm Source (ví dụ: EC2 chỉ nhận traffic từ ALB SG).
+          </td>
+          <td>
+            <span class="tag tr">KHÔNG HỖ TRỢ</span>: Chỉ chấp nhận dải địa chỉ IP CIDR cụ thể.
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <ul class="sl">
-    <li>
-      <div class="si" style="background:var(--grb)">🔄</div>
-      <div>
-        <b class="lang-vi">Stateful (Có lưu trạng thái)</b>
-        <b class="lang-en">Stateful Filtering</b>
-        <span class="lang-vi">Nếu traffic Inbound được cho phép đi vào, thì traffic Outbound phản hồi lại sẽ <b>tự động được cho phép</b> đi ra (và ngược lại), không cần mở port chiều ngược.</span>
-        <span class="lang-en">If inbound traffic is allowed, outbound response traffic is <b>automatically permitted</b> regardless of outbound rules (and vice-versa).</span>
-      </div>
-    </li>
-    <li>
-      <div class="si" style="background:var(--blb)">✅</div>
-      <div>
-        <b class="lang-vi">Chỉ có ALLOW Rules</b>
-        <b class="lang-en">ALLOW Rules Only</b>
-        <span class="lang-vi">Security Group KHÔNG CÓ quy tắc DENY. Mặc định chặn tất cả Inbound (Default Deny) và cho phép tất cả Outbound (Allow All).</span>
-        <span class="lang-en">Security Groups DO NOT have DENY rules. Default inbound is Deny All; default outbound is Allow All.</span>
-      </div>
-    </li>
-    <li>
-      <div class="si" style="background:var(--orb)">🔗</div>
-      <div>
-        <b class="lang-vi">Security Group Reference (Cực kỳ quan trọng)</b>
-        <b class="lang-en">Security Group Reference (High Exam Value)</b>
-        <span class="lang-vi">Một Security Group có thể tham chiếu đến một SG khác làm nguồn (Source). Thay vì mở dải IP, EC2 SG chỉ cho phép traffic xuất phát từ ALB SG!</span>
-        <span class="lang-en">A Security Group can reference another SG ID as its traffic source. Instead of opening IP CIDR blocks, EC2 SG only authorizes traffic originating from the ALB SG!</span>
-      </div>
-    </li>
-  </ul>
 </div>
 
-<!-- 4. User Data & IMDS -->
-<div class="card">
-  <div class="ch">
-    <div class="ci" style="background:var(--orb)">⚙️</div>
-    <div>
-      <div class="ct">
-        <span class="lang-vi">4. User Data &amp; Instance Metadata</span>
-        <span class="lang-en">4. User Data &amp; Instance Metadata</span>
-      </div>
-      <div class="cs">Bootstrapping &amp; IMDSv1 vs IMDSv2</div>
-    </div>
-  </div>
-  <div class="it" style="margin-bottom:12px">
-    <div class="in"><div class="dot" style="background:var(--or)"></div>EC2 User Data (Bootstrapping)</div>
-    <div class="id lang-vi">Đoạn bash script tự động chạy với quyền <b>root</b> ở <b>lần khởi động đầu tiên duy nhất</b> của instance. Dùng để cài web server, kéo source code, cấu hình môi trường.<br><span class="tag to">Chạy 1 lần lúc tạo</span><span class="tag ty">Root privileges</span></div>
-    <div class="id lang-en">Bash script executed automatically with <b>root</b> privileges during the <b>first boot only</b>. Used for installing web servers, cloning source code, and provisioning.<br><span class="tag to">Runs Once at First Boot</span><span class="tag ty">Root Privileges</span></div>
-  </div>
-  <div class="it">
-    <div class="in"><div class="dot" style="background:var(--bl)"></div>Instance Metadata Service (IMDS)</div>
-    <div class="id lang-vi">
-      Lấy thông tin nội bộ của máy chủ tại IP nội bộ <code>http://169.254.169.254/latest/meta-data/</code> (IP nội bộ, Public IP, Instance Type, IAM Role temporary credentials).<br>
-      <div class="flow" style="margin-top:8px;margin-bottom:0">
-        <div class="st s-r"><b>IMDSv1</b><span>GET trực tiếp (Dễ bị SSRF)</span></div><div class="ar">›</div>
-        <div class="st s-g"><b>IMDSv2</b><span>Bắt buộc PUT lấy Session Token</span></div>
-      </div>
-    </div>
-    <div class="id lang-en">
-      Query internal instance information at link-local address <code>http://169.254.169.254/latest/meta-data/</code> (Private IP, Public IP, Instance Type, IAM Role STS credentials).<br>
-      <div class="flow" style="margin-top:8px;margin-bottom:0">
-        <div class="st s-r"><b>IMDSv1</b><span>Direct GET (Vulnerable to SSRF)</span></div><div class="ar">›</div>
-        <div class="st s-g"><b>IMDSv2</b><span>Requires HTTP PUT session token</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 5. Connection & Administration -->
+<!-- 4. Advanced Networking & Hardware -->
 <div class="card full">
   <div class="ch">
-    <div class="ci" style="background:var(--blb)">🔑</div>
+    <div class="ci" style="background:var(--blb)">⚡</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">5. Phương thức kết nối &amp; Quản trị EC2</span>
-        <span class="lang-en">5. EC2 Connection Methods &amp; Administration</span>
+        <span class="lang-vi">4. Cơ chế mạng nâng cao (Enhanced Networking) &amp; Hệ thống AWS Nitro</span>
+        <span class="lang-en">4. Enhanced Networking &amp; AWS Nitro System</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">So sánh SSH truyền thống, EC2 Instance Connect và SSM Session Manager</span>
-        <span class="lang-en">Comparing traditional SSH, EC2 Instance Connect, and SSM Session Manager</span>
+        <span class="lang-vi">Tối ưu hiệu năng truyền tải mạng và kiến trúc phần cứng thế hệ mới</span>
+        <span class="lang-en">High-performance network virtualization and next-gen hardware architecture</span>
       </div>
     </div>
   </div>
   <div class="cols">
     <div class="col">
-      <div class="colt">SSH / RDP truyền thống</div>
+      <div class="colt">Enhanced Networking: ENA vs EFA</div>
       <div class="pi">
-        <b>Yêu cầu kết nối</b>
-        <span class="lang-vi">Port 22 (Linux) hoặc Port 3389 (Windows). Cần máy có Public IP hoặc thông qua Bastion Host trong Public Subnet.</span>
-        <span class="lang-en">Port 22 (Linux) or Port 3389 (Windows). Requires Public IP or access via a Bastion Host in a Public Subnet.</span>
+        <b>Elastic Network Adapter (ENA)</b>
+        <span class="lang-vi">Bộ điều hợp mạng ảo hóa SR-IOV đem lại băng thông lên tới <b>100 Gbps</b>, gói tin mỗi giây (PPS) cao và độ trễ cực thấp. Tiêu chuẩn mặc định cho hầu hết máy chủ EC2 hiện đại.</span>
+        <span class="lang-en">SR-IOV virtualized network adapter supporting up to <b>100 Gbps</b>, high PPS, and low jitter. Baseline standard for modern EC2 instances.</span>
       </div>
       <div class="pi">
-        <b>Xác thực</b>
-        <span class="lang-vi">Dùng cặp Key Pair (.pem / .ppk). Quản trị viên phải chịu rủi ro mất hoặc lộ lọt Private Key.</span>
-        <span class="lang-en">Uses Key Pair files (.pem / .ppk). Risk of private key misplacement or exposure.</span>
-      </div>
-    </div>
-    <div class="col">
-      <div class="colt">EC2 Instance Connect</div>
-      <div class="pi">
-        <b>Cơ chế hoạt động</b>
-        <span class="lang-vi">Đẩy 1 Public Key tạm thời (thời hạn 60 giây) trực tiếp vào Instance Metadata qua AWS API.</span>
-        <span class="lang-en">Pushes an ephemeral Public Key (60s lifetime) directly into Instance Metadata via AWS API.</span>
-      </div>
-      <div class="pi">
-        <b>Ưu điểm</b>
-        <span class="lang-vi">Kết nối trực tiếp từ trình duyệt trên AWS Console hoặc qua AWS CLI mà không cần chia sẻ file private key dài hạn. Vẫn cần mở port 22.</span>
-        <span class="lang-en">Browser-based console connection without sharing permanent private keys. Still requires port 22 open.</span>
+        <b>Elastic Fabric Adapter (EFA) — Bẫy thi HPC!</b>
+        <span class="lang-vi">Thiết bị mạng chuyên dụng cho tính toán hiệu năng cao (HPC), Machine Learning và mô phỏng tài chính. Sử dụng giao thức <b>Message Passing Interface (MPI)</b>, cho phép <b>bỏ qua tầng nhân hệ điều hành (OS Kernel Bypass)</b> để giao tiếp liên node với độ trễ thấp nhất có thể.</span>
+        <span class="lang-en">Dedicated network device for High Performance Computing (HPC) and distributed ML. Uses <b>MPI protocol</b> with <b>OS Kernel Bypass</b> for ultra-low inter-node latency.</span>
       </div>
     </div>
     <div class="col">
-      <div class="colt">AWS Systems Manager Session Manager (Khuyên dùng)</div>
+      <div class="colt">Hệ thống AWS Nitro System</div>
       <div class="pi">
-        <b>Bảo mật cao nhất</b>
-        <span class="lang-vi"><b>KHÔNG CẦN MỞ PORT 22</b>, không cần Public IP, không cần Bastion Host, không cần Key Pair.</span>
-        <span class="lang-en"><b>NO OPEN PORT 22</b>, no Public IP needed, no Bastion Host, no SSH Key Pairs.</span>
+        <b>Phần cứng chuyên dụng độc lập</b>
+        <span class="lang-vi">AWS chuyển toàn bộ các tác vụ ảo hóa (Mạng VPC, Lưu trữ EBS, Bảo mật) sang các thẻ phần cứng rời chuyên biệt (Nitro Cards), giải phóng 100% tài nguyên CPU/RAM của máy chủ vật lý cho máy ảo EC2 của khách hàng.</span>
+        <span class="lang-en">Offloads virtualization functions (VPC networking, EBS storage, security) to dedicated PCIe Nitro Cards, freeing 100% host CPU/RAM for guest EC2 workloads.</span>
       </div>
       <div class="pi">
-        <b>Cơ chế</b>
-        <span class="lang-vi">Máy chủ cài SSM Agent + gắn IAM Role có quyền SSM. Kết nối qua kênh bảo mật HTTPS outbound tới AWS SSM service. Kiểm soát và ghi log toàn bộ lệnh gõ qua CloudTrail &amp; S3.</span>
-        <span class="lang-en">SSM Agent + attached IAM Role. Secure outbound HTTPS communication to AWS SSM service. Full command auditing via CloudTrail &amp; S3.</span>
+        <b>Bảo mật tuyệt đối (Nitro Enclaves)</b>
+        <span class="lang-vi">Môi trường tính toán cách ly hoàn toàn, không có kết nối mạng ra ngoài, không có quyền truy cập root hay lưu trữ cục bộ, dùng để xử lý dữ liệu cực kỳ nhạy cảm (khóa mã hóa KMS, PII, thông tin thẻ tín dụng).</span>
+        <span class="lang-en">Isolated compute environments with zero external network connectivity, no root access, and no persistent storage for processing ultra-sensitive data (KMS keys, PII).</span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="colt">Quản trị an toàn: SSM Session Manager</div>
+      <div class="pi">
+        <b>Không mở Port 22 / RDP</b>
+        <span class="lang-vi">Quản trị viên kết nối trực tiếp vào console shell từ trình duyệt hoặc CLI mà <b>KHÔNG CẦN Public IP, không cần mở port 22, không cần Bastion Host</b>.</span>
+        <span class="lang-en">Connect securely to instance shells from browser or CLI with <b>NO Public IP, NO open port 22, NO Bastion Host needed</b>.</span>
+      </div>
+      <div class="pi">
+        <b>Ghi vết Audit toàn diện</b>
+        <span class="lang-vi">Mọi câu lệnh người dùng gõ vào shell đều được tự động mã hóa và ghi log lưu trữ vào <b>Amazon S3 và CloudWatch Logs</b>, dễ dàng kiểm toán tuân thủ.</span>
+        <span class="lang-en">All executed commands are automatically recorded and audited to <b>Amazon S3 and CloudWatch Logs</b> for security compliance.</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 6. Placement Groups -->
+<!-- 5. Placement Groups -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--gy)">📦</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">6. EC2 Placement Groups (Nhóm phân bổ phần cứng)</span>
-        <span class="lang-en">6. EC2 Placement Groups</span>
+        <span class="lang-vi">5. EC2 Placement Groups (Nhóm phân bổ phần cứng)</span>
+        <span class="lang-en">5. EC2 Placement Groups</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Kiểm soát vị trí vật lý của các instances trên rack máy chủ AWS</span>
-        <span class="lang-en">Control physical instance placement across underlying AWS server racks</span>
+        <span class="lang-vi">Kiểm soát vị trí vật lý của các instances trên rack máy chủ AWS — Câu hỏi kinh điển trong đề thi</span>
+        <span class="lang-en">Control physical instance placement across underlying server racks — Classic exam question</span>
       </div>
     </div>
   </div>
   <div class="tools">
     <div class="tool">
       <div class="tn" style="color:var(--bl)">Cluster Placement Group</div>
-      <div class="td lang-vi">Gom tất cả các instances vào cùng 1 rack vật lý trong <b>1 Availability Zone duy nhất</b>. Đem lại độ trễ mạng cực thấp (&lt; 1ms) và băng thông mạng tối đa (10Gbps - 100Gbps). <i>Rủi ro:</i> Nếu rack phần cứng gặp sự cố, tất cả instances cùng chết. Phù hợp Big Data HPC, MPI.</div>
-      <div class="td lang-en">Packs instances close together inside <b>a single AZ</b> on the same hardware rack. Delivers ultra-low latency (&lt; 1ms) and 10–100Gbps bandwidth. <i>Risk:</i> Entire group fails if rack hardware crashes. Ideal for HPC, MPI big data.</div>
+      <div class="td lang-vi">
+        Gom tất cả instances vào cùng 1 rack vật lý trong <b>1 Availability Zone duy nhất</b>. Đem lại độ trễ mạng cực thấp (&lt; 1ms) và băng thông tối đa (10Gbps - 100Gbps).<br>
+        <i>Rủi ro:</i> Sập rack phần cứng = tất cả cùng chết. <b>Không thể trải dài qua nhiều AZs!</b> Dành cho Big Data HPC, MPI.
+      </div>
+      <div class="td lang-en">
+        Packs instances on the same hardware rack inside <b>a single AZ</b>. Ultra-low latency (&lt; 1ms) and 10–100Gbps network.<br>
+        <i>Risk:</i> Entire group fails if rack crashes. <b>Cannot span multiple AZs!</b> Ideal for Big Data HPC and MPI.
+      </div>
     </div>
     <div class="tool">
       <div class="tn" style="color:var(--gr)">Spread Placement Group</div>
-      <div class="td lang-vi">Phân tán tuyệt đối từng instance ra các rack phần cứng vật lý hoàn toàn khác nhau (<b>tối đa 7 instances trên mỗi AZ</b>). Tối đa hóa khả năng chịu lỗi phần cứng. Dành cho các máy chủ tối quan trọng (Critical Applications, Primary/Standby DB).</div>
-      <div class="td lang-en">Strictly spreads each instance across distinct hardware racks (<b>max 7 instances per AZ per group</b>). Maximizes fault isolation for mission-critical apps and Primary/Standby DB setups.</div>
+      <div class="td lang-vi">
+        Phân tán tuyệt đối từng instance ra các rack phần cứng vật lý hoàn toàn khác nhau (<b>giới hạn tối đa 7 instances trên mỗi AZ</b>). Tối đa hóa khả năng cách ly lỗi phần cứng. Dành cho các máy chủ tối quan trọng (Critical DB, Primary/Standby).
+      </div>
+      <div class="td lang-en">
+        Strictly isolates each instance on separate hardware racks (<b>strict max 7 instances per AZ per group</b>). Maximizes hardware fault tolerance. Ideal for critical database primary/standby pairs.
+      </div>
     </div>
     <div class="tool">
       <div class="tn" style="color:var(--or)">Partition Placement Group</div>
-      <div class="td lang-vi">Chia AZ thành nhiều partitions độc lập (tối đa 7 partitions/AZ, mỗi partition chứa hàng trăm instance). Các partition không dùng chung rack vật lý. Khi 1 partition lỗi, các partition khác vẫn an toàn. Dành riêng cho Hadoop, HDFS, Cassandra, Kafka clusters.</div>
-      <div class="td lang-en">Divides an AZ into logical partitions (up to 7 partitions/AZ, hundreds of instances per partition). Partitions never share hardware racks. Ideal for distributed Hadoop, HDFS, Cassandra, and Kafka clusters.</div>
+      <div class="td lang-vi">
+        Chia AZ thành nhiều partitions độc lập (tối đa 7 partitions/AZ, mỗi partition chứa hàng trăm instance). Các partition không dùng chung rack vật lý. Khi 1 partition lỗi, các partition khác vẫn an toàn. Dành riêng cho <b>Hadoop, HDFS, Cassandra, Kafka clusters</b>.
+      </div>
+      <div class="td lang-en">
+        Divides an AZ into logical partitions (up to 7 partitions/AZ, hundreds of instances per partition). Partitions never share racks. Designed for <b>Hadoop, HDFS, Cassandra, and Kafka clusters</b>.
+      </div>
     </div>
     <div class="tool">
       <div class="tn" style="color:var(--rd)">
-        <span class="lang-vi">Lưu ý thi cử</span>
-        <span class="lang-en">Exam Nuances</span>
+        <span class="lang-vi">Quy tắc vàng trong phòng thi</span>
+        <span class="lang-en">Golden Exam Rules</span>
       </div>
-      <div class="td lang-vi">Không thể gộp hoặc di chuyển một instance đang tồn tại vào một Placement Group trừ khi dùng CLI stop instance, sửa placement group rồi start lại. Cluster không thể trải dài qua nhiều AZs!</div>
-      <div class="td lang-en">You cannot merge an existing instance into a placement group without stopping it first, updating placement via CLI, and starting it again. Cluster Placement Groups CANNOT span multiple AZs!</div>
+      <div class="td lang-vi">
+        Không thể gộp hoặc di chuyển một instance đang chạy vào Placement Group trừ khi dùng CLI/Console: <b>Stop instance &rarr; Đổi Placement Group &rarr; Start instance</b>.
+      </div>
+      <div class="td lang-en">
+        Cannot move a running instance into a Placement Group without stopping: <b>Stop instance &rarr; Modify Placement Group &rarr; Start instance</b>.
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Bổ sung thi cử -->
+<!-- 6. Bổ sung thi cử -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">➕</div>
@@ -351,7 +478,7 @@
         <span class="lang-en">High-Yield SAA-C03 Exam Traps &amp; Insights</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Những chi tiết thực chiến hay làm thí sinh mất điểm</span>
+        <span class="lang-vi">Những chi tiết thực chiến hay làm thí sinh mất điểm oan</span>
         <span class="lang-en">Practical details frequently tested in exam questions</span>
       </div>
     </div>
@@ -359,26 +486,52 @@
   <div class="g2">
     <div class="it">
       <div class="in">
+        <span class="lang-vi">Cơ chế EC2 Hibernation (Ngủ đông)</span>
+        <span class="lang-en">EC2 Hibernation Mechanism</span>
+      </div>
+      <div class="id lang-vi">
+        Khi Hibernate: Trạng thái RAM được lưu trực tiếp vào <b>Root EBS Volume (bắt buộc phải được mã hóa bằng KMS)</b>. Khi bật lại, server không cần cold-boot mà phục hồi nguyên vẹn bộ nhớ cache và tiến trình đang chạy. Dung lượng RAM phải &lt; 150GB.
+      </div>
+      <div class="id lang-en">
+        When Hibernated: RAM contents are dumped into the <b>Root EBS volume (must be encrypted with KMS)</b>. Upon restart, instance bypasses cold boot and restores exact memory cache and running processes. RAM must be &lt; 150GB.
+      </div>
+    </div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">Spot Fleet Allocation Strategies</span>
+        <span class="lang-en">Spot Fleet Allocation Strategies</span>
+      </div>
+      <div class="id lang-vi">
+        • <b>lowestPrice:</b> Chọn pool giá rẻ nhất (nguy cơ bị thu hồi cao).<br>
+        • <b>diversified:</b> Phân bổ đều qua nhiều pools khác nhau (tính sẵn sàng cao nhất).<br>
+        • <b>capacityOptimized:</b> Chọn pool có dung lượng nhàn rỗi lớn nhất (ít bị ngắt quãng nhất - Khuyên dùng).<br>
+        • <b>priceCapacityOptimized:</b> Cân bằng tối ưu giữa giá và dung lượng.
+      </div>
+      <div class="id lang-en">
+        • <b>lowestPrice:</b> Chooses cheapest pool (highest interruption risk).<br>
+        • <b>diversified:</b> Distributes across multiple pools (highest availability).<br>
+        • <b>capacityOptimized:</b> Chooses pool with optimal spare capacity (lowest interruption - Best Practice).<br>
+        • <b>priceCapacityOptimized:</b> Optimal balance of price and capacity.
+      </div>
+    </div>
+    <div class="it">
+      <div class="in">IMDSv1 vs IMDSv2 (Chống lỗ hổng SSRF)</div>
+      <div class="id lang-vi">
+        IMDSv1 cho phép gọi GET trực tiếp tới <code>http://169.254.169.254/latest/meta-data/</code>, rất dễ bị tin tặc lợi dụng lỗi SSRF trên web để trích xuất IAM temporary credentials.<br>
+        👉 <b>Bắt buộc:</b> Bật <b>IMDSv2</b> (yêu cầu header HTTP PUT để lấy Session Token thời hạn ngắn trước khi gọi GET metadata).
+      </div>
+      <div class="id lang-en">
+        IMDSv1 allows direct HTTP GET to <code>http://169.254.169.254/latest/meta-data/</code>, leaving systems vulnerable to SSRF credential theft.<br>
+        👉 <b>Mandatory:</b> Enforce <b>IMDSv2</b> (requires HTTP PUT header to fetch a short-lived Session Token prior to metadata retrieval).
+      </div>
+    </div>
+    <div class="it">
+      <div class="in">
         <span class="lang-vi">Cờ "Delete on Termination"</span>
         <span class="lang-en">"Delete on Termination" Flag</span>
       </div>
-      <div class="id lang-vi">Mặc định khi tạo instance, <b>Root EBS Volume</b> được bật thuộc tính <code>DeleteOnTermination = true</code> (sẽ bị xóa khi xóa instance). Các ổ đĩa EBS phụ gắn thêm (Attached Volumes) mặc định là <code>false</code> (vẫn tồn tại sau khi terminate instance).</div>
+      <div class="id lang-vi">Mặc định khi tạo instance, <b>Root EBS Volume</b> được bật <code>DeleteOnTermination = true</code> (sẽ bị xóa khi xóa instance). Các ổ đĩa EBS phụ gắn thêm (Attached Volumes) mặc định là <code>false</code> (vẫn tồn tại sau khi terminate instance).</div>
       <div class="id lang-en">By default at launch, the <b>Root EBS Volume</b> has <code>DeleteOnTermination = true</code> (deleted when instance is terminated). Additional attached EBS volumes default to <code>false</code> (preserved after termination).</div>
-    </div>
-    <div class="it">
-      <div class="in">Termination Protection</div>
-      <div class="id lang-vi">Tính năng khóa an toàn bảo vệ instance khỏi việc bị vô tình nhấn "Terminate" trên AWS Console hoặc gọi API. Muốn xóa, quản trị viên bắt buộc phải vào cấu hình tắt cờ Termination Protection trước.</div>
-      <div class="id lang-en">Safety lock protecting instances from accidental termination via AWS Console or API. Must explicitly disable Termination Protection before termination is allowed.</div>
-    </div>
-    <div class="it">
-      <div class="in">Elastic IP vs Public IPv4</div>
-      <div class="id lang-vi">Public IPv4 mặc định của EC2 sẽ bị thay đổi mỗi lần Stop và Start lại instance. <b>Elastic IP</b> là địa chỉ IPv4 cố định. Tuy nhiên trong kiến trúc tốt của AWS, nên dùng <b>Application Load Balancer (ALB) kết hợp Route 53</b> thay vì gán trực tiếp Elastic IP vào EC2.</div>
-      <div class="id lang-en">Default Public IPv4 address changes upon instance Stop and Start. <b>Elastic IP</b> provides a static IPv4 address. Architectural best practice: use <b>ALB + Route 53</b> rather than assigning Elastic IPs directly to EC2 instances.</div>
-    </div>
-    <div class="it">
-      <div class="in">Spot Fleet &amp; Spot Block</div>
-      <div class="id lang-vi"><b>Spot Fleet</b> tự động duy trì một tập hợp các Spot Instances và On-Demand Instances theo chiến lược (lowestPrice, diversified, capacityOptimized) nhằm đạt mục tiêu dung lượng (Target Capacity) với chi phí thấp nhất.</div>
-      <div class="id lang-en"><b>Spot Fleet</b> automates maintaining a collection of Spot and On-Demand instances based on strategies (lowestPrice, diversified, capacityOptimized) to satisfy Target Capacity at minimum cost.</div>
     </div>
   </div>
 </div>
@@ -405,7 +558,7 @@
         <b class="lang-vi">Tuyệt đối không lưu Access Keys trên EC2</b>
         <b class="lang-en">Never Store Access Keys on EC2 Instances</b>
         <span class="lang-vi">Luôn gắn IAM Role (Instance Profile) cho EC2 để máy chủ tự động nhận credentials ngắn hạn từ STS, không bao giờ nhúng AWS_ACCESS_KEY_ID vào source code hoặc disk.</span>
-        <span class="lang-en">Always attach an IAM Role (Instance Profile) to EC2 so instances automatically receive short-term STS credentials. Never embed static AWS_ACCESS_KEY_ID in disk or source code.</span>
+        <span class="lang-en">Always attach an IAM Role (Instance Profile) to EC2 so instances automatically receive short-term STS credentials. Never embed static AWS_ACCESS_KEY_ID on disk or in source code.</span>
       </div>
     </li>
     <li class="bi">
@@ -422,8 +575,8 @@
       <div>
         <b class="lang-vi">Quản trị an toàn bằng SSM Session Manager</b>
         <b class="lang-en">Secure Server Management via SSM Session Manager</b>
-        <span class="lang-vi">Ưu tiên SSM Session Manager để thay thế SSH/Bastion Host: không cần mở port 22, không cần Public IP và ghi vết audit toàn bộ lệnh người dùng.</span>
-        <span class="lang-en">Adopt SSM Session Manager over SSH/Bastion Hosts: zero open port 22, no Public IP requirements, and centralized audit logging of all executed commands.</span>
+        <span class="lang-vi">Ưu tiên SSM Session Manager để thay thế SSH/Bastion Host: không cần mở port 22, không cần Public IP và ghi vết audit toàn bộ lệnh người dùng vào S3/CloudWatch.</span>
+        <span class="lang-en">Adopt SSM Session Manager over SSH/Bastion Hosts: zero open port 22, no Public IP requirements, and centralized audit logging of all executed commands into S3/CloudWatch.</span>
       </div>
     </li>
     <li class="bi">
@@ -440,43 +593,73 @@
   </ul>
 </div>
 
-<!-- 8. Nguồn bài giảng -->
+<!-- 8. Nguồn bài giảng & Tài liệu tìm hiểu thêm -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🔗</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">8. Nguồn bài giảng tham chiếu (Udemy Lectures)</span>
-        <span class="lang-en">8. Reference Lectures &amp; Documentation</span>
+        <span class="lang-vi">8. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">8. Lecture References &amp; Further Study Resources</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
-        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Docs</span>
       </div>
     </div>
   </div>
-  <div class="g2">
-    <div class="it">
-      <div class="in">
-        <span class="lang-vi">Section 5 · Video bài giảng Udemy cốt lõi</span>
-        <span class="lang-en">Section 5 · Core Udemy Lectures</span>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
-      <div class="id">
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098112:</b> EC2 User Data (Bootstrapping)</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098122" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098122:</b> EC2 Instance Launch, Lifecycle &amp; Termination</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098128:</b> EC2 Instance Types Overview</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098134:</b> Security Groups Deep Dive</a>
+      <div class="pi">
+        <b>Section 5 · Lecture 26098112 &amp; 26098122</b>
+        <span class="lang-vi">EC2 User Data (Bootstrapping) và vòng đời khởi tạo/tắt máy chủ EC2.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ User Data</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098122" target="_blank" style="color:var(--bl)">Instance Lifecycle</a></span>
+        <span class="lang-en">User Data bootstrapping and EC2 instance lifecycle &amp; termination.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ User Data</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098122" target="_blank" style="color:var(--bl)">Instance Lifecycle</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 5 · Lecture 26098128 &amp; 26098134</b>
+        <span class="lang-vi">Tổng quan họ Instance Types và phân tích chuyên sâu Security Groups.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">▶ Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
+        <span class="lang-en">Instance Types family overview and Security Groups deep dive.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">▶ Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
       </div>
     </div>
-    <div class="it">
-      <div class="in">
-        <span class="lang-vi">Tài liệu kiến trúc chính thức từ AWS</span>
-        <span class="lang-en">Official AWS Architecture Documentation</span>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
       </div>
-      <div class="id">
-        • <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS EC2 User Guide for Linux Instances</a><br>
-        • <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html" target="_blank" style="color:var(--bl);text-decoration:none">Configuring the Instance Metadata Service (IMDSv2)</a><br>
-        • <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS Systems Manager Session Manager Guide</a>
+      <div class="pi">
+        <b>AWS EC2 User Guide for Linux</b>
+        <span class="lang-vi">Cẩm nang toàn diện cấu hình, giám sát và vận hành máy chủ EC2.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html" target="_blank" style="color:var(--bl)">📖 Đọc EC2 Linux Guide</a></span>
+        <span class="lang-en">Definitive guide to configuring, monitoring, and maintaining EC2 instances.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html" target="_blank" style="color:var(--bl)">📖 Read EC2 Linux Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>Configuring IMDSv2 for Security</b>
+        <span class="lang-vi">Hướng dẫn bắt buộc sử dụng IMDSv2 để triệt tiêu nguy cơ trích xuất token qua SSRF.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html" target="_blank" style="color:var(--bl)">📖 Đọc IMDSv2 Guide</a></span>
+        <span class="lang-en">Mandating IMDSv2 to neutralize SSRF token theft vulnerabilities.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html" target="_blank" style="color:var(--bl)">📖 Read IMDSv2 Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Systems Manager Session Manager</b>
+        <span class="lang-vi">Hướng dẫn thiết lập quản trị máy chủ bảo mật không cần mở port 22.<br><a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html" target="_blank" style="color:var(--bl)">📖 Đọc Session Manager Guide</a></span>
+        <span class="lang-en">Setting up secure, zero-open-port instance administration via SSM.<br><a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html" target="_blank" style="color:var(--bl)">📖 Read Session Manager Guide</a></span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>AWS Nitro System Architecture Hub</b>
+        <span class="lang-vi">Tìm hiểu kiến trúc hypervisor thế hệ mới và thẻ card phần cứng Nitro rời.<br><a href="https://aws.amazon.com/ec2/nitro/" target="_blank" style="color:var(--bl)">⚡ Khám phá AWS Nitro System</a></span>
+        <span class="lang-en">Explore next-gen hardware hypervisors and dedicated Nitro cards.<br><a href="https://aws.amazon.com/ec2/nitro/" target="_blank" style="color:var(--bl)">⚡ Explore AWS Nitro System</a></span>
+      </div>
+      <div class="pi">
+        <b>Tutorials Dojo SAA-C03 EC2 Cheat Sheet</b>
+        <span class="lang-vi">Bảng tổng kết Purchasing Options, so sánh Security Groups vs NACLs và mẹo thi.<br><a href="https://tutorialsdojo.com/amazon-elastic-compute-cloud-amazon-ec2/" target="_blank" style="color:var(--bl)">📝 Đọc Tutorials Dojo EC2 Cheat Sheet</a></span>
+        <span class="lang-en">Purchasing options breakdown, SG vs NACL matrix, and exam tips.<br><a href="https://tutorialsdojo.com/amazon-elastic-compute-cloud-amazon-ec2/" target="_blank" style="color:var(--bl)">📝 Read Tutorials Dojo Cheat Sheet</a></span>
       </div>
     </div>
   </div>

@@ -26,8 +26,8 @@
 <div class="header">
   <div class="badge">Global Service</div>
   <h1>AWS IAM — Identity &amp; Access Management</h1>
-  <p class="lang-vi">Kiến trúc phân quyền toàn diện cho AWS SAA-C03</p>
-  <p class="lang-en">Comprehensive identity and access management architecture for AWS SAA-C03</p>
+  <p class="lang-vi">Kiến trúc phân quyền và bảo mật tài khoản toàn diện cho AWS SAA-C03</p>
+  <p class="lang-en">Comprehensive identity, access management and account security architecture for AWS SAA-C03</p>
 </div>
 
 <div class="grid">
@@ -42,112 +42,85 @@
         <span class="lang-en">1. IAM Identities</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Ai được phép tương tác với AWS?</span>
-        <span class="lang-en">Who is allowed to interact with AWS?</span>
+        <span class="lang-vi">Ai được phép tương tác với tài nguyên AWS?</span>
+        <span class="lang-en">Who is allowed to interact with AWS resources?</span>
       </div>
     </div>
   </div>
   <div class="g2">
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--rd)"></div>Root User</div>
-      <div class="id lang-vi">Full Administrator, tạo cùng tài khoản AWS.<br><span class="tag tr">Khóa Root</span><span class="tag to">Bật MFA</span><span class="tag ty">Không dùng hằng ngày</span></div>
-      <div class="id lang-en">Full Administrator created with the AWS account.<br><span class="tag tr">Lock Root</span><span class="tag to">Enable MFA</span><span class="tag ty">No daily use</span></div>
+      <div class="id lang-vi">Full Administrator, tạo cùng tài khoản AWS. Sở hữu quyền tối thượng không thể bị hạn chế.<br><span class="tag tr">Khóa Root</span><span class="tag to">Bật MFA</span><span class="tag ty">Không dùng hằng ngày</span></div>
+      <div class="id lang-en">Full Administrator created with the AWS account. Has unrestricted permissions.<br><span class="tag tr">Lock Root</span><span class="tag to">Enable MFA</span><span class="tag ty">No daily use</span></div>
     </div>
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--bl)"></div>IAM Users</div>
-      <div class="id lang-vi">Đại diện 1 người hoặc ứng dụng cụ thể.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Gán quyền qua Groups</span></div>
-      <div class="id lang-en">Represents an individual person or service.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Assign permissions via Groups</span></div>
+      <div class="id lang-vi">Đại diện cho 1 người cụ thể hoặc ứng dụng cũ. Mỗi User có credentials riêng biệt.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Gán quyền qua Groups</span></div>
+      <div class="id lang-en">Represents an individual person or legacy service. Has dedicated credentials.<br><span class="tag tb">Console Password</span><span class="tag tb">Access Keys</span><span class="tag ty">Assign permissions via Groups</span></div>
     </div>
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--gr)"></div>IAM Groups</div>
-      <div class="id lang-vi">Tập hợp Users (Developers, Admins, Auditors).<br><span class="tag tg">Chỉ chứa Users</span><span class="tag ty">Không chứa Group khác</span><span class="tag ty">Không có credentials</span></div>
-      <div class="id lang-en">Collection of Users (Developers, Admins, Auditors).<br><span class="tag tg">Users only</span><span class="tag ty">No nested Groups</span><span class="tag ty">No credentials</span></div>
+      <div class="id lang-vi">Tập hợp các IAM Users (Devs, Admins, DevOps). Group <b>không phải identity</b> (không có credentials, không thể lồng group con).<br><span class="tag tg">Quản lý theo vai trò</span><span class="tag tg">Không lồng nhau</span></div>
+      <div class="id lang-en">Collection of IAM Users (Devs, Admins). Group is <b>not an identity</b> (no credentials, cannot be nested).<br><span class="tag tg">Role-based Management</span><span class="tag tg">Cannot be nested</span></div>
     </div>
     <div class="it">
       <div class="in"><div class="dot" style="background:var(--or)"></div>IAM Roles</div>
-      <div class="id lang-vi">Danh tính tạm thời, cấp STS credentials ngắn hạn.<br><span class="tag to">EC2 Instance Profile</span><span class="tag to">Cross-Account</span><span class="tag to">Federation</span><span class="tag ty">Trust + Permissions Policy</span></div>
-      <div class="id lang-en">Temporary identity issuing short-term STS credentials.<br><span class="tag to">EC2 Instance Profile</span><span class="tag to">Cross-Account</span><span class="tag to">Federation</span><span class="tag ty">Trust + Permissions Policy</span></div>
+      <div class="id lang-vi">Định danh cấp quyền tạm thời, không có mật khẩu/access key cố định. Được đảm nhận (Assumed) bởi EC2, Lambda, dịch vụ AWS hoặc người dùng Cross-Account.<br><span class="tag to">Quyền tạm thời (STS)</span><span class="tag to">Instance Profile</span><span class="tag ty">Cross-Account</span></div>
+      <div class="id lang-en">Identity granting temporary permissions with no static keys. Assumed by EC2, Lambda, AWS services, or Cross-Account federated users.<br><span class="tag to">Temporary STS Tokens</span><span class="tag to">Instance Profile</span><span class="tag ty">Cross-Account</span></div>
     </div>
   </div>
 </div>
 
-<!-- DIAGRAM 1: Decision Tree -->
-<div class="card full">
-  <div class="ch">
-    <div class="ci" style="background:var(--grb)">🌳</div>
-    <div>
-      <div class="ct">
-        <span class="lang-vi">Cây ra quyết định: Lựa chọn giải pháp cấp quyền (Access Decision Tree)</span>
-        <span class="lang-en">Decision Tree: Selecting the Right Access Solution</span>
-      </div>
-      <div class="cs">
-        <span class="lang-vi">Thuật toán rẽ nhánh xử lý câu hỏi tình huống trong đề thi SAA-C03</span>
-        <span class="lang-en">Branching logic for situational SAA-C03 exam scenarios</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="mermaid-diagram" id="diag-decision-tree">
-    <div class="mermaid-src lang-vi" style="display:none">
-graph TD
-    A[Cần cấp quyền truy cập?] --> B{Ai / Cái gì cần quyền?}
-    B -->|Tài khoản người dùng nội bộ| C[IAM User / Group]
-    B -->|EC2 / Lambda / Service| D[IAM Role + Instance Profile]
-    B -->|Tài khoản AWS khác| E[IAM Role + STS AssumeRole]
-    B -->|Người dùng ngoài: Google / AD| F[IAM Role + Identity Federation]
-    </div>
-    <div class="mermaid-src lang-en" style="display:none">
-graph TD
-    A[Need to grant access?] --> B{Who / What needs access?}
-    B -->|Internal Human Users| C[IAM User / Group]
-    B -->|EC2 / Lambda / AWS Services| D[IAM Role + Instance Profile]
-    B -->|Another AWS Account| E[IAM Role + STS AssumeRole]
-    B -->|External Identity: Google / AD| F[IAM Role + Identity Federation]
-    </div>
-    <div class="mermaid-output"></div>
-  </div>
-</div>
-
-<!-- DIAGRAM 3: Sequence Diagram -->
+<!-- DIAGRAM 1: Role Assumption Sequence -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🔄</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">Sơ đồ tương tác luồng dữ liệu (Architecture &amp; Sequence Diagram)</span>
-        <span class="lang-en">Architecture &amp; Sequence Diagram: Role-based Delegation</span>
+        <span class="lang-vi">Sơ đồ luồng: EC2 Instance Profile tự động nhận quyền từ IAM Role</span>
+        <span class="lang-en">Sequence Diagram: EC2 Instance Profile Assuming IAM Role</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Cơ chế EC2 mượn quyền qua IAM Role &amp; AWS STS để truy cập S3 an toàn</span>
-        <span class="lang-en">How EC2 instances assume IAM Roles via AWS STS to securely access S3</span>
+        <span class="lang-vi">Cơ chế bảo mật không lưu Access Key trên máy chủ</span>
+        <span class="lang-en">Secure architecture: Zero hardcoded credentials on instances</span>
       </div>
     </div>
   </div>
 
-  <div class="mermaid-diagram" id="diag-sequence">
+  <div class="mermaid-diagram" id="diag-role-sequence">
     <div class="mermaid-src lang-vi" style="display:none">
 sequenceDiagram
     autonumber
-    participant EC2 as EC2 Instance
+    participant EC2 as EC2 Instance (App)
+    participant IMDS as IMDS (169.254.169.254)
     participant STS as AWS STS Service
-    participant S3 as AWS S3 Bucket
+    participant S3 as Amazon S3 Bucket
 
-    EC2->>STS: Yêu cầu lấy Temporary Credentials (Role)
-    STS-->>EC2: Cấp Short-term Credentials (Token hết hạn sau vài giờ)
-    EC2->>S3: Gửi request đính kèm Token
-    S3-->>EC2: Trả về dữ liệu (Thành công 200 OK)
+    Note over EC2: Ứng dụng cần đọc dữ liệu từ S3
+    EC2->>IMDS: 1. Request temporary credentials (qua Instance Profile)
+    IMDS->>STS: 2. Gọi sts:AssumeRole với Role ARN đã gán
+    STS-->>IMDS: 3. Trả về STS Token (AccessKeyId, SecretKey, SessionToken - hết hạn sau 1-6h)
+    IMDS-->>EC2: 4. Cung cấp credentials tạm thời vào bộ nhớ
+    EC2->>S3: 5. Gửi request đọc S3 kèm STS Token
+    S3->>S3: 6. Kiểm tra IAM Policy của Role
+    S3-->>EC2: 7. Trả về dữ liệu (Success 200 OK)
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 sequenceDiagram
     autonumber
-    participant EC2 as EC2 Instance
+    participant EC2 as EC2 Instance (App)
+    participant IMDS as IMDS (169.254.169.254)
     participant STS as AWS STS Service
-    participant S3 as AWS S3 Bucket
+    participant S3 as Amazon S3 Bucket
 
-    EC2->>STS: Request Temporary Credentials (Role)
-    STS-->>EC2: Issue Short-term Credentials (Expiring Token)
-    EC2->>S3: Send API Request signed with Token
-    S3-->>EC2: Return Data (Success 200 OK)
+    Note over EC2: Application needs to read from S3
+    EC2->>IMDS: 1. Request temporary credentials (via Instance Profile)
+    IMDS->>STS: 2. Invokes sts:AssumeRole for attached IAM Role ARN
+    STS-->>IMDS: 3. Returns short-term STS credentials (expires in 1-6h)
+    IMDS-->>EC2: 4. Serves temporary credentials into memory
+    EC2->>S3: 5. Sends S3 GetObject request signed with STS Token
+    S3->>S3: 6. Evaluates Role permissions
+    S3-->>EC2: 7. Returns Data (Success 200 OK)
     </div>
     <div class="mermaid-output"></div>
   </div>
@@ -159,60 +132,66 @@ sequenceDiagram
     <div class="ci" style="background:var(--grb)">📋</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">2. Chính sách (Policies)</span>
-        <span class="lang-en">2. IAM Policies</span>
+        <span class="lang-vi">2. Các loại Chính sách (IAM Policies)</span>
+        <span class="lang-en">2. IAM Policy Types</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Tài liệu JSON: ai được làm gì?</span>
-        <span class="lang-en">JSON document: who is allowed to do what?</span>
+        <span class="lang-vi">Tài liệu JSON định nghĩa: ai được phép làm gì trên tài nguyên nào</span>
+        <span class="lang-en">JSON document: who is allowed to perform what actions on which resources</span>
       </div>
     </div>
   </div>
   <div class="cols">
     <div class="col">
-      <div class="colt">Identity-based</div>
+      <div class="colt">Identity-based (Gán vào User/Group/Role)</div>
       <div class="pi">
-        <b>AWS Managed</b>
-        <span class="lang-vi">AWS tạo và quản trị sẵn</span>
-        <span class="lang-en">Created &amp; maintained by AWS</span>
+        <b>AWS Managed Policy</b>
+        <span class="lang-vi">AWS tạo và bảo trì sẵn (ví dụ <code>AdministratorAccess</code>). Không sửa được nội dung.</span>
+        <span class="lang-en">Maintained by AWS (e.g. <code>AdministratorAccess</code>). Read-only.</span>
       </div>
       <div class="pi">
-        <b>Customer Managed</b>
-        <span class="lang-vi">Tự định nghĩa, có phiên bản</span>
-        <span class="lang-en">Custom defined with versioning</span>
+        <b>Customer Managed Policy</b>
+        <span class="lang-vi">Do người dùng tự viết, có quản lý phiên bản (versioning), tái sử dụng cho nhiều thực thể.</span>
+        <span class="lang-en">Custom defined with versioning, reusable across entities.</span>
       </div>
       <div class="pi">
         <b>Inline Policy</b>
-        <span class="lang-vi">Nhúng vào 1 User/Group/Role</span>
-        <span class="lang-en">Embedded 1:1 into entity</span>
+        <span class="lang-vi">Nhúng trực tiếp 1:1 vào User hoặc Role cụ thể. Xóa User = xóa luôn Policy.</span>
+        <span class="lang-en">Embedded 1:1 into specific User/Role. Deleted when entity is deleted.</span>
       </div>
     </div>
     <div class="col">
-      <div class="colt">Resource-based</div>
+      <div class="colt">Resource-based (Gán trực tiếp vào Tài nguyên)</div>
       <div class="pi">
         <b>S3 Bucket Policy</b>
-        <span class="lang-vi">Gán trực tiếp vào bucket</span>
-        <span class="lang-en">Attached directly to bucket</span>
-      </div>
-      <div class="pi">
-        <b>SQS Queue Policy</b>
-        <span class="lang-vi">Gán trực tiếp vào queue</span>
-        <span class="lang-en">Attached directly to queue</span>
+        <span class="lang-vi">Kiểm soát truy cập toàn bộ Bucket, hỗ trợ phân quyền Cross-Account trực tiếp.</span>
+        <span class="lang-en">Controls access to entire bucket, enables direct cross-account access.</span>
       </div>
       <div class="pi">
         <b>KMS Key Policy</b>
-        <span class="lang-vi">Gán trực tiếp vào KMS Key</span>
-        <span class="lang-en">Attached directly to KMS key</span>
+        <span class="lang-vi"><b>Bắt buộc phải có:</b> Mọi truy cập vào KMS Key đều phải qua Key Policy.</span>
+        <span class="lang-en"><b>Mandatory:</b> All access to KMS Keys must go through Key Policy.</span>
+      </div>
+      <div class="pi">
+        <b>SQS / SNS / Secrets Manager</b>
+        <span class="lang-vi">Cho phép dịch vụ hoặc tài khoản khác gửi tin/đọc secret trực tiếp.</span>
+        <span class="lang-en">Authorizes cross-service or cross-account operations directly.</span>
       </div>
     </div>
   </div>
-<div class="json"><span class="jc">// JSON Policy Structure</span>
+  <div class="json"><span class="jc">// Cấu trúc JSON Policy chuẩn</span>
 {
-  <span class="jk">"Effect"</span>: <span class="jv">"Allow" | "Deny"</span>,
-  <span class="jk">"Principal"</span>: <span class="jp">/* Resource-based / Trust only */</span>,
-  <span class="jk">"Action"</span>: <span class="jv">"s3:GetObject"</span>,
-  <span class="jk">"Resource"</span>: <span class="jv">"arn:aws:s3:::my-bucket/*"</span>,
-  <span class="jk">"Condition"</span>: { <span class="jv">/* IpAddress, MFA... */</span> }
+  <span class="jk">"Version"</span>: <span class="jv">"2012-10-17"</span>,
+  <span class="jk">"Statement"</span>: [{
+    <span class="jk">"Sid"</span>: <span class="jv">"AllowSpecificS3Bucket"</span>,
+    <span class="jk">"Effect"</span>: <span class="jv">"Allow"</span>,
+    <span class="jk">"Principal"</span>: <span class="jp">/* Bắt buộc với Resource-based Policy / Trust Policy */</span>,
+    <span class="jk">"Action"</span>: [<span class="jv">"s3:GetObject"</span>, <span class="jv">"s3:ListBucket"</span>],
+    <span class="jk">"Resource"</span>: [<span class="jv">"arn:aws:s3:::my-bucket"</span>, <span class="jv">"arn:aws:s3:::my-bucket/*"</span>],
+    <span class="jk">"Condition"</span>: {
+      <span class="jk">"StringEquals"</span>: { <span class="jv">"aws:PrincipalOrgID"</span>: <span class="jv">"o-xxxxxxxxxx"</span> }
+    }
+  }]
 }</div>
 </div>
 
@@ -222,12 +201,12 @@ sequenceDiagram
     <div class="ci" style="background:var(--rdb)">⚖️</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">Sơ đồ luồng đánh giá logic (Policy Evaluation)</span>
-        <span class="lang-en">Logic Evaluation Flowchart</span>
+        <span class="lang-vi">Quy trình đánh giá Policy (Evaluation Logic)</span>
+        <span class="lang-en">Policy Evaluation Logic Flowchart</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Request được xét theo thứ tự nào?</span>
-        <span class="lang-en">Exact decision order for incoming requests</span>
+        <span class="lang-vi">Thứ tự quyết định cho mọi API request gửi đến AWS</span>
+        <span class="lang-en">Exact decision order for all incoming AWS API requests</span>
       </div>
     </div>
   </div>
@@ -235,46 +214,58 @@ sequenceDiagram
   <div class="mermaid-diagram" id="diag-eval-flow">
     <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
-    Start([Có request gửi đến]) --> Q1{Có Explicit Deny không?}
-    Q1 -- Có --> Deny([DENY: Chặn ngay lập tức])
-    Q1 -- Không --> Q2{Có Explicit Allow không?}
-    Q2 -- Có --> Allow([ALLOW: Cho phép truy cập])
-    Q2 -- Không --> ImpDeny([DENY: Mặc định từ chối - Implicit Deny])
+    Start([Có request gửi đến AWS API]) --> Q1{Có Explicit Deny ở bất kỳ đâu?}
+    Q1 -- Có --> Deny([DENY: Chặn ngay lập tức - Explicit Deny thắng tất cả])
+    Q1 -- Không --> Q2{Có Organizations SCP chặn?}
+    Q2 -- Có --> Deny
+    Q2 -- Không --> Q3{Có Permissions Boundary chặn?}
+    Q3 -- Có --> Deny
+    Q3 -- Không --> Q4{Có ít nhất 1 Explicit Allow?}
+    Q4 -- Có --> Allow([ALLOW: Cấp quyền truy cập thành công])
+    Q4 -- Không --> ImpDeny([DENY: Mặc định từ chối - Implicit Deny])
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
-    Start([Incoming Request]) --> Q1{Any Explicit Deny?}
-    Q1 -- Yes --> Deny([DENY: Immediately Blocked])
-    Q1 -- No --> Q2{Any Explicit Allow?}
-    Q2 -- Yes --> Allow([ALLOW: Access Granted])
-    Q2 -- No --> ImpDeny([DENY: Implicit Deny by Default])
+    Start([Incoming AWS API Request]) --> Q1{Any Explicit Deny found?}
+    Q1 -- Yes --> Deny([DENY: Request Immediately Blocked - Explicit Deny Overrides All])
+    Q1 -- No --> Q2{Blocked by Organizations SCP?}
+    Q2 -- Yes --> Deny
+    Q2 -- No --> Q3{Blocked by Permissions Boundary?}
+    Q3 -- Yes --> Deny
+    Q3 -- No --> Q4{Any Explicit Allow found?}
+    Q4 -- Yes --> Allow([ALLOW: Access Granted Successfully])
+    Q4 -- No --> ImpDeny([DENY: Default Implicit Deny])
     </div>
     <div class="mermaid-output"></div>
   </div>
 
   <div class="lbl" style="margin-top:14px">
-    <span class="lang-vi">Quyền hiệu lực là phần giao của</span>
-    <span class="lang-en">Effective permissions are the intersection of</span>
+    <span class="lang-vi">Quyền hiệu lực là phần giao nhau (Intersection) của các tầng bảo vệ</span>
+    <span class="lang-en">Effective Permissions are the strict intersection of all defense guardrails</span>
   </div>
   <div class="id">
-    <span class="tag tb">SCP</span><span class="tag tb">Permissions boundary</span><span class="tag tb">Identity policy</span><br>
-    <span class="lang-vi">Một lớp không cho phép thì request vẫn bị chặn, và Explicit Deny ở bất kỳ lớp nào cũng thắng tất cả.</span>
-    <span class="lang-en">If any layer does not allow, the request is denied. An Explicit Deny in ANY layer overrides all allows.</span>
+    <span class="tag tb">Service Control Policy (SCP)</span>
+    <span class="tag tb">Resource-based Policy</span>
+    <span class="tag tb">Permissions Boundary</span>
+    <span class="tag tb">Identity-based Policy</span>
+    <span class="tag tb">Session Policy</span><br>
+    <span class="lang-vi"><b>Quy tắc vàng:</b> Một request chỉ thành công khi có ít nhất 1 Explicit Allow và <b>KHÔNG CÓ bất kỳ Explicit Deny nào</b> ở tất cả các tầng.</span>
+    <span class="lang-en"><b>Golden Rule:</b> A request succeeds only if there is at least 1 Explicit Allow and <b>ZERO Explicit Denies</b> across all policy layers.</span>
   </div>
 </div>
 
-<!-- DIAGRAM 4: Comparison Matrix Table -->
+<!-- Cross-Account Deep Dive: AssumeRole vs Resource Policy -->
 <div class="card full">
   <div class="ch">
-    <div class="ci" style="background:var(--blb)">📊</div>
+    <div class="ci" style="background:var(--blb)">🌐</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">Ma trận so sánh: IAM User vs IAM Role vs Resource-based Policy</span>
-        <span class="lang-en">Comparison Matrix: IAM User vs IAM Role vs Resource-based Policy</span>
+        <span class="lang-vi">Phân tích chuyên sâu: Truy cập đa tài khoản (Cross-Account Access)</span>
+        <span class="lang-en">Deep Dive: Cross-Account Access Architecture</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Hệ quy chiếu phân biệt các khái niệm dễ nhầm lẫn trong phòng thi</span>
-        <span class="lang-en">Side-by-side evaluation matrix across critical decision axes</span>
+        <span class="lang-vi">So sánh STS AssumeRole vs Resource-based Policy — Dạng câu hỏi chiếm nhiều điểm trong SAA-C03</span>
+        <span class="lang-en">Comparing STS AssumeRole vs Resource-based Policy — High-yield exam question type</span>
       </div>
     </div>
   </div>
@@ -285,84 +276,71 @@ flowchart TD
         <tr>
           <th class="col-crit">
             <span class="lang-vi">Tiêu chí</span>
-            <span class="lang-en">Criteria</span>
+            <span class="lang-en">Comparison Criteria</span>
           </th>
-          <th>IAM User</th>
-          <th>IAM Role</th>
-          <th>Resource-based Policy</th>
+          <th>
+            <b>Phương án A: STS AssumeRole (IAM Role)</b>
+          </th>
+          <th>
+            <b>Phương án B: Resource-based Policy (S3/KMS/SQS)</b>
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td class="col-crit">
-            <span class="lang-vi">Bản chất</span>
-            <span class="lang-en">Nature</span>
+            <span class="lang-vi">Cơ chế hoạt động</span>
+            <span class="lang-en">How it Works</span>
           </td>
           <td>
-            <span class="lang-vi">Danh tính cố định dài hạn (Permanent)</span>
-            <span class="lang-en">Permanent long-term identity</span>
+            <span class="lang-vi">User ở Account A gọi <code>sts:AssumeRole</code> để nhận credentials tạm thời của Role ở Account B.</span>
+            <span class="lang-en">User in Account A calls <code>sts:AssumeRole</code> to receive temporary STS credentials for a Role in Account B.</span>
           </td>
           <td>
-            <span class="lang-vi">Danh tính tạm thời (Temporary)</span>
-            <span class="lang-en">Temporary short-term identity</span>
-          </td>
-          <td>
-            <span class="lang-vi">Chính sách gắn trực tiếp lên tài nguyên AWS</span>
-            <span class="lang-en">Policy attached directly to AWS resources</span>
+            <span class="lang-vi">Gán chính sách trực tiếp lên tài nguyên ở Account B, liệt kê User/Role của Account A vào mục <code>Principal</code>.</span>
+            <span class="lang-en">Policy attached directly to resource in Account B, explicitly listing Account A's User/Role as the <code>Principal</code>.</span>
           </td>
         </tr>
         <tr>
           <td class="col-crit">
-            <span class="lang-vi">Xác thực</span>
-            <span class="lang-en">Credentials</span>
+            <span class="lang-vi">Danh tính &amp; Quyền gốc</span>
+            <span class="lang-en">Identity &amp; Original Permissions</span>
           </td>
           <td>
-            <span class="lang-vi">Mật khẩu Console, Access Key ID / Secret</span>
-            <span class="lang-en">Console Password, Access Key ID / Secret Key</span>
+            <span class="lang-vi"><b>Từ bỏ quyền gốc:</b> Khi chuyển vai (Assume Role), User tạm thời mất toàn bộ quyền ở Account A và chỉ mang quyền của Role ở Account B.</span>
+            <span class="lang-en"><b>Relinquishes original permissions:</b> When assuming a Role, the user temporarily gives up all Account A rights.</span>
           </td>
           <td>
-            <span class="lang-vi">Token tạm thời sinh bởi AWS STS (15m - 12h)</span>
-            <span class="lang-en">Short-term STS tokens (15m - 12h validity)</span>
-          </td>
-          <td>
-            <span class="lang-vi">Không có credentials riêng (dựa vào Principal gọi tới)</span>
-            <span class="lang-en">No credentials of its own (evaluates caller Principal)</span>
+            <span class="lang-vi"><b>Giữ nguyên quyền gốc:</b> User vẫn giữ nguyên danh tính và toàn bộ quyền ở Account A, đồng thời đọc/ghi được tài nguyên ở Account B.</span>
+            <span class="lang-en"><b>Retains original identity:</b> User keeps all Account A rights while simultaneously accessing Account B resource.</span>
           </td>
         </tr>
         <tr>
           <td class="col-crit">
-            <span class="lang-vi">Khi nào dùng?</span>
-            <span class="lang-en">Use Cases</span>
+            <span class="lang-vi">Cấu hình cần thiết</span>
+            <span class="lang-en">Required Configuration</span>
           </td>
           <td>
-            <span class="lang-vi">Người thật thao tác Console, lập trình viên CLI cá nhân</span>
-            <span class="lang-en">Human operators in Console, individual CLI developers</span>
+            <span class="lang-vi">1. Trust Policy ở Account B (cho phép Account A assume).<br>2. Permissions Policy ở Account B.<br>3. Policy ở Account A cho phép gọi <code>sts:AssumeRole</code>.</span>
+            <span class="lang-en">1. Trust Policy in Account B.<br>2. Permissions Policy in Account B.<br>3. Account A policy permitting <code>sts:AssumeRole</code>.</span>
           </td>
           <td>
-            <span class="lang-vi">EC2, Lambda, dịch vụ AWS, Cross-Account, SSO Federation</span>
-            <span class="lang-en">EC2, Lambda, AWS services, Cross-Account, SSO Federation</span>
-          </td>
-          <td>
-            <span class="lang-vi">Cần cấp quyền trực tiếp cho S3 Bucket, SQS Queue, KMS Key</span>
-            <span class="lang-en">Direct access control for S3 Buckets, SQS Queues, KMS Keys</span>
+            <span class="lang-vi">Chỉ cần cấu hình Resource Policy ở Account B (và Account A cấp quyền tương ứng cho User nếu là IAM User).</span>
+            <span class="lang-en">Resource Policy configured in Account B (and matching identity permission in Account A for User).</span>
           </td>
         </tr>
         <tr>
           <td class="col-crit">
-            <span class="lang-vi">Nguyên tắc thi</span>
-            <span class="lang-en">Exam Rule</span>
+            <span class="lang-vi">Khi nào chọn trong đề thi?</span>
+            <span class="lang-en">When to Choose in Exam?</span>
           </td>
           <td>
-            <span class="lang-vi"><span class="tag tr">Hạn chế Access Key</span> Không gán cho server tự động</span>
-            <span class="lang-en"><span class="tag tr">Restrict Keys</span> Never assign to automated servers</span>
+            <span class="lang-vi">Khi cần thao tác trên nhiều dịch vụ không hỗ trợ Resource Policy (ví dụ quản trị EC2, RDS) ở Account B.</span>
+            <span class="lang-en">When performing operations across multiple services without resource policy support (e.g. managing EC2, RDS) in Account B.</span>
           </td>
           <td>
-            <span class="lang-vi"><span class="tag tg">Khuyên dùng</span> Instance Profile thay cho hardcode keys</span>
-            <span class="lang-en"><span class="tag tg">Recommended</span> Instance Profiles over hardcoded keys</span>
-          </td>
-          <td>
-            <span class="lang-vi"><span class="tag tb">Cross-account</span> Cho phép gọi trực tiếp không cần đổi Role</span>
-            <span class="lang-en"><span class="tag tb">Cross-account</span> Allows direct access without Role hopping</span>
+            <span class="lang-vi">Khi cần copy file từ S3 Account A sang S3 Account B trong cùng một lệnh mà không muốn từ bỏ quyền ở Account A!</span>
+            <span class="lang-en">When copying files from S3 Account A to S3 Account B in a single operation without giving up Account A access!</span>
           </td>
         </tr>
       </tbody>
@@ -370,83 +348,73 @@ flowchart TD
   </div>
 </div>
 
-<!-- 3. Security & Credentials -->
-<div class="card">
+<!-- 3. Policy Conditions & Audit Tools -->
+<div class="card full">
   <div class="ch">
-    <div class="ci" style="background:var(--rdb)">🔐</div>
+    <div class="ci" style="background:var(--blb)">🎯</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">3. Bảo mật &amp; Xác thực</span>
-        <span class="lang-en">3. Security &amp; Credentials</span>
+        <span class="lang-vi">3. Các Condition Keys bẫy thi &amp; Bộ 3 công cụ Audit IAM</span>
+        <span class="lang-en">3. High-Yield Policy Condition Keys &amp; IAM Audit Trio</span>
       </div>
-      <div class="cs">Authentication &amp; Credentials</div>
+      <div class="cs">
+        <span class="lang-vi">Kiểm soát ngữ cảnh chi tiết và giám sát tuân thủ an ninh</span>
+        <span class="lang-en">Granular contextual controls and compliance auditing</span>
+      </div>
     </div>
   </div>
-  <ul class="sl">
-    <li>
-      <div class="si" style="background:var(--rdb)">🛡️</div>
-      <div>
-        <b>Multi-Factor Authentication (MFA)</b>
-        <span class="lang-vi">Bắt buộc cho Root, khuyến nghị cho IAM Users<br>Virtual (Authy, Google Auth) · U2F/FIDO (YubiKey) · Hardware token (Gemalto)</span>
-        <span class="lang-en">Mandatory for Root, strongly advised for all IAM Users<br>Virtual (Authy, Google Auth) · U2F/FIDO (YubiKey) · Hardware token (Gemalto)</span>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">4 Condition Keys hay gặp nhất</span>
+        <span class="lang-en">Top 4 Exam Condition Keys</span>
       </div>
-    </li>
-    <li>
-      <div class="si" style="background:var(--blb)">🔑</div>
-      <div>
-        <b>Password Policy</b>
-        <span class="lang-vi">Độ dài tối thiểu · Ký tự đặc biệt · Hết hạn mật khẩu định kỳ</span>
-        <span class="lang-en">Minimum length · Special characters · Periodic password expiration</span>
+      <div class="pi">
+        <b>aws:PrincipalOrgID</b>
+        <span class="lang-vi">Chỉ cho phép request đến từ các tài khoản thành viên trong AWS Organization của công ty. Thêm account mới không cần sửa policy!</span>
+        <span class="lang-en">Restricts access to member accounts within the specified AWS Organization. Auto-applies to new accounts!</span>
       </div>
-    </li>
-    <li>
-      <div class="si" style="background:var(--orb)">🗝️</div>
-      <div>
-        <b>Access Keys</b>
-        <span class="lang-vi">CLI / SDK · Rotate định kỳ · <strong style="color:var(--rd)">Không hardcode vào source code</strong></span>
-        <span class="lang-en">CLI / SDK access · Rotate regularly · <strong style="color:var(--rd)">Never hardcode into source code</strong></span>
+      <div class="pi">
+        <b>aws:SourceIP</b>
+        <span class="lang-vi">Chỉ cho phép gọi API từ dải IP tĩnh văn phòng công ty. <i>Bẫy thi:</i> Không dùng được nếu dịch vụ AWS gọi trung gian thay mặt user!</span>
+        <span class="lang-en">Restricts API calls to corporate IP CIDR. <i>Exam Trap:</i> Fails if another AWS service calls on user's behalf!</span>
       </div>
-    </li>
-  </ul>
-</div>
-
-<!-- 4. Governance & Tools -->
-<div class="card">
-  <div class="ch">
-    <div class="ci" style="background:var(--gy)">🔭</div>
-    <div>
-      <div class="ct">
-        <span class="lang-vi">4. Giám sát &amp; Quản trị</span>
-        <span class="lang-en">4. Governance &amp; Tools</span>
+      <div class="pi">
+        <b>aws:RequestedRegion</b>
+        <span class="lang-vi">Giới hạn các Region được phép khởi tạo tài nguyên (ví dụ chỉ cho <code>ap-southeast-1</code>), ngăn chặn việc mở server trái phép ở các vùng khác.</span>
+        <span class="lang-en">Restricts approved regions for creating resources (e.g. only <code>ap-southeast-1</code>), preventing rogue deployments.</span>
       </div>
-      <div class="cs">Auditing &amp; Management Tools</div>
+      <div class="pi">
+        <b>aws:MultiFactorAuthPresent</b>
+        <span class="lang-vi">Bắt buộc phải đăng nhập bằng thiết bị MFA thì mới được thực thi hành động nhạy cảm (như DeleteBucket, TerminateInstances).</span>
+        <span class="lang-en">Mandates active MFA authentication before executing high-risk actions (e.g. DeleteBucket, TerminateInstances).</span>
+      </div>
     </div>
-  </div>
-  <div class="tools">
-    <div class="tool">
-      <div class="tn" style="color:var(--bl)">IAM Access Analyzer</div>
-      <div class="td lang-vi">Quét tài nguyên có nguy cơ bị lộ ra bên ngoài</div>
-      <div class="td lang-en">Identifies resources shared with external entities</div>
-    </div>
-    <div class="tool">
-      <div class="tn" style="color:var(--gr)">Credential Report</div>
-      <div class="td lang-vi">CSV cấp account: mật khẩu, key, MFA</div>
-      <div class="td lang-en">Account-level CSV audit of credentials &amp; MFA status</div>
-    </div>
-    <div class="tool">
-      <div class="tn" style="color:var(--or)">Policy Simulator</div>
-      <div class="td lang-vi">Debug quyền Policy trước khi triển khai</div>
-      <div class="td lang-en">Test and debug policies before production deployment</div>
-    </div>
-    <div class="tool">
-      <div class="tn" style="color:var(--rd)">SCPs (Organizations)</div>
-      <div class="td lang-vi">Chỉ giới hạn quyền tối đa, không cấp quyền</div>
-      <div class="td lang-en">Guardrails specifying max permissions; never grants rights</div>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">Bộ 3 công cụ Audit &amp; Phân tích IAM</span>
+        <span class="lang-en">IAM Audit &amp; Analysis Trio</span>
+      </div>
+      <div class="pi">
+        <b>IAM Credential Report (Cấp độ Account)</b>
+        <span class="lang-vi">Tải về file <b>CSV</b> tổng hợp toàn bộ thông tin đăng nhập của mọi IAM User trong tài khoản: mật khẩu tạo khi nào, có bật MFA không, Access Key xoay vòng bao lâu.</span>
+        <span class="lang-en">Downloads an account-wide <b>CSV file</b> listing all IAM users, password creation dates, MFA status, and Access Key rotation age.</span>
+      </div>
+      <div class="pi">
+        <b>IAM Access Advisor (Cấp độ Entity)</b>
+        <span class="lang-vi">Hiển thị trực tiếp trên Console thời điểm lần cuối cùng một User/Role sử dụng từng dịch vụ AWS. Dùng để <b>thu hồi bớt quyền không dùng</b> theo nguyên tắc Least Privilege.</span>
+        <span class="lang-en">Console view of service last-accessed timestamps for a User/Role. Used to prune unused permissions for Least Privilege.</span>
+      </div>
+      <div class="pi">
+        <b>IAM Access Analyzer (Phát hiện rò rỉ)</b>
+        <span class="lang-vi">Dùng suy luận tự động (Automated Reasoning) quét toàn bộ S3, KMS, SQS, IAM Role để cảnh báo tài nguyên nào đang bị chia sẻ ra ngoài Account hoặc để chế độ Public!</span>
+        <span class="lang-en">Leverages automated reasoning to scan S3, KMS, SQS, and IAM Roles, alerting on resources shared externally or made public!</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Bổ sung thi cử -->
+<!-- 4. Bổ sung thi cử -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">➕</div>
@@ -456,47 +424,56 @@ flowchart TD
         <span class="lang-en">High-Yield SAA-C03 Exam Traps &amp; Insights</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Các chi tiết kiến trúc chuyên sâu</span>
-        <span class="lang-en">Architectural nuances &amp; corner cases</span>
+        <span class="lang-vi">Các chi tiết kiến trúc chuyên sâu thường xuyên làm thí sinh mất điểm</span>
+        <span class="lang-en">Architectural nuances &amp; corner cases frequently tested</span>
       </div>
     </div>
   </div>
   <div class="g2">
     <div class="it">
-      <div class="in">Permissions boundary</div>
-      <div class="id lang-vi">Giới hạn quyền tối đa của một User hoặc Role. Quyền hiệu lực là phần giao với Identity policy.</div>
-      <div class="id lang-en">Sets maximum allowable permissions for a User or Role. Effective permissions equal the intersection with Identity policy.</div>
+      <div class="in">
+        <span class="lang-vi">Permissions Boundary (Ranh giới phân quyền)</span>
+        <span class="lang-en">Permissions Boundary</span>
+      </div>
+      <div class="id lang-vi">
+        Dùng cho bài toán: <i>"Cho phép lập trình viên tự tạo IAM Role cho ứng dụng của họ mà không sợ họ tự cấp quyền Admin cho chính mình?"</i><br>
+        👉 <b>Đáp án:</b> Bắt buộc lập trình viên phải gắn Permissions Boundary khi tạo Role. Quyền thực tế của Role là <b>phần giao (Intersection)</b> giữa Identity Policy và Permissions Boundary.
+      </div>
+      <div class="id lang-en">
+        Solves the classic exam dilemma: <i>"Allow developers to create IAM Roles without escalating privileges to AdministratorAccess?"</i><br>
+        👉 <b>Answer:</b> Enforce a Permissions Boundary on role creation. Effective permissions are strictly the <b>intersection</b> between Identity Policy and Permissions Boundary.
+      </div>
     </div>
     <div class="it">
       <div class="in">
-        <span class="lang-vi">Phạm vi của SCP</span>
-        <span class="lang-en">SCP Scope &amp; Guardrails</span>
+        <span class="lang-vi">Service Control Policies (SCP)</span>
+        <span class="lang-en">Service Control Policies (SCPs)</span>
       </div>
-      <div class="id lang-vi">Không áp dụng cho management account. SCP không cấp quyền, chỉ thu hẹp quyền.</div>
-      <div class="id lang-en">Does not apply to the Management Account. SCPs never grant permissions, only restrict boundaries.</div>
+      <div class="id lang-vi">
+        Áp dụng ở cấp Root hoặc OU trong <b>AWS Organizations</b>. SCP <b>KHÔNG BAO GIỜ cấp quyền</b>, chỉ đặt trần quyền tối đa (Guardrail). SCP không áp dụng cho tài khoản Management (Master Account). Explicit Deny ở SCP sẽ vô hiệu hóa mọi quyền của cả Root User ở account con!
+      </div>
+      <div class="id lang-en">
+        Applied at Root or OU levels in <b>AWS Organizations</b>. SCPs <b>never grant permissions</b>, only define guardrail boundaries. SCPs do not restrict the Management Account. An Explicit Deny in an SCP overrides even the Root User of member accounts!
+      </div>
     </div>
     <div class="it">
-      <div class="in">Cross-account + resource policy</div>
-      <div class="id lang-vi">Cùng account: chỉ cần Allow ở một phía. Khác account: cần Allow ở cả hai phía (Identity policy + Resource policy).</div>
-      <div class="id lang-en">Same account: Allow on one side suffices. Cross-account: Allow required on BOTH sides (Identity policy + Resource policy).</div>
-    </div>
-    <div class="it">
-      <div class="in">IAM Identity Center</div>
-      <div class="id lang-vi">SSO tập trung cho nhiều account trong Organizations, thay cho việc tạo IAM Users rải rác.</div>
-      <div class="id lang-en">Centralized Single Sign-On (SSO) across AWS Organizations, replacing sprawling IAM Users across accounts.</div>
-    </div>
-    <div class="it">
-      <div class="in">Access Advisor</div>
-      <div class="id lang-vi">Cấp user: dịch vụ nào được dùng lần cuối khi nào, để thu hẹp quyền theo Least Privilege.</div>
-      <div class="id lang-en">User-level visibility into service last-accessed timestamps, enabling least-privilege permission pruning.</div>
+      <div class="in">IAM Identity Center (AWS SSO)</div>
+      <div class="id lang-vi">Giải pháp đăng nhập một lần (Single Sign-On) tập trung cho hàng trăm tài khoản AWS trong Organizations. Tích hợp trực tiếp với Active Directory, Okta, Google Workspace, thay thế hoàn toàn việc tạo IAM Users rải rác.</div>
+      <div class="id lang-en">Centralized Single Sign-On (SSO) across hundreds of AWS accounts in Organizations. Directly integrates with Active Directory, Okta, Google Workspace, eliminating sprawling IAM Users.</div>
     </div>
     <div class="it">
       <div class="in">
-        <span class="lang-vi">IAM là dịch vụ Global</span>
-        <span class="lang-en">IAM is a Global Service</span>
+        <span class="lang-vi">Cùng Account vs Khác Account</span>
+        <span class="lang-en">Same Account vs Cross-Account Rules</span>
       </div>
-      <div class="id lang-vi">Không gắn với Region; Users, Groups, Roles và Policies dùng được ở mọi Region trên toàn cầu.</div>
-      <div class="id lang-en">Not tied to any AWS Region; Users, Groups, Roles, and Policies apply globally across all Regions.</div>
+      <div class="id lang-vi">
+        • <b>Cùng 1 Account:</b> Chỉ cần có Allow ở 1 bên (Identity Policy HOẶC Resource Policy) là truy cập được.<br>
+        • <b>Khác Account:</b> BẮT BUỘC phải có Allow ở CẢ HAI PHÍA (Identity Policy cấp phép đi ra VÀ Resource Policy / Role Trust cho phép đi vào).
+      </div>
+      <div class="id lang-en">
+        • <b>Same Account:</b> Allow on ONE side (Identity Policy OR Resource Policy) is sufficient.<br>
+        • <b>Cross-Account:</b> Allow is MANDATORY on BOTH sides (Identity Policy permits outbound AND Resource Policy / Trust allows inbound).
+      </div>
     </div>
   </div>
 </div>
@@ -511,7 +488,7 @@ flowchart TD
         <span class="lang-en">5. Golden Rules — SAA-C03</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Ghi nhớ 4 nguyên tắc cốt lõi</span>
+        <span class="lang-vi">Ghi nhớ 4 nguyên tắc cốt lõi về IAM</span>
         <span class="lang-en">4 core architectural rules to memorize</span>
       </div>
     </div>
@@ -520,9 +497,10 @@ flowchart TD
     <li class="bi">
       <div class="bn">1</div>
       <div>
-        <b>Least Privilege</b>
-        <span class="lang-vi">Chỉ cấp đúng và đủ quyền cần thiết để hoàn thành công việc.</span>
-        <span class="lang-en">Grant only the minimum permissions necessary to perform the specified job.</span>
+        <b class="lang-vi">Nguyên tắc đặc quyền tối thiểu (Least Privilege)</b>
+        <b class="lang-en">Principle of Least Privilege</b>
+        <span class="lang-vi">Chỉ cấp đúng và đủ quyền cần thiết để hoàn thành công việc. Luôn bắt đầu từ quyền tối thiểu và mở rộng dần dựa trên báo cáo của IAM Access Advisor.</span>
+        <span class="lang-en">Grant only the minimum permissions necessary to perform the specified job. Begin with restrictive access and prune unused permissions via IAM Access Advisor.</span>
       </div>
     </li>
     <li class="bi">
@@ -530,70 +508,110 @@ flowchart TD
       <div>
         <b class="lang-vi">EC2 Instance Profiles: dùng IAM Role, không nhúng Access Key</b>
         <b class="lang-en">EC2 Instance Profiles: Use IAM Roles, Never Hardcode Access Keys</b>
-        <span class="lang-vi">Luôn gán IAM Role cho EC2 / Lambda thay vì hardcode Access Key vào server.</span>
-        <span class="lang-en">Always attach IAM Roles to EC2 / Lambda instances instead of storing static Access Keys on disk or source code.</span>
+        <span class="lang-vi">Luôn gán IAM Role cho EC2 / Lambda để máy chủ tự động nhận credentials ngắn hạn qua STS, tuyệt đối không lưu file cấu hình có chứa Access Key ID / Secret Key trên đĩa.</span>
+        <span class="lang-en">Always attach IAM Roles to EC2 / Lambda instances so they receive short-term STS credentials automatically. Never store static access keys in code or on disk.</span>
       </div>
     </li>
     <li class="bi">
       <div class="bn">3</div>
       <div>
-        <b>Cross-Account: IAM Role + STS AssumeRole</b>
-        <span class="lang-vi">Ưu tiên Role thay vì tạo IAM User trùng lặp ở tài khoản khác.</span>
-        <span class="lang-en">Prefer assuming IAM Roles via STS over maintaining redundant IAM Users across different accounts.</span>
+        <b class="lang-vi">Cross-Account: IAM Role + STS AssumeRole</b>
+        <b class="lang-en">Cross-Account: IAM Role + STS AssumeRole</b>
+        <span class="lang-vi">Ủy quyền truy cập giữa các tài khoản AWS thông qua việc đóng vai IAM Role (AssumeRole) thay vì tạo tài khoản người dùng trùng lặp ở tài khoản mục tiêu.</span>
+        <span class="lang-en">Federate cross-account access by assuming IAM Roles via STS rather than maintaining duplicate IAM Users across different accounts.</span>
       </div>
     </li>
     <li class="bi">
       <div class="bn" style="background:var(--rd)">!</div>
       <div>
         <b style="color:var(--rd)">
-          <span class="lang-vi">Explicit Deny luôn chiến thắng</span>
+          <span class="lang-vi">Explicit Deny luôn chiến thắng tất cả</span>
           <span class="lang-en">Explicit Deny Always Wins</span>
         </b>
-        <span class="lang-vi">Dù có bao nhiêu Allow, chỉ cần 1 Deny là request bị chặn ngay lập tức.</span>
-        <span class="lang-en">No matter how many Allows exist, a single Explicit Deny anywhere immediately rejects the request.</span>
+        <span class="lang-vi">Dù có bao nhiêu câu lệnh Allow, chỉ cần xuất hiện duy nhất 1 Explicit Deny ở bất kỳ tầng nào (SCP, Boundary, Identity, Resource) là toàn bộ request bị chặn ngay lập tức.</span>
+        <span class="lang-en">No matter how many Allow statements exist, a single Explicit Deny anywhere (SCP, Boundary, Identity, Resource) immediately and permanently rejects the request.</span>
       </div>
     </li>
   </ul>
 </div>
 
-<!-- 6. Nguồn bài giảng -->
+<!-- 6. Nguồn bài giảng & Tài liệu tìm hiểu thêm -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🔗</div>
     <div>
       <div class="ct">
-        <span class="lang-vi">6. Nguồn bài giảng tham chiếu (Udemy Lectures)</span>
-        <span class="lang-en">6. Reference Lectures &amp; Documentation</span>
+        <span class="lang-vi">6. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">6. Lecture References &amp; Further Study Resources</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
-        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek</span>
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Docs</span>
       </div>
     </div>
   </div>
-  <div class="g2">
-    <div class="it">
-      <div class="in">
-        <span class="lang-vi">Section 4 · Video bài giảng Udemy cốt lõi</span>
-        <span class="lang-en">Section 4 · Core Udemy Lectures</span>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
-      <div class="id">
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26097996:</b> IAM Overview &amp; Fundamentals</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098020:</b> Root User Security &amp; MFA</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098028:</b> IAM Users &amp; Security Credentials</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26098070:</b> IAM Credential Report &amp; Access Advisor</a><br>
-        • <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl);text-decoration:none"><b>Lecture 26623458:</b> IAM Policies in Depth (JSON Anatomy)</a>
+      <div class="pi">
+        <b>Section 4 · Lecture 26097996</b>
+        <span class="lang-vi">Tổng quan về IAM, Users, Groups và Policies.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl)">▶ Mở bài giảng trên Udemy</a></span>
+        <span class="lang-en">IAM Overview: Users, Groups, and Policies.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl)">▶ Open Udemy Lecture</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 4 · Lecture 26098020 &amp; 26098028</b>
+        <span class="lang-vi">Bảo mật Root User, bật MFA và quản lý Access Keys.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl)">▶ Bài giảng Root MFA</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl)">Credentials</a></span>
+        <span class="lang-en">Securing Root User, MFA enforcement and Access Keys.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl)">▶ Root MFA Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl)">Credentials</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 4 · Lecture 26098070 &amp; 26623458</b>
+        <span class="lang-vi">IAM Audit tools và giải phẫu chuyên sâu cấu trúc JSON Policy.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl)">▶ Audit Tools</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl)">Policies in Depth</a></span>
+        <span class="lang-en">IAM Audit tools and JSON policy anatomy in depth.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl)">▶ Audit Tools</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl)">Policies in Depth</a></span>
       </div>
     </div>
-    <div class="it">
-      <div class="in">
-        <span class="lang-vi">Tài liệu kiến trúc chính thức từ AWS</span>
-        <span class="lang-en">Official AWS Architecture Documentation</span>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
       </div>
-      <div class="id">
-        • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank" style="color:var(--bl);text-decoration:none">AWS IAM User Guide — Identity and Access Management</a><br>
-        • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html" target="_blank" style="color:var(--bl);text-decoration:none">IAM Policy Evaluation Logic &amp; Explicit Deny</a><br>
-        • <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html" target="_blank" style="color:var(--bl);text-decoration:none">Security Best Practices in IAM (Least Privilege)</a>
+      <div class="pi">
+        <b>IAM Policy Evaluation Logic</b>
+        <span class="lang-vi">Tài liệu chuẩn của AWS về thứ tự xử lý request và cách Explicit Deny hoạt động.<br><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html" target="_blank" style="color:var(--bl)">📖 Đọc Evaluation Logic Guide</a></span>
+        <span class="lang-en">AWS definitive guide on request evaluation order and Deny overrides.<br><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html" target="_blank" style="color:var(--bl)">📖 Read Evaluation Logic Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>Security Best Practices in IAM</b>
+        <span class="lang-vi">Bộ quy tắc bảo mật vàng từ AWS: Least Privilege, MFA, xoay vòng khóa.<br><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html" target="_blank" style="color:var(--bl)">📖 Đọc Security Best Practices</a></span>
+        <span class="lang-en">Official AWS security rules: Least privilege, MFA, key rotation.<br><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html" target="_blank" style="color:var(--bl)">📖 Read Security Best Practices</a></span>
+      </div>
+      <div class="pi">
+        <b>Building a Multi-Account Environment</b>
+        <span class="lang-vi">Whitepaper thiết kế môi trường đa tài khoản an toàn với AWS Organizations &amp; SCP.<br><a href="https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html" target="_blank" style="color:var(--bl)">📖 Đọc Multi-Account Whitepaper</a></span>
+        <span class="lang-en">Architecting secure multi-account environments using Organizations and SCPs.<br><a href="https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html" target="_blank" style="color:var(--bl)">📖 Read Multi-Account Whitepaper</a></span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>AWS IAM Access Analyzer Hub</b>
+        <span class="lang-vi">Khám phá cơ chế phân tích suy luận toán học tự động phát hiện rò rỉ quyền.<br><a href="https://aws.amazon.com/iam/access-analyzer/" target="_blank" style="color:var(--bl)">🔍 Xem Access Analyzer Hub</a></span>
+        <span class="lang-en">Automated reasoning engine detecting unintended public/external access.<br><a href="https://aws.amazon.com/iam/access-analyzer/" target="_blank" style="color:var(--bl)">🔍 View Access Analyzer Hub</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Identity Center (AWS SSO)</b>
+        <span class="lang-vi">Trung tâm quản lý đăng nhập tập trung và đồng bộ hóa với Identity Provider (IdP).<br><a href="https://aws.amazon.com/iam/identity-center/" target="_blank" style="color:var(--bl)">🏢 Xem AWS Identity Center</a></span>
+        <span class="lang-en">Centralized workforce authentication integrating with external IdPs.<br><a href="https://aws.amazon.com/iam/identity-center/" target="_blank" style="color:var(--bl)">🏢 View Identity Center</a></span>
+      </div>
+      <div class="pi">
+        <b>Tutorials Dojo SAA-C03 IAM Cheat Sheet</b>
+        <span class="lang-vi">Tóm tắt các điểm so sánh cốt lõi và các bẫy đề thi SAA-C03 thường gặp về IAM.<br><a href="https://tutorialsdojo.com/aws-identity-and-access-management-iam/" target="_blank" style="color:var(--bl)">📝 Đọc Tutorials Dojo IAM Cheat Sheet</a></span>
+        <span class="lang-en">High-yield summary and exam-tested comparison tables for IAM.<br><a href="https://tutorialsdojo.com/aws-identity-and-access-management-iam/" target="_blank" style="color:var(--bl)">📝 Read Tutorials Dojo Cheat Sheet</a></span>
       </div>
     </div>
   </div>

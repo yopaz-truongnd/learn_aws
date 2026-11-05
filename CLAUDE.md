@@ -55,9 +55,9 @@ learn_aws/
 | Tệp tin | Vai trò & Mô tả | Trạng thái |
 | :--- | :--- | :--- |
 | `index.html` | **Trang Dashboard trung tâm:** Thống kê tiến độ, 4 Domain đề thi SAA-C03, bảng mục lục 16 Section liên kết đến từng cheat sheet, trích đoạn từ vựng nổi bật và hướng dẫn Anki. | Hoàn thành |
-| `topics/aws_global_infra.html` | **Section 3:** AWS Global Infrastructure (Regions, AZs, Data Centers, Edge Locations / PoP, Local Zones, Wavelength, Outposts). | Hoàn thành |
-| `topics/aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Evaluation Logic, MFA, Tools, Golden Rules, Decision Tree, Sequence, Matrix). **File mẫu chuẩn**. | Hoàn thành |
-| `topics/aws_ec2.html` | **Section 5:** AWS EC2 (Instance Types, Purchasing Options, Security Groups, User Data, IMDSv2, SSM Session Manager, Placement Groups). | Hoàn thành |
+| `topics/aws_global_infra.html` | **Section 3:** AWS Global Infrastructure (Regions, AZs, Data Centers, Edge PoP, Sơ đồ Mermaid định tuyến, Ma trận chi phí Data Transfer, AZ ID vs AZ Name, Local Zones, Wavelength, Outposts, Direct Connect, Whitepapers). | Hoàn thành |
+| `topics/aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Sơ đồ Mermaid đánh giá logic, Ma trận Cross-Account AssumeRole vs Resource Policy, Top Condition Keys, Bộ 3 công cụ Audit, SCPs, Golden Rules). **File mẫu chuẩn**. | Hoàn thành |
+| `topics/aws_ec2.html` | **Section 5:** AWS EC2 (Instance Types, Sơ đồ Mermaid vòng đời Lifecycle &amp; Hibernate, Ma trận 7 mô hình Purchasing Options &amp; Spot Fleet, Ma trận SG vs NACL, ENA/EFA, Nitro System, SSM Session Manager). | Hoàn thành |
 | `assets/css/style.css` | **Hệ thống Design System dùng chung:** Tokens màu, Dark/Light mode, typography, cards, grids, flows, matrix tables, mermaid containers. | Hoàn thành |
 | `assets/js/app.js` | **Xử lý ứng dụng client-side:** Nhận diện và chuyển đổi song ngữ VI/EN, lưu `localStorage`, render tự động sơ đồ Mermaid theo theme/lang. | Hoàn thành |
 | `assets/vendor/mermaid.min.js` | **Thư viện Mermaid.js nội bộ (100% offline):** Dùng để render Decision Trees, Sequence Diagrams, Logic Flowcharts mà không kéo CDN. | Hoàn thành |
@@ -143,7 +143,13 @@ learn_aws/
 Khi tạo mới hoặc cập nhật một trang `topics/aws_<topic>.html`:
 
 ### 1. Token CSS & Chế độ màu (Dark/Light mode)
-- Copy nguyên vẹn khối `<style>` từ [`topics/aws_iam.html`](file:///private/var/www/learn_aws/topics/aws_iam.html).
+- Nhúng toàn bộ tài nguyên dùng chung trong thẻ `<head>`:
+  ```html
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/vendor/mermaid.min.js"></script>
+  <script src="../assets/js/app.js"></script>
+  ```
+- Tuyệt đối không sao chép lại khối `<style>` hay mã JavaScript trùng lặp vào các trang cheat sheet con.
 - Sử dụng triệt để các biến CSS `:root`:
   - Nền & Thẻ: `--bg`, `--card`, `--bd`, `--sub`, `--tx`, `--mu`, `--gy`.
   - Cặp màu trạng thái (Chữ / Nền): Xanh lam (`--bl` / `--blb`), Xanh lá (`--gr` / `--grb`), Cam (`--or` / `--orb`), Đỏ (`--rd` / `--rdb`).
@@ -178,6 +184,8 @@ Khi tạo mới hoặc cập nhật một trang `topics/aws_<topic>.html`:
    - Trạng thái ngôn ngữ được lưu tự động trong `localStorage` key `'aws_study_lang'`.
 3. **Lưới thẻ (`.grid`)**: Chứa các thẻ `.card` (dùng thêm class `.full` cho thẻ trải rộng cả 2 cột).
 4. **Các component tái sử dụng**:
+   - `.mermaid-diagram`: Khối sơ đồ tư duy Mermaid tự động render song ngữ theo theme.
+   - `.matrix-wrap` + `.matrix-table`: Bảng ma trận so sánh đa chiều các lựa chọn kỹ thuật.
    - `.g2` + `.it`: Lưới 2 cột cho định nghĩa thực thể/khái niệm.
    - `.flow` + `.st` + `.ar`: Sơ đồ luồng xử lý hoặc thứ tự đánh giá.
    - `.cols` + `.col` + `.pi`: So sánh giữa 2 hoặc 3 phương án kiến trúc.
@@ -187,19 +195,21 @@ Khi tạo mới hoặc cập nhật một trang `topics/aws_<topic>.html`:
    - `.json`: Khối code JSON cấu hình/policy có tô màu `.jk`, `.jv`, `.jc`, `.jp`.
    - Card **"Bổ sung hay gặp trong đề thi SAA-C03"**: Điểm danh các bẫy đề thi, số liệu quan trọng, sự cố thực tế.
    - Card **"Nguyên tắc vàng — SAA-C03"**: Dạng `.bp` / `.bi`, mục cảnh báo cốt lõi dùng số `.bn` màu đỏ `--rd`.
-   - Card **"Nguồn bài giảng tham chiếu (Udemy Lectures)"** (BẮT BUỘC): Liệt kê 2 cột dạng `.g2/.it`:
+   - Card **"Nguồn bài giảng & Tài liệu tìm hiểu thêm (Further Study Resources)"** (BẮT BUỘC): Bố trí 3 cột dạng `.cols` / `.col` / `.pi`:
      - Cột 1: Video bài giảng Udemy cốt lõi kèm link chính xác từ `data/lecturesub-tu-vung.csv` (`https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/<id>`).
      - Cột 2: Tài liệu chính thức từ AWS Documentation / Architecture Whitepaper liên quan.
+     - Cột 3: Khảo sát sản phẩm & Cheat Sheet bổ trợ (Interactive Maps, Tutorials Dojo Cheat Sheet).
 
 ### 3. Quy trình thực hiện khi tạo bài mới (Workflow)
 1. Tạo file `topics/aws_<topic>.html` (trong thư mục `topics/`).
-2. Tra cứu `data/lecturesub-tu-vung.csv` để lấy danh sách từ vựng, câu ngữ cảnh và link video bài giảng tương ứng đưa vào nội dung và khối Nguồn tham chiếu.
-3. Bổ sung card "Nguồn bài giảng tham chiếu (Udemy Lectures)" với đầy đủ liên kết video bài giảng và AWS Documentation.
-4. Đảm bảo toàn bộ HTML đóng thẻ hợp lệ (kiểm tra bằng script python validator).
-5. **Cập nhật `index.html`**:
+2. Nhúng `../assets/css/style.css`, `../assets/vendor/mermaid.min.js`, `../assets/js/app.js` trong `<head>`.
+3. Tra cứu `data/lecturesub-tu-vung.csv` để lấy danh sách từ vựng, câu ngữ cảnh và link video bài giảng tương ứng đưa vào nội dung và khối Nguồn tham chiếu.
+4. Bổ sung card "Nguồn bài giảng & Tài liệu tìm hiểu thêm (Further Study Resources)" với đầy đủ liên kết video bài giảng, AWS Documentation, Whitepapers và Cheat Sheet.
+5. Đảm bảo toàn bộ HTML đóng thẻ hợp lệ và cân bằng song ngữ (kiểm tra bằng script python validator).
+6. **Cập nhật `index.html`**:
    - Thêm/sửa link tới `topics/aws_<topic>.html` (đường dẫn có tiền tố `topics/`).
    - Thêm dòng chú thích nguồn bài giảng `📚 Nguồn: Udemy Section X · Lectures...`.
    - Sửa trạng thái mục bài học từ `btn-pending` / `Kế tiếp` sang `btn-open` / `Đã có`.
    - Tăng biến đếm "Chủ đề hoàn thành" trong khối `.stats`.
-6. **Cập nhật `README.md`**: đánh dấu `[x]` Section trong mục Lộ trình, thêm dòng vào bảng file và cây thư mục; cập nhật bảng File Inventory + dòng "Đã hoàn thành" trong `CLAUDE.md`.
-7. Báo cáo lại cho người dùng và mở kiểm tra bằng lệnh `open topics/aws_<topic>.html`.
+7. **Cập nhật `README.md`**: đánh dấu `[x]` Section trong mục Lộ trình, thêm dòng vào bảng file và cây thư mục; cập nhật bảng File Inventory + dòng "Đã hoàn thành" trong `CLAUDE.md`.
+8. Báo cáo lại cho người dùng và mở kiểm tra bằng lệnh `open topics/aws_<topic>.html`.
