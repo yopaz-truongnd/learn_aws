@@ -142,11 +142,6 @@ flowchart TD
     
     Q5 -->|"Vài phút đến vài giờ (1-5 phút Expedited, 3-5h Standard)"| S3_GFR["S3 Glacier Flexible Retrieval (Lưu tối thiểu 90 ngày)"]
     Q5 -->|"Chấp nhận chờ 12 đến 48 giờ / Chi phí rẻ nhất tuyệt đối"| S3_GDA["S3 Glacier Deep Archive (Lưu tối thiểu 180 ngày)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
-    class S3_Intell,S3_Std,S3_OZ,S3_SIA,S3_GIR,S3_GFR,S3_GDA awsPrimary;
-    class Q1,Q2,Q3,Q4,Q5 awsBox;
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
@@ -157,7 +152,7 @@ flowchart TD
     Q1 -->|"Predictable access patterns"| Q2{"Frequently accessed on a daily basis?"}
     Q2 -->|"Yes: Active hot data requiring ms latency"| S3_Std["S3 Standard (Default general purpose)"]
     
-    Q2 -->|"No: Infrequently accessed (&lt; once a month)"| Q3{"Can data loss be tolerated if an AZ is destroyed?"}
+    Q2 -->|"No: Infrequently accessed (< once a month)"| Q3{"Can data loss be tolerated if an AZ is destroyed?"}
     Q3 -->|"Yes: Reproducible secondary data / thumbnail backups"| S3_OZ["S3 One Zone-IA (20% cheaper, Single AZ)"]
     Q3 -->|"No: Strict Multi-AZ resilience required"| Q4{"Acceptable retrieval speed upon request?"}
     
@@ -167,12 +162,8 @@ flowchart TD
     
     Q5 -->|"Minutes to hours (1-5m Expedited, 3-5h Standard)"| S3_GFR["S3 Glacier Flexible Retrieval (Min 90-day retention)"]
     Q5 -->|"12 to 48 hours / Absolute lowest storage cost"| S3_GDA["S3 Glacier Deep Archive (Min 180-day retention)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    class S3_Intell,S3_Std,S3_OZ,S3_SIA,S3_GIR,S3_GFR,S3_GDA awsPrimary;
-    class Q1,Q2,Q3,Q4,Q5 awsBox;
     </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

@@ -117,11 +117,6 @@ flowchart TD
     Q_NoSQL -->|"JSON Document tương thích MongoDB"| DocDB["Dùng Amazon DocumentDB"]
     Q_NoSQL -->|"Đồ thị quan hệ (Graph) / Mạng xã hội / Fraud"| Neptune["Dùng Amazon Neptune"]
     Q_NoSQL -->|"Chuỗi thời gian (Time-series) / IoT Sensor"| Timestream["Dùng Amazon Timestream"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
-    class Redis,Memcached,Redshift,Aurora,RDS,DynamoDB,DocDB,Neptune,Timestream awsPrimary;
-    class Q1,Q_Mem,Q_SQL,Q_Cloud,Q_NoSQL awsBox;
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
@@ -142,12 +137,8 @@ flowchart TD
     Q_NoSQL -->|"JSON Document compatible with MongoDB"| DocDB["Use Amazon DocumentDB"]
     Q_NoSQL -->|"Graph relationships / Social / Fraud analysis"| Neptune["Use Amazon Neptune"]
     Q_NoSQL -->|"Time-Series telemetry / IoT sensor sequences"| Timestream["Use Amazon Timestream"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    class Redis,Memcached,Redshift,Aurora,RDS,DynamoDB,DocDB,Neptune,Timestream awsPrimary;
-    class Q1,Q_Mem,Q_SQL,Q_Cloud,Q_NoSQL awsBox;
     </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

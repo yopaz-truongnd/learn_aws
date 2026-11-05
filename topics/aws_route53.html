@@ -165,11 +165,6 @@ flowchart TD
 
     Q1 -->|"Client-side load balancing + Kiểm tra sức khỏe Health Check"| P_MultiVal["Multi-Value Answer Routing (Tối đa 8 IPs sống)"]
     Q1 -->|"Định tuyến dựa trên dải mạng CIDR của Client"| P_IP["IP-based Routing (Theo Client Subnets)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
-    class P_Simple,P_Weight,P_Latency,P_Failover,P_GeoLoc,P_GeoProx,P_MultiVal,P_IP awsPrimary;
-    class Q1,Q_Geo awsBox;
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
@@ -186,12 +181,8 @@ flowchart TD
 
     Q1 -->|"Client-side load balancing returning verified healthy endpoints"| P_MultiVal["Multi-Value Answer Routing (Up to 8 Healthy IPs)"]
     Q1 -->|"Route based on user's specific CIDR IP ranges"| P_IP["IP-based Routing (Client Subnets)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    class P_Simple,P_Weight,P_Latency,P_Failover,P_GeoLoc,P_GeoProx,P_MultiVal,P_IP awsPrimary;
-    class Q1,Q_Geo awsBox;
     </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

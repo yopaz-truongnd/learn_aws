@@ -42,6 +42,115 @@
 
 <div class="grid">
 
+<!-- 0. Khái quát dịch vụ Amazon EC2 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Khái quát dịch vụ: Amazon EC2 là gì &amp; Một máy chủ EC2 gồm những gì?</span>
+        <span class="lang-en">Service Overview: What is Amazon EC2 &amp; What Components Make Up an EC2 Instance?</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hiểu bức tranh tổng thể về dịch vụ máy chủ ảo IaaS cốt lõi nhất của AWS trước khi đi vào từng chi tiết kỹ thuật</span>
+        <span class="lang-en">The big picture of AWS's core IaaS virtual server service and its 6 architectural building blocks</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pi" style="margin-bottom:14px">
+    <b>
+      <span class="lang-vi">💡 Amazon EC2 (Elastic Compute Cloud) là dịch vụ gì?</span>
+      <span class="lang-en">💡 What is Amazon EC2 (Elastic Compute Cloud)?</span>
+    </b>
+    <span class="lang-vi">
+      <b>Amazon EC2</b> là dịch vụ <b>Hạ tầng dưới dạng Dịch vụ (Infrastructure as a Service — IaaS)</b> cho phép bạn thuê các máy chủ ảo (gọi là <b>EC2 Instances</b>) trên đám mây AWS chỉ trong vài chục giây và trả tiền theo thời gian sử dụng thực tế. Mỗi EC2 Instance nằm cố định trong <b>1 Availability Zone (AZ-Scoped)</b>. Theo mô hình trách nhiệm chung (Shared Responsibility Model), AWS chịu trách nhiệm vận hành phần cứng vật lý và tầng ảo hóa <b>AWS Nitro Hypervisor</b>, còn bạn có toàn quyền cấu hình Hệ điều hành (OS), bản vá bảo mật, tường lửa Security Group và ứng dụng bên trong.
+    </span>
+    <span class="lang-en">
+      <b>Amazon EC2</b> is AWS's foundational <b>Infrastructure as a Service (IaaS)</b> offering that lets you rent virtual servers (<b>EC2 Instances</b>) on demand within seconds. Each EC2 instance is strictly bound to a <b>single Availability Zone (AZ-Scoped)</b>. Under the Shared Responsibility Model, AWS manages the physical datacenter and <b>AWS Nitro Hypervisor</b>, while you control the Guest OS, patching, Security Group firewall rules, and application stack.
+    </span>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">6 Thành phần cấu tạo nên một máy chủ EC2 hoàn chỉnh (6 Core Building Blocks)</span>
+    <span class="lang-en">6 Core Building Blocks of an Amazon EC2 Instance</span>
+  </div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>1. AMI (Amazon Machine Image) — Khuôn mẫu Hệ điều hành</div>
+      <div class="id lang-vi">Bản sao đóng gói sẵn chứa <b>Hệ điều hành</b> (Amazon Linux 2023, Ubuntu, RedHat, Windows Server, macOS), cấu hình phân vùng ổ đĩa gốc (Root Volume Template) và các phần mềm cài sẵn để đúc ra máy chủ EC2.</div>
+      <div class="id lang-en">A pre-packaged template containing the <b>Operating System</b> (Amazon Linux 2023, Ubuntu, Windows, macOS), root volume mapping, and pre-installed software used to launch instances.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>2. Instance Type (vCPU &amp; RAM) — Năng lực tính toán</div>
+      <div class="id lang-vi">Quy định cấu hình phần cứng của máy ảo: số lượng vi xử lý ảo (<b>vCPU</b>), dung lượng bộ nhớ <b>RAM</b>, băng thông card mạng và bộ tăng tốc phần cứng (GPU/FPGA) theo từng họ máy (<code>t3</code>, <code>m6i</code>, <code>c7g</code>, <code>r6g</code>...).</div>
+      <div class="id lang-en">Defines the virtual hardware profile: number of <b>vCPUs</b>, <b>RAM</b> capacity, network bandwidth, and hardware accelerators (GPUs/FPGAs) grouped by instance families (<code>t3</code>, <code>m6i</code>, <code>c7g</code>, <code>r6g</code>...).</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>3. Storage (EBS, Instance Store, EFS) — Ổ đĩa lưu trữ</div>
+      <div class="id lang-vi">• <b>Amazon EBS:</b> Ổ đĩa khối gắn qua mạng (Network Block Storage), giữ nguyên dữ liệu khi Stop máy.<br>• <b>EC2 Instance Store:</b> Ổ NVMe SSD vật lý gắn trực tiếp trên host, IOPS cực cao nhưng <b>mất sạch dữ liệu khi Stop</b>.<br>• <b>Amazon EFS:</b> Hệ thống tệp mạng dùng chung cho nhiều máy EC2 (Multi-AZ).</div>
+      <div class="id lang-en">• <b>Amazon EBS:</b> Persistent network-attached block storage that survives instance stops.<br>• <b>EC2 Instance Store:</b> Physically attached ephemeral NVMe SSD with ultra-high IOPS (<b>data lost on Stop</b>).<br>• <b>Amazon EFS:</b> Shared Multi-AZ network file system.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>4. Networking &amp; IP (VPC, Subnet, ENI, IP) — Kết nối mạng</div>
+      <div class="id lang-vi">Máy chủ đặt trong 1 <b>Subnet (thuộc 1 AZ)</b> thông qua card mạng ảo <b>ENI (Elastic Network Interface)</b>. Luôn có <b>Private IPv4</b> cố định suốt vòng đời, tùy chọn gắn <b>Public IPv4</b> (đổi khi Stop/Start) hoặc <b>Elastic IP</b> (IP công khai tĩnh cố định).</div>
+      <div class="id lang-en">Placed inside a specific <b>VPC Subnet (1 AZ)</b> via a virtual network card (<b>ENI</b>). Assigned a persistent <b>Private IPv4</b>, an optional dynamic <b>Public IPv4</b> (changes on Stop/Start), or a static <b>Elastic IP</b>.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>5. Security &amp; Access (Security Group, Key Pair, SSM)</div>
+      <div class="id lang-vi">• <b>Security Group:</b> Tường lửa trạng thái (Stateful Firewall) chặn/mở từng cổng TCP/UDP (ví dụ Port 22 SSH, Port 80 HTTP, Port 3389 RDP).<br>• <b>Key Pair / SSM Session Manager:</b> Cặp khóa mật mã (<code>.pem</code>) hoặc trình quản lý phiên không cần mở cổng để đăng nhập vào máy chủ.</div>
+      <div class="id lang-en">• <b>Security Group:</b> Instance-level stateful firewall controlling inbound/outbound ports (Port 22 SSH, Port 80 HTTP, Port 3389 RDP).<br>• <b>Key Pair / SSM Session Manager:</b> Cryptographic key pair (<code>.pem</code>) or portless browser terminal access.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>6. Bootstrapping &amp; Identity (User Data, IAM Role, IMDS)</div>
+      <div class="id lang-vi">• <b>EC2 User Data:</b> Script tự động chạy dưới quyền <code>root</code> ở lần khởi động đầu tiên để cài phần mềm.<br>• <b>IAM Instance Profile (Role) &amp; IMDS (169.254.169.254):</b> Cấp quyền bảo mật tạm thời cho EC2 gọi các dịch vụ AWS khác và tra cứu siêu dữ liệu nội bộ.</div>
+      <div class="id lang-en">• <b>EC2 User Data:</b> First-boot root script automating software installation.<br>• <b>IAM Role &amp; IMDS (169.254.169.254):</b> Grants temporary STS credentials to call AWS APIs and exposes instance metadata.</div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Quy trình 6 bước cấu hình khi khởi tạo (Launch) một máy chủ EC2</span>
+    <span class="lang-en">Standard 6-Step EC2 Instance Launch Workflow</span>
+  </div>
+  <div class="flow">
+    <div class="st s-b">
+      <b>1. Chọn AMI</b>
+      <span class="lang-vi">Linux / Windows / Custom</span>
+      <span class="lang-en">Linux / Windows / Custom</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-b">
+      <b>2. Instance Type</b>
+      <span class="lang-vi">Chọn vCPU &amp; RAM (t3, m5...)</span>
+      <span class="lang-en">Pick vCPU &amp; RAM (t3, m5...)</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-g">
+      <b>3. Network &amp; SG</b>
+      <span class="lang-vi">VPC Subnet, IP, Mở Port</span>
+      <span class="lang-en">VPC Subnet, IP, Ports</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-o">
+      <b>4. Storage (EBS)</b>
+      <span class="lang-vi">Dung lượng &amp; Loại đĩa gp3</span>
+      <span class="lang-en">Size &amp; gp3 Volume Type</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-r">
+      <b>5. Key Pair &amp; IAM</b>
+      <span class="lang-vi">Khóa SSH &amp; Gắn IAM Role</span>
+      <span class="lang-en">SSH Key &amp; IAM Role</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-g">
+      <b>6. User Data &amp; Launch</b>
+      <span class="lang-vi">Chạy script khởi tạo</span>
+      <span class="lang-en">Run bootstrap script</span>
+    </div>
+  </div>
+</div>
+
 <!-- 1. Instance Types -->
 <div class="card full">
   <div class="ch">

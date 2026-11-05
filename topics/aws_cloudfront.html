@@ -101,12 +101,7 @@ flowchart TD
     Q3 -->|"ALB / EC2 / On-Premise Web Server"| CF_Cust["Dùng CloudFront (Custom Origin + Caching)"]
 
     Q2 -->|"Giao thức TCP / UDP (Gaming, VoIP, IoT) hoặc CẦN IP TĨNH CỐ ĐỊNH"| Q4{"Có cần chuyển đổi dự phòng nhanh xuyên Region không?"}
-    Q4 -->|"Có: 2 Anycast IP tĩnh, Chuyển thảm họa &lt; 1 phút, Không Cache"| GA["Dùng AWS Global Accelerator (Chuyển tiếp tới ALB / NLB / EC2)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
-    class S3_TA,CF_S3,CF_Cust,GA awsPrimary;
-    class Q1,Q2,Q3,Q4 awsBox;
+    Q4 -->|"Có: 2 Anycast IP tĩnh, Chuyển thảm họa < 1 phút, Không Cache"| GA["Dùng AWS Global Accelerator (Chuyển tiếp tới ALB / NLB / EC2)"]
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
@@ -121,13 +116,9 @@ flowchart TD
     Q3 -->|"ALB / EC2 / On-Premises dynamic HTTP API"| CF_Cust["Use CloudFront (Custom Origin + Dynamic Caching)"]
 
     Q2 -->|"TCP / UDP protocols (Gaming, VoIP, IoT) or REQUIRES STATIC IPs"| Q4{"Requires instant cross-region automated failover?"}
-    Q4 -->|"Yes: 2 Anycast Static IPs, &lt;1 min DR failover, Zero caching"| GA["Use AWS Global Accelerator (Fronting ALB / NLB / EC2)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    class S3_TA,CF_S3,CF_Cust,GA awsPrimary;
-    class Q1,Q2,Q3,Q4 awsBox;
+    Q4 -->|"Yes: 2 Anycast Static IPs, <1 min DR failover, Zero caching"| GA["Use AWS Global Accelerator (Fronting ALB / NLB / EC2)"]
     </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

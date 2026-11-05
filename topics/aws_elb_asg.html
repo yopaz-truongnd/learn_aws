@@ -32,6 +32,103 @@
 
 <div class="grid">
 
+<!-- 0. KHÁI QUÁT DỊCH VỤ ELB & ASG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Khái quát dịch vụ: Elastic Load Balancing (ELB) &amp; Auto Scaling Group (ASG) là gì, gồm những gì?</span>
+        <span class="lang-en">Service Overview: What are Elastic Load Balancing (ELB) &amp; Auto Scaling Groups (ASG) and Their Core Components?</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bộ đôi dịch vụ nền tảng giúp hệ thống tự động chia tải, tự chữa lành (Self-healing) và co giãn đàn hồi trên AWS</span>
+        <span class="lang-en">The foundational duo enabling automated traffic distribution, self-healing, and elastic capacity scaling on AWS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols" style="margin-bottom:16px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚖️ Elastic Load Balancing (ELB) là gì &amp; Gồm gì?</span>
+        <span class="lang-en">⚖️ What is Elastic Load Balancing (ELB) &amp; What Does It Consist Of?</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Định nghĩa dịch vụ (Managed Load Balancer)</span><span class="lang-en">Service Definition (Managed Load Balancer)</span></b>
+        <span class="lang-vi">Là dịch vụ <b>cân bằng tải được AWS quản lý hoàn toàn (Fully Managed)</b>, đứng ở tuyến đầu nhận lưu lượng từ người dùng và phân phối đều xuống nhiều máy chủ backend (EC2, Containers, IP, Lambda) trải rộng trên nhiều Availability Zones.</span>
+        <span class="lang-en">A <b>fully managed load balancing service</b> that sits at the front door, accepting incoming client traffic and distributing it across healthy backend targets (EC2, Containers, IPs, Lambda) across multiple Availability Zones.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">4 Thành phần cấu tạo của một ELB</span><span class="lang-en">4 Core Building Blocks of an ELB</span></b>
+        <span class="lang-vi">
+          1. <b>Listeners (Bộ lắng nghe):</b> Kiểm tra các kết nối đi vào theo Giao thức + Cổng (ví dụ <code>HTTP:80</code>, <code>HTTPS:443</code>, <code>TCP:8080</code>).<br>
+          2. <b>Listener Rules (Quy tắc định tuyến):</b> Xác định điều kiện chuyển tiếp gói tin (theo đường dẫn URL <code>/api/*</code>, Hostname, Header...).<br>
+          3. <b>Target Groups (Nhóm đích):</b> Gom nhóm các máy chủ đích nhận lưu lượng (Instances, IP addresses, Lambda functions, hoặc ALB khác).<br>
+          4. <b>Health Checks (Kiểm tra sức khỏe):</b> Định kỳ gửi gói tin thăm dò (ping) xuống từng Target; nếu máy nào hỏng (Unhealthy), ELB lập tức ngắt luồng gửi tới máy đó.
+        </span>
+        <span class="lang-en">
+          1. <b>Listeners:</b> Listen for client connections on configured Protocol + Port (e.g., <code>HTTP:80</code>, <code>HTTPS:443</code>, <code>TCP:8080</code>).<br>
+          2. <b>Listener Rules:</b> Evaluate routing conditions (URL path <code>/api/*</code>, Hostname, HTTP headers...).<br>
+          3. <b>Target Groups:</b> Logical groupings of backend targets (EC2 Instances, IPs, Lambda functions, or another ALB).<br>
+          4. <b>Health Checks:</b> Periodically probe registered targets and route traffic exclusively to <code>Healthy</code> nodes.
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📈 Auto Scaling Group (ASG) là gì &amp; Gồm gì?</span>
+        <span class="lang-en">📈 What is an Auto Scaling Group (ASG) &amp; What Does It Consist Of?</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Định nghĩa dịch vụ (Automated Fleet Orchestrator)</span><span class="lang-en">Service Definition (Automated Fleet Orchestrator)</span></b>
+        <span class="lang-vi">Là dịch vụ <b>quản lý đội máy chủ EC2 tự động</b>: tự thêm máy (Scale Out) khi tải tăng, tự xóa bớt máy (Scale In) khi tải giảm để tiết kiệm tiền, tự thay thế máy bị lỗi phần cứng và tự đăng ký máy mới vào Target Group của ELB.</span>
+        <span class="lang-en">An <b>automated EC2 fleet manager</b> that launches instances (Scale Out) on demand spikes, terminates idle instances (Scale In) to save costs, replaces impaired instances, and auto-registers instances with ELB Target Groups.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">3 Thành phần cấu tạo của một ASG</span><span class="lang-en">3 Core Building Blocks of an ASG</span></b>
+        <span class="lang-vi">
+          1. <b>Launch Template (Khuôn mẫu khởi tạo):</b> Quy định dùng AMI nào, Instance Type gì, gắn Security Group, Key Pair, IAM Role và chạy User Data nào.<br>
+          2. <b>Capacity &amp; Network (Quy mô &amp; Vị trí):</b> Ngưỡng số lượng máy chủ (<code>Min</code>, <code>Desired</code>, <code>Max</code>) và danh sách các VPC Subnets (Multi-AZ) sẽ đặt máy.<br>
+          3. <b>Scaling Policies (Chính sách co giãn):</b> Luật tự động tăng/giảm máy dựa trên CloudWatch Metrics (CPU Utilization, RequestCountPerTarget, SQS Queue Depth) hoặc theo lịch hẹn.
+        </span>
+        <span class="lang-en">
+          1. <b>Launch Template:</b> Defines the blueprint: AMI ID, Instance Type, Security Groups, Key Pair, IAM Role, and User Data script.<br>
+          2. <b>Capacity &amp; Network:</b> Fleet boundaries (<code>Min</code>, <code>Desired</code>, <code>Max</code>) and target Multi-AZ VPC Subnets.<br>
+          3. <b>Scaling Policies:</b> Rules triggering Scale Out/In based on CloudWatch Metrics (CPU, RequestCountPerTarget, SQS Queue Depth) or schedules.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="st s-b">
+      <b>1. Client Request</b>
+      <span class="lang-vi">Người dùng truy cập tên miền</span>
+      <span class="lang-en">User visits domain name</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-b">
+      <b>2. ELB Listener</b>
+      <span class="lang-vi">Nhận cổng 80/443 &amp; xét Rule</span>
+      <span class="lang-en">Matches Port 80/443 &amp; Rules</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-g">
+      <b>3. Target Group</b>
+      <span class="lang-vi">Chỉ gửi tới máy Healthy</span>
+      <span class="lang-en">Routes to Healthy targets</span>
+    </div>
+    <div class="ar">&rarr;</div>
+    <div class="st s-o">
+      <b>4. Auto Scaling Group</b>
+      <span class="lang-vi">Co giãn số máy EC2 theo tải</span>
+      <span class="lang-en">Scales EC2 fleet dynamically</span>
+    </div>
+  </div>
+</div>
+
 <!-- 1. CÁC KHÁI NIỆM CỐT LÕI VỀ TÍNH SẴN SÀNG & CO GIÃN -->
 <div class="card full">
   <div class="ch">
@@ -117,15 +214,10 @@ flowchart TD
         ELB_B -->|"Chuyển tiếp HTTP/HTTPS (Port 80)"| EC2_4
 
         subgraph ASG_Control["Điều khiển Auto Scaling Group"]
-            CW["CloudWatch Alarms (CPU &gt; 50%)"] -->|"Kích hoạt Scale Out Policy"| ASG["ASG Engine (Min: 2, Desired: 4, Max: 10)"]
+            CW["CloudWatch Alarms (CPU > 50%)"] -->|"Kích hoạt Scale Out Policy"| ASG["ASG Engine (Min: 2, Desired: 4, Max: 10)"]
             ASG -.->|"Launch Templates"| TG
         end
     end
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
-    class DNS,ELB,ASG,CW awsPrimary;
-    class EC2_1,EC2_2,EC2_3,EC2_4,ELB_A,ELB_B awsBox;
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
@@ -156,20 +248,16 @@ flowchart TD
         ELB_B -->|"Forward HTTP/HTTPS (Port 80)"| EC2_4
 
         subgraph ASG_Control["Auto Scaling Group Management"]
-            CW["CloudWatch Alarms (CPU &gt; 50%)"] -->|"Trigger Scale Out Policy"| ASG["ASG Engine (Min: 2, Desired: 4, Max: 10)"]
+            CW["CloudWatch Alarms (CPU > 50%)"] -->|"Trigger Scale Out Policy"| ASG["ASG Engine (Min: 2, Desired: 4, Max: 10)"]
             ASG -.->|"Launch Templates"| TG
         end
     end
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    class DNS,ELB,ASG,CW awsPrimary;
-    class EC2_1,EC2_2,EC2_3,EC2_4,ELB_A,ELB_B awsBox;
     </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
-<!-- 2. MA TRẬN SO SÁNH 4 LOẠI LOAD BALANCER -->
+<!-- 2. MA TRẬN SO SÁNH 4 LOẠI LOAD BALANCER & GIẢI THÍCH CÁC TẦNG OSI -->
 <div class="card full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">⚖️</div>
@@ -179,22 +267,80 @@ flowchart TD
         <span class="lang-en">2. Comprehensive ELB Comparison Matrix (ALB vs NLB vs GWLB vs CLB)</span>
       </div>
       <div class="cs">
-        <span class="lang-vi">Đối chiếu chi tiết tầng OSI, hiệu năng, địa chỉ IP và tính năng định tuyến cho đề thi SAA-C03</span>
-        <span class="lang-en">Detailed comparison across OSI layers, throughput, IP schemes, and routing features</span>
+        <span class="lang-vi">Giải thích bản chất các tầng mạng OSI (Layer 7, Layer 4, Layer 3) và bảng đối chiếu chi tiết cho đề thi SAA-C03</span>
+        <span class="lang-en">Understanding OSI Layers (Layer 7, Layer 4, Layer 3) in Load Balancing and detailed comparison matrix</span>
       </div>
     </div>
   </div>
 
-  <div style="overflow-x:auto">
+  <!-- Block giải thích các Layer trong mô hình OSI -->
+  <div class="lbl">
+    <span class="lang-vi">Bản chất các Tầng mạng OSI (Layer 7 vs Layer 4 vs Layer 3) trong Cân bằng tải</span>
+    <span class="lang-en">Understanding OSI Network Layers (Layer 7 vs Layer 4 vs Layer 3) in Load Balancing</span>
+  </div>
+  <div class="cols" style="margin-bottom:18px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧠 Layer 7 — Application Layer (ALB)</span>
+        <span class="lang-en">🧠 Layer 7 — Application Layer (ALB)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Nhìn thấy gì trong gói tin?</span><span class="lang-en">What Does It Inspect?</span></b>
+        <span class="lang-vi">Bóc tách và đọc hiểu toàn bộ <b>nội dung tầng Ứng dụng (HTTP / HTTPS / gRPC / WebSocket)</b>: đọc được <b>URL Path</b> (<code>/users</code>, <code>/orders</code>), <b>Hostname</b> (<code>api.example.com</code>), <b>HTTP Method</b> (<code>GET</code>/<code>POST</code>), <b>Query String</b> (<code>?lang=vi</code>), <b>HTTP Headers</b> và <b>Cookies</b>.</span>
+        <span class="lang-en">Parses and understands full <b>Application Layer payloads (HTTP / HTTPS / gRPC / WebSocket)</b>: inspects <b>URL Path</b> (<code>/users</code>, <code>/orders</code>), <b>Hostname</b> (<code>api.example.com</code>), <b>HTTP Method</b>, <b>Query Strings</b>, <b>HTTP Headers</b>, and <b>Cookies</b>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Cơ chế hoạt động &amp; Đánh đổi</span><span class="lang-en">Mechanics &amp; Trade-off</span></b>
+        <span class="lang-vi">• Thực hiện <b>Connection Termination</b> (ngắt kết nối TCP của client tại ALB rồi mở kết nối mới tới EC2), chèn thêm header <code>X-Forwarded-For</code> để lưu IP gốc của client.<br>• <b>Ưu điểm:</b> Định tuyến Microservices cực kỳ thông minh, tích hợp được tường lửa <b>AWS WAF</b>.<br>• <b>Đánh đổi:</b> Độ trễ cao hơn chút so với Layer 4 vì phải giải mã và đọc nội dung HTTP.</span>
+        <span class="lang-en">• Performs <b>Connection Termination</b> (terminates client TCP at ALB and opens a new connection to EC2), injecting <code>X-Forwarded-For</code> to preserve client IP.<br>• <b>Pros:</b> Smart microservice routing, native <b>AWS WAF</b> integration.<br>• <b>Trade-off:</b> Slightly higher latency than Layer 4 due to HTTP parsing overhead.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ Layer 4 — Transport Layer (NLB)</span>
+        <span class="lang-en">⚡ Layer 4 — Transport Layer (NLB)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Nhìn thấy gì trong gói tin?</span><span class="lang-en">What Does It Inspect?</span></b>
+        <span class="lang-vi">Chỉ nhìn thấy thông tin tầng Giao vận <b>TCP / UDP / TLS</b>: gồm <b>Source IP</b>, <b>Source Port</b>, <b>Destination IP</b>, <b>Destination Port</b>. Hoàn toàn <b>KHÔNG đọc nội dung HTTP</b> bên trong (không biết URL <code>/login</code> hay Cookie là gì).</span>
+        <span class="lang-en">Inspects ONLY <b>Transport Layer headers (TCP / UDP / TLS)</b>: <b>Source IP</b>, <b>Source Port</b>, <b>Destination IP</b>, and <b>Destination Port</b>. Completely <b>blind to HTTP payloads</b> (cannot read URLs or Cookies).</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Cơ chế hoạt động &amp; Đánh đổi</span><span class="lang-en">Mechanics &amp; Trade-off</span></b>
+        <span class="lang-vi">• Chuyển tiếp luồng gói tin trực tiếp ở tầng phần cứng mạng (AWS Hyperplane) mà không cần đọc nội dung ứng dụng.<br>• <b>Ưu điểm:</b> Tốc độ cực đại (<b>hàng triệu request/s</b>), độ trễ siêu thấp (~vài micro-giây/ms), <b>giữ nguyên Source IP gốc</b> của client, và cấp <b>1 Static IP / Elastic IP cố định trên mỗi AZ</b>.</span>
+        <span class="lang-en">• Streams packets directly at the hardware network layer (AWS Hyperplane) without application-layer parsing.<br>• <b>Pros:</b> Extreme throughput (<b>millions of req/s</b>), ultra-low latency, <b>preserves original Client Source IP</b> natively, and provides <b>1 Static / Elastic IP per AZ</b>.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🛡️ Layer 3 — Network Layer (GWLB)</span>
+        <span class="lang-en">🛡️ Layer 3 — Network Layer (GWLB)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Nhìn thấy gì trong gói tin?</span><span class="lang-en">What Does It Inspect?</span></b>
+        <span class="lang-vi">Hoạt động ở tầng <b>Gói tin IP thô (Raw IP Packets — Layer 3)</b>. Lắng nghe mọi loại giao thức mạng trên tất cả các cổng (All Ports / All IP Packets) đi vào hoặc đi ra khỏi VPC.</span>
+        <span class="lang-en">Operates at the <b>Raw IP Packet level (Layer 3)</b>. Intercepts all IP traffic across all ports and protocols entering or leaving a VPC.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Cơ chế hoạt động &amp; Đánh đổi</span><span class="lang-en">Mechanics &amp; Trade-off</span></b>
+        <span class="lang-vi">• Đóng gói toàn bộ gói tin IP gốc vào giao thức <b>GENEVE trên cổng UDP 6081</b> để đẩy sang một cụm <b>Thiết bị bảo mật ảo bên thứ 3 (Virtual Appliances: Firewall, IDS/IPS, Deep Packet Inspection)</b>.<br>• Nếu gói tin sạch, cụm Firewall trả lại cho GWLB để chuyển tiếp tới ứng dụng đích một cách trong suốt (Transparent Bump-in-the-wire).</span>
+        <span class="lang-en">• Encapsulates raw IP packets using the <b>GENEVE protocol on UDP port 6081</b> and routes them through a fleet of <b>3rd-party Virtual Security Appliances (Firewalls, IDS/IPS, DPI)</b>.<br>• Clean traffic is returned to GWLB and forwarded transparently to the destination application.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
     <table class="matrix-table">
       <thead>
         <tr>
-          <th>Loại Load Balancer</th>
-          <th>Tầng OSI</th>
-          <th>Giao thức (Protocols)</th>
-          <th>Địa chỉ IP</th>
-          <th>Đặc điểm nổi bật &amp; Tính năng định tuyến</th>
-          <th>Kịch bản sử dụng tối ưu</th>
+          <th><span class="lang-vi">Loại Load Balancer</span><span class="lang-en">Load Balancer Type</span></th>
+          <th><span class="lang-vi">Tầng OSI</span><span class="lang-en">OSI Layer</span></th>
+          <th><span class="lang-vi">Giao thức (Protocols)</span><span class="lang-en">Protocols</span></th>
+          <th><span class="lang-vi">Địa chỉ IP</span><span class="lang-en">IP Addressing</span></th>
+          <th><span class="lang-vi">Đặc điểm nổi bật &amp; Tính năng định tuyến</span><span class="lang-en">Key Features &amp; Routing Capabilities</span></th>
+          <th><span class="lang-vi">Kịch bản sử dụng tối ưu</span><span class="lang-en">Ideal Exam Scenarios</span></th>
         </tr>
       </thead>
       <tbody>
@@ -202,33 +348,57 @@ flowchart TD
           <td><b>Application Load Balancer (ALB)</b><br><span class="tag tb">Layer 7</span></td>
           <td><b>Layer 7</b><br>(Application)</td>
           <td>HTTP, HTTPS, gRPC, WebSocket</td>
-          <td><b>Static DNS Name</b><br><small>(IP thay đổi linh hoạt)</small></td>
-          <td>Định tuyến thông minh theo: <b>URL Path</b> (`/api`), <b>Hostname</b> (`app.domain.com`), <b>Query String</b>, <b>HTTP Headers</b>. Hỗ trợ Redirects, Fixed-response, Sticky Sessions, SNI.</td>
-          <td>Web applications hiện đại, kiến trúc Microservices, container Docker (ECS/EKS) với Dynamic Port Mapping.</td>
+          <td><b>Static DNS Name</b><br><small><span class="lang-vi">(IP thay đổi linh hoạt)</span><span class="lang-en">(Dynamic underlying IPs)</span></small></td>
+          <td>
+            <span class="lang-vi">Định tuyến thông minh theo: <b>URL Path</b> (<code>/api</code>), <b>Hostname</b> (<code>app.domain.com</code>), <b>Query String</b>, <b>HTTP Headers</b>. Hỗ trợ Redirects, Fixed-response, Sticky Sessions, SNI, tích hợp AWS WAF.</span>
+            <span class="lang-en">Smart routing by: <b>URL Path</b> (<code>/api</code>), <b>Hostname</b> (<code>app.domain.com</code>), <b>Query String</b>, <b>HTTP Headers</b>. Supports Redirects, Fixed-response, Sticky Sessions, SNI, and AWS WAF.</span>
+          </td>
+          <td>
+            <span class="lang-vi">Web applications hiện đại, kiến trúc Microservices, container Docker (ECS/EKS) với Dynamic Port Mapping.</span>
+            <span class="lang-en">Modern web apps, Microservices architectures, Docker containers (ECS/EKS) with Dynamic Port Mapping.</span>
+          </td>
         </tr>
         <tr>
           <td><b>Network Load Balancer (NLB)</b><br><span class="tag tg">Layer 4 Ultra-Fast</span></td>
           <td><b>Layer 4</b><br>(Transport)</td>
           <td>TCP, UDP, TLS</td>
-          <td><b>Static IP / Elastic IP</b><br><small>(1 IP cố định mỗi AZ)</small></td>
-          <td>Hiệu năng cực đại (<b>hàng triệu request/giây</b>), độ trễ cực thấp (<b>micro-giây</b>). Bảo toàn Client IP gốc. Hỗ trợ đăng ký target bằng Private IP on-premise. Hỗ trợ TLS termination cực mạnh.</td>
-          <td>Gaming servers, streaming video/audio, kết nối TCP/UDP thô, và ứng dụng yêu cầu <b>IP tĩnh để whitelist firewall</b>.</td>
+          <td><b>Static IP / Elastic IP</b><br><small><span class="lang-vi">(1 IP cố định mỗi AZ)</span><span class="lang-en">(1 Fixed IP per AZ)</span></small></td>
+          <td>
+            <span class="lang-vi">Hiệu năng cực đại (<b>hàng triệu request/giây</b>), độ trễ cực thấp (<b>micro-giây</b>). Bảo toàn Client IP gốc. Hỗ trợ đăng ký target bằng Private IP on-premise. Hỗ trợ TLS termination cực mạnh.</span>
+            <span class="lang-en">Extreme performance (<b>millions of req/s</b>), ultra-low latency (<b>microseconds</b>). Preserves original Client IP. Supports on-premises Private IP targets and hardware TLS termination.</span>
+          </td>
+          <td>
+            <span class="lang-vi">Gaming servers, tài chính tần suất cao, kết nối TCP/UDP thô, và ứng dụng yêu cầu <b>IP tĩnh cố định để whitelist firewall</b>.</span>
+            <span class="lang-en">Gaming servers, high-frequency trading, raw TCP/UDP traffic, and apps requiring <b>fixed Static/Elastic IPs for firewall whitelisting</b>.</span>
+          </td>
         </tr>
         <tr>
           <td><b>Gateway Load Balancer (GWLB)</b><br><span class="tag tr">Layer 3 Appliance</span></td>
           <td><b>Layer 3</b><br>(Network IP Packets)</td>
-          <td>IP Packets thô<br>(Giao thức GENEVE - Port 6081)</td>
-          <td><b>GWLB Endpoints</b><br><small>(Trong VPC của bạn)</small></td>
-          <td>Điều phối và mở rộng đàn hồi một cụm <b>tường lửa bên thứ 3 (Virtual Appliances)</b>. Định tuyến toàn bộ lưu lượng qua cụm kiểm tra (DPI, IDS/IPS, Next-Gen Firewall) trước khi tới app.</td>
-          <td>Kiểm tra an ninh mạng tập trung, lọc gói tin chuyên sâu doanh nghiệp (Palo Alto, Check Point, Fortinet appliances).</td>
+          <td><span class="lang-vi">IP Packets thô<br>(Giao thức GENEVE - Port 6081)</span><span class="lang-en">Raw IP Packets<br>(GENEVE Protocol - Port 6081)</span></td>
+          <td><b>GWLB Endpoints</b><br><small><span class="lang-vi">(Trong VPC của bạn)</span><span class="lang-en">(Inside your VPC)</span></small></td>
+          <td>
+            <span class="lang-vi">Điều phối và mở rộng đàn hồi một cụm <b>tường lửa bên thứ 3 (Virtual Appliances)</b>. Định tuyến toàn bộ lưu lượng qua cụm kiểm tra (DPI, IDS/IPS, Next-Gen Firewall) trước khi tới app.</span>
+            <span class="lang-en">Deploys, scales, and manages a fleet of <b>3rd-party Virtual Network Appliances</b>. Routes all traffic through deep packet inspection (DPI, IDS/IPS, Firewalls) before reaching apps.</span>
+          </td>
+          <td>
+            <span class="lang-vi">Kiểm tra an ninh mạng tập trung, lọc gói tin chuyên sâu doanh nghiệp (Palo Alto, Check Point, Fortinet appliances).</span>
+            <span class="lang-en">Centralized network security inspection, enterprise deep packet filtering (Palo Alto, Check Point, Fortinet appliances).</span>
+          </td>
         </tr>
         <tr>
-          <td><b>Classic Load Balancer (CLB)</b><br><span class="tag tm">Thế hệ cũ (Deprecated)</span></td>
-          <td>Layer 4 &amp; 7<br>(Hỗn hợp)</td>
+          <td><b>Classic Load Balancer (CLB)</b><br><span class="tag ty"><span class="lang-vi">Thế hệ cũ (Deprecated)</span><span class="lang-en">Legacy (Deprecated)</span></span></td>
+          <td>Layer 4 &amp; 7<br><span class="lang-vi">(Hỗn hợp)</span><span class="lang-en">(Legacy Mix)</span></td>
           <td>HTTP, HTTPS, TCP, SSL</td>
           <td>Static DNS Name</td>
-          <td>Thế hệ đời đầu của AWS (ra mắt 2009). Không hỗ trợ định tuyến theo URL/Host, không hỗ trợ WebSocket hay SNI.</td>
-          <td>Không khuyến nghị cho dự án mới. Đề thi SAA-C03 luôn ưu tiên chuyển từ CLB sang ALB/NLB.</td>
+          <td>
+            <span class="lang-vi">Thế hệ đời đầu của AWS (ra mắt 2009). Không hỗ trợ định tuyến theo URL/Host, không hỗ trợ WebSocket hay Multi-certificate SNI.</span>
+            <span class="lang-en">First-generation load balancer (2009). Lacks path/host-based routing, WebSockets, and multi-certificate SNI support.</span>
+          </td>
+          <td>
+            <span class="lang-vi">Không khuyến nghị cho dự án mới. Đề thi SAA-C03 luôn ưu tiên chuyển từ CLB sang ALB hoặc NLB.</span>
+            <span class="lang-en">Deprecated for new architectures. SAA-C03 always favors migrating CLB workloads to ALB or NLB.</span>
+          </td>
         </tr>
       </tbody>
     </table>

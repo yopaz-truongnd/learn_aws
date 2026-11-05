@@ -115,11 +115,6 @@ flowchart TD
     Q5 -->|"Database lớn yêu cầu IOPS &gt; 16,000 &amp; Sub-ms latency"| IO2["Dùng EBS io2 Block Express"]
     Q5 -->|"Xử lý dữ liệu lớn / Big Data / Log sequential throughput"| ST1["Dùng EBS st1 (Throughput Optimized HDD)"]
     Q5 -->|"Lưu trữ lạnh ít truy xuất / Lưu trữ giá rẻ nhất"| SC1["Dùng EBS sc1 (Cold HDD)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
-    class S3,EFS,FSxW,FSxL,IS,GP3,IO2,ST1,SC1 awsPrimary;
-    class Q1,Q2,Q3,Q4,Q5 awsBox;
     </div>
     <div class="mermaid-src lang-en" style="display:none">
 flowchart TD
@@ -139,15 +134,11 @@ flowchart TD
     Q4 -->|"Yes: Persistent Block Storage"| Q5{"Primary workload performance driver?"}
     
     Q5 -->|"OS Boot / Web App / General DBs"| GP3["Use EBS gp3 (Default Recommended)"]
-    Q5 -->|"Mission-critical DB requiring &gt;16,000 IOPS &amp; Sub-ms"| IO2["Use EBS io2 Block Express"]
+    Q5 -->|"Mission-critical DB requiring >16,000 IOPS &amp; Sub-ms"| IO2["Use EBS io2 Block Express"]
     Q5 -->|"Big Data / Log Streaming / Sequential Throughput"| ST1["Use EBS st1 (Throughput Optimized HDD)"]
     Q5 -->|"Cold infrequently accessed storage / Lowest cost"| SC1["Use EBS sc1 (Cold HDD)"]
-
-    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
-    class S3,EFS,FSxW,FSxL,IS,GP3,IO2,ST1,SC1 awsPrimary;
-    class Q1,Q2,Q3,Q4,Q5 awsBox;
     </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
