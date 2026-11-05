@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Databases — RDS, Aurora, DynamoDB &amp; ElastiCache — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <a href="../index.html" class="nav-back">
+    <span class="lang-vi">← Mục lục khóa học</span>
+    <span class="lang-en">← Course Hub</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 8 &amp; 20 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Relational, NoSQL &amp; In-Memory Data Tier</div>
+  <h1>AWS Databases — RDS, Aurora, DynamoDB &amp; ElastiCache</h1>
+  <p class="lang-vi">Hệ thống cơ sở dữ liệu trên AWS: RDS Multi-AZ vs Read Replicas, Aurora Serverless &amp; Global DB, DynamoDB NoSQL &amp; DAX, ElastiCache In-Memory</p>
+  <p class="lang-en">Database Tier on AWS: RDS Multi-AZ vs Read Replicas, Aurora Serverless &amp; Global DB, DynamoDB NoSQL &amp; DAX, ElastiCache In-Memory</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. TỔNG QUAN HỆ SINH THÁI DATABASE AWS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗄️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Tổng quan các họ cơ sở dữ liệu AWS (Purpose-Built Databases)</span>
+        <span class="lang-en">1. Purpose-Built AWS Database Services Overview</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Chọn đúng loại cơ sở dữ liệu chuyên biệt theo mô hình dữ liệu và đặc thù tải công việc</span>
+        <span class="lang-en">Selecting purpose-built database engines tailored to specific data models and workloads</span>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Amazon RDS &amp; Aurora (Relational / SQL)</div>
+      <div class="id lang-vi">Cơ sở dữ liệu quan hệ chuẩn ACID, hỗ trợ JOIN phức tạp và ràng buộc toàn vẹn khóa ngoại. Hỗ trợ PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server. <b>Amazon Aurora</b> là phiên bản độc quyền tối ưu cho đám mây với hiệu năng gấp 3-5 lần RDS thông thường.<br><span class="tag tb">SQL / ACID</span><span class="tag tb">JOINs &amp; Transactions</span><span class="tag ty">ERP, CRM, E-Commerce</span></div>
+      <div class="id lang-en">ACID-compliant relational databases supporting complex JOINs and foreign key constraints. Supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL. <b>Amazon Aurora</b> is cloud-native with 3-5x performance over standard RDS.<br><span class="tag tb">SQL / ACID</span><span class="tag tb">JOINs &amp; Transactions</span><span class="tag ty">ERP, CRM, E-Commerce</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Amazon DynamoDB (NoSQL Key-Value &amp; Document)</div>
+      <div class="id lang-vi">Cơ sở dữ liệu NoSQL Serverless được quản lý hoàn toàn. Cung cấp độ trễ đọc/ghi <b>dưới 10 mili-giây (Single-digit ms)</b> ở bất kỳ quy mô dữ liệu nào (từ vài GB tới hàng chục TB). Không cần quản trị máy chủ, tự động co giãn thông lượng.<br><span class="tag tg">NoSQL Serverless</span><span class="tag tg">Single-digit ms</span><span class="tag ty">Gaming, IoT, Giỏ hàng</span></div>
+      <div class="id lang-en">Fully managed serverless NoSQL delivering <b>single-digit millisecond latency</b> at any scale. Zero server maintenance, automated horizontal scaling, flexible document/key-value schemas.<br><span class="tag tg">NoSQL Serverless</span><span class="tag tg">Single-digit ms</span><span class="tag ty">Gaming, IoT, Carts</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Amazon ElastiCache (In-Memory Caching)</div>
+      <div class="id lang-vi">Hệ thống bộ nhớ đệm In-Memory (Redis hoặc Memcached) hoạt động trên RAM. Giảm độ trễ đọc xuống mức <b>dưới 1 mili-giây (Sub-millisecond)</b>, giải tỏa áp lực đọc cho cơ sở dữ liệu quan hệ backend và lưu trữ User Session.<br><span class="tag to">In-Memory RAM</span><span class="tag to">Sub-millisecond</span><span class="tag ty">Cache, Session, Leaderboard</span></div>
+      <div class="id lang-en">Managed in-memory data store (Redis or Memcached) running directly in RAM. Cuts read latencies to <b>sub-millisecond</b> levels, offloading heavy read traffic from disk-based backend DBs.<br><span class="tag to">In-Memory RAM</span><span class="tag to">Sub-millisecond</span><span class="tag ty">Cache, Session, Leaderboard</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Các dịch vụ Database chuyên dụng khác</div>
+      <div class="id lang-vi">
+        • <b>Amazon Redshift:</b> Kho dữ liệu phân tích lớn (OLAP Data Warehouse), truy vấn cột (Columnar storage).<br>
+        • <b>Amazon DocumentDB:</b> Tương thích MongoDB cho dữ liệu dạng JSON Documents.<br>
+        • <b>Amazon Neptune:</b> Cơ sở dữ liệu đồ thị Graph DB (Social Networks, Fraud Detection, Knowledge Graph).<br>
+        • <b>Amazon Timestream:</b> Lưu trữ dữ liệu chuỗi thời gian (IoT Sensor data, DevOps metrics).
+      </div>
+      <div class="id lang-en">
+        • <b>Amazon Redshift:</b> Columnar OLAP petabyte-scale data warehouse for business intelligence.<br>
+        • <b>Amazon DocumentDB:</b> MongoDB-compatible native JSON document store.<br>
+        • <b>Amazon Neptune:</b> Graph database for social networks, fraud detection, and recommendation engines.<br>
+        • <b>Amazon Timestream:</b> Serverless time-series database for IoT telemetrics and application logs.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGRAM: CÂY QUYẾT ĐỊNH CHỌN DATABASE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Cây quyết định lựa chọn cơ sở dữ liệu (Database Selection Decision Flowchart)</span>
+        <span class="lang-en">Database Selection Decision Flowchart</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy trình suy luận chọn Database chính xác cho mọi câu hỏi tình huống trong đề thi SAA-C03</span>
+        <span class="lang-en">Logical decision tree to match scenario requirements with optimal AWS database engines</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-db-decision">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Start["Yêu cầu lưu trữ &amp; xử lý dữ liệu"] --> Q1{"Mô hình dữ liệu chính là gì?"}
+    
+    Q1 -->|"In-Memory Cache / Sub-ms latency / Session"| Q_Mem{"Cần cấu trúc dữ liệu phức tạp &amp; Multi-AZ?"}
+    Q_Mem -->|"Có: Cần Data Types, Pub/Sub, Multi-AZ Failover"| Redis["Dùng Amazon ElastiCache for Redis"]
+    Q_Mem -->|"Không: Chỉ cần Key-Value thuần, Đa luồng"| Memcached["Dùng Amazon ElastiCache for Memcached"]
+
+    Q1 -->|"Dữ liệu quan hệ (Relational) / SQL / ACID"| Q_SQL{"Loại hình xử lý (OLTP vs OLAP)?"}
+    Q_SQL -->|"OLAP: Phân tích báo cáo lớn, Data Warehouse, Petabytes"| Redshift["Dùng Amazon Redshift (Columnar)"]
+    Q_SQL -->|"OLTP: Giao dịch ngân hàng, Web App, ERP"| Q_Cloud{"Workload yêu cầu Cloud-Native &amp; HA cao?"}
+    Q_Cloud -->|"Có: Cần hiệu năng 5x, 15 Replicas, Auto Storage"| Aurora["Dùng Amazon Aurora (PostgreSQL/MySQL)"]
+    Q_Cloud -->|"Không: Động cơ truyền thống (Oracle, SQL Server, MariaDB)"| RDS["Dùng Amazon RDS (Multi-AZ / Read Replicas)"]
+
+    Q1 -->|"NoSQL / Bán cấu trúc / Key-Value / JSON"| Q_NoSQL{"Yêu cầu kỹ thuật cốt lõi?"}
+    Q_NoSQL -->|"Key-Value, Serverless, Single-digit ms, Global"| DynamoDB["Dùng Amazon DynamoDB (+ DAX nếu cần micro-sec)"]
+    Q_NoSQL -->|"JSON Document tương thích MongoDB"| DocDB["Dùng Amazon DocumentDB"]
+    Q_NoSQL -->|"Đồ thị quan hệ (Graph) / Mạng xã hội / Fraud"| Neptune["Dùng Amazon Neptune"]
+    Q_NoSQL -->|"Chuỗi thời gian (Time-series) / IoT Sensor"| Timestream["Dùng Amazon Timestream"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
+    class Redis,Memcached,Redshift,Aurora,RDS,DynamoDB,DocDB,Neptune,Timestream awsPrimary;
+    class Q1,Q_Mem,Q_SQL,Q_Cloud,Q_NoSQL awsBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Start["Data Storage &amp; Workload Requirements"] --> Q1{"Primary Data Model &amp; Access Pattern?"}
+    
+    Q1 -->|"In-Memory Cache / Sub-ms latency / Session"| Q_Mem{"Require complex data types &amp; Multi-AZ HA?"}
+    Q_Mem -->|"Yes: Sets/Sorted Sets, Pub/Sub, Multi-AZ Failover"| Redis["Use Amazon ElastiCache for Redis"]
+    Q_Mem -->|"No: Pure multithreaded simple key-value"| Memcached["Use Amazon ElastiCache for Memcached"]
+
+    Q1 -->|"Relational Data (RDBMS) / SQL / ACID"| Q_SQL{"Transaction Type (OLTP vs OLAP)?"}
+    Q_SQL -->|"OLAP: Complex analytical aggregations, Petabytes"| Redshift["Use Amazon Redshift (Columnar DW)"]
+    Q_SQL -->|"OLTP: High-concurrency Web App, ERP, E-Commerce"| Q_Cloud{"Requires Cloud-Native scale &amp; extreme HA?"}
+    Q_Cloud -->|"Yes: 5x performance, 15 Replicas, Auto Storage"| Aurora["Use Amazon Aurora (PostgreSQL/MySQL)"]
+    Q_Cloud -->|"No: Traditional engines (Oracle, SQL Server, MariaDB)"| RDS["Use Amazon RDS (Multi-AZ / Read Replicas)"]
+
+    Q1 -->|"NoSQL / Semi-Structured / Key-Value / JSON"| Q_NoSQL{"Core workload specialization?"}
+    Q_NoSQL -->|"Key-Value / JSON, Serverless, Single-digit ms, Global"| DynamoDB["Use Amazon DynamoDB (+ DAX for micro-sec)"]
+    Q_NoSQL -->|"JSON Document compatible with MongoDB"| DocDB["Use Amazon DocumentDB"]
+    Q_NoSQL -->|"Graph relationships / Social / Fraud analysis"| Neptune["Use Amazon Neptune"]
+    Q_NoSQL -->|"Time-Series telemetry / IoT sensor sequences"| Timestream["Use Amazon Timestream"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    class Redis,Memcached,Redshift,Aurora,RDS,DynamoDB,DocDB,Neptune,Timestream awsPrimary;
+    class Q1,Q_Mem,Q_SQL,Q_Cloud,Q_NoSQL awsBox;
+    </div>
+  </div>
+</div>
+
+<!-- 2. RDS MULTI-AZ VS READ REPLICAS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Chủ đề kinh điển: RDS Multi-AZ vs Read Replicas</span>
+        <span class="lang-en">2. The Canonical Topic: RDS Multi-AZ vs Read Replicas</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân biệt rạch ròi giữa mục tiêu Kháng lỗi (Disaster Recovery) và mục tiêu Mở rộng đọc (Scale Reads)</span>
+        <span class="lang-en">Clear distinction between Disaster Recovery (High Availability) and Scaling Read Performance</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí so sánh</th>
+          <th>RDS Multi-AZ (Kháng lỗi / DR)</th>
+          <th>RDS Read Replicas (Mở rộng đọc)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Mục đích cốt lõi (Primary Purpose)</b></td>
+          <td><b>Tính sẵn sàng cao (High Availability) &amp; Khôi phục sự cố (DR)</b>. Không có tác dụng mở rộng hiệu năng đọc!</td>
+          <td><b>Mở rộng quy mô đọc (Scalability for Read-heavy workloads)</b>. Giải tỏa tải truy vấn SELECT cho Master DB.</td>
+        </tr>
+        <tr>
+          <td><b>Cơ chế đồng bộ (Replication)</b></td>
+          <td><b>Đồng bộ (Synchronous)</b>: Giao dịch chỉ xác nhận thành công (Commit) khi dữ liệu đã ghi xong ở cả 2 AZ. Đảm bảo <b>Zero Data Loss</b>.</td>
+          <td><b>Bất đồng bộ (Asynchronous)</b>: Master ghi xong trả về ngay, dữ liệu chuyển dần sang bản sao. Chấp nhận có độ trễ (Replication Lag).</td>
+        </tr>
+        <tr>
+          <td><b>Khả năng truy xuất (Access)</b></td>
+          <td>Bản sao Standby DB ở AZ phụ là <b>Passive (Không cho phép đọc hay ghi)</b>. Chỉ dùng để chờ sẵn khi xảy ra sự cố.</td>
+          <td>Bản sao Read Replica là <b>Active (Chỉ cho phép đọc - Read Only)</b>. Có chuỗi kết nối DNS Endpoint riêng biệt để ứng dụng kết nối đọc.</td>
+        </tr>
+        <tr>
+          <td><b>Cơ chế chuyển đổi dự phòng (Failover)</b></td>
+          <td><b>Tự động 100% (Automatic Failover)</b> trong 60–120 giây. AWS tự động chuyển DNS Endpoint trỏ sang Standby DB. Ứng dụng không cần đổi Connection String!</td>
+          <td><b>Không tự động</b>. Khi Master sập, bạn phải kích hoạt thủ công lệnh <i>Promote Read Replica</i> để biến nó thành Standby hoặc Master độc lập.</td>
+        </tr>
+        <tr>
+          <td><b>Phạm vi địa lý (Scope)</b></td>
+          <td>Trong <b>Cùng 1 Region (Khác Availability Zone)</b>.</td>
+          <td>Có thể đặt trong cùng AZ, khác AZ, hoặc <b>Khác Region (Cross-Region Read Replica)</b> phục vụ giảm độ trễ cho người dùng toàn cầu.</td>
+        </tr>
+        <tr>
+          <td><b>Số lượng bản sao (Capacity)</b></td>
+          <td>Chỉ <b>1 Standby DB</b> (hoặc 2 với Multi-AZ Cluster mới).</td>
+          <td>Tối đa <b>15 Read Replicas</b> cho mỗi database master.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. AMAZON AURORA ARCHITECTURE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Kiến trúc đột phá của Amazon Aurora</span>
+        <span class="lang-en">3. Amazon Aurora Cloud-Native Architecture</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tách biệt tầng tính toán (Compute) và tầng lưu trữ phân tán dùng chung (Shared Storage)</span>
+        <span class="lang-en">Decoupled compute and shared distributed storage across three availability zones</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Kiến trúc lưu trữ 6 bản sao trên 3 AZ</div>
+      <div class="id lang-vi">
+        • Aurora lưu trữ dữ liệu thành các khối 10 GB phân tán trên <b>3 Availability Zones</b>, mỗi AZ giữ 2 bản sao &rarr; <b>Tổng cộng 6 bản sao (6 copies)</b>.<br>
+        • <b>Khả năng chịu lỗi phi thường:</b> Vẫn ghi được bình thường nếu mất 2 bản sao (cần 4/6 quorum để ghi), và vẫn đọc được bình thường nếu mất 3 bản sao (cần 3/6 quorum để đọc).<br>
+        • Cơ chế tự phục hồi (Self-Healing): Tự động sửa chữa các khối hỏng ở mức block nền mà không ảnh hưởng người dùng.<br>
+        • Dung lượng lưu trữ tự động mở rộng từ 10 GB lên đến <b>128 TiB</b> theo bước nhảy 10 GB mà không cần phân bổ trước.
+      </div>
+      <div class="id lang-en">
+        • Data is striped into 10 GB segments replicated across <b>3 Availability Zones</b> with 2 copies per AZ &rarr; <b>6 copies total</b>.<br>
+        • <b>Extreme Fault Tolerance:</b> Handles loss of 2 copies without affecting writes (4/6 quorum), and loss of 3 copies without affecting reads (3/6 quorum).<br>
+        • Self-healing storage constantly scans and repairs corrupted disk blocks.<br>
+        • Storage automatically expands up to <b>128 TiB</b> dynamically in 10 GB increments without provisioning.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Endpoints &amp; Aurora Read Replicas</div>
+      <div class="id lang-vi">
+        • <b>Writer Endpoint:</b> Địa chỉ DNS luôn trỏ chính xác về Instance Master hiện tại (hỗ trợ đọc và ghi).<br>
+        • <b>Reader Endpoint:</b> Địa chỉ DNS tự động cân bằng tải phân phối các kết nối đọc (SELECT) đều ra toàn bộ các bản sao Read Replicas.<br>
+        • Hỗ trợ tối đa tới <b>15 Aurora Read Replicas</b> với độ trễ đồng bộ cực thấp (Replication lag &lt; 10ms) vì tất cả các replica đều dùng chung tầng Shared Storage ngầm.<br>
+        • Hỗ trợ <b>Auto-scaling Replicas</b>: Tự động thêm replica khi tải CPU đọc tăng cao.
+      </div>
+      <div class="id lang-en">
+        • <b>Writer Endpoint:</b> Canonical DNS pointing strictly to current Master DB instance.<br>
+        • <b>Reader Endpoint:</b> DNS endpoint load balancing read connections evenly across all active Read Replicas.<br>
+        • Up to <b>15 Aurora Read Replicas</b> with near-zero replication lag (&lt;10ms) thanks to shared storage fabric.<br>
+        • Supports <b>Auto-scaling Replicas</b> triggered by average CPU or connection thresholds.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Aurora Serverless v2</div>
+      <div class="id lang-vi">
+        • Tự động co giãn tài nguyên CPU &amp; RAM tức thì chỉ trong <b>vài phần trăm giây</b> dựa trên nhu cầu thực tế của ứng dụng.<br>
+        • Đo lường bằng đơn vị <b>ACU (Aurora Capacity Units)</b>: 1 ACU = 2 GiB RAM kèm tỷ lệ CPU tương ứng.<br>
+        • Lý tưởng cho các tải công việc khó đoán trước, các ứng dụng doanh nghiệp ít dùng ban đêm hoặc các hệ thống SaaS đa khách hàng (Multi-tenant).
+      </div>
+      <div class="id lang-en">
+        • Scales compute capacity in fractions of a second dynamically to match instantaneous workload bursts.<br>
+        • Measured in fine-grained <b>ACUs (Aurora Capacity Units)</b>: 1 ACU = 2 GiB RAM with matched CPU.<br>
+        • Ideal for unpredictable spiky traffic, infrequent off-hours apps, and multi-tenant SaaS environments.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Aurora Global Database &amp; Backtrack</div>
+      <div class="id lang-vi">
+        • <b>Aurora Global Database:</b> 1 Region chính cho phép đọc/ghi + tối đa <b>5 Secondary Regions (Chỉ đọc)</b>. Độ trễ đồng bộ xuyên lục địa dưới <b>1 giây</b>. Khôi phục thảm họa (Disaster Recovery) với RPO &lt; 1 giây và RTO &lt; 1 phút.<br>
+        • <b>Aurora Backtrack:</b> "Tua ngược thời gian" dữ liệu về bất kỳ thời điểm cụ thể nào trong quá khứ chỉ mất vài giây mà không cần khôi phục từ bản sao lưu (Backup Restore).
+      </div>
+      <div class="id lang-en">
+        • <b>Aurora Global Database:</b> 1 Primary Region (Read/Write) + up to <b>5 Secondary Regions (Read Only)</b>. Cross-region replication latency &lt;1 second. Disaster Recovery with RPO &lt;1s and RTO &lt;1m.<br>
+        • <b>Aurora Backtrack:</b> Rewinds database state to a specific point-in-time within seconds without restoring from snapshot backups.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. AMAZON DYNAMODB DEEP DIVE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Chuyên sâu Amazon DynamoDB (NoSQL Serverless)</span>
+        <span class="lang-en">4. Amazon DynamoDB Deep Dive</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cấu trúc khóa chính, chế độ thông lượng, bộ đệm DAX, Global Tables và xử lý sự kiện Streams</span>
+        <span class="lang-en">Primary key architecture, capacity modes, DAX accelerator, Global Tables, and DynamoDB Streams</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔑 Thiết kế Primary Keys</span>
+        <span class="lang-en">🔑 Primary Key Design</span>
+      </div>
+      <div class="pi">
+        <b>Partition Key thuần (HASH)</b>
+        <span class="lang-vi">Bảng chỉ gồm 1 thuộc tính khóa chính duy nhất. DynamoDB băm (hash) giá trị này để quyết định dữ liệu được lưu trên phân vùng vật lý (Physical Partition) nào. Phải có tính phân tán cao (High Cardinality).</span>
+        <span class="lang-en">Table key consisting of a single attribute. DynamoDB hashes this value to determine the physical storage partition. Must have high cardinality to avoid hot partitions.</span>
+      </div>
+      <div class="pi">
+        <b>Composite Key (HASH + RANGE)</b>
+        <span class="lang-vi">Kết hợp <b>Partition Key (Băm)</b> và <b>Sort Key (Sắp xếp)</b>. Ví dụ: `UserID` (Partition Key) + `GameID` (Sort Key). Cho phép truy vấn tất cả các game của 1 người dùng theo thứ tự thời gian.</span>
+        <span class="lang-en">Combination of <b>Partition Key (Hash)</b> and <b>Sort Key (Range)</b>. Allows 1:many groupings, querying all items for a given partition key sorted sequentially.</span>
+      </div>
+      <div class="pi">
+        <b>Chỉ mục phụ (LSI vs GSI)</b>
+        <span class="lang-vi">• <b>Local Secondary Index (LSI):</b> Cùng Partition Key, đổi Sort Key khác. Chỉ tạo được lúc tạo bảng ban đầu.<br>• <b>Global Secondary Index (GSI):</b> Đổi cả Partition Key và Sort Key mới. Có thể tạo hoặc xóa bất kỳ lúc nào sau này.</span>
+        <span class="lang-en">• <b>Local Secondary Index (LSI):</b> Same partition key, different sort key. Defined only at table creation.<br>• <b>Global Secondary Index (GSI):</b> Completely new partition and sort key. Can be added or deleted anytime.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ Chế độ thông lượng &amp; DAX</span>
+        <span class="lang-en">⚡ Throughput &amp; DAX Caching</span>
+      </div>
+      <div class="pi">
+        <b>Provisioned vs On-Demand Capacity</b>
+        <span class="lang-vi">• <b>Provisioned:</b> Bạn đặt trước RCU (Read Capacity Unit) và WCU (Write Capacity Unit). Có hỗ trợ Auto-scaling. Tiết kiệm chi phí khi tải đều đặn.<br>• <b>On-Demand:</b> Tự động co giãn theo từng request, không cần dự đoán tải. Lý tưởng cho tải đột biến, khó lường hoặc ứng dụng mới.</span>
+        <span class="lang-en">• <b>Provisioned:</b> Pre-allocate RCUs and WCUs backed by auto-scaling. Cost-effective for predictable workloads.<br>• <b>On-Demand:</b> Pay-per-request model with zero capacity planning. Best for unpredictable or spiky traffic.</span>
+      </div>
+      <div class="pi">
+        <b>DynamoDB Accelerator (DAX)</b>
+        <span class="lang-vi">Cụm cache phần cứng In-Memory đặt ngay trước DynamoDB. Giảm độ trễ đọc từ mili-giây (ms) xuống <b>micro-giây (Microseconds - &mu;s)</b>. Tương thích 100% với SDK hiện có của DynamoDB, <b>không cần viết lại mã nguồn ứng dụng</b>!</span>
+        <span class="lang-en">Dedicated hardware in-memory caching cluster for DynamoDB. Slashes read latencies from milliseconds down to <b>microseconds (&mu;s)</b>. 100% API-compatible, requires zero application code rewrite!</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🌐 Tính năng nâng cao</span>
+        <span class="lang-en">🌐 Advanced Capabilities</span>
+      </div>
+      <div class="pi">
+        <b>DynamoDB Global Tables</b>
+        <span class="lang-vi">Nhân bản dữ liệu 2 chiều đa vùng <b>Multi-Region, Multi-Active (Active-Active)</b>. Cho phép ghi và đọc ở bất kỳ Region nào với độ trễ dưới 1 giây. Xử lý xung đột ghi theo nguyên tắc <i>Last Writer Wins</i>.</span>
+        <span class="lang-en">Multi-Region, Multi-Active fully replicated tables. Enables local reads and writes across multiple regions with &lt;1 second replication. Resolves conflicts via <i>Last Writer Wins</i>.</span>
+      </div>
+      <div class="pi">
+        <b>DynamoDB Streams &amp; TTL</b>
+        <span class="lang-vi">• <b>DynamoDB Streams:</b> Nhật ký ghi lại mọi thay đổi (Insert, Update, Delete) lưu trong 24 giờ. Tích hợp trực tiếp với <b>AWS Lambda</b> để tạo kiến trúc Event-Driven phản ứng tức thì.<br>• <b>Time To Live (TTL):</b> Tự động xóa các bản ghi hết hạn sau một mốc thời gian Unix Timestamp mà <b>hoàn toàn không tính phí WCU</b>!</span>
+        <span class="lang-en">• <b>DynamoDB Streams:</b> 24-hour changelog of item modifications. Directly triggers <b>AWS Lambda</b> for event-driven workflows.<br>• <b>Time To Live (TTL):</b> Automatically purges expired items without consuming Write Capacity Units (WCU)!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. ELASTICACHE & CHIẾN LƯỢC CACHING -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🧠</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Amazon ElastiCache (Redis vs Memcached) &amp; Chiến lược Caching</span>
+        <span class="lang-en">5. Amazon ElastiCache &amp; Caching Strategies</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tăng tốc độ trễ xuống dưới mili-giây và giải tỏa tải đọc cho tầng lưu trữ dữ liệu chính</span>
+        <span class="lang-en">Sub-millisecond read optimization and database backend offloading patterns</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔴 ElastiCache for Redis</span>
+        <span class="lang-en">🔴 ElastiCache for Redis</span>
+      </div>
+      <div class="pi">
+        <b>Đặc tính kỹ thuật cao cấp</b>
+        <span class="lang-vi">
+          • Hỗ trợ các kiểu dữ liệu phức tạp: Sets, Sorted Sets, Hashes, Bitmaps, Geospatial.<br>
+          • <b>Tính sẵn sàng cao:</b> Hỗ trợ Multi-AZ với tính năng <b>Auto-Failover</b> tự động.<br>
+          • <b>Bền vững (Persistence):</b> Hỗ trợ Snapshot backup và khôi phục (AOF / RDB).<br>
+          • Hỗ trợ tính năng <b>Pub/Sub</b> messaging thời gian thực.<br>
+          • <b>Redis Cluster:</b> Cho phép Sharding chia dữ liệu theo partition để mở rộng quy mô bộ nhớ RAM tới hàng chục Terabytes.
+        </span>
+        <span class="lang-en">
+          • Rich data structures: Sets, Sorted Sets, Hashes, Geospatial.<br>
+          • <b>High Availability:</b> Multi-AZ replication with <b>Auto-Failover</b>.<br>
+          • <b>Persistence:</b> Supports snapshots and restores (AOF / RDB).<br>
+          • Real-time <b>Pub/Sub</b> messaging capability.<br>
+          • <b>Redis Cluster:</b> Horizontal sharding across nodes scaling memory to Terabytes.
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚪ ElastiCache for Memcached</span>
+        <span class="lang-en">⚪ ElastiCache for Memcached</span>
+      </div>
+      <div class="pi">
+        <b>Bộ đệm đa luồng thuần túy (Pure In-Memory)</b>
+        <span class="lang-vi">
+          • Kiến trúc đa luồng (Multi-threaded), tối ưu hóa tận dụng tối đa tất cả các nhân CPU.<br>
+          • Chỉ hỗ trợ lưu trữ Key-Value dạng chuỗi đơn giản.<br>
+          • <b>KHÔNG có tính năng nhân bản (No Replication)</b>.<br>
+          • <b>KHÔNG có tính năng Multi-AZ failover</b>.<br>
+          • <b>KHÔNG lưu trữ bền vững (Non-persistent)</b>: Mất điện hoặc restart là mất trắng dữ liệu.<br>
+          • Phù hợp nhất cho các website HTML tĩnh cache fragment hoặc session đơn giản không sợ mất dữ liệu.
+        </span>
+        <span class="lang-en">
+          • Multi-threaded architecture scaling across multiple CPU cores efficiently.<br>
+          • Pure simple string key-value storage.<br>
+          • <b>NO replication support</b>.<br>
+          • <b>NO Multi-AZ failover capability</b>.<br>
+          • <b>Zero persistence</b>: Data evaporates upon node restart.<br>
+          • Best for simple ephemeral object caches where data loss is non-consequential.
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📐 Chiến lược nạp dữ liệu vào Cache</span>
+        <span class="lang-en">📐 Caching Architectural Patterns</span>
+      </div>
+      <div class="pi">
+        <b>Lazy Loading (Cache-Aside)</b>
+        <span class="lang-vi">Ứng dụng đọc từ Cache trước. Nếu không có (Cache Miss), đọc từ Database rồi mới ghi kết quả vào Cache. <i>Ưu điểm:</i> Chỉ nạp đúng dữ liệu cần. <i>Nhược điểm:</i> Dữ liệu trong Cache có nguy cơ bị cũ (Stale Data), cần kết hợp thời gian sống <b>TTL</b>.</span>
+        <span class="lang-en">App checks cache first. On miss, reads from DB and populates cache. <i>Pros:</i> Only caches requested data. <i>Cons:</i> Stale data vulnerability, requires strict <b>TTL</b> expiration.</span>
+      </div>
+      <div class="pi">
+        <b>Write-Through (Ghi đồng thời)</b>
+        <span class="lang-vi">Mỗi khi có thao tác ghi dữ liệu, ứng dụng ghi đồng thời vào cả Database và Cache. <i>Ưu điểm:</i> Dữ liệu trong Cache luôn tươi mới 100%. <i>Nhược điểm:</i> Tốn tài nguyên RAM vì lưu cả những dữ liệu có thể không bao giờ được đọc lại (Cache Churn).</span>
+        <span class="lang-en">App updates cache and DB concurrently on every write. <i>Pros:</i> Zero stale data. <i>Cons:</i> Higher write latency and memory churn caching unrequested writes.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Các bẫy &amp; Kịch bản đề thi thường gặp (SAA-C03 Exam Traps)</span>
+        <span class="lang-en">6. Common Exam Traps &amp; Scenarios (SAA-C03)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Những điểm mấu chốt đề thi phân biệt giữa các giải pháp cơ sở dữ liệu</span>
+        <span class="lang-en">Critical discrimination criteria frequently tested in database scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Bẫy: Báo cáo Analytics làm nghẽn Database giao dịch</div>
+      <div class="id lang-vi">
+        • <b>Tình huống:</b> Ban giám đốc chạy báo cáo phân tích nặng (Heavy Reporting/Analytics) vào ban ngày khiến Database giao dịch chính của khách hàng bị treo hoặc phản hồi chậm.<br>
+        • <b>Bẫy:</b> Bật Multi-AZ là SAI (vì Standby DB là Passive, không thể trỏ câu lệnh SELECT vào Standby được).<br>
+        • <b>Đáp án chuẩn:</b> Tạo một <b>RDS Read Replica</b> và cấu hình ứng dụng báo cáo chỉ kết nối vào chuỗi kết nối riêng của Read Replica này!
+      </div>
+      <div class="id lang-en">
+        • <b>Scenario:</b> Heavy reporting analytics executed during peak hours causes severe latency on primary transactional DB.<br>
+        • <b>Trap:</b> Enabling Multi-AZ does NOT solve this (Standby DB is passive and rejects client read queries).<br>
+        • <b>Canonical Solution:</b> Spin up an <b>RDS Read Replica</b> and point reporting workloads strictly to the replica endpoint!
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Amazon RDS Proxy &amp; Cạn kiệt Connection Pool</div>
+      <div class="id lang-vi">
+        • <b>Tình huống:</b> Hàng nghìn hàm AWS Lambda chạy đồng thời kết nối vào RDS khiến Database bị cạn kiệt Connection Pool và crash.<br>
+        • <b>Giải pháp:</b> Triển khai <b>Amazon RDS Proxy</b> ở giữa Lambda và RDS. RDS Proxy quản lý chia sẻ Connection Pool thông minh, giảm thời gian chuyển đổi dự phòng (Failover) xuống <b>66%</b> và bắt buộc xác thực bảo mật IAM.
+      </div>
+      <div class="id lang-en">
+        • <b>Scenario:</b> Spikes of concurrent serverless AWS Lambda executions exhaust RDS database connection pools, crashing backend.<br>
+        • <b>Solution:</b> Place <b>Amazon RDS Proxy</b> in front of RDS. Pools and reuses DB connections, cuts failover time by <b>66%</b>, and enforces IAM authentication.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Lỗi ProvisionedThroughputExceededException trên DynamoDB</div>
+      <div class="id lang-vi">
+        • Xảy ra khi số lượng request đọc/ghi vượt quá mức RCU/WCU đã cấp phát, hoặc do hiện tượng <b>Hot Partition</b> (quá nhiều dữ liệu dồn vào 1 Partition Key duy nhất).<br>
+        • <b>Cách xử lý chuẩn trong đề thi:</b>
+        <ol>
+          <li>Dùng cơ chế <b>Exponential Backoff</b> khi retry trong ứng dụng.</li>
+          <li>Phân bổ lại Partition Key có độ phân tán cao hơn (High Cardinality).</li>
+          <li>Gắn thêm <b>DynamoDB Accelerator (DAX)</b> để giải tỏa các request đọc lặp lại.</li>
+        </ol>
+      </div>
+      <div class="id lang-en">
+        • Occurs when traffic exceeds provisioned RCU/WCU or a <b>Hot Partition</b> forms around an unevenly distributed partition key.<br>
+        • <b>Canonical Exam Fixes:</b>
+        <ol>
+          <li>Implement <b>Exponential Backoff</b> retries.</li>
+          <li>Redesign partition keys for higher cardinality.</li>
+          <li>Introduce <b>DAX accelerator</b> to absorb repeated read bursts.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Khôi phục thảm họa xuyên Region (Cross-Region DR) cho RDS</div>
+      <div class="id lang-vi">
+        • Muốn có kế hoạch phòng chống thảm họa cho RDS khi <b>toàn bộ 1 Region bị sập</b>:<br>
+        • <b>Phương án 1 (Chi phí thấp):</b> Tự động sao lưu Snapshot và chạy script copy snapshot sang Region khác định kỳ.<br>
+        • <b>Phương án 2 (RTO &amp; RPO cực thấp):</b> Tạo <b>Cross-Region Read Replica</b> ở Region thứ hai. Khi Region chính gặp nạn, kích hoạt (Promote) Read Replica này lên thành Master độc lập chỉ trong vài phút.
+      </div>
+      <div class="id lang-en">
+        • Mitigating catastrophic whole-region outages for RDS databases:<br>
+        • <b>Option 1 (Cost-optimized):</b> Automated snapshots copied across regions asynchronously.<br>
+        • <b>Option 2 (Low RPO/RTO):</b> Maintain a <b>Cross-Region Read Replica</b> in secondary region. Promoted to standalone production master within minutes upon disaster.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. NGUYÊN TẮC VÀNG SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⭐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Nguyên tắc vàng khi làm bài thi (SAA-C03 Golden Rules)</span>
+        <span class="lang-en">7. SAA-C03 Database Golden Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy tắc loại trừ đáp án siêu tốc cho phần cơ sở dữ liệu</span>
+        <span class="lang-en">Essential axioms to rapidly eliminate incorrect database choices</span>
+      </div>
+    </div>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">RDS Multi-AZ là cho Sẵn sàng cao (HA), KHÔNG PHẢI để tăng tốc độ đọc</b>
+        <b class="lang-en">RDS Multi-AZ is strictly for High Availability, NEVER for Read Scaling</b>
+        <span class="lang-vi">Tuyệt đối không chọn Multi-AZ khi đề bài yêu cầu giải quyết nghẽn hiệu năng đọc (Read Performance bottleneck). Standby DB trong Multi-AZ là Passive và từ chối mọi kết nối client. Muốn tăng tốc đọc &rarr; Bắt buộc chọn <b>Read Replicas</b> hoặc <b>ElastiCache</b>.</span>
+        <span class="lang-en">Never choose Multi-AZ when answering read performance issues. Standby DB instances in Multi-AZ reject all direct client traffic. To scale reads &rarr; Always choose <b>Read Replicas</b> or <b>ElastiCache</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Yêu cầu NoSQL Serverless độ trễ mili-giây đơn vị &rarr; Luôn chọn Amazon DynamoDB</b>
+        <b class="lang-en">Serverless NoSQL with single-digit millisecond latency &rarr; Always choose DynamoDB</b>
+        <span class="lang-vi">Bất kỳ kịch bản nào đòi hỏi khả năng co giãn vô hạn, không cần quản trị máy chủ, dữ liệu dạng Key-Value / JSON và độ trễ dưới 10ms, DynamoDB luôn là đáp án số 1. Nếu cần xuống cấp độ micro-giây (&mu;s) &rarr; Kết hợp thêm <b>DAX</b>.</span>
+        <span class="lang-en">When requirements specify serverless operations, unbounded horizontal scale, and &lt;10ms access for JSON/Key-Value data, DynamoDB is the definitive choice. For microsecond scale &rarr; Add <b>DAX</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Aurora lưu trữ 6 bản sao trên 3 AZ và tối đa 15 Read Replicas</b>
+        <b class="lang-en">Aurora replicates 6 copies across 3 AZs and supports up to 15 Read Replicas</b>
+        <span class="lang-vi">Nhớ con số vàng của Aurora: 6 bản sao dữ liệu phân bố đều trên 3 AZ. Hỗ trợ tối đa 15 Read Replicas (so với chỉ 5 của RDS thông thường) và tất cả các replica đều dùng chung 1 tầng lưu trữ phân tán.</span>
+        <span class="lang-en">Remember the golden metrics: 6 copies across 3 AZs by default. Scales up to 15 Read Replicas (versus 5 for standard RDS), backed by unified shared storage fabric.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Không bao giờ lưu Session ID trong bộ nhớ máy chủ EC2 đơn lẻ</span>
+          <span class="lang-en">Never store Session State in ephemeral EC2 local memory</span>
+        </b>
+        <span class="lang-vi">Để kiến trúc máy chủ web trở thành Stateless giúp Auto Scaling Group hoạt động mượt mà, nguyên tắc kiến trúc bất biến là luôn đẩy Session State ra một lớp lưu trữ dùng chung ngoài máy chủ: <b>Amazon ElastiCache for Redis</b> hoặc <b>Amazon DynamoDB</b>.</span>
+        <span class="lang-en">To ensure web tiers remain completely stateless for frictionless Auto Scaling, canonical best practice mandates offloading session state to <b>Amazon ElastiCache for Redis</b> or <b>Amazon DynamoDB</b>.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 8. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">8. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">8. Lecture References &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Documentation</span>
+      </div>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
+      </div>
+      <div class="pi">
+        <b>Section 8 · Lecture 26098250 &amp; 26098260</b>
+        <span class="lang-vi">Tổng quan RDS, tạo Database, cơ chế Multi-AZ và Read Replicas hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098250" target="_blank" style="color:var(--bl)">▶ Bài giảng RDS Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098260" target="_blank" style="color:var(--bl)">RDS Multi-AZ &amp; Replicas</a></span>
+        <span class="lang-en">RDS Overview, database provisioning, Multi-AZ and Read Replicas hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098250" target="_blank" style="color:var(--bl)">▶ RDS Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098260" target="_blank" style="color:var(--bl)">RDS Multi-AZ &amp; Replicas</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 8 · Lecture 26098270 &amp; 26098282</b>
+        <span class="lang-vi">Amazon Aurora: Kiến trúc lưu trữ, Aurora Serverless, Global Database và ElastiCache.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098270" target="_blank" style="color:var(--bl)">▶ Aurora Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098282" target="_blank" style="color:var(--bl)">ElastiCache Strategies</a></span>
+        <span class="lang-en">Amazon Aurora storage architecture, Serverless, Global DB, and ElastiCache.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098270" target="_blank" style="color:var(--bl)">▶ Aurora Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098282" target="_blank" style="color:var(--bl)">ElastiCache Strategies</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 20 · Lecture 26098550 &amp; 26098562</b>
+        <span class="lang-vi">Amazon DynamoDB chuyên sâu: Primary Keys, Indexes, DAX, Streams và các Database chuyên dụng.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098550" target="_blank" style="color:var(--bl)">▶ DynamoDB Deep Dive</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098562" target="_blank" style="color:var(--bl)">Specialized DBs</a></span>
+        <span class="lang-en">DynamoDB deep dive: Primary keys, DAX accelerator, Global tables, and specialized engines.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098550" target="_blank" style="color:var(--bl)">▶ DynamoDB Deep Dive</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098562" target="_blank" style="color:var(--bl)">Specialized DBs</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
+      </div>
+      <div class="pi">
+        <b>Amazon Aurora Architecture Whitepaper</b>
+        <span class="lang-vi">Bạch thư chính thức phân tích cơ chế tách biệt Compute/Storage và quản lý Quorum của Aurora.<br><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html" target="_blank" style="color:var(--bl)">📖 Đọc Aurora Storage Whitepaper</a></span>
+        <span class="lang-en">AWS whitepaper analyzing compute/storage decoupling and distributed quorum replication in Aurora.<br><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html" target="_blank" style="color:var(--bl)">📖 Read Aurora Storage Whitepaper</a></span>
+      </div>
+      <div class="pi">
+        <b>DynamoDB Core Components &amp; Partitioning</b>
+        <span class="lang-vi">Hướng dẫn thiết kế khóa chính, phân vùng vật lý và chống nghẽn phân vùng (Hot Partitioning).<br><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html" target="_blank" style="color:var(--bl)">📖 Đọc DynamoDB Developer Guide</a></span>
+        <span class="lang-en">Definitive guide on primary key modeling, physical partitions, and avoiding hot partition bottlenecks.<br><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html" target="_blank" style="color:var(--bl)">📖 Read DynamoDB Developer Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>Database Caching Strategies using Redis</b>
+        <span class="lang-vi">Tài liệu kiến trúc thiết kế mô hình bộ nhớ đệm Cache-Aside và Write-Through cho doanh nghiệp.<br><a href="https://aws.amazon.com/caching/best-practices/" target="_blank" style="color:var(--bl)">📖 Đọc Caching Best Practices</a></span>
+        <span class="lang-en">Architectural patterns covering Cache-Aside and Write-Through caching with ElastiCache.<br><a href="https://aws.amazon.com/caching/best-practices/" target="_blank" style="color:var(--bl)">📖 Read Caching Best Practices</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>Amazon RDS &amp; Aurora Portal</b>
+        <span class="lang-vi">Cổng thông tin tổng quan, bảng giá và các công cụ di chuyển dữ liệu Database Migration Service (DMS).<br><a href="https://aws.amazon.com/rds/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon RDS</a></span>
+        <span class="lang-en">Product homepage, pricing models, and AWS Database Migration Service (DMS) integration.<br><a href="https://aws.amazon.com/rds/" target="_blank" style="color:var(--bl)">🌐 Amazon RDS Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>Amazon DynamoDB Portal</b>
+        <span class="lang-vi">Trang chủ dịch vụ NoSQL hàng đầu của AWS, công cụ NoSQL Workbench và mô phỏng chi phí.<br><a href="https://aws.amazon.com/dynamodb/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon DynamoDB</a></span>
+        <span class="lang-en">Product homepage for AWS premier NoSQL, NoSQL Workbench designer, and pricing estimator.<br><a href="https://aws.amazon.com/dynamodb/" target="_blank" style="color:var(--bl)">🌐 Amazon DynamoDB Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Databases Comparison Portal</b>
+        <span class="lang-vi">Bảng tra cứu so sánh toàn bộ 15+ dịch vụ cơ sở dữ liệu chuyên biệt của AWS theo chuẩn Well-Architected.<br><a href="https://aws.amazon.com/products/databases/" target="_blank" style="color:var(--bl)">📊 Khám phá toàn bộ Database AWS</a></span>
+        <span class="lang-en">Comprehensive directory comparing all 15+ purpose-built AWS database engines.<br><a href="https://aws.amazon.com/products/databases/" target="_blank" style="color:var(--bl)">📊 Explore AWS Database Services</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="footer">
+  <p class="lang-vi">Khóa học AWS Certified Solutions Architect Associate (SAA-C03) · Biên soạn theo tài liệu chuẩn Udemy Stephane Maarek &amp; AWS Whitepapers · Tự do phân phối nội bộ</p>
+  <p class="lang-en">AWS Certified Solutions Architect Associate (SAA-C03) Learning Hub · Authored based on Udemy Stephane Maarek &amp; AWS Whitepapers · Free for internal study</p>
+</div>
+</body>
+</html>

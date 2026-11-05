@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Storage — EBS, EFS &amp; Instance Store — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <a href="../index.html" class="nav-back">
+    <span class="lang-vi">← Mục lục khóa học</span>
+    <span class="lang-en">← Course Hub</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 6 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Block &amp; File Storage</div>
+  <h1>AWS EC2 Storage — EBS, EFS &amp; Instance Store</h1>
+  <p class="lang-vi">Lưu trữ khối và hệ thống tệp cho máy chủ EC2: Phân loại EBS Volume, Snapshot, Multi-Attach, EFS Multi-AZ &amp; Bộ nhớ tạm thời Instance Store</p>
+  <p class="lang-en">Block &amp; File Storage for EC2: EBS Volume Types, Snapshots, Multi-Attach, EFS Multi-AZ &amp; Ephemeral Instance Store</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. TỔNG QUAN 3 MÔ HÌNH LƯU TRỮ CỐT LÕI -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">💾</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Tam giác lưu trữ EC2: EBS vs EFS vs Instance Store</span>
+        <span class="lang-en">1. The EC2 Storage Triad: EBS vs EFS vs Instance Store</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Ba mô hình lưu trữ với đặc tính kiến trúc, phạm vi mạng và vòng đời hoàn toàn khác biệt</span>
+        <span class="lang-en">Three distinct storage architectures with unique network scope and lifecycles</span>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Amazon EBS (Elastic Block Store)</div>
+      <div class="id lang-vi">Ổ đĩa khối qua mạng (Network Block Device). Khóa chặt trong <b>1 Availability Zone (AZ)</b>. Vòng đời độc lập với EC2 instance. Cho phép snapshot lên S3, mở rộng dung lượng và thay đổi loại đĩa realtime không downtime (Elastic Volumes).<br><span class="tag tb">Network Block</span><span class="tag tb">AZ-Locked</span><span class="tag ty">HĐH Boot &amp; Database</span></div>
+      <div class="id lang-en">Network-attached block device locked to a <b>single AZ</b>. Persists independently of instance lifecycle. Supports S3 snapshots, on-the-fly volume resizing, and type changes without downtime.<br><span class="tag tb">Network Block</span><span class="tag tb">AZ-Locked</span><span class="tag ty">OS Boot &amp; Databases</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Amazon EFS (Elastic File System)</div>
+      <div class="id lang-vi">Hệ thống tệp mạng dùng chung (Shared NFSv4.1), chuẩn <b>POSIX filesystem</b>. Tự động co giãn (Elastic), phân tán đa vùng khả dụng (<b>Multi-AZ</b>). Hàng trăm máy chủ EC2, container ECS/Fargate và Lambda có thể đọc/ghi đồng thời.<br><span class="tag tg">Shared File (NFS)</span><span class="tag tg">Multi-AZ</span><span class="tag ty">Web Server Farm / CMS</span></div>
+      <div class="id lang-en">Managed network filesystem (NFSv4.1) with <b>POSIX compliance</b>. Automatically elastic across <b>Multi-AZ</b>. Hundreds of EC2 instances, ECS/Fargate containers, and Lambda can read/write simultaneously.<br><span class="tag tg">Shared File (NFS)</span><span class="tag tg">Multi-AZ</span><span class="tag ty">Web Farms / CMS</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>EC2 Instance Store (Ephemeral Storage)</div>
+      <div class="id lang-vi">Ổ cứng SSD/NVMe vật lý gắn trực tiếp vào phần cứng máy chủ chủ (Host). IOPS cực cao (hàng triệu IOPS), độ trễ micro-second, không tốn băng thông mạng. <b>Mất toàn bộ dữ liệu</b> khi instance bị Stop hoặc Terminate.<br><span class="tag tr">Hardware Attached</span><span class="tag tr">Tạm thời (Ephemeral)</span><span class="tag ty">Cache / Buffer / NoSQL</span></div>
+      <div class="id lang-en">Physical SSD/NVMe drives physically attached to the host hardware. Ultra-high IOPS (millions), sub-millisecond latency, zero network hops. <b>Data is permanently lost</b> on Stop or Terminate.<br><span class="tag tr">Hardware Attached</span><span class="tag tr">Ephemeral</span><span class="tag ty">Cache / Buffers / NoSQL</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Amazon S3 (So sánh đối chiếu - Object Store)</div>
+      <div class="id lang-vi">Lưu trữ đối tượng (Object Storage), không phải block hay file system. Truy xuất qua REST API / HTTP. Độ bền 11 số 9 (99.999999999%). Không thể dùng làm ổ đĩa gắn (mount) cho hệ điều hành EC2 để cài OS.<br><span class="tag to">Object Storage</span><span class="tag to">Serverless / HTTP</span><span class="tag ty">Data Lake / Static Media</span></div>
+      <div class="id lang-en">Object storage, not a mountable filesystem or block device. Accessed via HTTP/REST API. 11 9s durability. Cannot be attached as a boot drive or standard OS mount.<br><span class="tag to">Object Storage</span><span class="tag to">Serverless / HTTP</span><span class="tag ty">Data Lake / Static Media</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGRAM: DECISION TREE CHO LƯU TRỮ EC2 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Cây quyết định lựa chọn giải pháp lưu trữ (Storage Decision Tree)</span>
+        <span class="lang-en">Storage Selection Decision Tree</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy trình suy luận chọn giải pháp lưu trữ tối ưu theo yêu cầu đề thi SAA-C03</span>
+        <span class="lang-en">Systematic decision flow for SAA-C03 exam scenario questions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-storage-decision">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Start["Yêu cầu lưu trữ cho hệ thống EC2"] --> Q1{"Loại dữ liệu &amp; Giao thức truy xuất?"}
+    
+    Q1 -->|"Đối tượng độc lập / Static Files / HTTP REST API"| S3["Dùng Amazon S3 / S3 Glacier"]
+    Q1 -->|"Cần Mount vào OS làm File hoặc Block Device"| Q2{"Có cần chia sẻ đồng thời nhiều EC2 không?"}
+    
+    Q2 -->|"Có: Shared Filesystem (POSIX / Linux)"| Q3{"Phạm vi địa lý truy xuất?"}
+    Q3 -->|"Đa vùng Multi-AZ / Linux workloads"| EFS["Dùng Amazon EFS (Elastic File System)"]
+    Q3 -->|"Chỉ Windows SMB / Active Directory / DFS"| FSxW["Dùng FSx for Windows File Server"]
+    Q3 -->|"Tính toán hiệu năng cao HPC / Linux POSIX"| FSxL["Dùng FSx for Lustre (Gắn S3)"]
+
+    Q2 -->|"Không: Chỉ 1 máy chủ EC2 gắn đĩa (hoặc io2 Multi-Attach)"| Q4{"Dữ liệu có cần bảo toàn khi Stop máy không?"}
+    
+    Q4 -->|"Không: Tạm thời, Cần IOPS siêu cao / Buffer / Cache"| IS["Dùng EC2 Instance Store (NVMe SSD Cục bộ)"]
+    Q4 -->|"Có: Persistent Block Storage"| Q5{"Mục đích sử dụng chính là gì?"}
+    
+    Q5 -->|"Boot OS / Web App / Database phổ thông"| GP3["Dùng EBS gp3 (Mặc định khuyên dùng)"]
+    Q5 -->|"Database lớn yêu cầu IOPS &gt; 16,000 &amp; Sub-ms latency"| IO2["Dùng EBS io2 Block Express"]
+    Q5 -->|"Xử lý dữ liệu lớn / Big Data / Log sequential throughput"| ST1["Dùng EBS st1 (Throughput Optimized HDD)"]
+    Q5 -->|"Lưu trữ lạnh ít truy xuất / Lưu trữ giá rẻ nhất"| SC1["Dùng EBS sc1 (Cold HDD)"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
+    class S3,EFS,FSxW,FSxL,IS,GP3,IO2,ST1,SC1 awsPrimary;
+    class Q1,Q2,Q3,Q4,Q5 awsBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Start["EC2 Storage Requirements"] --> Q1{"Data Type &amp; Access Protocol?"}
+    
+    Q1 -->|"Individual Objects / Static Files / HTTP REST"| S3["Use Amazon S3 / S3 Glacier"]
+    Q1 -->|"Mount to OS as File or Block Device"| Q2{"Need shared concurrent access across instances?"}
+    
+    Q2 -->|"Yes: Shared Filesystem (POSIX / Linux)"| Q3{"Workload scope &amp; OS?"}
+    Q3 -->|"Multi-AZ / Linux POSIX workloads"| EFS["Use Amazon EFS (Elastic File System)"]
+    Q3 -->|"Windows SMB / Active Directory / DFS"| FSxW["Use FSx for Windows File Server"]
+    Q3 -->|"High-Performance Computing HPC / Linux"| FSxL["Use FSx for Lustre (Linked to S3)"]
+
+    Q2 -->|"No: Single instance mount (or io2 Multi-Attach)"| Q4{"Must data persist across instance Stop?"}
+    
+    Q4 -->|"No: Temporary / Cache / Ultra-high IOPS"| IS["Use EC2 Instance Store (Local NVMe)"]
+    Q4 -->|"Yes: Persistent Block Storage"| Q5{"Primary workload performance driver?"}
+    
+    Q5 -->|"OS Boot / Web App / General DBs"| GP3["Use EBS gp3 (Default Recommended)"]
+    Q5 -->|"Mission-critical DB requiring &gt;16,000 IOPS &amp; Sub-ms"| IO2["Use EBS io2 Block Express"]
+    Q5 -->|"Big Data / Log Streaming / Sequential Throughput"| ST1["Use EBS st1 (Throughput Optimized HDD)"]
+    Q5 -->|"Cold infrequently accessed storage / Lowest cost"| SC1["Use EBS sc1 (Cold HDD)"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    class S3,EFS,FSxW,FSxL,IS,GP3,IO2,ST1,SC1 awsPrimary;
+    class Q1,Q2,Q3,Q4,Q5 awsBox;
+    </div>
+  </div>
+</div>
+
+<!-- 2. EBS VOLUME TYPES MATRIX -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗄️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Ma trận phân loại đĩa EBS (Volume Types Comparison)</span>
+        <span class="lang-en">2. EBS Volume Types Detailed Matrix</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh thông số kỹ thuật, khả năng Boot và ứng dụng thực tế theo giáo trình SAA-C03</span>
+        <span class="lang-en">Technical specifications, boot capabilities, and practical application scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Volume Type</th>
+          <th>Công nghệ</th>
+          <th>Dung lượng</th>
+          <th>Max IOPS</th>
+          <th>Max Throughput</th>
+          <th>Boot Volume?</th>
+          <th>Kịch bản sử dụng điển hình</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>gp3</b><br><span class="tag tb">Khuyên dùng</span></td>
+          <td>General Purpose SSD</td>
+          <td>1 GiB – 16 TiB</td>
+          <td><b>16,000 IOPS</b><br><small>(Baseline: 3,000)</small></td>
+          <td><b>1,000 MiB/s</b><br><small>(Baseline: 125 MiB/s)</small></td>
+          <td><span class="tag tg">Có (Yes)</span></td>
+          <td>Mặc định cho mọi ứng dụng. <b>IOPS &amp; Throughput tăng độc lập</b> mà không bắt buộc phải tăng dung lượng đĩa. Tiết kiệm 20% chi phí so với gp2.</td>
+        </tr>
+        <tr>
+          <td><b>gp2</b><br><span class="tag ty">Legacy</span></td>
+          <td>General Purpose SSD</td>
+          <td>1 GiB – 16 TiB</td>
+          <td><b>16,000 IOPS</b><br><small>(3 IOPS / GiB)</small></td>
+          <td>250 MiB/s</td>
+          <td><span class="tag tg">Có (Yes)</span></td>
+          <td>Thế hệ cũ. IOPS bị trói chặt vào dung lượng (muốn đạt 16,000 IOPS phải mua volume 5.3 TiB). Có cơ chế tích lũy Burst Credit lên 3,000 IOPS.</td>
+        </tr>
+        <tr>
+          <td><b>io2 Block Express</b><br><span class="tag tr">Đỉnh cao IOPS</span></td>
+          <td>Provisioned IOPS SSD</td>
+          <td>4 GiB – 64 TiB</td>
+          <td><b>256,000 IOPS</b><br><small>(Tỉ lệ 1,000:1)</small></td>
+          <td><b>4,000 MiB/s</b><br><small>Độ trễ &lt; 1ms</small></td>
+          <td><span class="tag tg">Có (Yes)</span></td>
+          <td>Cơ sở dữ liệu cực lớn, yêu cầu độ trễ sub-millisecond (Oracle, SAP HANA, Microsoft SQL Server). Độ bền <b>99.999%</b>. Hỗ trợ Multi-Attach.</td>
+        </tr>
+        <tr>
+          <td><b>io1</b><br><span class="tag ty">Legacy IOPS</span></td>
+          <td>Provisioned IOPS SSD</td>
+          <td>4 GiB – 16 TiB</td>
+          <td><b>64,000 IOPS</b><br><small>(Tỉ lệ 50:1)</small></td>
+          <td>1,000 MiB/s</td>
+          <td><span class="tag tg">Có (Yes)</span></td>
+          <td>Thế hệ trước của io2. Tối đa 64,000 IOPS (trên máy chủ Nitro). Độ bền 99.8% - 99.9%.</td>
+        </tr>
+        <tr>
+          <td><b>st1</b><br><span class="tag to">Throughput HDD</span></td>
+          <td>Throughput Optimized HDD</td>
+          <td>125 GiB – 16 TiB</td>
+          <td>500 IOPS</td>
+          <td><b>500 MiB/s</b><br><small>Burst IOPS</small></td>
+          <td><span class="tag tr">KHÔNG (No)</span></td>
+          <td>Dữ liệu lớn, truy xuất đọc/ghi tuần tự (Sequential I/O), Big Data, Data Warehouses (EMR, Hadoop), xử lý file log.</td>
+        </tr>
+        <tr>
+          <td><b>sc1</b><br><span class="tag tm">Cold HDD</span></td>
+          <td>Cold HDD (Giá rẻ nhất)</td>
+          <td>125 GiB – 16 TiB</td>
+          <td>250 IOPS</td>
+          <td><b>250 MiB/s</b><br><small>Chi phí thấp nhất</small></td>
+          <td><span class="tag tr">KHÔNG (No)</span></td>
+          <td>Dữ liệu lưu trữ ít truy xuất (Cold data), file lưu trữ dự phòng không cần truy xuất thường xuyên. Chi phí lưu trữ khối rẻ nhất trên EBS.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. HOẠT ĐỘNG VẬN HÀNH EBS: SNAPSHOTS & MÃ HÓA -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Vận hành EBS: Snapshots, Mã hóa &amp; Multi-Attach</span>
+        <span class="lang-en">3. EBS Operations: Snapshots, Encryption &amp; Multi-Attach</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cơ chế bảo vệ dữ liệu, sao lưu tăng trưởng (Incremental) và chia sẻ đĩa trên cùng AZ</span>
+        <span class="lang-en">Data protection mechanisms, incremental backups, and same-AZ block sharing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📸 Cơ chế EBS Snapshots</span>
+        <span class="lang-en">📸 EBS Snapshot Architecture</span>
+      </div>
+      <div class="pi">
+        <b>Sao lưu tăng trưởng (Incremental Backup)</b>
+        <span class="lang-vi">Snapshot được lưu ngầm trên <b>Amazon S3</b> (dù bạn không nhìn thấy trực tiếp trong S3 bucket). Lần snapshot đầu tiên sao lưu toàn bộ block đã ghi. Các lần snapshot kế tiếp chỉ sao lưu những block thay đổi (Delta). Xóa snapshot trước không làm hỏng snapshot sau.</span>
+        <span class="lang-en">Snapshots are stored under the hood in <b>Amazon S3</b>. The initial snapshot copies all written blocks; subsequent snapshots only capture modified blocks (deltas). Deleting an earlier snapshot does not corrupt subsequent ones.</span>
+      </div>
+      <div class="pi">
+        <b>EBS Snapshot Archive &amp; FSR</b>
+        <span class="lang-vi"><b>Archive Tier:</b> Giảm chi phí tới 75% cho các snapshot lưu trữ dài hạn (trên 90 ngày). Thời gian khôi phục mất từ 24 đến 72 giờ.<br><b>Fast Snapshot Restore (FSR):</b> Loại bỏ hoàn toàn độ trễ khởi tạo (I/O latency) khi restore volume từ snapshot, đạt hiệu năng tối đa ngay từ giây đầu tiên.</span>
+        <span class="lang-en"><b>Archive Tier:</b> Up to 75% cheaper for long-term compliance retention (&gt;90 days). Restores take 24–72 hours.<br><b>Fast Snapshot Restore (FSR):</b> Eliminates initialization I/O latency when instantiating new volumes from snapshots.</span>
+      </div>
+      <div class="pi">
+        <b>Chuyển đĩa sang AZ hoặc Region khác</b>
+        <span class="lang-vi">Vì EBS volume bị khóa cứng trong 1 AZ, quy trình duy nhất để chuyển sang AZ khác hoặc Region khác là: <b>Tạo Snapshot → Copy Snapshot (sang AZ/Region đích) → Tạo Volume mới từ Snapshot</b>.</span>
+        <span class="lang-en">Because EBS volumes are strictly AZ-locked, the standard pattern to relocate is: <b>Create Snapshot → Copy Snapshot (to target AZ/Region) → Create Volume from Snapshot</b>.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔐 Mã hóa EBS (EBS Encryption)</span>
+        <span class="lang-en">🔐 EBS Encryption &amp; Security</span>
+      </div>
+      <div class="pi">
+        <b>Mã hóa toàn diện xuyên suốt (End-to-End)</b>
+        <span class="lang-vi">Tích hợp dịch vụ <b>AWS KMS (AES-256)</b>. Khi bật mã hóa, tự động bảo vệ:
+          <ul>
+            <li>Dữ liệu lưu tại chỗ trên volume (Data at rest).</li>
+            <li>Dữ liệu truyền giữa máy chủ EC2 và ổ đĩa EBS (In-flight data).</li>
+            <li>Toàn bộ các bản Snapshots tạo ra từ volume đó.</li>
+            <li>Tất cả các Volume sinh ra từ các Snapshot mã hóa.</li>
+          </ul>
+        </span>
+        <span class="lang-en">Integrated with <b>AWS KMS (AES-256)</b>. Encrypting an EBS volume automatically secures:
+          <ul>
+            <li>Data at rest inside the volume.</li>
+            <li>In-flight traffic between EC2 host and EBS storage.</li>
+            <li>All snapshots created from the volume.</li>
+            <li>All subsequent volumes restored from those snapshots.</li>
+          </ul>
+        </span>
+      </div>
+      <div class="pi">
+        <b>Quy trình mã hóa một Root Volume chưa mã hóa</b>
+        <span class="lang-vi">Đề thi SAA-C03 rất hay hỏi quy trình này:
+          <ol>
+            <li>Tạo Snapshot của Root Volume chưa mã hóa.</li>
+            <li>Copy Snapshot đó và <b>đánh dấu chọn cờ Encrypt</b> (chọn KMS key).</li>
+            <li>Tạo Volume mới từ bản Snapshot đã mã hóa.</li>
+            <li>Gắn Volume mới vào EC2 làm Root Device (`/dev/xvda`).</li>
+          </ol>
+        </span>
+        <span class="lang-en">Crucial SAA-C03 exam scenario to encrypt an unencrypted root drive:
+          <ol>
+            <li>Create snapshot of unencrypted root volume.</li>
+            <li>Copy snapshot while <b>enabling Encryption</b> (choose KMS key).</li>
+            <li>Create new volume from encrypted snapshot copy.</li>
+            <li>Attach new encrypted volume as root device (`/dev/xvda`).</li>
+          </ol>
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔗 EBS Multi-Attach (io1 / io2)</span>
+        <span class="lang-en">🔗 EBS Multi-Attach Architecture</span>
+      </div>
+      <div class="pi">
+        <b>Gắn 1 đĩa vào tối đa 16 EC2 cùng AZ</b>
+        <span class="lang-vi">Chỉ hỗ trợ trên <b>io1 và io2</b> (Provisioned IOPS). Cho phép gắn 1 volume duy nhất vào tối đa <b>16 máy chủ EC2 Nitro</b> nằm trong <b>CÙNG 1 Availability Zone</b>.<br><span class="tag tr">io1 / io2 Only</span><span class="tag tb">Cùng 1 AZ duy nhất</span></span>
+        <span class="lang-en">Supported exclusively on <b>io1 and io2</b>. Allows mounting a single volume to up to <b>16 Nitro EC2 instances</b> in the <b>SAME Availability Zone</b>.<br><span class="tag tr">io1 / io2 Only</span><span class="tag tb">Same AZ only</span></span>
+      </div>
+      <div class="pi">
+        <b>Yêu cầu Cluster-Aware File System</b>
+        <span class="lang-vi">Hệ điều hành thông thường (ext4, xfs, NTFS) KHÔNG thể tự quản lý xung đột đồng thời khi ghi. Ứng dụng <b>bắt buộc phải dùng Cluster-aware Filesystem</b> (như GFS2, GlusterFS) để ngăn ngừa hỏng file (Data Corruption). Dùng cho clustered apps đòi hỏi High Availability failover (e.g., Teradata).</span>
+        <span class="lang-en">Standard filesystems (ext4, xfs, NTFS) cannot coordinate simultaneous writes. Workloads <b>must employ a cluster-aware filesystem</b> (e.g. GFS2, GlusterFS) to avoid data corruption.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. AMAZON EFS DEEP DIVE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📂</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Chuyên sâu Amazon EFS (Elastic File System)</span>
+        <span class="lang-en">4. Amazon EFS Deep Dive &amp; Architecture</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hệ thống tệp mạng POSIX chia sẻ đa vùng Multi-AZ, tự động co giãn và quản lý vòng đời dữ liệu</span>
+        <span class="lang-en">Multi-AZ POSIX shared network filesystem with automated tiering and lifecycle management</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Kiến trúc kết nối &amp; Mount Targets</div>
+      <div class="id lang-vi">
+        • Hỗ trợ giao thức <b>NFSv4.1</b> (chỉ dành cho máy chủ Linux, không hỗ trợ trực tiếp Windows).<br>
+        • Tạo <b>Mount Target</b> tại mỗi AZ trong VPC. Mỗi Mount Target có IP riêng và được bảo vệ bởi <b>Security Group (Mở cổng 2049)</b>.<br>
+        • Khả năng chịu lỗi cao: Dữ liệu phân tán trên nhiều AZ (Regional Storage) bảo đảm khả năng sống sót kể cả khi mất 1 AZ.<br>
+        • Tương thích hoàn toàn với EC2, Amazon ECS, AWS Fargate, AWS Lambda và on-premises qua AWS Direct Connect / VPN.
+      </div>
+      <div class="id lang-en">
+        • Uses <b>NFSv4.1 protocol</b> (Linux POSIX compliant; not intended for Windows).<br>
+        • Deploys a <b>Mount Target</b> in each VPC subnet/AZ with dedicated private IP secured by <b>Security Group (Port 2049)</b>.<br>
+        • High fault tolerance: Data synchronously mirrored across multiple AZs (Regional Storage).<br>
+        • Fully interoperable with EC2, ECS, Fargate, Lambda, and on-premises via Direct Connect/VPN.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Các tầng lưu trữ &amp; Lifecycle Management</div>
+      <div class="id lang-vi">
+        • <b>EFS Standard:</b> Dành cho tệp truy xuất thường xuyên, độ trễ đọc/ghi tính bằng mili-giây thấp.<br>
+        • <b>EFS Infrequent Access (EFS IA):</b> Tiết kiệm tới <b>92% chi phí lưu trữ</b>. Tính thêm phí nhỏ trên mỗi GiB đọc/ghi.<br>
+        • <b>EFS Archive:</b> Tầng lưu trữ cho dữ liệu truy xuất vài lần mỗi năm, chi phí lưu trữ cực rẻ.<br>
+        • <b>EFS Lifecycle Management:</b> Tự động chuyển tệp sang IA sau số ngày không truy xuất (7, 14, 30, 60, 90 ngày) và chuyển ngược lại Standard khi có request đọc.
+      </div>
+      <div class="id lang-en">
+        • <b>EFS Standard:</b> For frequently accessed active files with lowest latency.<br>
+        • <b>EFS Infrequent Access (EFS IA):</b> Up to <b>92% cost savings</b> on storage. Incurs a small retrieval charge per GiB.<br>
+        • <b>EFS Archive:</b> Lowest cost storage for files accessed only a few times annually.<br>
+        • <b>EFS Lifecycle Management:</b> Automatically moves idle files to IA (e.g. after 30 days) and restores them to Standard upon read.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Chế độ hiệu năng (Performance Modes)</div>
+      <div class="id lang-vi">
+        • <b>General Purpose (Mặc định):</b> Tối ưu độ trễ cho từng thao tác tệp, thích hợp cho web hosting, CMS (WordPress), home directories và phần lớn ứng dụng thông thường.<br>
+        • <b>Max I/O:</b> Mở rộng quy mô IOPS và thông lượng tổng thể cực đại cho hàng trăm máy chủ ghi dữ liệu song song (Big Data analytics, render video, xử lý khoa học). Độ trễ tệp đơn lẻ cao hơn đôi chút.
+      </div>
+      <div class="id lang-en">
+        • <b>General Purpose (Default):</b> Latency-optimized for general web servers, WordPress CMS, and home directories.<br>
+        • <b>Max I/O:</b> Scales to massive aggregate throughput and IOPS for hundreds of concurrent clients (Big Data, video rendering, scientific compute), with slightly higher base latency per metadata operation.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Chế độ thông lượng (Throughput Modes)</div>
+      <div class="id lang-vi">
+        • <b>Elastic Mode (Khuyên dùng):</b> Tự động điều chỉnh thông lượng đọc/ghi theo thời gian thực dựa trên nhu cầu của ứng dụng, không cần dự đoán trước dung lượng.<br>
+        • <b>Provisioned Mode:</b> Khóa cứng mức thông lượng cố định (ví dụ 1 GiB/s) bất kể dung lượng dữ liệu trong tệp là bao nhiêu (trả phí theo thông lượng đặt trước).<br>
+        • <b>Bursting Mode:</b> Thông lượng tỷ lệ thuận theo dung lượng lưu trữ (50 KiB/s trên mỗi GiB dữ liệu) kèm cơ chế tích điểm Burst Credit.
+      </div>
+      <div class="id lang-en">
+        • <b>Elastic Mode (Recommended):</b> Dynamically scales throughput based on real-time activity without manual management.<br>
+        • <b>Provisioned Mode:</b> Guarantees dedicated throughput independent of stored data volume (e.g., 1024 MiB/s on a small 10 GB file).<br>
+        • <b>Bursting Mode:</b> Throughput scales proportionally to volume size (50 KiB/s per GiB) backed by burst credits.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. EC2 INSTANCE STORE (EPHEMERAL) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Chuyên sâu EC2 Instance Store (Lưu trữ tạm thời)</span>
+        <span class="lang-en">5. EC2 Instance Store Deep Dive</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Ổ cứng NVMe SSD gắn vật lý trên máy chủ chủ: Tốc độ tối thượng nhưng dữ liệu tạm thời (Ephemeral)</span>
+        <span class="lang-en">Physical host-attached NVMe SSDs: Maximum performance with ephemeral persistence rules</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ Hiệu năng phần cứng</span>
+        <span class="lang-en">⚡ Hardware Performance</span>
+      </div>
+      <div class="pi">
+        <b>Không phụ thuộc băng thông mạng</b>
+        <span class="lang-vi">Khác với EBS (truy xuất qua mạng VPC Ethernet), Instance Store được gắn trực tiếp trên khe PCIe/NVMe của máy chủ vật lý. Đạt hàng triệu IOPS với độ trễ micro-second, không bị giới hạn bởi chuẩn EBS-Optimized.</span>
+        <span class="lang-en">Unlike EBS (accessed over VPC network fabric), Instance Store is directly plugged into physical host PCIe/NVMe slots. Delivers millions of IOPS with sub-millisecond latency.</span>
+      </div>
+      <div class="pi">
+        <b>Đã bao gồm trong chi phí Instance</b>
+        <span class="lang-vi">Không tính phí riêng biệt như EBS Volume. Các loại máy chủ có chữ <b>'d'</b> trong tên (ví dụ: `c5d.4xlarge`, `m5d.large`, `i3en.metal`) tự động tích hợp sẵn ổ đĩa Instance Store.</span>
+        <span class="lang-en">Storage is included in the base hourly rate of the EC2 instance. Identified by instances containing <b>'d'</b> in their family name (e.g., `c5d`, `m5d`, `i3en`).</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚠️ Vòng đời dữ liệu (Data Lifecycle)</span>
+        <span class="lang-en">⚠️ Ephemeral Data Lifecycle</span>
+      </div>
+      <div class="pi">
+        <b>Trường hợp còn giữ được dữ liệu</b>
+        <span class="lang-vi">Dữ liệu trên Instance Store <b>VẪN CÒN</b> khi khởi động lại hệ điều hành bên trong (OS Reboot).</span>
+        <span class="lang-en">Data on Instance Store <b>SURVIVES</b> soft internal operating system reboots (OS Reboot).</span>
+      </div>
+      <div class="pi">
+        <b style="color:var(--rd)">Trường hợp MẤT SẠCH dữ liệu</b>
+        <span class="lang-vi">Dữ liệu <b>BỊ MẤT HOÀN TOÀN</b> khi:
+          <ul>
+            <li>Người dùng thực hiện <b>Stop Instance</b> (do máy chuyển sang host vật lý khác).</li>
+            <li>Thực hiện <b>Terminate Instance</b>.</li>
+            <li>Hỏng phần cứng máy chủ chủ (Hardware failure).</li>
+          </ul>
+        </span>
+        <span class="lang-en">Data is <b>PERMANENTLY LOST</b> when:
+          <ul>
+            <li>Instance is <b>Stopped</b> (migrates to a different physical host).</li>
+            <li>Instance is <b>Terminated</b>.</li>
+            <li>Underlying hardware host degrades or fails.</li>
+          </ul>
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎯 Ứng dụng &amp; Kiến trúc tối ưu</span>
+        <span class="lang-en">🎯 Ideal Architectural Patterns</span>
+      </div>
+      <div class="pi">
+        <b>Vùng đệm, Cache &amp; Dữ liệu tạm</b>
+        <span class="lang-vi">Lý tưởng cho bộ nhớ đệm (Web/App Cache), hàng đợi đệm (Scratch buffers), không gian tráo đổi RAM (Swap space) và các file index tìm kiếm tạm thời.</span>
+        <span class="lang-en">Ideal for local app caches, scratch buffers, memory swap space, and temporary indexing catalogs.</span>
+      </div>
+      <div class="pi">
+        <b>Hệ quản trị CSDL phân tán có cơ chế nhân bản</b>
+        <span class="lang-vi">Rất phù hợp cho các cụm NoSQL hoặc Big Data có tính năng nhân bản dữ liệu tự động giữa các node (e.g., <b>Apache Cassandra</b>, <b>Hadoop HDFS</b>, <b>MongoDB replica sets</b>, <b>Elasticsearch</b>). Mất 1 node không làm mất dữ liệu của toàn cụm.</span>
+        <span class="lang-en">Perfect for distributed replicated clusters where the software engine handles multi-node replication (e.g. <b>Apache Cassandra</b>, <b>Hadoop HDFS</b>, <b>Elasticsearch</b>). Loss of one node does not compromise dataset.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. MA TRẬN TỔNG HỢP SO SÁNH MASTER MATRIX -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📊</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Bảng so sánh tổng thể: EBS vs EFS vs Instance Store vs S3</span>
+        <span class="lang-en">6. Master Comparison: EBS vs EFS vs Instance Store vs S3</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bảng đối chiếu tổng hợp kiến trúc phục vụ trả lời nhanh các câu hỏi tình huống trong đề thi</span>
+        <span class="lang-en">Comprehensive architecture matrix for solving SAA-C03 situational questions</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí so sánh</th>
+          <th>Amazon EBS</th>
+          <th>Amazon EFS</th>
+          <th>EC2 Instance Store</th>
+          <th>Amazon S3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Phạm vi (Scope)</b></td>
+          <td><b>1 Availability Zone</b> duy nhất</td>
+          <td><b>Multi-AZ (Regional)</b> hoặc One Zone</td>
+          <td><b>Host vật lý</b> của EC2</td>
+          <td><b>Region</b> (Toàn cầu qua URL)</td>
+        </tr>
+        <tr>
+          <td><b>Loại lưu trữ</b></td>
+          <td>Block Device (Ổ đĩa khối)</td>
+          <td>File System (NFSv4.1 POSIX)</td>
+          <td>Block Device (NVMe/SATA nội bộ)</td>
+          <td>Object Storage (Khóa + Giá trị)</td>
+        </tr>
+        <tr>
+          <td><b>Hệ điều hành hỗ trợ</b></td>
+          <td>Linux, Windows</td>
+          <td>Chủ yếu Linux (POSIX)</td>
+          <td>Linux, Windows</td>
+          <td>Bất kỳ HĐH (HTTP REST)</td>
+        </tr>
+        <tr>
+          <td><b>Khả năng chia sẻ</b></td>
+          <td>Chỉ 1 EC2 (Trừ io1/io2 Multi-Attach &le; 16 EC2 cùng 1 AZ)</td>
+          <td><b>Hàng trăm EC2 đồng thời</b> trên nhiều AZ</td>
+          <td>Chỉ duy nhất 1 EC2 gắn trực tiếp</td>
+          <td>Vô số client qua Internet/VPC Endpoint</td>
+        </tr>
+        <tr>
+          <td><b>Độ trễ truy xuất</b></td>
+          <td>Thấp (Vài mili-giây ms)</td>
+          <td>Trung bình (Mili-giây ms)</td>
+          <td><b>Siêu thấp (Micro-giây &mu;s)</b></td>
+          <td>100 - 200 ms (First byte)</td>
+        </tr>
+        <tr>
+          <td><b>Độ bền dữ liệu</b></td>
+          <td>99.8% – 99.999% (Replicated trong AZ)</td>
+          <td><b>99.999999999% (11 số 9)</b></td>
+          <td>Thấp (Mất khi Stop/Terminate)</td>
+          <td><b>99.999999999% (11 số 9)</b></td>
+        </tr>
+        <tr>
+          <td><b>Boot Volume?</b></td>
+          <td><span class="tag tg">Có (gp2, gp3, io1, io2)</span></td>
+          <td><span class="tag tr">KHÔNG</span></td>
+          <td><span class="tag ty">Có (một số instance)</span></td>
+          <td><span class="tag tr">KHÔNG</span></td>
+        </tr>
+        <tr>
+          <td><b>Chi phí lưu trữ</b></td>
+          <td>Trung bình (Thấp hơn EFS)</td>
+          <td>Cao hơn EBS (Giảm 92% khi dùng IA)</td>
+          <td>Miễn phí (Gộp trong giá Instance)</td>
+          <td>Rẻ nhất trên mỗi GiB</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 7. BỔ SUNG HAY GẶP TRONG ĐỀ THI -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Các bẫy &amp; Kịch bản đề thi thường gặp (SAA-C03 Traps)</span>
+        <span class="lang-en">7. Common Exam Traps &amp; Scenarios (SAA-C03)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Những điểm mấu chốt đề thi thường xuyên đưa vào đáp án gây nhiễu</span>
+        <span class="lang-en">High-frequency exam trick points and distractor patterns</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Cấu hình RAID trên ổ đĩa EBS</div>
+      <div class="id lang-vi">
+        • <b>RAID 0 (Striping):</b> Gộp nhiều volume EBS để đạt thông lượng (Throughput) và IOPS tối đa khi 1 volume riêng lẻ không đáp ứng nổi. Nhược điểm: <i>Không có khả năng chịu lỗi (Nếu 1 volume hỏng, mất toàn bộ dữ liệu)</i>.<br>
+        • <b>RAID 1 (Mirroring):</b> Nhân bản dữ liệu đồng thời lên 2 volume để tăng tính chịu lỗi. Nhược điểm: <i>Tốn gấp đôi dung lượng lưu trữ và nhân đôi IOPS ghi</i>.<br>
+        • <b>RAID 5 và RAID 6:</b> <u>AWS KHUYẾN CÁO KHÔNG DÙNG</u> trên EBS vì cơ chế tính toán parity làm hao tổn thông lượng I/O trầm trọng.
+      </div>
+      <div class="id lang-en">
+        • <b>RAID 0 (Striping):</b> Combines multiple EBS volumes to maximize aggregate throughput/IOPS. Trade-off: <i>Zero fault tolerance (one drive fails = entire array corrupted)</i>.<br>
+        • <b>RAID 1 (Mirroring):</b> Mirrors data across two volumes for redundancy. Trade-off: <i>2x storage cost and double write IOPS</i>.<br>
+        • <b>RAID 5 &amp; 6:</b> <u>NOT RECOMMENDED by AWS</u> on EBS due to parity calculation I/O penalties.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Đặc tính DeleteOnTermination</div>
+      <div class="id lang-vi">
+        • Khi khởi tạo EC2, thuộc tính <code>DeleteOnTermination</code> của <b>Root EBS Volume</b> mặc định được đặt là <b>TRUE</b> (Volume sẽ tự động bị xóa sổ khi xóa máy chủ).<br>
+        • Đối với các <b>Attached EBS Volumes</b> gắn thêm, giá trị này mặc định là <b>FALSE</b> (Volume vẫn tồn tại độc lập sau khi instance bị terminate).<br>
+        • Trong đề thi: Nếu muốn giữ lại dữ liệu Root khi xóa máy, phải chuyển cờ này sang <code>false</code> trong cấu hình Block Device Mapping.
+      </div>
+      <div class="id lang-en">
+        • On launch, <code>DeleteOnTermination</code> for the <b>Root EBS volume</b> defaults to <b>TRUE</b> (destroyed when instance terminates).<br>
+        • For additional <b>Attached Volumes</b>, it defaults to <b>FALSE</b> (retained independently).<br>
+        • Exam tip: To prevent accidental root data deletion on termination, explicitly set this flag to <code>false</code>.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>gp2 vs gp3: Sự khác biệt về chi phí &amp; cấu hình</div>
+      <div class="id lang-vi">
+        • Đề bài yêu cầu: <i>"Tăng thông lượng lên 500 MiB/s cho ổ đĩa 100 GiB với chi phí tối ưu nhất"</i>.<br>
+        • Với <b>gp2</b>: Bắt buộc phải tăng dung lượng lên hàng nghìn GiB chỉ để lấy thêm IOPS/Throughput &rarr; Lãng phí ngân sách.<br>
+        • Với <b>gp3</b>: Chọn cấu hình trực tiếp 500 MiB/s mà vẫn giữ nguyên dung lượng 100 GiB &rarr; <b>gp3 luôn là câu trả lời đúng</b> khi cần tối ưu chi phí!
+      </div>
+      <div class="id lang-en">
+        • Scenario: <i>"Need 500 MiB/s throughput on a 100 GiB volume with minimum cost"</i>.<br>
+        • With <b>gp2</b>: You are forced to over-provision gigabytes just to scale baseline performance.<br>
+        • With <b>gp3</b>: You tune throughput/IOPS independently without paying for unneeded storage &rarr; <b>gp3 is the optimal answer</b>!
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>EFS One Zone vs Regional Storage</div>
+      <div class="id lang-vi">
+        • Mặc định EFS phân tán đa vùng (Regional - Multi-AZ).<br>
+        • Để tiết kiệm 47% chi phí lưu trữ cho môi trường Development / Staging, có thể chọn <b>EFS One Zone</b> (lưu trữ trong 1 AZ duy nhất).<br>
+        • Khi dùng EFS One Zone, AWS khuyến nghị kích hoạt tính năng <b>AWS Backup</b> tự động để đề phòng rủi ro mất toàn bộ AZ.
+      </div>
+      <div class="id lang-en">
+        • By default, EFS is Multi-AZ Regional.<br>
+        • For non-critical Dev/Test workloads, select <b>EFS One Zone</b> for 47% cost savings.<br>
+        • Pairing EFS One Zone with <b>AWS Backup</b> is the canonical best practice to mitigate single-AZ failure risks.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. NGUYÊN TẮC VÀNG SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⭐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">8. Nguyên tắc vàng khi làm bài thi (SAA-C03 Golden Rules)</span>
+        <span class="lang-en">8. SAA-C03 Exam Golden Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bộ quy tắc bất biến giúp loại trừ ngay các đáp án sai trong đề thi chứng chỉ</span>
+        <span class="lang-en">Essential axioms to rapidly eliminate incorrect choices in the exam</span>
+      </div>
+    </div>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">EBS Volume bị khóa chặt trong một Availability Zone (AZ)</b>
+        <b class="lang-en">EBS Volumes are strictly bound to a Single Availability Zone</b>
+        <span class="lang-vi">Không bao giờ có chuyện gắn trực tiếp 1 volume EBS sang máy chủ EC2 ở AZ khác. Muốn chuyển sang AZ khác, bắt buộc phải chụp <b>Snapshot</b> rồi tạo Volume mới ở AZ đích.</span>
+        <span class="lang-en">You can NEVER directly attach an EBS volume to an EC2 instance in a different AZ. To cross AZs, take a <b>Snapshot</b> and restore a new volume in the destination AZ.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">st1 và sc1 tuyệt đối KHÔNG thể dùng làm Boot Volume</b>
+        <b class="lang-en">st1 and sc1 CANNOT be used as OS Boot Volumes</b>
+        <span class="lang-vi">Chỉ có các loại đĩa SSD (gp2, gp3, io1, io2) mới được phép làm ổ đĩa khởi động hệ điều hành. Bất kỳ đáp án nào đề xuất st1/sc1 làm Boot Volume đều là đáp án sai.</span>
+        <span class="lang-en">Only SSD-backed volumes (gp2, gp3, io1, io2) are supported as boot drives. Any option suggesting st1 or sc1 as a boot volume is immediately invalid.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Cần hệ thống tệp chia sẻ Multi-AZ cho Linux &rarr; Luôn chọn Amazon EFS</b>
+        <b class="lang-en">Shared Multi-AZ Filesystem for Linux &rarr; Always Pick Amazon EFS</b>
+        <span class="lang-vi">Khi đề bài nhắc đến chia sẻ tệp đồng thời giữa nhiều máy chủ Linux trải rộng trên nhiều AZ và tuân thủ POSIX, câu trả lời chuẩn xác là Amazon EFS (hoặc FSx for Windows nếu là máy chủ Windows SMB).</span>
+        <span class="lang-en">When a question specifies concurrent POSIX file access across multiple Linux EC2 instances in different AZs, Amazon EFS is always the intended architecture.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Instance Store mất sạch dữ liệu khi Stop hoặc Terminate</span>
+          <span class="lang-en">Instance Store loses all data upon Instance Stop or Terminate</span>
+        </b>
+        <span class="lang-vi">Không bao giờ lưu trữ dữ liệu cơ sở dữ liệu vĩnh viễn trên Instance Store nếu không có cơ chế replication phân tán ở tầng ứng dụng (như Cassandra/HDFS). Khi máy chủ Stop, dữ liệu sẽ bốc hơi vĩnh viễn và không thể khôi phục!</span>
+        <span class="lang-en">Never store permanent state on an Instance Store without application-level distributed replication (e.g. Cassandra, HDFS). Once the instance stops, data evaporates permanently!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 9. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">9. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">9. Lecture References &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Documentation</span>
+      </div>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
+      </div>
+      <div class="pi">
+        <b>Section 6 · Lecture 26098144 &amp; 26098150</b>
+        <span class="lang-vi">Tổng quan về EBS Volume, đính kèm đĩa và cơ chế EBS Snapshots.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098144" target="_blank" style="color:var(--bl)">▶ Bài giảng EBS Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098150" target="_blank" style="color:var(--bl)">EBS Snapshots</a></span>
+        <span class="lang-en">EBS Overview, volume attachment, and EBS Snapshots hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098144" target="_blank" style="color:var(--bl)">▶ EBS Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098150" target="_blank" style="color:var(--bl)">EBS Snapshots</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 6 · Lecture 26098158 &amp; 26098170</b>
+        <span class="lang-vi">So sánh chuyên sâu các loại đĩa EBS Volume Types và cơ chế EC2 Instance Store.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098158" target="_blank" style="color:var(--bl)">▶ EBS Volume Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098170" target="_blank" style="color:var(--bl)">Instance Store</a></span>
+        <span class="lang-en">In-depth comparison of EBS Volume Types and EC2 Instance Store.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098158" target="_blank" style="color:var(--bl)">▶ EBS Volume Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098170" target="_blank" style="color:var(--bl)">Instance Store</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 6 · Lecture 26098182</b>
+        <span class="lang-vi">Amazon EFS: Tạo file system, thiết lập Mount Targets và phân tích lưu trữ dùng chung.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098182" target="_blank" style="color:var(--bl)">▶ Bài giảng Amazon EFS Hands-on</a></span>
+        <span class="lang-en">Amazon EFS: Creating shared filesystems, mount targets, and performance analysis.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098182" target="_blank" style="color:var(--bl)">▶ Amazon EFS Hands-on Lecture</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
+      </div>
+      <div class="pi">
+        <b>Amazon EBS Volume Types Guide</b>
+        <span class="lang-vi">Hướng dẫn chi tiết của AWS về đặc tính thông lượng, IOPS và giới hạn của gp3, io2 Block Express.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html" target="_blank" style="color:var(--bl)">📖 Đọc EBS Volume Types Guide</a></span>
+        <span class="lang-en">Comprehensive AWS guide detailing throughput, IOPS, and performance profiles of gp3 and io2.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html" target="_blank" style="color:var(--bl)">📖 Read EBS Volume Types Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>Amazon EFS Performance &amp; Scalability</b>
+        <span class="lang-vi">Tài liệu kiến trúc phân tích cơ chế Elastic Throughput và các chế độ General Purpose vs Max I/O.<br><a href="https://docs.aws.amazon.com/efs/latest/ug/performance.html" target="_blank" style="color:var(--bl)">📖 Đọc EFS Performance Whitepaper</a></span>
+        <span class="lang-en">Architectural documentation analyzing Elastic Throughput and General Purpose vs Max I/O modes.<br><a href="https://docs.aws.amazon.com/efs/latest/ug/performance.html" target="_blank" style="color:var(--bl)">📖 Read EFS Performance Whitepaper</a></span>
+      </div>
+      <div class="pi">
+        <b>EC2 Storage Options Matrix</b>
+        <span class="lang-vi">Tài liệu so sánh tổng thể giữa Block storage, File storage và Object storage trên hệ sinh thái AWS.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html" target="_blank" style="color:var(--bl)">📖 Đọc EC2 Storage Options</a></span>
+        <span class="lang-en">Official AWS comparative analysis across Block, File, and Object storage models.<br><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html" target="_blank" style="color:var(--bl)">📖 Read EC2 Storage Options</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>Amazon EBS Product Page</b>
+        <span class="lang-vi">Cổng thông tin tổng quan, bảng giá và các thông cáo tính năng mới nhất của EBS.<br><a href="https://aws.amazon.com/ebs/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon EBS</a></span>
+        <span class="lang-en">Product homepage, pricing model, and latest announcements for Amazon EBS.<br><a href="https://aws.amazon.com/ebs/" target="_blank" style="color:var(--bl)">🌐 Amazon EBS Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>Amazon EFS Product Page</b>
+        <span class="lang-vi">Tổng quan tính năng lưu trữ phi máy chủ không giới hạn cho các container và web application.<br><a href="https://aws.amazon.com/efs/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon EFS</a></span>
+        <span class="lang-en">Serverless scalable elastic file storage for containers and modern cloud applications.<br><a href="https://aws.amazon.com/efs/" target="_blank" style="color:var(--bl)">🌐 Amazon EFS Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Storage Services Overview Cheat Sheet</b>
+        <span class="lang-vi">Bảng tra cứu nhanh lựa chọn các dịch vụ lưu trữ AWS theo các tiêu chí kiến trúc chuẩn Well-Architected.<br><a href="https://aws.amazon.com/products/storage/" target="_blank" style="color:var(--bl)">📊 Khám phá toàn bộ dịch vụ Storage</a></span>
+        <span class="lang-en">Quick reference matrix choosing AWS storage services adhering to Well-Architected Framework.<br><a href="https://aws.amazon.com/products/storage/" target="_blank" style="color:var(--bl)">📊 Explore AWS Storage Services</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="footer">
+  <p class="lang-vi">Khóa học AWS Certified Solutions Architect Associate (SAA-C03) · Biên soạn theo tài liệu chuẩn Udemy Stephane Maarek &amp; AWS Whitepapers · Tự do phân phối nội bộ</p>
+  <p class="lang-en">AWS Certified Solutions Architect Associate (SAA-C03) Learning Hub · Authored based on Udemy Stephane Maarek &amp; AWS Whitepapers · Free for internal study</p>
+</div>
+</body>
+</html>

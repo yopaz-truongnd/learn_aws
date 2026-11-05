@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS High Availability &amp; Scalability — ELB &amp; ASG — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <a href="../index.html" class="nav-back">
+    <span class="lang-vi">← Mục lục khóa học</span>
+    <span class="lang-en">← Course Hub</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 7 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Regional High Availability &amp; Elasticity</div>
+  <h1>AWS High Availability &amp; Scalability — ELB &amp; ASG</h1>
+  <p class="lang-vi">Cân bằng tải &amp; Tự động co giãn: Application Load Balancer (L7), Network Load Balancer (L4), Gateway LB, Target Groups, Health Checks &amp; Auto Scaling Groups</p>
+  <p class="lang-en">Load Balancing &amp; Auto Scaling: Application Load Balancer (L7), Network Load Balancer (L4), Gateway LB, Target Groups, Health Checks &amp; Auto Scaling Groups</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. CÁC KHÁI NIỆM CỐT LÕI VỀ TÍNH SẴN SÀNG & CO GIÃN -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Nền tảng kiến trúc: Khả năng co giãn (Scalability) vs Sẵn sàng cao (High Availability)</span>
+        <span class="lang-en">1. Architectural Foundations: Scalability vs High Availability</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bốn trụ cột thiết kế hệ thống chịu tải và kháng lỗi trong điện toán đám mây</span>
+        <span class="lang-en">Four foundational pillars for building fault-tolerant and scalable cloud systems</span>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Vertical Scalability (Scale Up / Down)</div>
+      <div class="id lang-vi">Tăng hoặc giảm kích thước phần cứng của 1 máy chủ đơn lẻ (ví dụ: đổi instance từ <code>t3.nano</code> lên <code>u-12tb1.metal</code>). Thường áp dụng cho cơ sở dữ liệu quan hệ (RDS, SQL Server). Luôn bị giới hạn bởi trần phần cứng vật lý và đòi hỏi downtime khi nâng cấp.<br><span class="tag tb">Scale Up</span><span class="tag tb">Tăng RAM/CPU</span><span class="tag ty">Database Non-Distributed</span></div>
+      <div class="id lang-en">Increasing or decreasing hardware sizing on a single compute node (e.g. changing instance from <code>t3.nano</code> to <code>u-12tb1.metal</code>). Common for relational databases (RDS, SQL Server). Limited by physical hardware boundaries and requires brief downtime.<br><span class="tag tb">Scale Up</span><span class="tag tb">Vertical Sizing</span><span class="tag ty">Non-Distributed DBs</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Horizontal Scalability (Scale Out / In)</div>
+      <div class="id lang-vi">Thêm hoặc bớt số lượng máy chủ chạy song song theo nhu cầu tải (ví dụ: từ 2 máy chủ tăng lên 20 máy chủ EC2). Lý tưởng cho các ứng dụng Stateless Web/API. Khả năng mở rộng gần như vô hạn và không gây gián đoạn hệ thống.<br><span class="tag tg">Scale Out</span><span class="tag tg">Thêm máy chủ</span><span class="tag ty">Stateless Web Apps / ASG</span></div>
+      <div class="id lang-en">Adding or removing instances horizontally to match current demand (e.g. scaling from 2 to 20 EC2 instances). Ideal for stateless distributed web applications. Infinitely scalable with zero downtime.<br><span class="tag tg">Scale Out</span><span class="tag tg">Horizontal Fleet</span><span class="tag ty">Stateless Web Apps / ASG</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>High Availability (Tính sẵn sàng cao - HA)</div>
+      <div class="id lang-vi">Vận hành ứng dụng trên ít nhất <b>2 Availability Zones (Multi-AZ)</b> để loại bỏ điểm lỗi đơn lẻ (Single Point of Failure - SPOF). Nếu 1 AZ bị sập do thiên tai, hệ thống vẫn duy trì hoạt động thông qua các máy chủ còn lại ở các AZ khác.<br><span class="tag to">Multi-AZ</span><span class="tag to">Kháng lỗi (Fault-Tolerant)</span><span class="tag ty">Không SPOF</span></div>
+      <div class="id lang-en">Running identical workloads across at least <b>two Availability Zones (Multi-AZ)</b> to eliminate Single Points of Failure (SPOF). Ensures continuous availability even during catastrophic data center outages.<br><span class="tag to">Multi-AZ</span><span class="tag to">Fault-Tolerant</span><span class="tag ty">No SPOF</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Elasticity &amp; Agility (Độ đàn hồi &amp; Linh hoạt)</div>
+      <div class="id lang-vi"><b>Elasticity:</b> Hệ thống tự động co giãn chính xác theo tải thực tế (Auto Scaling), tự tăng khi đông khách và giảm khi vắng khách để tối ưu chi phí.<br><b>Agility:</b> Khả năng cấp phát nhanh tài nguyên công nghệ chỉ trong vài giây thay vì chờ hàng tháng mua máy chủ vật lý.<br><span class="tag tr">Đàn hồi tự động</span><span class="tag tr">Pay-as-you-go</span><span class="tag ty">Chi phí tối ưu</span></div>
+      <div class="id lang-en"><b>Elasticity:</b> Dynamic self-adjusting capacity that mirrors real-time load patterns, pruning resources when idle to prevent waste.<br><b>Agility:</b> Rapid automated provisioning within seconds rather than months of manual datacenter procurement.<br><span class="tag tr">Auto-Elastic</span><span class="tag tr">Pay-as-you-go</span><span class="tag ty">Cost Optimization</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGRAM: KIẾN TRÚC HA TOÀN DIỆN VỚI ELB & ASG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Sơ đồ kiến trúc sẵn sàng cao (ELB Multi-AZ + Auto Scaling Group)</span>
+        <span class="lang-en">High Availability Architecture Diagram (ELB Multi-AZ + Auto Scaling Group)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Luồng định tuyến lưu lượng từ Internet Client qua các tầng mạng an toàn trong VPC</span>
+        <span class="lang-en">Traffic routing lifecycle from Internet clients through secure VPC network tiers</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-elb-asg-arch">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Client["🌐 Người dùng Internet / Web Browsers"] --> DNS["Amazon Route 53 (DNS Alias Record)"]
+    DNS --> ELB["Application Load Balancer (Public Subnets - Multi-AZ)"]
+    
+    subgraph VPC["AWS Virtual Private Cloud (VPC)"]
+        subgraph PublicSubnets["Tầng Public Subnets (Internet Gateway)"]
+            ELB_A["ALB Node (AZ-1a)"]
+            ELB_B["ALB Node (AZ-1b)"]
+        end
+
+        ELB --> ELB_A
+        ELB --> ELB_B
+
+        subgraph PrivateSubnets["Tầng Private Subnets (Auto Scaling Group)"]
+            subgraph TG["Target Group: Web Application EC2s (Port 80/443)"]
+                EC2_1["EC2 Instance 1 (AZ-1a)"]
+                EC2_2["EC2 Instance 2 (AZ-1b)"]
+                EC2_3["EC2 Instance 3 (AZ-1a)"]
+                EC2_4["EC2 Instance 4 (AZ-1b)"]
+            end
+        end
+
+        ELB_A -->|"Chuyển tiếp HTTP/HTTPS (Port 80)"| EC2_1
+        ELB_A -->|"Cross-Zone Balancing"| EC2_2
+        ELB_B -->|"Cross-Zone Balancing"| EC2_3
+        ELB_B -->|"Chuyển tiếp HTTP/HTTPS (Port 80)"| EC2_4
+
+        subgraph ASG_Control["Điều khiển Auto Scaling Group"]
+            CW["CloudWatch Alarms (CPU &gt; 50%)"] -->|"Kích hoạt Scale Out Policy"| ASG["ASG Engine (Min: 2, Desired: 4, Max: 10)"]
+            ASG -.->|"Launch Templates"| TG
+        end
+    end
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
+    class DNS,ELB,ASG,CW awsPrimary;
+    class EC2_1,EC2_2,EC2_3,EC2_4,ELB_A,ELB_B awsBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Client["🌐 Internet Users / Web Clients"] --> DNS["Amazon Route 53 (DNS Alias Record)"]
+    DNS --> ELB["Application Load Balancer (Public Subnets - Multi-AZ)"]
+    
+    subgraph VPC["AWS Virtual Private Cloud (VPC)"]
+        subgraph PublicSubnets["Public Subnets Tier (Internet Gateway)"]
+            ELB_A["ALB Node (AZ-1a)"]
+            ELB_B["ALB Node (AZ-1b)"]
+        end
+
+        ELB --> ELB_A
+        ELB --> ELB_B
+
+        subgraph PrivateSubnets["Private Subnets Tier (Auto Scaling Group)"]
+            subgraph TG["Target Group: Web Application EC2s (Port 80/443)"]
+                EC2_1["EC2 Instance 1 (AZ-1a)"]
+                EC2_2["EC2 Instance 2 (AZ-1b)"]
+                EC2_3["EC2 Instance 3 (AZ-1a)"]
+                EC2_4["EC2 Instance 4 (AZ-1b)"]
+            end
+        end
+
+        ELB_A -->|"Forward HTTP/HTTPS (Port 80)"| EC2_1
+        ELB_A -->|"Cross-Zone Balancing"| EC2_2
+        ELB_B -->|"Cross-Zone Balancing"| EC2_3
+        ELB_B -->|"Forward HTTP/HTTPS (Port 80)"| EC2_4
+
+        subgraph ASG_Control["Auto Scaling Group Management"]
+            CW["CloudWatch Alarms (CPU &gt; 50%)"] -->|"Trigger Scale Out Policy"| ASG["ASG Engine (Min: 2, Desired: 4, Max: 10)"]
+            ASG -.->|"Launch Templates"| TG
+        end
+    end
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    class DNS,ELB,ASG,CW awsPrimary;
+    class EC2_1,EC2_2,EC2_3,EC2_4,ELB_A,ELB_B awsBox;
+    </div>
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH 4 LOẠI LOAD BALANCER -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Ma trận phân loại các dòng Elastic Load Balancer (ALB vs NLB vs GWLB vs CLB)</span>
+        <span class="lang-en">2. Comprehensive ELB Comparison Matrix (ALB vs NLB vs GWLB vs CLB)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu chi tiết tầng OSI, hiệu năng, địa chỉ IP và tính năng định tuyến cho đề thi SAA-C03</span>
+        <span class="lang-en">Detailed comparison across OSI layers, throughput, IP schemes, and routing features</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Loại Load Balancer</th>
+          <th>Tầng OSI</th>
+          <th>Giao thức (Protocols)</th>
+          <th>Địa chỉ IP</th>
+          <th>Đặc điểm nổi bật &amp; Tính năng định tuyến</th>
+          <th>Kịch bản sử dụng tối ưu</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Application Load Balancer (ALB)</b><br><span class="tag tb">Layer 7</span></td>
+          <td><b>Layer 7</b><br>(Application)</td>
+          <td>HTTP, HTTPS, gRPC, WebSocket</td>
+          <td><b>Static DNS Name</b><br><small>(IP thay đổi linh hoạt)</small></td>
+          <td>Định tuyến thông minh theo: <b>URL Path</b> (`/api`), <b>Hostname</b> (`app.domain.com`), <b>Query String</b>, <b>HTTP Headers</b>. Hỗ trợ Redirects, Fixed-response, Sticky Sessions, SNI.</td>
+          <td>Web applications hiện đại, kiến trúc Microservices, container Docker (ECS/EKS) với Dynamic Port Mapping.</td>
+        </tr>
+        <tr>
+          <td><b>Network Load Balancer (NLB)</b><br><span class="tag tg">Layer 4 Ultra-Fast</span></td>
+          <td><b>Layer 4</b><br>(Transport)</td>
+          <td>TCP, UDP, TLS</td>
+          <td><b>Static IP / Elastic IP</b><br><small>(1 IP cố định mỗi AZ)</small></td>
+          <td>Hiệu năng cực đại (<b>hàng triệu request/giây</b>), độ trễ cực thấp (<b>micro-giây</b>). Bảo toàn Client IP gốc. Hỗ trợ đăng ký target bằng Private IP on-premise. Hỗ trợ TLS termination cực mạnh.</td>
+          <td>Gaming servers, streaming video/audio, kết nối TCP/UDP thô, và ứng dụng yêu cầu <b>IP tĩnh để whitelist firewall</b>.</td>
+        </tr>
+        <tr>
+          <td><b>Gateway Load Balancer (GWLB)</b><br><span class="tag tr">Layer 3 Appliance</span></td>
+          <td><b>Layer 3</b><br>(Network IP Packets)</td>
+          <td>IP Packets thô<br>(Giao thức GENEVE - Port 6081)</td>
+          <td><b>GWLB Endpoints</b><br><small>(Trong VPC của bạn)</small></td>
+          <td>Điều phối và mở rộng đàn hồi một cụm <b>tường lửa bên thứ 3 (Virtual Appliances)</b>. Định tuyến toàn bộ lưu lượng qua cụm kiểm tra (DPI, IDS/IPS, Next-Gen Firewall) trước khi tới app.</td>
+          <td>Kiểm tra an ninh mạng tập trung, lọc gói tin chuyên sâu doanh nghiệp (Palo Alto, Check Point, Fortinet appliances).</td>
+        </tr>
+        <tr>
+          <td><b>Classic Load Balancer (CLB)</b><br><span class="tag tm">Thế hệ cũ (Deprecated)</span></td>
+          <td>Layer 4 &amp; 7<br>(Hỗn hợp)</td>
+          <td>HTTP, HTTPS, TCP, SSL</td>
+          <td>Static DNS Name</td>
+          <td>Thế hệ đời đầu của AWS (ra mắt 2009). Không hỗ trợ định tuyến theo URL/Host, không hỗ trợ WebSocket hay SNI.</td>
+          <td>Không khuyến nghị cho dự án mới. Đề thi SAA-C03 luôn ưu tiên chuyển từ CLB sang ALB/NLB.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. CÁC TÍNH NĂNG CHUYÊN SÂU CỦA ELB -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚙️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Các cơ chế vận hành chuyên sâu của Elastic Load Balancing</span>
+        <span class="lang-en">3. Advanced ELB Operational Mechanics</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cross-Zone Balancing, SSL/TLS Termination, SNI, Sticky Sessions và Connection Draining</span>
+        <span class="lang-en">Cross-Zone Balancing, SSL/TLS Termination, SNI, Sticky Sessions, and Connection Draining</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🌐 Cross-Zone Load Balancing</span>
+        <span class="lang-en">🌐 Cross-Zone Balancing</span>
+      </div>
+      <div class="pi">
+        <b>Phân phối lưu lượng đồng đều giữa các AZ</b>
+        <span class="lang-vi">Khi bật tính năng này, mỗi node của Load Balancer sẽ phân phối lưu lượng đồng đều tới <b>tất cả target trong tất cả AZ</b>, tránh tình trạng AZ có nhiều máy chủ thì nhàn rỗi còn AZ ít máy chủ thì quá tải.</span>
+        <span class="lang-en">Distributes traffic evenly across all registered instances in all enabled AZs, preventing unbalanced loads when instance distribution is skewed across zones.</span>
+      </div>
+      <div class="pi">
+        <b>Sự khác biệt về cấu hình &amp; chi phí</b>
+        <span class="lang-vi">• <b>ALB:</b> Mặc định <b>BẬT (Enabled)</b>, miễn phí truyền dữ liệu giữa các AZ (No data transfer charges).<br>• <b>NLB:</b> Mặc định <b>TẮT (Disabled)</b>. Nếu bật, bạn phải trả phí Data Transfer liên AZ (Inter-AZ Data Transfer Cost).</span>
+        <span class="lang-en">• <b>ALB:</b> Always <b>ENABLED by default</b> at no extra data transfer fee.<br>• <b>NLB:</b> <b>DISABLED by default</b>. If enabled, inter-AZ data transfer fees apply.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔒 SSL Certificates &amp; SNI</span>
+        <span class="lang-en">🔒 SSL/TLS &amp; SNI</span>
+      </div>
+      <div class="pi">
+        <b>Server Name Indication (SNI)</b>
+        <span class="lang-vi">Cho phép client gửi tên miền mục tiêu (`Host: api.example.com`) ngay trong gói bắt tay TLS đầu tiên. Giúp Load Balancer có thể tải <b>nhiều chứng chỉ SSL khác nhau</b> trên cùng <b>1 Listener duy nhất</b>.<br><span class="tag tb">ALB &amp; NLB hỗ trợ</span><span class="tag ty">Multi-domain SSL</span></span>
+        <span class="lang-en">Enables clients to indicate hostname during initial TLS handshake. Allows one single listener on ALB/NLB to host <b>multiple distinct SSL certificates</b> for different subdomains.<br><span class="tag tb">Supported on ALB &amp; NLB</span><span class="tag ty">Multi-domain SSL</span></span>
+      </div>
+      <div class="pi">
+        <b>SSL Termination tại tầng ELB</b>
+        <span class="lang-vi">Load Balancer giải mã SSL (Decrypt) bằng chứng chỉ quản lý bởi AWS Certificate Manager (ACM), sau đó chuyển tiếp traffic HTTP thuần vào target trong Private Subnet &rarr; Giảm tải CPU cho các máy chủ EC2 backend.</span>
+        <span class="lang-en">ELB offloads SSL decryption using ACM certificates, passing unencrypted HTTP into private subnets &rarr; Frees backend EC2 CPU cycles.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🍪 Sticky Sessions &amp; Draining</span>
+        <span class="lang-en">🍪 Sticky Sessions &amp; Draining</span>
+      </div>
+      <div class="pi">
+        <b>Sticky Sessions (Session Affinity)</b>
+        <span class="lang-vi">Bắt buộc các request từ 1 người dùng cụ thể luôn luôn được chuyển hướng đến <b>cùng một EC2 instance backend</b> duy nhất. Hỗ trợ thông qua <b>Duration-based Cookie</b> (do ALB sinh) hoặc <b>Application Cookie</b> (do app sinh). Nhược điểm: Có thể gây mất cân bằng tải giữa các máy chủ.</span>
+        <span class="lang-en">Pins user requests to the exact same backend instance via cookies. Supported via ALB duration-based or application-based cookies. Tradeoff: Potential workload imbalance.</span>
+      </div>
+      <div class="pi">
+        <b>Connection Draining (Deregistration Delay)</b>
+        <span class="lang-vi">Khi 1 instance chuyển sang trạng thái Unhealthy hoặc đang bị ASG Terminate, ELB sẽ <b>ngừng gửi request mới</b>, nhưng cho phép các kết nối đang dang dở (in-flight requests) hoàn thành trong khoảng thời gian cấu hình (mặc định <b>300 giây</b>, phạm vi từ 1 đến 3600 giây).</span>
+        <span class="lang-en">Allows existing in-flight requests to gracefully complete when an instance is deregistering or unhealthy (default <b>300s</b>, configurable from 1 to 3600s).</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. AUTO SCALING GROUPS (ASG) DEEP DIVE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📈</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Chuyên sâu Auto Scaling Groups (ASG)</span>
+        <span class="lang-en">4. Auto Scaling Groups (ASG) Deep Dive</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Kiến trúc co giãn tự động theo tải, cơ chế kiểm tra sức khỏe và chiến lược mở rộng</span>
+        <span class="lang-en">Elastic workload scaling, health checks, and lifecycle management</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Launch Templates vs Launch Configurations</div>
+      <div class="id lang-vi">
+        • <b>Launch Template (Khuyên dùng):</b> Bản thiết kế chuẩn định nghĩa: AMI ID, Instance Type, Key Pair, Security Groups, IAM Role, User Data script. Hỗ trợ <b>quản lý phiên bản (Versioning)</b>, cho phép cấu hình kết hợp On-Demand và Spot Instances, kế thừa tham số.<br>
+        • <b>Launch Configuration (Thế hệ cũ):</b> Đã bị AWS coi là Legacy. Không có phiên bản, muốn sửa phải tạo bản mới từ đầu. Đề thi luôn yêu cầu chuyển sang <b>Launch Template</b>.
+      </div>
+      <div class="id lang-en">
+        • <b>Launch Template (Recommended):</b> The canonical specification defining AMI ID, Instance Type, Key Pair, Security Groups, IAM Roles, User Data. Supports <b>versioning</b> and mixing On-Demand with Spot instances.<br>
+        • <b>Launch Configuration (Legacy):</b> Deprecated legacy mechanism without versioning support.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Thông số Capacity (Min, Desired, Max)</div>
+      <div class="id lang-vi">
+        • <b>Minimum Size:</b> Số lượng máy chủ tối thiểu luôn phải duy trì (kể cả khi không có khách truy cập).<br>
+        • <b>Desired Capacity:</b> Số lượng máy chủ hiện tại đang vận hành. ASG luôn cố gắng duy trì số máy đúng bằng con số này.<br>
+        • <b>Maximum Size:</b> Trần số lượng máy chủ tối đa được phép sinh ra khi có đột biến tải, giúp chặn nguy cơ bùng nổ chi phí ngoài kiểm soát.
+      </div>
+      <div class="id lang-en">
+        • <b>Minimum Size:</b> Baseline instances that must always be running.<br>
+        • <b>Desired Capacity:</b> Current target count of instances. ASG self-heals towards this value.<br>
+        • <b>Maximum Size:</b> Ceiling cap on instance scaling to prevent runaway budget spikes.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Cơ chế kiểm tra sức khỏe (ASG Health Checks)</div>
+      <div class="id lang-vi">
+        • <b>EC2 Status Checks (Mặc định):</b> ASG chỉ kiểm tra máy chủ có chạy không qua tình trạng phần cứng máy chủ AWS (System status check và Instance status check).<br>
+        • <b>ELB Health Checks:</b> Nếu máy chủ vẫn chạy nhưng Web App bên trong bị crash (trả về lỗi HTTP 500 hoặc rớt ping `/healthz`), Target Group sẽ đánh dấu Unhealthy. Khi cấu hình <b>Health Check Type = ELB</b>, ASG sẽ tự động hủy diệt (Terminate) máy chủ lỗi và khởi tạo máy chủ mới thay thế!
+      </div>
+      <div class="id lang-en">
+        • <b>EC2 Status Checks (Default):</b> Monitors raw hardware hypervisor availability.<br>
+        • <b>ELB Health Checks:</b> If the web service crashes (e.g. returning 500s or failing `/healthz`), the Target Group flags it unhealthy. Under <b>ELB Health Check</b> mode, ASG automatically terminates and replaces the degraded instance!
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Quy tắc chọn máy chủ khi Terminate (Default Policy)</div>
+      <div class="id lang-vi">
+        Thứ tự ưu tiên khi ASG cần giảm bớt máy chủ (Scale In):
+        <ol>
+          <li>Chọn <b>AZ có nhiều instance nhất</b>.</li>
+          <li>Trong AZ đó, chọn máy chủ dùng <b>Launch Template phiên bản cũ nhất</b>.</li>
+          <li>Chọn máy chủ có thời gian chạy gần mốc tính phí 1 giờ kế tiếp nhất.</li>
+          <li>Nếu vẫn trùng, chọn ngẫu nhiên.</li>
+        </ol>
+      </div>
+      <div class="id lang-en">
+        Default termination precedence during Scale In:
+        <ol>
+          <li>Identifies the <b>AZ with the most instances</b>.</li>
+          <li>Selects instances with the <b>oldest Launch Template version</b>.</li>
+          <li>Selects instance closest to the next billing hour.</li>
+          <li>Random tie-breaker.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. CHÍNH SÁCH CO GIÃN ASG (SCALING POLICIES) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Phân loại 4 chính sách co giãn Auto Scaling (Scaling Policies)</span>
+        <span class="lang-en">5. ASG Dynamic Scaling Policies</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Chiến lược kích hoạt tăng/giảm quy mô tự động theo số liệu CloudWatch Metrics</span>
+        <span class="lang-en">Strategies to trigger automated scale-out and scale-in events based on CloudWatch metrics</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Target Tracking Scaling (Dễ &amp; Khuyên dùng nhất)</div>
+      <div class="id lang-vi">Bạn chỉ định một chỉ số mục tiêu cụ thể, ASG tự động tính toán tăng hoặc giảm số máy để duy trì chỉ số đó ổn định. Ví dụ: <i>"Giữ mức CPU trung bình toàn cụm ở mức 50%"</i> hoặc <i>"Giữ số lượng request mỗi target ở mức 1000"</i>.<br><span class="tag tb">Khuyên dùng</span><span class="tag tb">Đơn giản nhất</span><span class="tag ty">Avg CPU / Request Count</span></div>
+      <div class="id lang-en">Specify a target metric value, and ASG continuously adjusts instance counts up and down to match that target. Examples: <i>"Maintain average fleet CPU at 50%"</i> or <i>"ALBRequestCountPerTarget at 1000"</i>.<br><span class="tag tb">Recommended</span><span class="tag tb">Hands-off</span><span class="tag ty">Avg CPU / Target Requests</span></div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Step Scaling (Co giãn theo từng bậc tải)</div>
+      <div class="id lang-vi">Co giãn linh hoạt dựa trên các mức ngưỡng cảnh báo của CloudWatch Alarm. Ví dụ:
+        <ul>
+          <li>Nếu CPU từ 70% đến 85%: Thêm 2 máy chủ (+2).</li>
+          <li>Nếu CPU vượt quá 85%: Bổ sung khẩn cấp 5 máy chủ (+5).</li>
+          <li>Nếu CPU tụt xuống dưới 30%: Giảm 1 máy chủ (-1).</li>
+        </ul>
+      </div>
+      <div class="id lang-en">Stepwise adjustments responding directly to CloudWatch alarm thresholds. Example:
+        <ul>
+          <li>If CPU 70%–85%: Add 2 instances (+2).</li>
+          <li>If CPU &gt; 85%: Add 5 instances (+5).</li>
+          <li>If CPU &lt; 30%: Remove 1 instance (-1).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Scheduled Scaling (Co giãn theo lịch trình đặt trước)</div>
+      <div class="id lang-vi">Dành cho các sự kiện có chu kỳ hoặc thời gian biết trước. Ví dụ: <i>"Tự động tăng Desired Capacity lên 20 máy chủ vào lúc 8:00 sáng Thứ Sáu (Black Friday) và giảm về 4 máy chủ vào 22:00 tối Chủ Nhật"</i>.<br><span class="tag to">Biết trước lịch</span><span class="tag to">Flash Sale</span><span class="tag ty">Cron Schedules</span></div>
+      <div class="id lang-en">For predictable cyclical traffic spikes. Example: <i>"Scale out to 20 instances every Friday morning at 08:00 AM (e.g. Flash Sales) and scale back down Sunday night at 22:00 PM"</i>.<br><span class="tag to">Predictable Events</span><span class="tag to">Cron Based</span><span class="tag ty">Scheduled Flash Sale</span></div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Predictive Scaling (Co giãn dự đoán bằng Machine Learning)</div>
+      <div class="id lang-vi">AWS tự động phân tích dữ liệu lịch sử tải của hệ thống trong quá khứ thông qua mô hình Machine Learning, từ đó khởi tạo máy chủ trước 1 khoảng thời gian chuẩn bị để đón đầu cơn sóng truy cập thực tế.<br><span class="tag tr">Machine Learning</span><span class="tag tr">Đón đầu tải</span><span class="tag ty">Chu kỳ tuần hoàn</span></div>
+      <div class="id lang-en">Uses built-in AWS Machine Learning models to analyze past seasonal usage patterns, automatically scheduling capacity launches ahead of forecasted traffic spikes.<br><span class="tag tr">Machine Learning</span><span class="tag tr">Proactive Scaling</span><span class="tag ty">Cyclical Traffic</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Các bẫy &amp; Kịch bản đề thi thường gặp (SAA-C03 Exam Traps)</span>
+        <span class="lang-en">6. Common Exam Traps &amp; Scenarios (SAA-C03)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tổng hợp các câu hỏi tình huống kinh điển về cân bằng tải và co giãn trong đề thi</span>
+        <span class="lang-en">Canonical situational questions and trick patterns tested in SAA-C03</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Khách hàng yêu cầu Cố định IP để Whitelist Tường lửa</div>
+      <div class="id lang-vi">
+        • <b>Vấn đề:</b> Khách hàng doanh nghiệp yêu cầu một hoặc vài địa chỉ IP tĩnh để cấu hình mở tường lửa (Firewall Whitelisting).<br>
+        • <b>Giải pháp:</b> <b>Bắt buộc dùng Network Load Balancer (NLB)</b> vì NLB gán 1 Static Public IP (hoặc gán Elastic IP) trên mỗi AZ. ALB KHÔNG có IP tĩnh (IP của ALB thay đổi ngẫu nhiên theo thời gian, chỉ có DNS Name).
+      </div>
+      <div class="id lang-en">
+        • <b>Scenario:</b> Corporate clients require fixed static IP addresses to configure on-premises firewall whitelisting.<br>
+        • <b>Solution:</b> <b>Always choose Network Load Balancer (NLB)</b> because NLB assigns fixed static Elastic IPs per AZ. ALB does not support static IPs (ALB resolves to rotating dynamic IPs via DNS).
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Lấy địa chỉ IP thật của người dùng (Client IP Preservation)</div>
+      <div class="id lang-vi">
+        • Khi dùng ALB, gói tin gửi tới EC2 có nguồn là IP riêng của chính ALB. Để lấy được IP công khai của Client, ứng dụng phải đọc header HTTP <code>X-Forwarded-For</code>.<br>
+        • Các header khác kèm theo: <code>X-Forwarded-Proto</code> (giao thức http hay https), <code>X-Forwarded-Port</code> (cổng truy cập ban đầu).<br>
+        • Với NLB: Client IP được bảo toàn tự nhiên ở tầng TCP nếu target là instance ID.
+      </div>
+      <div class="id lang-en">
+        • With ALB, backend instances see the ALB's private IP as the request source. To retrieve true user IP, inspect the <code>X-Forwarded-For</code> header.<br>
+        • Supplementary headers: <code>X-Forwarded-Proto</code> (client protocol), <code>X-Forwarded-Port</code>.<br>
+        • With NLB: Client IP is natively preserved at the TCP packet level when targeting instance IDs.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Co giãn ASG theo độ dài hàng đợi SQS (Backlog per Instance)</div>
+      <div class="id lang-vi">
+        • Đề bài: <i>"Ứng dụng đọc message từ hàng đợi SQS, cần co giãn số máy chủ theo tải tin nhắn tồn đọng"</i>.<br>
+        • <b>Bẫy thường gặp:</b> Chỉ theo dõi số tin nhắn <code>ApproximateNumberOfMessages</code> là chưa đủ vì khi máy chủ tăng lên, hàng đợi vẫn có thể chưa giảm ngay.<br>
+        • <b>Đáp án chuẩn:</b> Tạo <b>Custom CloudWatch Metric: Số tin nhắn chia cho số instance hiện tại</b> (Backlog per Instance) và dùng Target Tracking.
+      </div>
+      <div class="id lang-en">
+        • Scenario: <i>"Application workers consume messages from SQS queue; need responsive auto-scaling"</i>.<br>
+        • <b>Trap:</b> Scaling strictly on raw <code>ApproximateNumberOfMessages</code> causes severe over-provisioning.<br>
+        • <b>Canonical Answer:</b> Publish a <b>Custom CloudWatch Metric: Queue Backlog per Instance</b> (Queue Size / Active Worker Count) and scale via Target Tracking.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>ASG Lifecycle Hooks &amp; Thu thập Log trước khi xóa máy</div>
+      <div class="id lang-vi">
+        • Khi ASG quyết định Terminate 1 máy chủ, máy sẽ bị xóa ngay lập tức và toàn bộ log trong RAM/Instance Store sẽ biến mất.<br>
+        • Để ngăn việc này: Thiết lập <b>ASG Lifecycle Hook</b> tại sự kiện <code>autoscaling:EC2_INSTANCE_TERMINATING</code>. Trạng thái máy sẽ dừng ở <code>Terminating:Wait</code> cho phép bạn chạy script nén log và đẩy lên S3 trước khi instance bị tiêu hủy hoàn toàn.
+      </div>
+      <div class="id lang-en">
+        • By default, scale-in terminates instances immediately, losing ephemeral local logs.<br>
+        • Solution: Configure an <b>ASG Lifecycle Hook</b> for <code>EC2_INSTANCE_TERMINATING</code>. Transitions state to <code>Terminating:Wait</code>, enabling scripts to flush logs to S3 before final destruction.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. NGUYÊN TẮC VÀNG SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⭐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Nguyên tắc vàng khi làm bài thi (SAA-C03 Golden Rules)</span>
+        <span class="lang-en">7. SAA-C03 Exam Golden Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bộ quy tắc bất biến giúp loại trừ ngay các đáp án sai trong đề thi chứng chỉ</span>
+        <span class="lang-en">Essential axioms to rapidly eliminate incorrect choices in the exam</span>
+      </div>
+    </div>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">ALB luôn có DNS Name, KHÔNG BAO GIỜ gán IP tĩnh</b>
+        <b class="lang-en">ALB operates exclusively on DNS Names, NEVER on Static IPs</b>
+        <span class="lang-vi">Bất kỳ đáp án nào đề cập đến việc gán Elastic IP cho Application Load Balancer hoặc cung cấp IP tĩnh cố định từ ALB đều là đáp án SAI. Khi cần IP tĩnh, đáp án bắt buộc phải là <b>Network Load Balancer (NLB)</b> hoặc kết hợp <b>AWS Global Accelerator</b>.</span>
+        <span class="lang-en">Any answer suggesting assigning Elastic IPs directly to an ALB is always WRONG. When static entrypoint IPs are required, choose <b>Network Load Balancer (NLB)</b> or front with <b>AWS Global Accelerator</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Bảo mật EC2 backend: Chỉ mở port từ Security Group của chính Load Balancer</b>
+        <b class="lang-en">Backend Security: Only allow traffic originating from the Load Balancer's Security Group</b>
+        <span class="lang-vi">Không bao giờ mở cổng 80/443 của máy chủ EC2 backend ra <code>0.0.0.0/0</code>. Nguyên tắc vàng là cấu hình Inbound Rule của EC2 Security Group: <b>Source = ID của Security Group gắn trên Load Balancer</b>.</span>
+        <span class="lang-en">Never expose EC2 backend ports to <code>0.0.0.0/0</code>. The canonical security architecture sets Inbound Rule: <b>Source = Security Group ID of the Load Balancer</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Tự động phát hiện lỗi tầng ứng dụng: Luôn bật ELB Health Check trên ASG</b>
+        <b class="lang-en">Detect application-level crashes: Always enable ELB Health Checks on ASG</b>
+        <span class="lang-vi">Mặc định ASG chỉ kiểm tra phần cứng EC2. Nếu ứng dụng web bị đơ (crash), ASG mặc định sẽ không biết. Phải đổi sang <b>Health Check Type = ELB</b> để ASG tự động thay thế instance khi nó trả về lỗi HTTP Unhealthy.</span>
+        <span class="lang-en">ASG default checks only verify VM hardware status. To auto-heal web applications that freeze or throw HTTP 500s, switch ASG <b>Health Check Type to ELB</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Cắt giảm tới 90% chi phí ASG: Kết hợp Spot Instances bằng Launch Template</span>
+          <span class="lang-en">Cut ASG costs up to 90%: Combine Spot Instances via Launch Templates</span>
+        </b>
+        <span class="lang-vi">Đối với các tải xử lý hàng loạt, kiến trúc không trạng thái (Stateless), giải pháp tối ưu chi phí đỉnh cao nhất trong đề thi là cấu hình Auto Scaling Group sử dụng <b>Launch Template với chiến lược hỗn hợp: một lượng On-Demand Instances làm cốt lõi và bổ sung Spot Instances cho phần tải co giãn</b>.</span>
+        <span class="lang-en">For batch processing and stateless resilient tiers, the ultimate cost-optimization pattern is using <b>Launch Templates with mixed instance types: a baseline of On-Demand backed by Spot Instances for elastic spikes</b>.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 8. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">8. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">8. Lecture References &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Documentation</span>
+      </div>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
+      </div>
+      <div class="pi">
+        <b>Section 7 · Lecture 26098198 &amp; 26098204</b>
+        <span class="lang-vi">Tổng quan về Scalability, High Availability và Application Load Balancer hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098198" target="_blank" style="color:var(--bl)">▶ Bài giảng Tổng quan ELB</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098204" target="_blank" style="color:var(--bl)">ALB Hands-on</a></span>
+        <span class="lang-en">Scalability, High Availability fundamentals, and Application Load Balancer hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098198" target="_blank" style="color:var(--bl)">▶ ELB Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098204" target="_blank" style="color:var(--bl)">ALB Hands-on</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 7 · Lecture 26098216 &amp; 26098226</b>
+        <span class="lang-vi">Network Load Balancer (NLB), Gateway Load Balancer, Sticky Sessions và Cross-Zone Balancing.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098216" target="_blank" style="color:var(--bl)">▶ NLB Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098226" target="_blank" style="color:var(--bl)">ELB Features</a></span>
+        <span class="lang-en">Network Load Balancer (NLB), Gateway LB, Sticky Sessions, and Cross-Zone Balancing.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098216" target="_blank" style="color:var(--bl)">▶ NLB Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098226" target="_blank" style="color:var(--bl)">ELB Features</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 7 · Lecture 26098236</b>
+        <span class="lang-vi">Auto Scaling Groups (ASG): Launch Templates, Scaling Policies và Lifecycle Hooks.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098236" target="_blank" style="color:var(--bl)">▶ Bài giảng ASG Hands-on &amp; Policies</a></span>
+        <span class="lang-en">Auto Scaling Groups: Launch Templates, Scaling Policies, and Lifecycle management.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098236" target="_blank" style="color:var(--bl)">▶ ASG Hands-on &amp; Policies</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
+      </div>
+      <div class="pi">
+        <b>Elastic Load Balancing User Guide</b>
+        <span class="lang-vi">Hướng dẫn thiết lập Target Groups, SSL/TLS Termination và quản lý Listener Rules.<br><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html" target="_blank" style="color:var(--bl)">📖 Đọc Elastic Load Balancing Guide</a></span>
+        <span class="lang-en">Definitive AWS guide covering Target Groups, SSL offloading, and Listener rules.<br><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html" target="_blank" style="color:var(--bl)">📖 Read Elastic Load Balancing Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>EC2 Auto Scaling User Guide</b>
+        <span class="lang-vi">Tài liệu phân tích chuyên sâu các mô hình Dynamic Scaling, Cooldowns và Termination Policies.<br><a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html" target="_blank" style="color:var(--bl)">📖 Đọc EC2 Auto Scaling Guide</a></span>
+        <span class="lang-en">In-depth guide exploring Dynamic Scaling, Target Tracking, Cooldowns, and Termination policies.<br><a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html" target="_blank" style="color:var(--bl)">📖 Read EC2 Auto Scaling Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Reliability Pillar Whitepaper</b>
+        <span class="lang-vi">Khung kiến trúc Well-Architected về thiết kế hệ thống kháng lỗi và tự phục hồi tự động.<br><a href="https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html" target="_blank" style="color:var(--bl)">📖 Đọc Reliability Pillar Whitepaper</a></span>
+        <span class="lang-en">AWS Well-Architected Framework guidance on designing self-healing, highly available systems.<br><a href="https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html" target="_blank" style="color:var(--bl)">📖 Read Reliability Pillar Whitepaper</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>Elastic Load Balancing Product Portal</b>
+        <span class="lang-vi">Trang chủ sản phẩm ELB, bảng tính giá theo Load Balancer Capacity Units (LCU / NLCU).<br><a href="https://aws.amazon.com/elasticloadbalancing/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Elastic Load Balancing</a></span>
+        <span class="lang-en">Official ELB portal detailing pricing per Load Balancer Capacity Unit (LCU/NLCU).<br><a href="https://aws.amazon.com/elasticloadbalancing/" target="_blank" style="color:var(--bl)">🌐 Elastic Load Balancing Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>Amazon EC2 Auto Scaling Portal</b>
+        <span class="lang-vi">Tổng quan tính năng tối ưu chi phí và điều phối quy mô máy chủ tự động không phát sinh phí dịch vụ.<br><a href="https://aws.amazon.com/ec2/autoscaling/" target="_blank" style="color:var(--bl)">🌐 Trang chủ EC2 Auto Scaling</a></span>
+        <span class="lang-en">Free managed orchestration service to optimize capacity and availability.<br><a href="https://aws.amazon.com/ec2/autoscaling/" target="_blank" style="color:var(--bl)">🌐 EC2 Auto Scaling Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>High Availability Architecture Patterns</b>
+        <span class="lang-vi">Bộ mẫu thiết kế kiến trúc chuẩn Multi-AZ, kết hợp ELB, ASG và cơ sở dữ liệu dự phòng.<br><a href="https://aws.amazon.com/architecture/" target="_blank" style="color:var(--bl)">📊 Khám phá AWS Architecture Center</a></span>
+        <span class="lang-en">Reference architectures for Multi-AZ fault tolerance, combining ELB, ASG, and replicated data tiers.<br><a href="https://aws.amazon.com/architecture/" target="_blank" style="color:var(--bl)">📊 AWS Architecture Center</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="footer">
+  <p class="lang-vi">Khóa học AWS Certified Solutions Architect Associate (SAA-C03) · Biên soạn theo tài liệu chuẩn Udemy Stephane Maarek &amp; AWS Whitepapers · Tự do phân phối nội bộ</p>
+  <p class="lang-en">AWS Certified Solutions Architect Associate (SAA-C03) Learning Hub · Authored based on Udemy Stephane Maarek &amp; AWS Whitepapers · Free for internal study</p>
+</div>
+</body>
+</html>

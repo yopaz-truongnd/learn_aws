@@ -66,6 +66,12 @@ learn_aws/
 | `topics/aws_global_infra.html` | **Section 3:** AWS Global Infrastructure (Regions, AZs, Data Centers, Edge PoP, Sơ đồ Mermaid định tuyến, Ma trận chi phí Data Transfer, AZ ID vs AZ Name, Local Zones, Wavelength, Outposts, Direct Connect, Whitepapers). | Hoàn thành |
 | `topics/aws_iam.html` | **Section 4:** AWS IAM (Users, Groups, Roles, Policies JSON, Sơ đồ Mermaid đánh giá logic, Ma trận Cross-Account AssumeRole vs Resource Policy, Top Condition Keys, Bộ 3 công cụ Audit, SCPs, Golden Rules). **File mẫu chuẩn**. | Hoàn thành |
 | `topics/aws_ec2.html` | **Section 5:** AWS EC2 (Instance Types, Sơ đồ Mermaid vòng đời Lifecycle &amp; Hibernate, Ma trận 7 mô hình Purchasing Options &amp; Spot Fleet, Ma trận SG vs NACL, ENA/EFA, Nitro System, SSM Session Manager). | Hoàn thành |
+| `topics/aws_storage.html` | **Section 6:** AWS Storage — EBS, EFS &amp; Instance Store (Tam giác lưu trữ, Sơ đồ Mermaid Cây quyết định, Ma trận 6 loại đĩa EBS gp3/io2, Snapshots &amp; KMS, Multi-Attach, EFS POSIX Multi-AZ &amp; Tiers, Ephemeral Instance Store). | Hoàn thành |
+| `topics/aws_elb_asg.html` | **Section 7:** AWS High Availability &amp; Scalability — ELB &amp; ASG (Sơ đồ Mermaid luồng VPC, Ma trận ALB vs NLB vs GWLB vs CLB, Cross-Zone, SNI, Sticky Sessions, ASG Launch Templates &amp; 4 cơ chế Co giãn). | Hoàn thành |
+| `topics/aws_databases.html` | **Section 8 &amp; 20:** AWS Databases — RDS, Aurora, DynamoDB &amp; ElastiCache (Cây quyết định Mermaid, RDS Multi-AZ vs Read Replicas, Aurora 6 bản sao trên 3 AZ, DynamoDB NoSQL &amp; DAX, ElastiCache Redis/Memcached). | Hoàn thành |
+| `topics/aws_route53.html` | **Section 9:** Amazon Route 53 (CNAME vs Alias Record, Cây quyết định Mermaid, 8 Chính sách định tuyến, Health Checks &amp; Failover tự động). | Hoàn thành |
+| `topics/aws_s3.html` | **Section 11 &amp; 13:** Amazon S3 &amp; Advanced Storage (7 Tầng lưu trữ, Cây quyết định Mermaid, Vòng đời Lifecycle, SSE Encryption, Object Lock WORM, Nhân bản CRR/SRR &amp; Multipart Upload). | Hoàn thành |
+| `topics/aws_cloudfront.html` | **Section 14:** CloudFront &amp; AWS Global Accelerator (Cây quyết định Mermaid, Ma trận CloudFront vs Global Accelerator, OAC, Signed URLs vs Cookies, CloudFront Functions vs Lambda@Edge). | Hoàn thành |
 | `assets/css/style.css` | **Hệ thống Design System dùng chung:** Tokens màu, Dark/Light mode, typography, cards, grids, flows, matrix tables, mermaid containers. | Hoàn thành |
 | `assets/js/app.js` | **Xử lý ứng dụng client-side:** Nhận diện và chuyển đổi song ngữ VI/EN, lưu `localStorage`, render tự động sơ đồ Mermaid theo theme/lang. | Hoàn thành |
 | `assets/vendor/mermaid.min.js` | **Thư viện Mermaid.js nội bộ (100% offline):** Dùng để render Decision Trees, Sequence Diagrams, Logic Flowcharts mà không kéo CDN. | Hoàn thành |
@@ -83,7 +89,7 @@ learn_aws/
 
 ## Lộ trình các chủ đề tiếp theo (Roadmap for Next Sessions)
 
-Đã hoàn thành: **Section 3** (Global Infrastructure), **Section 4** (IAM), **Section 5** (EC2). Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
+Đã hoàn thành: **Section 3** (Global Infrastructure), **Section 4** (IAM), **Section 5** (EC2), **Section 6** (EC2 Storage), **Section 7** (ELB & ASG), **Section 8 & 20** (Databases), **Section 9** (Route 53), **Section 11 & 13** (S3), **Section 14** (CloudFront & Global Accelerator). Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
 
 1. **Section 6: EC2 Instance Storage (`topics/aws_storage.html`)**
    - *Nguồn:* Udemy Section 6 (EC2 - Instance Storage: EBS & EFS)

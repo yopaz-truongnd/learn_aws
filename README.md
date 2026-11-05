@@ -41,6 +41,12 @@ learn_aws/
 | [`topics/aws_global_infra.html`](topics/aws_global_infra.html) | Regions, AZs, Data Centers, Edge PoP, Sơ đồ Mermaid định tuyến, Ma trận chi phí Data Transfer, AZ ID vs AZ Name, Local Zones, Wavelength, Outposts, Direct Connect, Whitepapers. |
 | [`topics/aws_iam.html`](topics/aws_iam.html) | Users, Groups, Roles, Policies JSON, Sơ đồ Mermaid đánh giá logic, Ma trận Cross-Account AssumeRole vs Resource Policy, Top Condition Keys, Bộ 3 công cụ Audit, SCPs, Golden Rules. |
 | [`topics/aws_ec2.html`](topics/aws_ec2.html) | Instance Types, Sơ đồ Mermaid vòng đời Lifecycle &amp; Hibernate, Ma trận 7 mô hình Purchasing Options &amp; Spot Fleet, Ma trận SG vs NACL, ENA/EFA, Nitro System, SSM Session Manager. |
+| [`topics/aws_storage.html`](topics/aws_storage.html) | Tam giác lưu trữ EC2, Cây quyết định Mermaid, Ma trận phân loại đĩa EBS gp3/io2, Snapshots &amp; KMS, Multi-Attach, EFS Multi-AZ POSIX &amp; Tiers, Ephemeral Instance Store. |
+| [`topics/aws_elb_asg.html`](topics/aws_elb_asg.html) | Kiến trúc sẵn sàng cao Multi-AZ, Sơ đồ Mermaid luồng ELB, Ma trận 4 dòng Load Balancer ALB/NLB/GWLB, Target Groups, SNI, ASG Scaling Policies. |
+| [`topics/aws_databases.html`](topics/aws_databases.html) | Hệ cơ sở dữ liệu AWS, Cây quyết định Mermaid, RDS Multi-AZ vs Read Replicas, Aurora Serverless &amp; Global DB, DynamoDB NoSQL &amp; DAX, ElastiCache. |
+| [`topics/aws_route53.html`](topics/aws_route53.html) | Dịch vụ DNS Route 53, CNAME vs Alias Record, Cây quyết định Mermaid, 8 Chính sách định tuyến, Health Checks &amp; Khôi phục sự cố thảm họa. |
+| [`topics/aws_s3.html`](topics/aws_s3.html) | Amazon S3 lưu trữ đối tượng, Cây quyết định 7 Storage Classes, Lifecycle Rules, SSE Encryption, Object Lock (WORM), Nhân bản CRR/SRR. |
+| [`topics/aws_cloudfront.html`](topics/aws_cloudfront.html) | Mạng biên toàn cầu, Cây quyết định Mermaid, Ma trận CloudFront vs Global Accelerator, OAC, Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge. |
 | [`assets/css/style.css`](assets/css/style.css) | Toàn bộ CSS Design System dùng chung, tokens màu, Dark/Light mode, typography, components, matrix tables. |
 | [`assets/js/app.js`](assets/js/app.js) | Script xử lý chuyển đổi song ngữ VI/EN tức thì, lưu `localStorage`, render tự động Mermaid. |
 | [`assets/vendor/mermaid.min.js`](assets/vendor/mermaid.min.js) | Thư viện Mermaid.js nội bộ 100% offline vẽ sơ đồ tư duy, decision tree, sequence diagrams, state diagrams. |
@@ -138,12 +144,18 @@ python scripts/clean.py -y
   - *Lectures:* `26097996` (Overview), `26098020` (Root User), `26098028` (Users & Credentials), `26098070` (Tools), `26623458` (Policies in Depth)
 - [x] **Section 5:** AWS EC2 ([`topics/aws_ec2.html`](topics/aws_ec2.html))
   - *Lectures:* `26098112` (User Data), `26098122` (Lifecycle & Termination), `26098128` (Instance Types), `26098134` (Security Groups)
-- [ ] **Section 6:** EC2 Storage — EBS, EFS & Instance Store (`topics/aws_storage.html`)
-- [ ] **Section 7:** High Availability & Scalability — ELB & ASG (`topics/aws_elb_asg.html`)
-- [ ] **Section 8 & 20:** AWS Databases — RDS, Aurora, ElastiCache, DynamoDB (`topics/aws_databases.html`)
-- [ ] **Section 9:** Amazon Route 53 (`topics/aws_route53.html`)
-- [ ] **Section 11 & 13:** Amazon S3 & Advanced S3 (`topics/aws_s3.html`)
-- [ ] **Section 14:** CloudFront & Global Accelerator (`topics/aws_cloudfront.html`)
+- [x] **Section 6:** EC2 Storage — EBS, EFS & Instance Store ([`topics/aws_storage.html`](topics/aws_storage.html))
+  - *Lectures:* `26098144` (EBS Overview), `26098150` (Snapshots), `26098158` (Volume Types), `26098170` (Instance Store), `26098182` (EFS)
+- [x] **Section 7:** High Availability & Scalability — ELB & ASG ([`topics/aws_elb_asg.html`](topics/aws_elb_asg.html))
+  - *Lectures:* `26098198` (Overview), `26098204` (ALB), `26098216` (NLB), `26098226` (Features), `26098236` (ASG)
+- [x] **Section 8 & 20:** AWS Databases — RDS, Aurora, ElastiCache, DynamoDB ([`topics/aws_databases.html`](topics/aws_databases.html))
+  - *Lectures:* `26098250` (RDS Overview), `26098260` (Multi-AZ & Replicas), `26098270` (Aurora), `26098282` (ElastiCache), `26098550` (DynamoDB)
+- [x] **Section 9:** Amazon Route 53 ([`topics/aws_route53.html`](topics/aws_route53.html))
+  - *Lectures:* `26098290` (DNS Overview), `26098302` (CNAME vs Alias), `26098314` (Routing Policies), `26098326` (Health Checks)
+- [x] **Section 11 & 13:** Amazon S3 & Advanced S3 ([`topics/aws_s3.html`](topics/aws_s3.html))
+  - *Lectures:* `26098336` (S3 Overview), `26098348` (Bucket Policies), `26098360` (Storage Classes), `26098372` (Lifecycle), `26098384` (Performance)
+- [x] **Section 14:** CloudFront & Global Accelerator ([`topics/aws_cloudfront.html`](topics/aws_cloudfront.html))
+  - *Lectures:* `26098394` (Overview), `26098404` (S3 & OAC), `26098414` (Signed URLs & Edge), `26098424` (Global Accelerator)
 - [ ] **Section 16:** Decoupling Applications — SQS, SNS, Kinesis, MQ (`topics/aws_decoupling.html`)
 - [ ] **Section 17:** Containers on AWS — ECS, Fargate, ECR, EKS (`topics/aws_containers.html`)
 - [ ] **Section 18 & 19:** Serverless — Lambda, API Gateway, Step Functions (`topics/aws_serverless.html`)

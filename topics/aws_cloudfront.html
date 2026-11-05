@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS CloudFront &amp; Global Accelerator — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <a href="../index.html" class="nav-back">
+    <span class="lang-vi">← Mục lục khóa học</span>
+    <span class="lang-en">← Course Hub</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 14 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Global Edge Network &amp; Anycast Acceleration</div>
+  <h1>AWS CloudFront &amp; Global Accelerator</h1>
+  <p class="lang-vi">Tối ưu mạng biên toàn cầu: CloudFront CDN Caching, Origin Access Control (OAC), Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge &amp; Anycast Global Accelerator</p>
+  <p class="lang-en">Global Edge Networking: CloudFront CDN Caching, Origin Access Control (OAC), Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge &amp; Anycast Global Accelerator</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. TỔNG QUAN CLOUDFRONT VS GLOBAL ACCELERATOR -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🚀</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Nền tảng mạng biên toàn cầu (Edge Networking Architecture)</span>
+        <span class="lang-en">1. Global Edge Networking Architecture</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh cơ chế tăng tốc nội dung qua mạng lưới hơn 400 điểm Edge Locations của AWS</span>
+        <span class="lang-en">Content and network acceleration mechanics powered by 400+ AWS Edge Locations</span>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Amazon CloudFront (Mạng phân phối nội dung CDN)</div>
+      <div class="id lang-vi">Mạng lưới phân phối nội dung CDN toàn cầu hoạt động tại <b>Layer 7 (HTTP/HTTPS)</b>. <b>Có lưu đệm (Caching)</b> nội dung tĩnh và động tại các trạm Edge Locations gần người dùng nhất. Giúp giảm độ trễ tải trang web, giải tỏa tải cho máy chủ gốc (Origin) và bảo vệ chống tấn công DDoS.<br><span class="tag tb">CDN Layer 7</span><span class="tag tb">Edge Caching</span><span class="tag ty">Websites, Video Streaming</span></div>
+      <div class="id lang-en">Global Content Delivery Network (CDN) operating at <b>Layer 7 (HTTP/HTTPS)</b>. <b>Caches content</b> at edge points of presence (PoPs) closest to clients. Minimizes download latency, shields origins from traffic surges, and protects against DDoS attacks.<br><span class="tag tb">CDN Layer 7</span><span class="tag tb">Edge Caching</span><span class="tag ty">Websites, Media Streaming</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>AWS Global Accelerator (Tăng tốc mạng Anycast)</div>
+      <div class="id lang-vi">Dịch vụ tối ưu đường truyền mạng hoạt động tại <b>Layer 4 (TCP/UDP)</b>. Cung cấp <b>2 địa chỉ Anycast Static IPv4</b> cố định. <b>KHÔNG LƯU ĐỆM (No Caching)</b>. Dẫn luồng truy cập của client vào mạng cáp quang nội bộ tốc độ cao của AWS ngay tại Edge Location gần nhất, tránh tình trạng tắc nghẽn của Internet công cộng.<br><span class="tag tg">Network Layer 4</span><span class="tag tg">2 Anycast Static IPs</span><span class="tag ty">Gaming, IoT, VoIP, Non-HTTP</span></div>
+      <div class="id lang-en">Networking service operating at <b>Layer 4 (TCP/UDP)</b>. Provides <b>2 static Anycast IPv4 addresses</b>. <b>ZERO CACHING</b>. Routes client traffic onto AWS's private global fiber network backbone at the nearest edge PoP, bypassing public Internet congestion.<br><span class="tag tg">Network Layer 4</span><span class="tag tg">2 Anycast Static IPs</span><span class="tag ty">Gaming, IoT, VoIP, Non-HTTP</span></div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>S3 Transfer Acceleration (So sánh đối chiếu)</div>
+      <div class="id lang-vi">Chuyên biệt duy nhất cho việc <b>tăng tốc độ tải tệp LÊN (Upload) Amazon S3</b> qua khoảng cách địa lý xa. Dữ liệu đi vào Edge Location của CloudFront rồi truyền về bucket qua đường truyền riêng của AWS. Chỉ dùng cho S3, không dùng cho web server hay API.</div>
+      <div class="id lang-en">Designed exclusively to <b>accelerate uploads directly into Amazon S3</b> across long geographic distances. Ingests data at CloudFront edge locations and tunnels it over AWS private backbone to target bucket. Exclusively for S3.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Hệ thống Regional Edge Caches (REC)</div>
+      <div class="id lang-vi">Các cụm bộ nhớ đệm khu vực quy mô lớn đặt giữa Edge Locations và máy chủ Origin. Khi nội dung tại Edge Location bị hết hạn (Cache Miss), nó sẽ hỏi Regional Edge Cache trước. Giúp giảm thiểu tối đa các yêu cầu phải chạy về Origin server ở xa.</div>
+      <div class="id lang-en">Larger caching hubs positioned between edge PoPs and customer origin servers. When an edge location experiences a cache miss, it checks the Regional Edge Cache before reaching all the way back to the origin, conserving backend bandwidth.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGRAM: CÂY QUYẾT ĐỊNH CHỌN DỊCH VỤ TĂNG TỐC -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Cây quyết định lựa chọn giải pháp tăng tốc toàn cầu (Acceleration Decision Tree)</span>
+        <span class="lang-en">Global Acceleration Selection Decision Tree</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy trình phân biệt giữa CloudFront, Global Accelerator và S3 Transfer Acceleration</span>
+        <span class="lang-en">Systematic decision flow between CloudFront, Global Accelerator, and S3 Transfer Acceleration</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-accel-decision">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Start["Yêu cầu tăng tốc kết nối toàn cầu"] --> Q1{"Mục đích chính là gì?"}
+    
+    Q1 -->|"Chỉ tăng tốc Upload file dung lượng lớn lên S3"| S3_TA["Dùng S3 Transfer Acceleration"]
+    
+    Q1 -->|"Tăng tốc ứng dụng người dùng cuối (Web, API, Game)"| Q2{"Giao thức &amp; Nhu cầu Caching?"}
+    
+    Q2 -->|"Giao thức HTTP / HTTPS / WebSocket &amp; CẦN Cache nội dung"| Q3{"Loại tài nguyên gốc (Origin)?"}
+    Q3 -->|"S3 Bucket (Chứa web tĩnh, ảnh, video)"| CF_S3["Dùng CloudFront + Origin Access Control (OAC)"]
+    Q3 -->|"ALB / EC2 / On-Premise Web Server"| CF_Cust["Dùng CloudFront (Custom Origin + Caching)"]
+
+    Q2 -->|"Giao thức TCP / UDP (Gaming, VoIP, IoT) hoặc CẦN IP TĨNH CỐ ĐỊNH"| Q4{"Có cần chuyển đổi dự phòng nhanh xuyên Region không?"}
+    Q4 -->|"Có: 2 Anycast IP tĩnh, Chuyển thảm họa &lt; 1 phút, Không Cache"| GA["Dùng AWS Global Accelerator (Chuyển tiếp tới ALB / NLB / EC2)"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
+    class S3_TA,CF_S3,CF_Cust,GA awsPrimary;
+    class Q1,Q2,Q3,Q4 awsBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Start["Global Performance Acceleration Requirement"] --> Q1{"Primary operational objective?"}
+    
+    Q1 -->|"Accelerate large file uploads directly to S3"| S3_TA["Use S3 Transfer Acceleration"]
+    
+    Q1 -->|"Accelerate end-user application traffic (Web, API, Gaming)"| Q2{"Protocol &amp; Caching requirement?"}
+    
+    Q2 -->|"HTTP / HTTPS / WebSocket &amp; REQUIRES edge caching"| Q3{"Origin server architecture?"}
+    Q3 -->|"Amazon S3 Bucket (Static web, media, downloads)"| CF_S3["Use CloudFront + Origin Access Control (OAC)"]
+    Q3 -->|"ALB / EC2 / On-Premises dynamic HTTP API"| CF_Cust["Use CloudFront (Custom Origin + Dynamic Caching)"]
+
+    Q2 -->|"TCP / UDP protocols (Gaming, VoIP, IoT) or REQUIRES STATIC IPs"| Q4{"Requires instant cross-region automated failover?"}
+    Q4 -->|"Yes: 2 Anycast Static IPs, &lt;1 min DR failover, Zero caching"| GA["Use AWS Global Accelerator (Fronting ALB / NLB / EC2)"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    class S3_TA,CF_S3,CF_Cust,GA awsPrimary;
+    class Q1,Q2,Q3,Q4 awsBox;
+    </div>
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH CLOUDFRONT VS GLOBAL ACCELERATOR -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Ma trận đối chiếu: Amazon CloudFront vs AWS Global Accelerator</span>
+        <span class="lang-en">2. Comparative Matrix: CloudFront vs Global Accelerator</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh tầng mạng, cơ chế IP, lưu đệm, bảo mật và ứng dụng tối ưu</span>
+        <span class="lang-en">OSI layer comparison, IP schemes, caching behaviors, and architectural best fits</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí so sánh</th>
+          <th>Amazon CloudFront</th>
+          <th>AWS Global Accelerator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Tầng mạng (OSI Layer)</b></td>
+          <td><b>Layer 7</b> (Application — HTTP, HTTPS, WebSocket)</td>
+          <td><b>Layer 4</b> (Transport — TCP, UDP)</td>
+        </tr>
+        <tr>
+          <td><b>Cơ chế lưu đệm (Caching)</b></td>
+          <td><b>CÓ LƯU ĐỆM</b> tại các trạm Edge Locations trên toàn cầu.</td>
+          <td><b>KHÔNG LƯU ĐỆM (Zero Caching)</b>. Chỉ là proxy tăng tốc truyền tải mạng.</td>
+        </tr>
+        <tr>
+          <td><b>Địa chỉ IP cung cấp</b></td>
+          <td><b>DNS Hostname</b> phân giải ra IP động thay đổi theo Edge Location gần nhất.</td>
+          <td><b>2 địa chỉ Anycast Static IPv4 cố định</b> duy nhất cho toàn thế giới.</td>
+        </tr>
+        <tr>
+          <td><b>Khả năng Whitelist IP</b></td>
+          <td>Khó whitelist vì dải IP của CloudFront rất rộng và thay đổi liên tục.</td>
+          <td><b>Rất dễ whitelist</b> trên tường lửa doanh nghiệp vì chỉ có 2 IP tĩnh cố định.</td>
+        </tr>
+        <tr>
+          <td><b>Tốc độ chuyển đổi thảm họa (Failover)</b></td>
+          <td>Phụ thuộc vào thời gian sống của DNS (DNS TTL) khi chuyển đổi.</td>
+          <td><b>Cực nhanh (Dưới 1 phút)</b> vì sử dụng cơ chế Anycast IP không phụ thuộc DNS!</td>
+        </tr>
+        <tr>
+          <td><b>Bảo mật tích hợp</b></td>
+          <td>Tích hợp sâu với <b>AWS WAF</b>, DDoS Shield, Field-Level Encryption.</td>
+          <td>Tích hợp AWS Shield DDoS, kiểm tra sức khỏe Endpoint Health Checks.</td>
+        </tr>
+        <tr>
+          <td><b>Kịch bản sử dụng tối ưu</b></td>
+          <td>Websites tĩnh/động, phân phối video theo yêu cầu (VOD/Live), API REST/GraphQL.</td>
+          <td>Máy chủ game online (UDP), gọi thoại VoIP, hội nghị truyền hình, IoT, ứng dụng tài chính cần IP tĩnh.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. CLOUDFRONT DEEP DIVE: ORIGINS, SECURITY & CACHING -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚙️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Chuyên sâu Amazon CloudFront: Origins, Caching &amp; Bảo mật</span>
+        <span class="lang-en">3. Amazon CloudFront Deep Dive: Origins, Caching &amp; Security</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Origin Access Control (OAC), Signed URLs vs Signed Cookies và kiểm soát phân phối nội dung</span>
+        <span class="lang-en">Origin Access Control (OAC), Signed URLs vs Cookies, and edge distribution security</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🛡️ Origin Access Control (OAC)</span>
+        <span class="lang-en">🛡️ Origin Access Control (OAC)</span>
+      </div>
+      <div class="pi">
+        <b>Chặn truy cập trực tiếp vào S3 Bucket</b>
+        <span class="lang-vi">Nguyên tắc bảo mật vàng: <b>Không bao giờ mở công khai S3 Bucket</b> khi dùng CloudFront. Kích hoạt tính năng <b>Origin Access Control (OAC)</b> và cấu hình S3 Bucket Policy chỉ cho phép duy nhất CloudFront Service Principal (<code>cloudfront.amazonaws.com</code>) đọc dữ liệu.<br><i>(Lưu ý: OAC là chuẩn mới thay thế hoàn toàn cho OAI - Origin Access Identity cũ)</i>.</span>
+        <span class="lang-en">Golden security rule: <b>Never expose S3 buckets publicly</b> when using CloudFront. Enable <b>Origin Access Control (OAC)</b> and configure bucket policies to allow access exclusively to the CloudFront service principal (<code>cloudfront.amazonaws.com</code>).</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔑 Signed URLs vs Signed Cookies</span>
+        <span class="lang-en">🔑 Signed URLs vs Signed Cookies</span>
+      </div>
+      <div class="pi">
+        <b>Phân biệt khi cấp quyền nội dung có phí (Premium Content)</b>
+        <span class="lang-vi">
+          • <b>Signed URL:</b> Dùng để cấp quyền truy cập vào <b>MỘT tệp tin riêng lẻ duy nhất</b> (ví dụ: link tải 1 khóa học hoặc 1 bài hát sau khi thanh toán).<br>
+          • <b>Signed Cookie:</b> Dùng để cấp quyền truy cập vào <b>NHIỀU tệp tin hoặc toàn bộ thư mục</b> (ví dụ: người dùng thuê bao tháng xem toàn bộ danh mục phim trên trang web streaming mà không cần đổi URL từng video).
+        </span>
+        <span class="lang-en">
+          • <b>Signed URL:</b> Grants access to <b>ONE individual file</b> (e.g. download link for an purchased e-book).<br>
+          • <b>Signed Cookie:</b> Grants access to <b>MULTIPLE files or directory trees</b> (e.g. authenticated subscribers streaming a catalog of premium videos without changing URL paths).
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ Caching Mechanics &amp; Invalidation</span>
+        <span class="lang-en">⚡ Caching &amp; Invalidation</span>
+      </div>
+      <div class="pi">
+        <b>Xóa đệm (Invalidation) vs Versioning</b>
+        <span class="lang-vi">
+          • Khi bạn cập nhật file trên máy chủ gốc nhưng CloudFront vẫn trả về file cũ trong bộ nhớ đệm, bạn cần chạy lệnh <b>CloudFront Invalidation</b> (ví dụ: xóa <code>/*</code> hoặc <code>/images/*</code>).<br>
+          • <i>Nhược điểm:</i> Chạy Invalidation nhiều sẽ bị tính phí.<br>
+          • <i>Giải pháp tối ưu nhất:</i> Đặt tên tệp theo số phiên bản (ví dụ: <code>style_v2.css</code>).
+        </span>
+        <span class="lang-en">
+          • When updating origin files that remain cached at the edge, execute a <b>CloudFront Invalidation</b> (e.g. <code>/*</code> or <code>/assets/*</code>).<br>
+          • <i>Trade-off:</i> Invalidation requests incur costs beyond the free monthly tier.<br>
+          • <i>Optimal Pattern:</i> Version filenames directly (e.g. <code>style_v2.css</code>).
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. EDGE COMPUTING: CLOUDFRONT FUNCTIONS VS LAMBDA@EDGE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Tính toán tại biên mạng: CloudFront Functions vs Lambda@Edge</span>
+        <span class="lang-en">4. Serverless Edge Computing: CloudFront Functions vs Lambda@Edge</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Thực thi code serverless sát người dùng nhất để xử lý yêu cầu và phản hồi HTTP</span>
+        <span class="lang-en">Executing serverless code closest to viewers for HTTP request/response manipulation</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí so sánh</th>
+          <th>CloudFront Functions</th>
+          <th>Lambda@Edge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Vị trí thực thi</b></td>
+          <td><b>Hơn 400+ Edge Locations</b> (Điểm biên sát người dùng nhất)</td>
+          <td><b>Regional Edge Caches</b> (Trung tâm vùng quy mô lớn hơn)</td>
+        </tr>
+        <tr>
+          <td><b>Ngôn ngữ hỗ trợ</b></td>
+          <td>Chỉ hỗ trợ <b>JavaScript (ECMAScript 5.1)</b></td>
+          <td>Hỗ trợ <b>Node.js và Python</b></td>
+        </tr>
+        <tr>
+          <td><b>Thời gian thực thi tối đa</b></td>
+          <td><b>&lt; 1 mili-giây (Sub-millisecond)</b></td>
+          <td>Tối đa <b>5 giây</b> (Viewer) hoặc <b>30 giây</b> (Origin)</td>
+        </tr>
+        <tr>
+          <td><b>Dung lượng bộ nhớ RAM</b></td>
+          <td>Cố định <b>2 MB</b></td>
+          <td>Từ <b>128 MB đến 10,240 MB</b></td>
+        </tr>
+        <tr>
+          <td><b>Truy cập Internet &amp; File System</b></td>
+          <td><span class="tag tr">KHÔNG (No network access)</span></td>
+          <td><span class="tag tg">CÓ (Full network &amp; disk access)</span></td>
+        </tr>
+        <tr>
+          <td><b>Các vị trí gắn Hook (Triggers)</b></td>
+          <td>Chỉ 2 vị trí:<br>• Viewer Request<br>• Viewer Response</td>
+          <td>Đầy đủ 4 vị trí:<br>• Viewer Request / Response<br>• Origin Request / Response</td>
+        </tr>
+        <tr>
+          <td><b>Kịch bản sử dụng tối ưu</b></td>
+          <td>Viết lại URL (URL Rewrites / Redirection), chuẩn hóa header, xác thực JWT/Token siêu nhẹ, chuẩn hóa Cache Key.</td>
+          <td>Thay đổi kích thước ảnh linh hoạt (Image Resizing on-the-fly), gọi API bên ngoài, xác thực OAuth2 phức tạp, tương tác Database.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 5. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Các bẫy &amp; Kịch bản đề thi thường gặp (SAA-C03 Exam Traps)</span>
+        <span class="lang-en">5. Common Exam Traps &amp; Scenarios (SAA-C03)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Những tình huống phân biệt kinh điển giữa các giải pháp mạng biên toàn cầu</span>
+        <span class="lang-en">Canonical situational questions testing edge networking solutions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Khách hàng yêu cầu Cố định 2 IP tĩnh cho ứng dụng toàn cầu</div>
+      <div class="id lang-vi">
+        • <b>Đề bài:</b> <i>"Ứng dụng phân tán trên 2 Region, yêu cầu người dùng toàn cầu kết nối vào hệ thống thông qua đúng 2 địa chỉ IP tĩnh để cấu hình mở tường lửa (Firewall Whitelisting). Đồng thời hệ thống phải tự động chuyển thảm họa dưới 1 phút nếu 1 Region sập"</i>.<br>
+        • <b>Bẫy:</b> Chọn CloudFront là SAI (CloudFront không có 2 IP tĩnh).<br>
+        • <b>Đáp án chuẩn:</b> <b>AWS Global Accelerator</b> (Cung cấp 2 Anycast Static IPs cố định và chuyển thảm họa tự động &lt; 1 phút).
+      </div>
+      <div class="id lang-en">
+        • <b>Scenario:</b> Multi-region app requires global clients to connect via exactly 2 static IP addresses for corporate firewall whitelisting, with automated failover under 1 minute.<br>
+        • <b>Trap:</b> CloudFront is INVALID (CloudFront does not provide static IPs).<br>
+        • <b>Canonical Answer:</b> <b>AWS Global Accelerator</b> (Provides 2 Anycast static IPs and automated sub-minute failover).
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>CloudFront Signed URL vs S3 Presigned URL</div>
+      <div class="id lang-vi">
+        • Khi nào dùng cái nào?<br>
+        • <b>S3 Presigned URL:</b> Client tải trực tiếp từ S3 Bucket (bỏ qua CDN). Thường dùng khi tải lên (Upload) trực tiếp hoặc khi dữ liệu phân tán không cần cache.<br>
+        • <b>CloudFront Signed URL:</b> Client tải thông qua mạng lưới Edge Caching của CloudFront. <b>Bắt buộc dùng khi nội dung có lưu đệm tại biên</b> hoặc khi muốn tận dụng tính năng giới hạn IP/thời gian của CloudFront.
+      </div>
+      <div class="id lang-en">
+        • Choosing between Signed URLs:<br>
+        • <b>S3 Presigned URL:</b> Client fetches directly from S3 (bypassing CDN). Common for direct uploads or private non-cached data.<br>
+        • <b>CloudFront Signed URL:</b> Client fetches via CloudFront edge caches. <b>Mandatory when content is cached at the edge</b> or requiring CloudFront IP restrictions.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Bảo vệ máy chủ Origin ALB phía sau CloudFront</div>
+      <div class="id lang-vi">
+        • <b>Vấn đề:</b> Làm sao ngăn người dùng vượt mặt (bypass) CloudFront để truy cập thẳng vào Application Load Balancer?<br>
+        • <b>Giải pháp chuẩn:</b>
+        <ol>
+          <li>Cấu hình CloudFront gửi thêm một <b>Custom HTTP Header bí mật</b> (ví dụ: <code>X-Custom-Secret: abc123xyz</code>) trong mỗi request gửi về ALB.</li>
+          <li>Cấu hình <b>Listener Rule trên ALB</b>: Chỉ chuyển tiếp request nếu có chứa header bí mật này, còn lại thì trả về HTTP 403 Forbidden!</li>
+        </ol>
+      </div>
+      <div class="id lang-en">
+        • <b>Problem:</b> How to prevent users from bypassing CloudFront and hitting the backend Application Load Balancer directly?<br>
+        • <b>Canonical Solution:</b>
+        <ol>
+          <li>Configure CloudFront to inject a <b>secret Custom HTTP Header</b> (e.g. <code>X-Custom-Secret</code>) on requests to the origin.</li>
+          <li>Configure <b>ALB Listener Rules</b> to forward traffic strictly when the secret header matches; return 403 Forbidden otherwise!</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Geo-Restriction (Chặn theo vị trí địa lý)</div>
+      <div class="id lang-vi">
+        • Cho phép thiết lập <b>Whitelist (Chỉ cho phép một số quốc gia)</b> hoặc <b>Blacklist (Chặn một số quốc gia)</b>.<br>
+        • Phù hợp với các yêu cầu kiểm soát bản quyền bản địa hóa (ví dụ: chỉ phát sóng trực tiếp trận bóng đá cho người xem ở Việt Nam).<br>
+        • Nếu cần kiểm soát chi tiết hơn (chặn theo thành phố, user-agent, chống giả mạo IP), kết hợp thêm <b>AWS WAF</b>.
+      </div>
+      <div class="id lang-en">
+        • Configure <b>Allowlist (permit selected countries)</b> or <b>Blocklist (deny selected countries)</b> at the edge.<br>
+        • Common for broadcasting licensing compliance (e.g. streaming sports strictly within authorized territories).<br>
+        • For advanced filtering (city-level, anti-spoofing, custom rules), integrate with <b>AWS WAF</b>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. NGUYÊN TẮC VÀNG SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⭐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Nguyên tắc vàng khi làm bài thi (SAA-C03 Edge Golden Rules)</span>
+        <span class="lang-en">6. SAA-C03 Edge Networking Golden Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy tắc loại trừ đáp án siêu tốc cho phần mạng biên và tăng tốc toàn cầu</span>
+        <span class="lang-en">Essential axioms to rapidly eliminate incorrect choices in edge questions</span>
+      </div>
+    </div>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Cần Caching nội dung web tại biên &rarr; LUÔN CHỌN AMAZON CLOUDFRONT</b>
+        <b class="lang-en">Edge Caching required &rarr; ALWAYS CHOOSE AMAZON CLOUDFRONT</b>
+        <span class="lang-vi">Khi đề bài nhắc đến việc lưu đệm hình ảnh, video, mã nguồn web tại các điểm biên toàn cầu để giảm tải máy chủ gốc, CloudFront luôn là lựa chọn chính xác. Global Accelerator hoàn toàn KHÔNG CÓ chức năng Caching.</span>
+        <span class="lang-en">When requirements specify caching images, video, or web assets at global edge locations to offload origin servers, CloudFront is the definitive choice. Global Accelerator NEVER caches.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Giao thức TCP/UDP không phải HTTP hoặc cần 2 IP tĩnh &rarr; CHỌN GLOBAL ACCELERATOR</b>
+        <b class="lang-en">Non-HTTP TCP/UDP or 2 Static Anycast IPs &rarr; CHOOSE GLOBAL ACCELERATOR</b>
+        <span class="lang-vi">Bất kỳ khi nào đề bài nhắc đến máy chủ game (UDP), dịch vụ gọi thoại VoIP, hoặc khách hàng đòi hỏi đúng 2 địa chỉ IP tĩnh để mở cổng tường lửa, Global Accelerator luôn là câu trả lời duy nhất đúng.</span>
+        <span class="lang-en">Whenever a scenario involves UDP gaming, VoIP audio, or corporate clients demanding 2 fixed static IPs for firewall whitelisting, Global Accelerator is the only valid answer.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Bảo vệ S3 Bucket phía sau CloudFront: Luôn dùng Origin Access Control (OAC)</b>
+        <b class="lang-en">Protecting S3 behind CloudFront: Always use Origin Access Control (OAC)</b>
+        <span class="lang-vi">Tuyệt đối không để S3 Bucket ở trạng thái Public khi đã dùng CloudFront. Bật tính năng OAC và cấu hình Bucket Policy chỉ cho phép dịch vụ CloudFront truy cập. (OAC là phiên bản thay thế hiện đại của OAI).</span>
+        <span class="lang-en">Never leave S3 buckets publicly readable when fronted by CloudFront. Activate OAC and restrict bucket policies to CloudFront service principals (OAC is the modern successor to legacy OAI).</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Chuyển thảm họa Multi-Region không phụ thuộc DNS TTL: Dùng Global Accelerator</span>
+          <span class="lang-en">Multi-Region automated failover without DNS propagation delays: Use Global Accelerator</span>
+        </b>
+        <span class="lang-vi">Nếu dùng Route 53 DNS Failover, khách hàng vẫn có thể bị trỏ vào Region đã sập do các nhà mạng ISP lưu cache DNS (DNS TTL). Với <b>AWS Global Accelerator</b>, địa chỉ Anycast IP giữ nguyên không đổi, việc chuyển hướng sang Region thứ 2 diễn ra <b>dưới 1 phút</b> hoàn toàn ở tầng mạng nội bộ AWS!</span>
+        <span class="lang-en">Route 53 DNS failover is subject to client/ISP DNS caching TTL delays. With <b>AWS Global Accelerator</b>, the Anycast IP never changes, executing automated traffic failover to healthy secondary regions in <b>under 1 minute</b> entirely within the AWS network fabric!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 7. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">7. Lecture References &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Documentation</span>
+      </div>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
+      </div>
+      <div class="pi">
+        <b>Section 14 · Lecture 26098394 &amp; 26098404</b>
+        <span class="lang-vi">Tổng quan CloudFront, tạo Distribution với S3/ALB và cấu hình OAC.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098394" target="_blank" style="color:var(--bl)">▶ Bài giảng CloudFront Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098404" target="_blank" style="color:var(--bl)">CloudFront with S3 &amp; OAC</a></span>
+        <span class="lang-en">CloudFront fundamentals, creating distributions with S3/ALB, and configuring OAC.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098394" target="_blank" style="color:var(--bl)">▶ CloudFront Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098404" target="_blank" style="color:var(--bl)">CloudFront with S3 &amp; OAC</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 14 · Lecture 26098414 &amp; 26098424</b>
+        <span class="lang-vi">Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge và AWS Global Accelerator hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098414" target="_blank" style="color:var(--bl)">▶ Signed URLs &amp; Edge Code</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098424" target="_blank" style="color:var(--bl)">Global Accelerator</a></span>
+        <span class="lang-en">Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge, and AWS Global Accelerator hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098414" target="_blank" style="color:var(--bl)">▶ Signed URLs &amp; Edge Code</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098424" target="_blank" style="color:var(--bl)">Global Accelerator</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
+      </div>
+      <div class="pi">
+        <b>Amazon CloudFront Developer Guide</b>
+        <span class="lang-vi">Hướng dẫn thiết lập bộ nhớ đệm Cache Behaviors, Signed Cookies và Origin Access Control (OAC).<br><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html" target="_blank" style="color:var(--bl)">📖 Đọc CloudFront Developer Guide</a></span>
+        <span class="lang-en">Definitive guide on configuring Cache Behaviors, Signed Cookies, and Origin Access Control.<br><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html" target="_blank" style="color:var(--bl)">📖 Read CloudFront Developer Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Global Accelerator Architecture Guide</b>
+        <span class="lang-vi">Bạch thư phân tích định tuyến Anycast IP và cơ chế khôi phục sự cố thảm họa xuyên Region.<br><a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html" target="_blank" style="color:var(--bl)">📖 Đọc Global Accelerator Architecture</a></span>
+        <span class="lang-en">Whitepaper exploring Anycast IP routing and automated multi-region disaster recovery.<br><a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html" target="_blank" style="color:var(--bl)">📖 Read Global Accelerator Guide</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>Amazon CloudFront Product Portal</b>
+        <span class="lang-vi">Cổng thông tin dịch vụ, bảng giá phân vùng Price Classes và hệ sinh thái bảo mật tích hợp.<br><a href="https://aws.amazon.com/cloudfront/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon CloudFront</a></span>
+        <span class="lang-en">Product homepage, Price Class tier options, and native security integrations for CloudFront.<br><a href="https://aws.amazon.com/cloudfront/" target="_blank" style="color:var(--bl)">🌐 Amazon CloudFront Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>AWS Global Accelerator Portal</b>
+        <span class="lang-vi">Thông tin chi tiết về 2 địa chỉ Anycast IP tĩnh và các bài toán tối ưu đường truyền cho Gaming/VoIP.<br><a href="https://aws.amazon.com/global-accelerator/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Global Accelerator</a></span>
+        <span class="lang-en">Product details on Anycast static IPs and networking optimization for Gaming and VoIP.<br><a href="https://aws.amazon.com/global-accelerator/" target="_blank" style="color:var(--bl)">🌐 AWS Global Accelerator Homepage</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="footer">
+  <p class="lang-vi">Khóa học AWS Certified Solutions Architect Associate (SAA-C03) · Biên soạn theo tài liệu chuẩn Udemy Stephane Maarek &amp; AWS Whitepapers · Tự do phân phối nội bộ</p>
+  <p class="lang-en">AWS Certified Solutions Architect Associate (SAA-C03) Learning Hub · Authored based on Udemy Stephane Maarek &amp; AWS Whitepapers · Free for internal study</p>
+</div>
+</body>
+</html>

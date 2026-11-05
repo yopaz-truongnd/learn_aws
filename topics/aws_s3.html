@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS S3 — Simple Storage Service &amp; Security — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <a href="../index.html" class="nav-back">
+    <span class="lang-vi">← Mục lục khóa học</span>
+    <span class="lang-en">← Course Hub</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 11 &amp; 13 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Global Object Storage &amp; Data Lakes</div>
+  <h1>Amazon S3 — Simple Storage Service &amp; Security</h1>
+  <p class="lang-vi">Lưu trữ đối tượng đám mây: 7 Tầng lưu trữ (Storage Classes), Vòng đời Lifecycle, Mã hóa SSE, S3 Object Lock (WORM), Nhân bản CRR &amp; Tối ưu hiệu năng</p>
+  <p class="lang-en">Cloud Object Storage: 7 Storage Classes, Lifecycle Policies, SSE Encryption, S3 Object Lock (WORM), CRR Replication &amp; Performance Tuning</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. TỔNG QUAN VỀ AMAZON S3 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🪣</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Nền tảng Amazon S3: Cấu trúc đối tượng &amp; Đặc tính kỹ thuật</span>
+        <span class="lang-en">1. Amazon S3 Fundamentals: Object Architecture &amp; Characteristics</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Độ bền 11 số 9, tính nhất quán mạnh mẽ và quy tắc đặt tên Bucket trên toàn cầu</span>
+        <span class="lang-en">11 9s durability, strong consistency model, and global bucket naming conventions</span>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Cấu trúc Buckets &amp; Objects</div>
+      <div class="id lang-vi">
+        • <b>Buckets:</b> Thư mục gốc chứa dữ liệu, thuộc về 1 AWS Region cụ thể nhưng có <b>Tên duy nhất trên toàn cầu (Globally Unique)</b>.<br>
+        • <b>Objects:</b> Mỗi tệp là một đối tượng độc lập gồm: <b>Key</b> (đường dẫn đầy đủ), <b>Value</b> (nội dung tệp tối đa <b>5 TB</b>), <b>Metadata</b> (thông tin đi kèm), <b>Tags</b> và <b>Version ID</b>.<br>
+        • Không phải là hệ thống file phân cấp thực sự: Dấu gạch chéo <code>/</code> trong tên chỉ là một phần của chuỗi ký tự Key!
+      </div>
+      <div class="id lang-en">
+        • <b>Buckets:</b> Root containers pinned to an AWS Region with a <b>Globally Unique name</b> across all AWS accounts.<br>
+        • <b>Objects:</b> Independent entities consisting of <b>Key</b> (full prefix path), <b>Value</b> (byte payload up to <b>5 TB</b>), <b>Metadata</b>, <b>Tags</b>, and <b>Version ID</b>.<br>
+        • Flat namespace: Forward slashes <code>/</code> are merely string characters within the object key, not physical nested folders!
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Độ bền (Durability) vs Sẵn sàng (Availability)</div>
+      <div class="id lang-vi">
+        • <b>Độ bền cực đại 99.999999999% (11 số 9):</b> Dữ liệu được nhân bản tự động trên ít nhất <b>3 Availability Zones</b> vật lý độc lập trong cùng Region (trừ tầng One Zone-IA). Nếu bạn lưu 10,000,000 đối tượng, trung bình 10,000 năm mới có rủi ro mất 1 đối tượng.<br>
+        • <b>Tính sẵn sàng (Availability):</b> Dao động từ <b>99.5% đến 99.99%</b> tùy thuộc vào từng tầng lưu trữ được chọn.
+      </div>
+      <div class="id lang-en">
+        • <b>11 9s Durability (99.999999999%):</b> Objects are redundantly stored across at least <b>three physical Availability Zones</b> within the region (except One Zone-IA).<br>
+        • <b>Availability:</b> Varies from <b>99.5% to 99.99%</b> depending on the configured storage class tier.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Mô hình tính nhất quán mạnh (Strong Consistency)</div>
+      <div class="id lang-vi">
+        Kể từ tháng 12/2020, Amazon S3 cung cấp mô hình <b>Strong Read-After-Write Consistency</b> cho tất cả các thao tác PUT và DELETE đối tượng mới hoặc ghi đè đối tượng cũ mà <b>không phát sinh thêm chi phí hay suy giảm hiệu năng</b>. Khi bạn vừa upload xong, mọi request đọc sau đó lập tức nhận được phiên bản mới nhất.
+      </div>
+      <div class="id lang-en">
+        Amazon S3 delivers <b>Strong Read-After-Write Consistency</b> automatically for all PUT and DELETE requests of new objects or updates with zero performance impact or cost. Immediately after a write commit, subsequent reads reliably return the newest data.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Quản lý phiên bản (S3 Versioning)</div>
+      <div class="id lang-vi">
+        • Bảo vệ dữ liệu chống lại việc vô tình ghi đè hoặc xóa nhầm. Khi xóa một tệp đã bật Versioning, S3 chỉ tạo một <b>Delete Marker</b> (có thể khôi phục lại dễ dàng).<br>
+        • Một khi đã bật Versioning trên Bucket, <b>KHÔNG THỂ tắt hoàn toàn</b> mà chỉ có thể chuyển sang trạng thái tạm dừng (Suspended).<br>
+        • Bắt buộc phải bật Versioning nếu muốn dùng tính năng Nhân bản S3 Replication (CRR / SRR).
+      </div>
+      <div class="id lang-en">
+        • Protects against accidental overwrites and deletions. Deleting an object merely inserts a <b>Delete Marker</b> which can be undone.<br>
+        • Once enabled, Versioning <b>CANNOT be completely disabled</b>; it can only be Suspended.<br>
+        • Versioning is an absolute prerequisite to configure S3 Cross-Region or Same-Region Replication.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGRAM: CÂY QUYẾT ĐỊNH 7 TẦNG LƯU TRỮ S3 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Cây quyết định lựa chọn tầng lưu trữ S3 (Storage Classes Decision Tree)</span>
+        <span class="lang-en">S3 Storage Classes Decision Flowchart</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy trình tối ưu hóa chi phí dựa trên tần suất truy cập, thời gian lưu trữ và thời gian lấy lại dữ liệu</span>
+        <span class="lang-en">Cost-optimization decision tree based on access frequency, retention minimums, and retrieval SLA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-s3-classes">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Start["Yêu cầu lưu trữ đối tượng trên S3"] --> Q1{"Tần suất truy cập dữ liệu có dự đoán được không?"}
+    
+    Q1 -->|"Không rõ quy luật / Tải thay đổi bất thường"| S3_Intell["S3 Intelligent-Tiering (Tự động chuyển tầng, Không phí truy xuất)"]
+    
+    Q1 -->|"Dự đoán được mẫu truy xuất"| Q2{"Dữ liệu truy cập thường xuyên hàng ngày?"}
+    Q2 -->|"Có: Truy cập thường xuyên, Cần độ trễ mili-giây"| S3_Std["S3 Standard (Mặc định cho dữ liệu nóng)"]
+    
+    Q2 -->|"Không: Ít truy cập (Truy xuất &lt; 1 lần/tháng)"| Q3{"Có chấp nhận mất dữ liệu nếu mất 1 AZ không?"}
+    Q3 -->|"Có: Dữ liệu tái tạo được (Secondary backup / Thư viện)"| S3_OZ["S3 One Zone-IA (Rẻ hơn 20%, Lưu trong 1 AZ duy nhất)"]
+    Q3 -->|"Không: Cần bảo toàn Multi-AZ"| Q4{"Thời gian cần lấy lại dữ liệu khi có request?"}
+    
+    Q4 -->|"Cần lấy lại NGAY LẬP TỨC (Mili-giây)"| S3_SIA["S3 Standard-IA (Infrequent Access - Lưu tối thiểu 30 ngày)"]
+    Q4 -->|"Chấp nhận lấy lại cấp độ mili-giây cho dữ liệu lưu trữ"| S3_GIR["S3 Glacier Instant Retrieval (Lưu tối thiểu 90 ngày)"]
+    Q4 -->|"Lưu trữ hồ sơ / Chấp nhận chờ vài phút đến vài giờ"| Q5{"Thời gian chờ tối đa được phép là bao lâu?"}
+    
+    Q5 -->|"Vài phút đến vài giờ (1-5 phút Expedited, 3-5h Standard)"| S3_GFR["S3 Glacier Flexible Retrieval (Lưu tối thiểu 90 ngày)"]
+    Q5 -->|"Chấp nhận chờ 12 đến 48 giờ / Chi phí rẻ nhất tuyệt đối"| S3_GDA["S3 Glacier Deep Archive (Lưu tối thiểu 180 ngày)"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#1a73e8,stroke-width:2px,color:#202124;
+    class S3_Intell,S3_Std,S3_OZ,S3_SIA,S3_GIR,S3_GFR,S3_GDA awsPrimary;
+    class Q1,Q2,Q3,Q4,Q5 awsBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Start["S3 Object Storage Requirement"] --> Q1{"Are access patterns predictable or unknown?"}
+    
+    Q1 -->|"Unknown / Unpredictable / Shifting patterns"| S3_Intell["S3 Intelligent-Tiering (Auto-tiering, No retrieval fees)"]
+    
+    Q1 -->|"Predictable access patterns"| Q2{"Frequently accessed on a daily basis?"}
+    Q2 -->|"Yes: Active hot data requiring ms latency"| S3_Std["S3 Standard (Default general purpose)"]
+    
+    Q2 -->|"No: Infrequently accessed (&lt; once a month)"| Q3{"Can data loss be tolerated if an AZ is destroyed?"}
+    Q3 -->|"Yes: Reproducible secondary data / thumbnail backups"| S3_OZ["S3 One Zone-IA (20% cheaper, Single AZ)"]
+    Q3 -->|"No: Strict Multi-AZ resilience required"| Q4{"Acceptable retrieval speed upon request?"}
+    
+    Q4 -->|"Immediate millisecond access required"| S3_SIA["S3 Standard-IA (Min 30-day retention)"]
+    Q4 -->|"Millisecond access for long-term archive"| S3_GIR["S3 Glacier Instant Retrieval (Min 90-day retention)"]
+    Q4 -->|"Cold archive / Tolerates minutes to hours retrieval"| Q5{"Maximum acceptable retrieval waiting time?"}
+    
+    Q5 -->|"Minutes to hours (1-5m Expedited, 3-5h Standard)"| S3_GFR["S3 Glacier Flexible Retrieval (Min 90-day retention)"]
+    Q5 -->|"12 to 48 hours / Absolute lowest storage cost"| S3_GDA["S3 Glacier Deep Archive (Min 180-day retention)"]
+
+    classDef awsPrimary fill:#232f3e,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    classDef awsBox fill:#f8f9fa,stroke:#ff9900,stroke-width:2px,color:#ffffff;
+    class S3_Intell,S3_Std,S3_OZ,S3_SIA,S3_GIR,S3_GFR,S3_GDA awsPrimary;
+    class Q1,Q2,Q3,Q4,Q5 awsBox;
+    </div>
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH 7 TẦNG LƯU TRỮ S3 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📊</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Ma trận đối chiếu chi tiết 7 tầng lưu trữ Amazon S3</span>
+        <span class="lang-en">2. Comprehensive S3 Storage Classes Technical Matrix</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh thông số độ bền, tính sẵn sàng, phí truy xuất, số ngày lưu trữ tối thiểu</span>
+        <span class="lang-en">Durability, availability SLA, retrieval charges, and minimum storage durations</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Tầng lưu trữ (Storage Class)</th>
+          <th>Tính sẵn sàng (SLA)</th>
+          <th>Số vùng (AZs)</th>
+          <th>Tốc độ lấy dữ liệu</th>
+          <th>Thời gian lưu tối thiểu</th>
+          <th>Phí truy xuất (Retrieval Fee)</th>
+          <th>Kịch bản sử dụng tối ưu</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>S3 Standard</b><br><span class="tag tb">Nóng (Hot)</span></td>
+          <td>99.99%</td>
+          <td>&ge; 3 AZs</td>
+          <td>Mili-giây (ms)</td>
+          <td>Không có (0 ngày)</td>
+          <td><span class="tag tg">KHÔNG (Miễn phí)</span></td>
+          <td>Dữ liệu truy cập thường xuyên, website tĩnh, phân phối nội dung media, game data, big data analytics.</td>
+        </tr>
+        <tr>
+          <td><b>S3 Intelligent-Tiering</b><br><span class="tag tg">Tự động hóa</span></td>
+          <td>99.9%</td>
+          <td>&ge; 3 AZs</td>
+          <td>Mili-giây (ms)</td>
+          <td>Không có (0 ngày)</td>
+          <td><span class="tag tg">KHÔNG (Miễn phí)</span></td>
+          <td>Dữ liệu có chu kỳ truy cập không rõ ràng hoặc biến đổi liên tục. Thu phí giám sát nhỏ trên mỗi đối tượng.</td>
+        </tr>
+        <tr>
+          <td><b>S3 Standard-IA</b><br><span class="tag to">Ấm (Warm)</span></td>
+          <td>99.9%</td>
+          <td>&ge; 3 AZs</td>
+          <td>Mili-giây (ms)</td>
+          <td><b>30 ngày</b></td>
+          <td><span class="tag tr">CÓ (Tính theo GB)</span></td>
+          <td>Dữ liệu ít truy cập nhưng cần lấy lại ngay lập tức khi phát sinh yêu cầu. Phù hợp cho sao lưu dự phòng DR.</td>
+        </tr>
+        <tr>
+          <td><b>S3 One Zone-IA</b><br><span class="tag tm">1 AZ duy nhất</span></td>
+          <td>99.5%</td>
+          <td><b>1 AZ duy nhất</b></td>
+          <td>Mili-giây (ms)</td>
+          <td><b>30 ngày</b></td>
+          <td><span class="tag tr">CÓ (Tính theo GB)</span></td>
+          <td>Tiết kiệm hơn 20% so với Standard-IA. Dành cho bản sao lưu phụ thứ cấp, thumbnail ảnh có thể render lại.</td>
+        </tr>
+        <tr>
+          <td><b>S3 Glacier Instant Retrieval</b><br><span class="tag tb">Lưu trữ lạnh nhanh</span></td>
+          <td>99.9%</td>
+          <td>&ge; 3 AZs</td>
+          <td>Mili-giây (ms)</td>
+          <td><b>90 ngày</b></td>
+          <td><span class="tag tr">CÓ (Cao hơn IA)</span></td>
+          <td>Lưu trữ hồ sơ y tế, ảnh lưu trữ cần xem lại ngay sau vài quý mà không phải chờ đợi. Rẻ hơn Standard-IA 68%.</td>
+        </tr>
+        <tr>
+          <td><b>S3 Glacier Flexible Retrieval</b><br><span class="tag tr">Lưu trữ lạnh truyền thống</span></td>
+          <td>99.9%</td>
+          <td>&ge; 3 AZs</td>
+          <td>1–5 phút (Expedited)<br>3–5 giờ (Standard)<br>5–12 giờ (Bulk)</td>
+          <td><b>90 ngày</b></td>
+          <td><span class="tag tr">CÓ</span></td>
+          <td>Sao lưu định kỳ tuân thủ pháp luật (Compliance), dữ liệu kế toán cuối năm cần giữ từ 1-5 năm.</td>
+        </tr>
+        <tr>
+          <td><b>S3 Glacier Deep Archive</b><br><span class="tag tr">Đáy lạnh tuyệt đối</span></td>
+          <td>99.9%</td>
+          <td>&ge; 3 AZs</td>
+          <td>12 giờ (Standard)<br>48 giờ (Bulk)</td>
+          <td><b>180 ngày</b></td>
+          <td><span class="tag tr">CÓ</span></td>
+          <td><b>Chi phí rẻ nhất trên AWS ($0.00099/GB/tháng)</b>. Lưu trữ hồ sơ tài chính, pháp lý bắt buộc giữ 7-10 năm.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. QUẢN LÝ VÒNG ĐỜI (S3 LIFECYCLE MANAGEMENT) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. S3 Lifecycle Management &amp; Quy tắc chuyển tầng (Transition Rules)</span>
+        <span class="lang-en">3. S3 Lifecycle Management &amp; Transition Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tự động hóa chuyển giao dữ liệu xuống các tầng lạnh hơn và tiêu hủy tệp hết hạn</span>
+        <span class="lang-en">Automated tier transitions and permanent expiration lifecycles for cost optimization</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📉 Transition Actions (Chuyển tầng)</span>
+        <span class="lang-en">📉 Transition Actions</span>
+      </div>
+      <div class="pi">
+        <b>Định tuyến vòng đời dữ liệu chuẩn</b>
+        <span class="lang-vi">Định nghĩa mốc thời gian để tự động di chuyển đối tượng sang tầng lưu trữ rẻ hơn:
+          <ul>
+            <li>Sau <b>30 ngày</b>: Chuyển từ S3 Standard &rarr; S3 Standard-IA.</li>
+            <li>Sau <b>90 ngày</b>: Chuyển từ Standard-IA &rarr; S3 Glacier Flexible Retrieval.</li>
+            <li>Sau <b>365 ngày</b>: Chuyển sang S3 Glacier Deep Archive.</li>
+          </ul>
+        </span>
+        <span class="lang-en">Defines automated chronological migration to progressively cheaper tiers:
+          <ul>
+            <li>At <b>30 days</b>: Transition from S3 Standard &rarr; S3 Standard-IA.</li>
+            <li>At <b>90 days</b>: Transition from Standard-IA &rarr; S3 Glacier Flexible.</li>
+            <li>At <b>365 days</b>: Transition to S3 Glacier Deep Archive.</li>
+          </ul>
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🗑️ Expiration Actions (Xóa bỏ)</span>
+        <span class="lang-en">🗑️ Expiration Actions</span>
+      </div>
+      <div class="pi">
+        <b>Tự động dọn dẹp và tiêu hủy tệp cũ</b>
+        <span class="lang-vi">
+          • Tự động xóa vĩnh viễn các đối tượng sau số ngày quy định (ví dụ: xóa file log sau 365 ngày).<br>
+          • <b>Dọn dẹp phiên bản cũ (Noncurrent Version Expiration):</b> Giữ tối đa 3 phiên bản cũ hoặc xóa phiên bản cũ sau 60 ngày để tiết kiệm chi phí.<br>
+          • <b>Xóa các phần tải dở (Abort Incomplete Multipart Uploads):</b> Cực kỳ quan trọng để xóa các mảnh tệp upload bị đứt đoạn sau 7 ngày, tránh bị tính phí ngầm!
+        </span>
+        <span class="lang-en">
+          • Permanently purges expired objects after a configured retention period.<br>
+          • <b>Noncurrent Version Expiration:</b> Automatically removes superseded versions.<br>
+          • <b>Abort Incomplete Multipart Uploads:</b> Crucial best practice to delete lingering multipart fragments after 7 days to eliminate hidden storage charges!
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🌐 S3 Replication (CRR vs SRR)</span>
+        <span class="lang-en">🌐 S3 Replication (CRR vs SRR)</span>
+      </div>
+      <div class="pi">
+        <b>Cross-Region (CRR) vs Same-Region (SRR)</b>
+        <span class="lang-vi">
+          • <b>CRR (Khác Region):</b> Tuân thủ quy định địa lý, giảm độ trễ truy cập cho người dùng toàn cầu, sao lưu thảm họa.<br>
+          • <b>SRR (Cùng Region):</b> Gộp log từ nhiều bucket, đồng bộ dữ liệu giữa tài khoản Prod và Test.<br>
+          • <b>Điều kiện bắt buộc:</b> Phải bật <b>Versioning</b> trên cả Bucket nguồn và Bucket đích!
+        </span>
+        <span class="lang-en">
+          • <b>CRR (Cross-Region):</b> Compliance, global user latency reduction, cross-region DR.<br>
+          • <b>SRR (Same-Region):</b> Log aggregation, live sync between prod and test accounts.<br>
+          • <b>Mandatory Prerequisite:</b> <b>Versioning must be enabled</b> on both source and destination buckets!
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. BẢO MẬT & MÃ HÓA S3 DEEP DIVE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🔐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Bảo mật, Phân quyền &amp; 4 Cơ chế mã hóa trên Amazon S3</span>
+        <span class="lang-en">4. S3 Security, Access Control &amp; 4 Encryption Mechanisms</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bucket Policies, Presigned URLs, S3 Object Lock (WORM) và các phương thức mã hóa dữ liệu tại chỗ</span>
+        <span class="lang-en">Bucket Policies, Presigned URLs, S3 Object Lock (WORM), and server-side encryption models</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>4 Cơ chế mã hóa Server-Side Encryption (SSE)</div>
+      <div class="id lang-vi">
+        • <b>SSE-S3 (Mặc định):</b> Khóa mã hóa được quản lý hoàn toàn bởi AWS (AES-256). Header: <code>"x-amz-server-side-encryption": "AES256"</code>.<br>
+        • <b>SSE-KMS:</b> Dùng khóa quản lý bởi AWS KMS. Cho phép kiểm soát quyền truy cập chi tiết và ghi vết kiểm toán (Audit Trail) trong CloudTrail. <i>Lưu ý: Bị giới hạn bởi hạn ngạch KMS API Quota</i>.<br>
+        • <b>SSE-C:</b> Khách hàng tự quản lý và gửi khóa mã hóa lên kèm mỗi request. Bắt buộc dùng HTTPS.<br>
+        • <b>Client-Side Encryption:</b> Mã hóa trực tiếp trên máy client trước khi tải dữ liệu lên S3.
+      </div>
+      <div class="id lang-en">
+        • <b>SSE-S3 (Default):</b> Fully AWS-managed keys using AES-256. Header: <code>"x-amz-server-side-encryption": "AES256"</code>.<br>
+        • <b>SSE-KMS:</b> Managed via AWS KMS with fine-grained RBAC and CloudTrail audit logs. Subject to KMS API throttling quotas.<br>
+        • <b>SSE-C:</b> Customer manages encryption keys; client provides keys in HTTPS headers.<br>
+        • <b>Client-Side Encryption:</b> Data encrypted locally by client application before transmission to S3.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Bắt buộc kết nối HTTPS qua Bucket Policy</div>
+      <div class="id lang-vi">
+        Để đáp ứng tiêu chuẩn bảo mật dữ liệu trên đường truyền (In-Transit Encryption), cấu hình câu lệnh Deny trong S3 Bucket Policy với điều kiện:
+        <pre style="background:var(--bgb);padding:8px;border-radius:6px;font-size:11px;overflow-x:auto"><code>"Condition": {
+  "Bool": { "aws:SecureTransport": "false" }
+}</code></pre>
+        Bất kỳ yêu cầu truy cập nào gửi qua giao thức HTTP không mã hóa sẽ bị từ chối ngay lập tức!
+      </div>
+      <div class="id lang-en">
+        To enforce in-transit encryption across the network, declare an Explicit Deny statement in the S3 Bucket Policy matching:
+        <pre style="background:var(--bgb);padding:8px;border-radius:6px;font-size:11px;overflow-x:auto"><code>"Condition": {
+  "Bool": { "aws:SecureTransport": "false" }
+}</code></pre>
+        Any unencrypted HTTP requests will be immediately and permanently rejected!
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>S3 Presigned URLs (URL ký sẵn)</div>
+      <div class="id lang-vi">
+        • Tạo ra một đường link URL đặc biệt kèm chữ ký bảo mật để cấp quyền tải xuống (Download) hoặc tải lên (Upload) tạm thời cho người dùng chưa đăng nhập.<br>
+        • URL có thời hạn hết hạn xác định (ví dụ: chỉ có hiệu lực trong 5 phút).<br>
+        • Rất phổ biến cho phép người dùng premium tải video bản quyền hoặc cho phép người dùng tải ảnh đại diện trực tiếp lên S3 mà không cần đi qua backend server.
+      </div>
+      <div class="id lang-en">
+        • Generates a cryptographic signed URL granting temporary read/write access to unauthorized users.<br>
+        • Has a strictly enforced expiration window (e.g. valid for only 300 seconds).<br>
+        • Standard architecture enabling direct user uploads/downloads to S3, bypassing backend web servers.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>S3 Object Lock (Mô hình WORM) &amp; Glacier Vault Lock</div>
+      <div class="id lang-vi">
+        • <b>Mô hình WORM (Write Once, Read Many):</b> Ngăn chặn việc sửa đổi hoặc xóa đối tượng trong khoảng thời gian quy định.<br>
+        • <b>Compliance Mode:</b> <u>TUYỆT ĐỐI KHÔNG AI CÓ THỂ XÓA</u>, kể cả tài khoản <b>AWS Root User</b>!<br>
+        • <b>Governance Mode:</b> Có thể ghi đè hoặc xóa nếu người dùng có quyền IAM đặc biệt <code>s3:BypassGovernanceRetention</code>.<br>
+        • <b>Glacier Vault Lock:</b> Khóa chính sách bảo mật vĩnh viễn trên kho lưu trữ Glacier để tuân thủ pháp luật (SEC Rule 17a-4).
+      </div>
+      <div class="id lang-en">
+        • <b>WORM Model (Write Once, Read Many):</b> Blocks modification or deletion for a set retention duration.<br>
+        • <b>Compliance Mode:</b> <u>CANNOT BE DELETED BY ANYONE</u>, including the <b>AWS Root User account</b>!<br>
+        • <b>Governance Mode:</b> Can be overridden only by principals possessing the <code>s3:BypassGovernanceRetention</code> IAM permission.<br>
+        • <b>Glacier Vault Lock:</b> Irrevocably locks archive compliance policies to satisfy strict legal mandates (e.g. SEC Rule 17a-4).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. TỐI ƯU HIỆU NĂNG S3 (PERFORMANCE) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Kỹ thuật tối ưu hóa hiệu năng Amazon S3 (Performance Optimization)</span>
+        <span class="lang-en">5. Amazon S3 Performance Optimization</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Multipart Upload, S3 Transfer Acceleration, Byte-Range Fetches và S3 Select</span>
+        <span class="lang-en">Multipart Upload, Transfer Acceleration, Byte-Range Fetches, and S3 Select</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Multipart Upload (Tải lên nhiều phần song song)</div>
+      <div class="id lang-vi">
+        • Chia nhỏ tệp lớn thành nhiều mảnh và tải lên song song để tối đa hóa băng thông mạng.<br>
+        • <b>Khuyến nghị dùng</b> cho bất kỳ tệp nào có kích thước <b>&gt; 100 MB</b>.<br>
+        • <b>BẮT BUỘC PHẢI DÙNG</b> đối với các tệp có kích thước <b>&gt; 5 GB</b> (giới hạn tối đa của 1 thao tác PUT đơn lẻ là 5 GB).<br>
+        • Tăng khả năng chịu lỗi: Nếu 1 mảnh bị lỗi mạng, bạn chỉ cần tải lại mảnh đó mà không cần tải lại toàn bộ file.
+      </div>
+      <div class="id lang-en">
+        • Chunks large payloads into parallel parts to saturate available upload bandwidth.<br>
+        • <b>Recommended</b> for files exceeding <b>100 MB</b>.<br>
+        • <b>MANDATORY</b> for objects exceeding <b>5 GB</b> (maximum payload for a single standard PUT is 5 GB).<br>
+        • Fault-tolerant: Network drops only require re-uploading the affected part, not the entire file.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>S3 Transfer Acceleration</div>
+      <div class="id lang-vi">
+        • Tăng tốc độ upload dữ liệu từ xa lên S3 thông qua mạng lưới <b>Edge Locations của Amazon CloudFront</b>.<br>
+        • Dữ liệu người dùng được nạp vào Edge Location gần nhất qua mạng Internet công cộng, sau đó truyền về S3 Bucket qua <b>đường truyền cáp quang riêng tốc độ cao của AWS</b>.<br>
+        • Tương thích hoàn toàn với Multipart Upload.
+      </div>
+      <div class="id lang-en">
+        • Accelerates cross-continental uploads to S3 by routing traffic via <b>Amazon CloudFront Edge Locations</b>.<br>
+        • Traffic enters nearest edge point over public Internet, then traverses AWS's optimized private fiber backbone.<br>
+        • Fully interoperable with Multipart Uploads.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>S3 Byte-Range Fetches (Tải song song theo dải Byte)</div>
+      <div class="id lang-vi">
+        • Cho phép ứng dụng chỉ yêu cầu tải về một dải byte cụ thể của tệp (ví dụ: chỉ tải 1 MB đầu tiên để hiển thị tiêu đề video).<br>
+        • Cho phép tải nhiều phần của cùng 1 tệp lớn song song để đạt tốc độ tải xuống cực đại.<br>
+        • Nếu tải bị ngắt quãng giữa chừng, chỉ cần yêu cầu tải lại dải byte bị thiếu.
+      </div>
+      <div class="id lang-en">
+        • Allows applications to request specific byte ranges (e.g. streaming the first 1 MB header of a video).<br>
+        • Enables concurrent parallelized downloads of multi-part chunks for maximum egress throughput.<br>
+        • Resilient: Failures only require re-fetching the missing byte segment.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>S3 Select &amp; Glacier Select</div>
+      <div class="id lang-vi">
+        • Cho phép chạy các truy vấn SQL đơn giản trực tiếp trên máy chủ S3 để lọc dữ liệu của các file CSV, JSON hoặc Parquet.<br>
+        • S3 chỉ trả về <b>các dòng dữ liệu thỏa mãn điều kiện</b> thay vì tải toàn bộ file khổng lồ về máy chủ ứng dụng.<br>
+        • Tiết kiệm tới <b>80% chi phí truyền dữ liệu (Data Transfer)</b> và tăng tốc độ xử lý lên tới 400%.
+      </div>
+      <div class="id lang-en">
+        • Executes server-side SQL queries filtering rows directly inside S3 (CSV, JSON, Parquet).<br>
+        • Returns strictly the matched subset rows rather than transferring massive gigabyte files over the wire.<br>
+        • Saves up to <b>80% data transfer costs</b> and accelerates analytical query speed by 400%.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Các bẫy &amp; Kịch bản đề thi thường gặp (SAA-C03 Exam Traps)</span>
+        <span class="lang-en">6. Common Exam Traps &amp; Scenarios (SAA-C03)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tổng hợp những tình huống kinh điển và câu hỏi lừa đảo xuất hiện liên tục trong đề thi</span>
+        <span class="lang-en">Canonical situational questions and trick patterns tested in SAA-C03</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Lưu trữ hồ sơ tài chính 7-10 năm với chi phí thấp nhất</div>
+      <div class="id lang-vi">
+        • <b>Đề bài:</b> <i>"Hồ sơ kế toán bắt buộc phải giữ trong 7 năm theo luật. Dữ liệu hầu như không bao giờ truy cập và chấp nhận thời gian lấy lại trong vòng 12-24 giờ. Đâu là giải pháp chi phí tối ưu nhất?"</i><br>
+        • <b>Đáp án chuẩn:</b> <b>S3 Glacier Deep Archive</b> (Chi phí rẻ nhất toàn bộ hệ thống AWS, ~$1/TB/tháng).
+      </div>
+      <div class="id lang-en">
+        • <b>Scenario:</b> Regulatory financial records must be preserved for 7 years. Data is rarely accessed, and a 12-24 hour retrieval SLA is acceptable. Minimum cost required.<br>
+        • <b>Canonical Answer:</b> <b>S3 Glacier Deep Archive</b> (Lowest cost tier across all AWS services, ~$1/TB/month).
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Giới hạn kích thước tệp upload lên S3</div>
+      <div class="id lang-vi">
+        • Kích thước tệp tối đa lưu trên S3 là <b>5 TB</b>.<br>
+        • Giới hạn của 1 lần gọi lệnh <b>PUT đơn lẻ là 5 GB</b>.<br>
+        • <b>Bẫy thi:</b> Nếu đề bài cho một file lớn hơn 5 GB (ví dụ file video 10 GB), bất kỳ đáp án nào đề cập đến tải file lên trực tiếp bằng single PUT đều là SAI &rarr; <b>Bắt buộc phải dùng Multipart Upload</b>!
+      </div>
+      <div class="id lang-en">
+        • Maximum single S3 object size is <b>5 TB</b>.<br>
+        • Maximum payload for a single standard <b>PUT request is 5 GB</b>.<br>
+        • <b>Exam Trap:</b> For payloads larger than 5 GB, any single PUT answer is INVALID &rarr; <b>Multipart Upload is mandatory</b>!
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Yêu cầu dữ liệu TUYỆT ĐỐI không thể bị xóa kể cả bởi tài khoản Root</div>
+      <div class="id lang-vi">
+        • <b>Đề bài:</b> <i>"Hệ thống giám sát chứng khoán yêu cầu lưu trữ log giao dịch trong 3 năm. Nghiêm cấm bất kỳ ai (kể cả nhân viên quản trị hệ thống cấp cao nhất) có quyền xóa hoặc ghi đè dữ liệu trước thời hạn"</i>.<br>
+        • <b>Đáp án chuẩn:</b> Kích hoạt <b>S3 Object Lock ở chế độ Compliance Mode</b> (Chế độ Governance Mode vẫn có thể bị Root user xóa nếu có quyền bypass).
+      </div>
+      <div class="id lang-en">
+        • <b>Scenario:</b> Financial audit logs must be immutable for 3 years. Nobody, including the highest-tier cloud administrators, can delete or tamper with records.<br>
+        • <b>Canonical Answer:</b> Enable <b>S3 Object Lock in Compliance Mode</b> (Governance Mode allows overrides by authorized roles).
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Bẫy: Mã hóa SSE-KMS và Hiện tượng nghẽn hạn ngạch KMS Quota</div>
+      <div class="id lang-vi">
+        • Khi bạn đọc hoặc ghi một đối tượng mã hóa bằng <b>SSE-KMS</b>, S3 phải gọi API <code>kms:GenerateDataKey</code> hoặc <code>kms:Decrypt</code> tới dịch vụ KMS.<br>
+        • Nếu ứng dụng thực hiện hàng chục nghìn request mỗi giây, bạn có thể bị lỗi <b>KMS ThrottlingException</b> do chạm trần hạn ngạch KMS Region Quota.<br>
+        • <b>Giải pháp chuẩn:</b> Bật tính năng <b>S3 Bucket Keys</b> (giảm số lần gọi API KMS tới 99% bằng cách cache data key tại tầng S3).
+      </div>
+      <div class="id lang-en">
+        • With <b>SSE-KMS</b>, every read/write triggers KMS API calls (<code>kms:GenerateDataKey</code> / <code>kms:Decrypt</code>).<br>
+        • High-throughput workloads can trigger <b>KMS ThrottlingException</b> hitting regional API quotas.<br>
+        • <b>Solution:</b> Enable <b>S3 Bucket Keys</b> (reduces KMS API traffic and costs up to 99% via S3-level key caching).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. NGUYÊN TẮC VÀNG SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⭐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Nguyên tắc vàng khi làm bài thi (SAA-C03 S3 Golden Rules)</span>
+        <span class="lang-en">7. SAA-C03 Amazon S3 Golden Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bộ quy tắc bất biến giúp loại trừ ngay các đáp án sai trong đề thi</span>
+        <span class="lang-en">Essential axioms to rapidly eliminate incorrect S3 choices in the exam</span>
+      </div>
+    </div>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">File &gt; 5 GB BẮT BUỘC PHẢI DÙNG Multipart Upload</b>
+        <b class="lang-en">Files &gt; 5 GB STRICTLY REQUIRE Multipart Upload</b>
+        <span class="lang-vi">Giới hạn tuyệt đối của lệnh PUT đơn lẻ lên S3 là 5 GB. Bất kỳ tệp nào lớn hơn 5 GB bắt buộc phải được chia nhỏ và tải lên qua Multipart Upload. Với các tệp từ 100 MB trở lên, AWS khuyến nghị dùng để tăng tốc độ.</span>
+        <span class="lang-en">Single PUT hard limit is 5 GB. Payloads &gt;5 GB must be uploaded via Multipart Upload. Strongly recommended for anything &gt;100 MB.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">S3 Replication (CRR / SRR) bắt buộc phải bật Versioning</b>
+        <b class="lang-en">S3 Replication strictly requires Versioning on BOTH buckets</b>
+        <span class="lang-vi">Không thể cấu hình Replication nếu một trong hai bucket (nguồn hoặc đích) chưa kích hoạt tính năng Versioning. Ngoài ra, việc xóa file trên bucket nguồn tạo ra Delete Marker mặc định sẽ KHÔNG được đồng bộ sang bucket đích.</span>
+        <span class="lang-en">Replication cannot be enabled unless Versioning is active on both source and destination buckets. By default, Delete Markers are not replicated.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Không rõ quy luật truy xuất &rarr; Luôn chọn S3 Intelligent-Tiering</b>
+        <b class="lang-en">Unpredictable or shifting patterns &rarr; Always choose S3 Intelligent-Tiering</b>
+        <span class="lang-vi">Khi đề bài nhấn mạnh dữ liệu có mẫu truy cập không rõ ràng, khó lường hoặc liên tục biến đổi mà không muốn chịu rủi ro mất phí truy xuất dữ liệu (Retrieval Fee), đáp án đúng luôn là <b>S3 Intelligent-Tiering</b>.</span>
+        <span class="lang-en">When questions state access patterns are shifting, unpredictable, or unknown without retrieval penalties, S3 Intelligent-Tiering is the correct architecture.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Compliance Mode trong S3 Object Lock: Kể cả Root User cũng KHÔNG THỂ XÓA</span>
+          <span class="lang-en">Compliance Mode in S3 Object Lock: Even Root User CANNOT DELETE</span>
+        </b>
+        <span class="lang-vi">Ghi nhớ quy tắc tuân thủ pháp luật khắt khe nhất của AWS: Khi một đối tượng được khóa dưới chế độ <b>Compliance Mode</b>, không một ai trên thế giới (kể cả tài khoản AWS Root của công ty) có thể xóa hoặc rút ngắn thời gian lưu trữ trước khi hết hạn!</span>
+        <span class="lang-en">The strictest regulatory guarantee: Under <b>Compliance Mode</b>, nobody (including the AWS Root account) can delete objects or truncate retention durations before expiration!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 8. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔗</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">8. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">8. Lecture References &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Khóa học: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Tài liệu chuẩn AWS</span>
+        <span class="lang-en">Course: Ultimate AWS Certified Solutions Architect Associate — Stephane Maarek &amp; Official AWS Documentation</span>
+      </div>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
+        <span class="lang-en">🎬 Core Udemy Video Lectures</span>
+      </div>
+      <div class="pi">
+        <b>Section 11 · Lecture 26098336 &amp; 26098348</b>
+        <span class="lang-vi">Tổng quan về S3, tạo Bucket, Versioning và các chính sách S3 Bucket Policies.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098336" target="_blank" style="color:var(--bl)">▶ Bài giảng S3 Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098348" target="_blank" style="color:var(--bl)">Bucket Policies &amp; Security</a></span>
+        <span class="lang-en">S3 Overview, Bucket creation, Versioning, and S3 Bucket Policies hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098336" target="_blank" style="color:var(--bl)">▶ S3 Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098348" target="_blank" style="color:var(--bl)">Bucket Policies &amp; Security</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 13 · Lecture 26098360 &amp; 26098372</b>
+        <span class="lang-vi">So sánh 7 Storage Classes, Lifecycle Rules, S3 Replication (CRR) và S3 Object Lock.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098360" target="_blank" style="color:var(--bl)">▶ S3 Storage Classes</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098372" target="_blank" style="color:var(--bl)">Lifecycle &amp; Replication</a></span>
+        <span class="lang-en">Comparing 7 S3 Storage Classes, Lifecycle rules, CRR replication, and Object Lock.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098360" target="_blank" style="color:var(--bl)">▶ S3 Storage Classes</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098372" target="_blank" style="color:var(--bl)">Lifecycle &amp; Replication</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 13 · Lecture 26098384</b>
+        <span class="lang-vi">Tối ưu hiệu năng S3: Multipart Upload, Transfer Acceleration, Byte-Range Fetches và S3 Select.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098384" target="_blank" style="color:var(--bl)">▶ S3 Performance Optimization</a></span>
+        <span class="lang-en">S3 Performance: Multipart Upload, Transfer Acceleration, Byte-Range Fetches, and S3 Select.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098384" target="_blank" style="color:var(--bl)">▶ S3 Performance Optimization</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📑 Tài liệu kiến trúc chính thức từ AWS</span>
+        <span class="lang-en">📑 Official AWS Architecture Documentation</span>
+      </div>
+      <div class="pi">
+        <b>Amazon S3 Storage Classes Guide</b>
+        <span class="lang-vi">Tài liệu phân tích thông số độ bền, thời gian lưu tối thiểu và bảng tính chi phí của 7 tầng lưu trữ S3.<br><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html" target="_blank" style="color:var(--bl)">📖 Đọc S3 Storage Classes Guide</a></span>
+        <span class="lang-en">Comprehensive breakdown of durability SLA, minimum retention days, and pricing models across all tiers.<br><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html" target="_blank" style="color:var(--bl)">📖 Read S3 Storage Classes Guide</a></span>
+      </div>
+      <div class="pi">
+        <b>S3 Security Best Practices</b>
+        <span class="lang-vi">Bộ tiêu chuẩn bảo vệ dữ liệu S3: Block Public Access, Bucket Policies, SSE-KMS và Object Lock.<br><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html" target="_blank" style="color:var(--bl)">📖 Đọc S3 Security Best Practices</a></span>
+        <span class="lang-en">Definitive guide on securing S3: Block Public Access, bucket policies, SSE-KMS, and Object Lock.<br><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html" target="_blank" style="color:var(--bl)">📖 Read S3 Security Best Practices</a></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Khảo sát sản phẩm &amp; Cheat Sheet</span>
+        <span class="lang-en">💡 Product Portals &amp; Cheat Sheets</span>
+      </div>
+      <div class="pi">
+        <b>Amazon S3 Product Portal</b>
+        <span class="lang-vi">Cổng thông tin dịch vụ, bảng giá chi tiết trên từng Region và các trường hợp ứng dụng thực tế.<br><a href="https://aws.amazon.com/s3/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon S3</a></span>
+        <span class="lang-en">Official product portal, regional price calculator, and enterprise case studies for Amazon S3.<br><a href="https://aws.amazon.com/s3/" target="_blank" style="color:var(--bl)">🌐 Amazon S3 Homepage</a></span>
+      </div>
+      <div class="pi">
+        <b>Amazon S3 Glacier Pricing &amp; Retained Data</b>
+        <span class="lang-vi">Bảng tra cứu chi phí lưu trữ hồ sơ lạnh dài hạn và so sánh giá giữa Flexible vs Deep Archive.<br><a href="https://aws.amazon.com/s3/glacier/pricing/" target="_blank" style="color:var(--bl)">📊 Bảng giá Amazon S3 Glacier</a></span>
+        <span class="lang-en">Cost comparisons between Glacier Flexible Retrieval and Glacier Deep Archive.<br><a href="https://aws.amazon.com/s3/glacier/pricing/" target="_blank" style="color:var(--bl)">📊 S3 Glacier Pricing</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="footer">
+  <p class="lang-vi">Khóa học AWS Certified Solutions Architect Associate (SAA-C03) · Biên soạn theo tài liệu chuẩn Udemy Stephane Maarek &amp; AWS Whitepapers · Tự do phân phối nội bộ</p>
+  <p class="lang-en">AWS Certified Solutions Architect Associate (SAA-C03) Learning Hub · Authored based on Udemy Stephane Maarek &amp; AWS Whitepapers · Free for internal study</p>
+</div>
+</body>
+</html>
