@@ -9,6 +9,14 @@ Tài liệu hướng dẫn dành cho AI Agent (Claude Code / Antigravity) và nh
 
 ---
 
+## Quy tắc an toàn & Giới hạn quyền hạn (Security & Permissions)
+
+1. **Phạm vi chỉnh sửa (Project-Only Scope):** Chỉ được quyền chỉnh sửa, tạo mới hoặc ghi đè tệp tin nằm trong thư mục dự án này (learn_aws). Tuyệt đối không can thiệp tệp tin ngoài thư mục dự án.
+2. **Thực thi ngoài dự án:** Bất kỳ thao tác hoặc lệnh terminal nào tác động ra ngoài phạm vi dự án **bắt buộc phải hỏi và được người dùng xác nhận trước khi chạy**.
+3. **Bảo vệ tệp tin (Bắt buộc xác nhận khi xóa):** Tuyệt đối **không tự ý xóa bất kỳ tệp tin nào** (kể cả tệp tạm). Khi cần xóa, phải liệt kê danh sách tệp và chờ người dùng đồng ý mới được thực hiện.
+
+---
+
 ## Mục tiêu dự án (Project Scope)
 
 Kho tài liệu tự học và ôn thi chứng chỉ **AWS Certified Solutions Architect - Associate (SAA-C03)** dựa trên giáo trình khóa học Udemy *"Ultimate AWS Certified Solutions Architect Associate"* của Stephane Maarek. Gồm 3 phần:
@@ -62,6 +70,9 @@ learn_aws/
 | `assets/js/app.js` | **Xử lý ứng dụng client-side:** Nhận diện và chuyển đổi song ngữ VI/EN, lưu `localStorage`, render tự động sơ đồ Mermaid theo theme/lang. | Hoàn thành |
 | `assets/vendor/mermaid.min.js` | **Thư viện Mermaid.js nội bộ (100% offline):** Dùng để render Decision Trees, Sequence Diagrams, Logic Flowcharts mà không kéo CDN. | Hoàn thành |
 | `scripts/export_anki_4000.py` | **Script CSV → Anki (tự chứa 100%):** Tự sinh SQLite và đóng gói `.apkg` + `.tsv`, không cần file `.apkg` mẫu. Cú pháp: `python3 scripts/export_anki_4000.py [input.csv] [output.apkg] [output.tsv]`. | Hoàn thành |
+| `scripts/csv_to_sub_json.py` | **Script CSV → Subtitle JSON:** Chuyển đổi danh sách từ vựng CSV sang JSON chuẩn cấu trúc subtitle extension (`sub.json`), tự động bảo tồn `createdAt` và SRS state. Cú pháp: `python3 scripts/csv_to_sub_json.py [input.csv] [output.json]`. | Hoàn thành |
+| `scripts/find_diff_vocab.py` | **Script so sánh từ vựng CSV:** So sánh đối chiếu 2 file CSV từ vựng, lọc ra các từ không chung hoặc từ mới. Cú pháp: `python3 scripts/find_diff_vocab.py [file1.csv] [file2.csv]`. | Hoàn thành |
+| `scripts/clean.py` | **Script dọn dẹp Anki & Vocabulary:** Quét và xóa các tệp JSON (`sub.json`), CSV tạm/so sánh (`tu-vung-khong-chung.csv`, `tu-vung-moi.csv`, `lecturesub-tu-vung (*).csv`), bản build trong `dist/` và cache. Có bước xác nhận `y/N` hoặc cờ `-y`. Cú pháp: `python scripts/clean.py [-y]`. | Hoàn thành |
 | `data/lecturesub-tu-vung.csv` | **Bộ từ vựng trích xuất từ phụ đề bài giảng:** UTF-8 with BOM, trường bọc ngoặc kép (`"Từ"`, `"Nghĩa"`, `"Nguồn"`, `"Đích"`, `"Câu gốc"`, `"Bài học"`, `"Giây"`, `"Liên kết"`). Đọc bằng CSV parser (có trường chứa dấu phẩy/xuống dòng). | Đang duy trì (86+ từ), gitignored |
 | `dist/AWS_SAA_C03_Vocabulary.apkg` | **Gói Anki chuẩn Note Type 4000Book1:** Cloze, ô gõ kiểm tra (`type:cloze`), chia 20 từ/Unit, IPA và link Udemy. | Sinh bởi script |
 | `dist/anki_4000_format.tsv` | **Flashcard dạng TSV 11 cột** của model `4000Book1` để import vào deck Anki bất kỳ. | Sinh bởi script |

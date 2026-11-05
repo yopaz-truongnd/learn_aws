@@ -45,6 +45,9 @@ learn_aws/
 | [`assets/js/app.js`](assets/js/app.js) | Script xử lý chuyển đổi song ngữ VI/EN tức thì, lưu `localStorage`, render tự động Mermaid. |
 | [`assets/vendor/mermaid.min.js`](assets/vendor/mermaid.min.js) | Thư viện Mermaid.js nội bộ 100% offline vẽ sơ đồ tư duy, decision tree, sequence diagrams, state diagrams. |
 | [`scripts/export_anki_4000.py`](scripts/export_anki_4000.py) | Sinh SQLite Anki và đóng gói `.apkg` tự chứa 100% (không cần file `.apkg` mẫu). |
+| [`scripts/csv_to_sub_json.py`](scripts/csv_to_sub_json.py) | Chuyển đổi CSV từ vựng sang JSON (`sub.json`) chuẩn cấu trúc extension phụ đề video. |
+| [`scripts/find_diff_vocab.py`](scripts/find_diff_vocab.py) | So sánh đối chiếu 2 file CSV từ vựng, lọc ra các từ không chung hoặc từ mới. |
+| [`scripts/clean.py`](scripts/clean.py) | Dọn dẹp các tệp sinh ra trong `dist/`, bộ nhớ đệm `__pycache__` và file tạm. |
 | `data/lecturesub-tu-vung.csv` | UTF-8 with BOM, các cột: `Từ`, `Nghĩa`, `Nguồn`, `Đích`, `Câu gốc`, `Bài học`, `Giây`, `Liên kết`. |
 | `dist/*` | Kết quả build — không commit, sinh lại bất cứ lúc nào bằng script. |
 
@@ -52,44 +55,78 @@ learn_aws/
 
 ---
 
-## 🚀 Bắt đầu nhanh (Quick Start)
+## 🚀 Bắt đầu nhanh & Tổng hợp lệnh chạy (Command Reference)
 
-Không cần cài đặt gì — mở trực tiếp bằng trình duyệt:
+Dự án thuần HTML/CSS/JS và Python 3, không cần cài đặt web server hay thư viện ngoài.
+
+### 1. Mở trang học tập trên trình duyệt
 
 ```bash
-open index.html                      # Dashboard mục lục trung tâm
+# Windows (PowerShell / Command Prompt)
+start index.html                      # Mở Dashboard trung tâm
+start topics/aws_global_infra.html    # Mở Section 3: Global Infrastructure
+start topics/aws_iam.html             # Mở Section 4: IAM
+start topics/aws_ec2.html             # Mở Section 5: EC2
 
-open topics/aws_global_infra.html    # Section 3: Hạ tầng toàn cầu AWS
-open topics/aws_iam.html             # Section 4: Quản lý danh tính & phân quyền (IAM)
-open topics/aws_ec2.html             # Section 5: Máy chủ ảo IaaS (EC2)
+# macOS
+open index.html
+
+# Linux
+xdg-open index.html
 ```
 
 ---
 
-## 🗂️ Học từ vựng bằng Anki (chuẩn 4000 Essential English Words)
+### 2. Bộ công cụ xử lý từ vựng & Flashcard (Scripts)
 
-### 1. Tạo deck
-
+#### 🗂️ A. Đóng gói Flashcard Anki (chuẩn 4000 Essential English Words)
 ```bash
 # Mặc định: data/lecturesub-tu-vung.csv → dist/AWS_SAA_C03_Vocabulary.apkg + dist/anki_4000_format.tsv
-python3 scripts/export_anki_4000.py
+python scripts/export_anki_4000.py
 
-# Hoặc chỉ định đường dẫn tùy ý
-python3 scripts/export_anki_4000.py <input.csv> <output.apkg> <output.tsv>
+# Hoặc chỉ định đường dẫn file tùy ý:
+python scripts/export_anki_4000.py <input.csv> <output.apkg> <output.tsv>
+```
+- Tự động chia **20 từ / Unit** (Unit 01, Unit 02,...).
+- **Cách nạp vào Anki:** Nhấp đúp file `dist/AWS_SAA_C03_Vocabulary.apkg` (yêu cầu cài [Anki Desktop](https://apps.ankiweb.net/)), hoặc chọn **File → Import...** file `dist/anki_4000_format.tsv`.
+
+#### 🔄 B. Chuyển đổi CSV sang Subtitle JSON (`sub.json`)
+```bash
+# Mặc định: lecturesub-tu-vung.csv → sub.json
+python scripts/csv_to_sub_json.py
+
+# Hoặc chỉ định file nguồn và file đích:
+python scripts/csv_to_sub_json.py <input.csv> <output.json>
+```
+- Chuẩn hóa trường `id` dạng `["en","vi","word"]`, bảo toàn mốc `createdAt` và tiến độ SRS.
+
+#### 🔍 C. So sánh đối chiếu & lọc từ vựng giữa 2 file CSV
+```bash
+# So sánh file gốc và file tải về mới:
+python scripts/find_diff_vocab.py lecturesub-tu-vung.csv "lecturesub-tu-vung (1).csv"
+```
+- Tự động sinh `tu-vung-khong-chung.csv` (các từ không trùng lặp) và `tu-vung-moi.csv` (các từ mới thêm).
+
+---
+
+### 3. Lệnh dọn dẹp dự án (Cleanup)
+
+Lệnh dọn dẹp chuyên dụng để quét và xóa an toàn các tệp JSON, CSV tạm và bản build sinh ra liên quan tới script từ vựng Anki:
+- **Tệp JSON phụ đề:** `sub.json`
+- **Các tệp CSV so sánh / tạm:** `tu-vung-khong-chung.csv`, `tu-vung-moi.csv`, `lecturesub-tu-vung (*).csv`, `diff_*.csv` *(bảo toàn tệp gốc `data/lecturesub-tu-vung.csv`)*
+- **Bản build Anki:** Toàn bộ file trong thư mục `dist/` (`.apkg`, `.tsv`)
+- **Bộ nhớ đệm:** `__pycache__`
+
+```bash
+# Chạy ở chế độ an toàn (quét, liệt kê danh sách tệp và yêu cầu nhập y/N xác nhận):
+python scripts/clean.py
+
+# Tự động xác nhận xóa mà không cần hỏi (thích hợp cho script tự động):
+python scripts/clean.py -y
 ```
 
-Script chạy được từ bất kỳ thư mục nào và tự tạo thư mục `dist/` nếu chưa có. Mỗi khi bổ sung từ mới vào CSV, chỉ cần chạy lại lệnh trên (hoặc dùng skill `/csv-to-apkg` trong Claude Code).
-
-### 2. Nạp vào Anki
-
-- **Cách 1 — Mở trực tiếp (khuyên dùng):** cài [Anki Desktop](https://apps.ankiweb.net/), nhấp đúp `dist/AWS_SAA_C03_Vocabulary.apkg`.
-- **Cách 2 — Import vào deck có sẵn:** trong Anki chọn **File → Import...** → `dist/anki_4000_format.tsv` (ánh xạ 11 trường của Note Type `4000Book1`).
-
-### 3. Cấu trúc deck
-
-- **Deck cha:** `AWS SAA-C03 Vocabulary (Stephane Maarek)`, chia subdeck **20 từ / Unit** (`Unit 01`, `Unit 02`, …). Với bộ ~86 từ hiện tại → 5 Units.
-- **Mặt trước:** gợi ý chữ cái đầu/cuối (`t__ __ __ __n`), câu ngữ cảnh đục lỗ Cloze, nghĩa tiếng Việt, ô gõ từ (`type:cloze`).
-- **Mặt sau:** so sánh từ đã gõ (xanh đúng / đỏ sai), phiên âm IPA, câu ngữ cảnh đầy đủ, nút mở video Udemy đúng mốc thời gian.
+> [!NOTE]
+> Tuân thủ chính sách bảo vệ tệp tin: Script luôn liệt kê danh sách tệp rõ ràng trước khi yêu cầu xác nhận xóa.
 
 ---
 

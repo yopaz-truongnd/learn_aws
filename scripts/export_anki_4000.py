@@ -30,6 +30,13 @@ import sqlite3
 import zipfile
 import tempfile
 
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
+
 # Bảng phiên âm quốc tế IPA chuẩn (UK/US) cho toàn bộ từ vựng khóa học
 IPA_MAP = {
     'Advisor': "/ədˈvaɪ.zər/",
