@@ -47,6 +47,14 @@ learn_aws/
 | [`topics/aws_route53.html`](topics/aws_route53.html) | Dịch vụ DNS Route 53, CNAME vs Alias Record, Cây quyết định Mermaid, 8 Chính sách định tuyến, Health Checks &amp; Khôi phục sự cố thảm họa. |
 | [`topics/aws_s3.html`](topics/aws_s3.html) | Amazon S3 lưu trữ đối tượng, Cây quyết định 7 Storage Classes, Lifecycle Rules, SSE Encryption, Object Lock (WORM), Nhân bản CRR/SRR. |
 | [`topics/aws_cloudfront.html`](topics/aws_cloudfront.html) | Mạng biên toàn cầu, Cây quyết định Mermaid, Ma trận CloudFront vs Global Accelerator, OAC, Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge. |
+| [`topics/lab_ec2.html`](topics/lab_ec2.html) | **Hands-on Lab 1:** EC2 User Data (`ec2-user-data.sh`) &amp; Instance Metadata CLI (`ec2-metadata.sh`, IMDSv1/v2). |
+| [`topics/lab_storage.html`](topics/lab_storage.html) | **Hands-on Lab 2:** EBS Volume Benchmark (`commands.txt`, `fio`/`ioping`) &amp; EFS Multi-AZ Shared Mount (`efs.sh`). |
+| [`topics/lab_route53.html`](topics/lab_route53.html) | **Hands-on Lab 3:** Route 53 Multi-AZ/Region Routing Demo với IMDSv1/IMDSv2 User Data (`route53/user-data.sh`). |
+| [`topics/lab_s3.html`](topics/lab_s3.html) | **Hands-on Lab 4:** S3 Static Website, CORS (`CORS_CONFIG.json`), Pre-signed URL, MFA Delete &amp; Athena Access Logs SQL. |
+| [`topics/lab_decoupling.html`](topics/lab_decoupling.html) | **Hands-on Lab 5:** Amazon SQS CLI (`sqs.sh`) &amp; Kinesis Data Streams Producer/Consumer (`kinesis-data-streams.sh`). |
+| [`topics/lab_serverless.html`](topics/lab_serverless.html) | **Hands-on Lab 6:** AWS Lambda &amp; Amazon API Gateway Proxy Integration (`api-gateway/lambda-code.py`). |
+| [`topics/lab_security_ssm_kms.html`](topics/lab_security_ssm_kms.html) | **Hands-on Lab 7:** AWS KMS CLI Encryption (`kms-demo-cli.sh`) &amp; SSM Parameter Store với Lambda (`ssm/cli.sh`, `handler.py`). |
+| [`topics/lab_cloudformation.html`](topics/lab_cloudformation.html) | **Hands-on Lab 8:** AWS CloudFormation Infrastructure as Code (`0-just-ec2.yaml`, `1-ec2-with-sg-eip.yaml`). |
 | [`assets/css/style.css`](assets/css/style.css) | Toàn bộ CSS Design System dùng chung, tokens màu, Dark/Light mode, typography, components, matrix tables. |
 | [`assets/js/app.js`](assets/js/app.js) | Script xử lý chuyển đổi song ngữ VI/EN tức thì, lưu `localStorage`, render tự động Mermaid. |
 | [`assets/vendor/mermaid.min.js`](assets/vendor/mermaid.min.js) | Thư viện Mermaid.js nội bộ 100% offline vẽ sơ đồ tư duy, decision tree, sequence diagrams, state diagrams. |

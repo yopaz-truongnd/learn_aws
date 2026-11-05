@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 5: SQS Queue CLI &amp; Kinesis Data Streams — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 5 · Section 16 (SQS &amp; Kinesis)</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/sqs &amp; kinesis</div>
+  <h1>
+    <span class="lang-vi">Thực Hành Decoupling: Amazon SQS CLI &amp; Kinesis Data Streams</span>
+    <span class="lang-en">Decoupling Hands-On: Amazon SQS CLI &amp; Kinesis Data Streams</span>
+  </h1>
+  <p class="lang-vi">Thực hành vòng đời gửi/nhận/xóa tin nhắn trên hàng đợi SQS (Visibility Timeout, Long Polling) và truyền dữ liệu thời gian thực qua Kinesis Shards</p>
+  <p class="lang-en">Hands-on message lifecycle in SQS queues (Visibility Timeout, Long Polling) and real-time streaming through Kinesis Shards</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ so sánh luồng SQS vs Kinesis -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📬</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ luồng hoạt động thực hành: SQS Queue vs Kinesis Data Streams</span>
+        <span class="lang-en">1. Lab Execution Flow: SQS Queue vs Kinesis Data Streams</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Sự khác biệt cốt lõi giữa mô hình Hàng đợi (xóa sau khi xử lý) và Luồng dữ liệu (lưu giữ theo Shard Iterator)</span>
+        <span class="lang-en">Core architectural distinction between Queue polling (delete after processing) and Stream consumption (Shard Iterator retention)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-decouple">
+    <div class="mermaid-src lang-vi" style="display:none">
+sequenceDiagram
+    autonumber
+    participant P as Producer (AWS CLI)
+    participant SQS as Amazon SQS (MyFirstQueue)
+    participant KDS as Kinesis Stream (shardId-0000)
+    participant C as Consumer (AWS CLI)
+
+    rect rgb(229, 242, 252)
+    Note over P,C: Luồng 1: Amazon SQS (sqs.sh)
+    P->>SQS: send-message (--message-body "hello-world")
+    C->>SQS: receive-message (--visibility-timeout 30 --wait-time-seconds 20)
+    SQS-->>C: Trả về Message + ReceiptHandle (Ẩn tin nhắn 30s)
+    C->>SQS: delete-message (--receipt-handle ...)
+    end
+
+    rect rgb(232, 241, 236)
+    Note over P,C: Luồng 2: Amazon Kinesis Data Streams (kinesis-data-streams.sh)
+    P->>KDS: put-record (--partition-key user1 --data "user signup")
+    C->>KDS: get-shard-iterator (--shard-iterator-type TRIM_HORIZON)
+    KDS-->>C: Trả về ShardIterator token
+    C->>KDS: get-records (--shard-iterator ...)
+    KDS-->>C: Trả về danh sách Records (Dữ liệu Base64)
+    end
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+sequenceDiagram
+    autonumber
+    participant P as Producer (AWS CLI)
+    participant SQS as Amazon SQS (MyFirstQueue)
+    participant KDS as Kinesis Stream (shardId-0000)
+    participant C as Consumer (AWS CLI)
+
+    rect rgb(229, 242, 252)
+    Note over P,C: Flow 1: Amazon SQS (sqs.sh)
+    P->>SQS: send-message (--message-body "hello-world")
+    C->>SQS: receive-message (--visibility-timeout 30 --wait-time-seconds 20)
+    SQS-->>C: Returns Message + ReceiptHandle (Hidden for 30s)
+    C->>SQS: delete-message (--receipt-handle ...)
+    end
+
+    rect rgb(232, 241, 236)
+    Note over P,C: Flow 2: Amazon Kinesis Data Streams (kinesis-data-streams.sh)
+    P->>KDS: put-record (--partition-key user1 --data "user signup")
+    C->>KDS: get-shard-iterator (--shard-iterator-type TRIM_HORIZON)
+    KDS-->>C: Returns ShardIterator token
+    C->>KDS: get-records (--shard-iterator ...)
+    KDS-->>C: Returns Records array (Base64 encoded Data)
+    end
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Bài thực hành 1: Amazon SQS CLI -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📩</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bài thực hành 1: Thao tác hàng đợi Amazon SQS qua AWS CLI</span>
+        <span class="lang-en">2. Hands-On 1: Operating Amazon SQS Queues via AWS CLI</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/sqs/sqs.sh</code></span>
+        <span class="lang-en">Source file: <code>aws_document/sqs/sqs.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/sqs/sqs.sh</span>
+    <span class="lang-en">Source code in aws_document/sqs/sqs.sh</span>
+  </div>
+  <div class="json"><span class="jc"># 1. Liệt kê tất cả các hàng đợi SQS trong Region us-east-1:</span>
+<span class="jk">aws sqs list-queues</span> --region us-east-1
+
+<span class="jc"># 2. Gửi một tin nhắn (Producer) vào hàng đợi MyFirstQueue:</span>
+<span class="jk">aws sqs send-message</span> \
+  --queue-url https://queue.amazonaws.com/387124123361/MyFirstQueue \
+  --region us-east-1 \
+  --message-body hello-world
+
+<span class="jc"># 3. Nhận tin nhắn (Consumer) kèm Visibility Timeout (30s) và Long Polling (20s):</span>
+<span class="jk">aws sqs receive-message</span> \
+  --region us-east-1 \
+  --queue-url https://queue.amazonaws.com/387124123361/MyFirstQueue \
+  --max-number-of-messages <span class="jp">10</span> \
+  --visibility-timeout <span class="jp">30</span> \
+  --wait-time-seconds <span class="jp">20</span>
+
+<span class="jc"># 4. Xóa tin nhắn khỏi hàng đợi sau khi xử lý xong bằng ReceiptHandle:</span>
+<span class="jk">aws sqs delete-message</span> \
+  --receipt-handle <span class="jv">"AQEBB+moMioWDaeaCZguaiMPXEqDe6n4..."</span> \
+  --queue-url https://queue.amazonaws.com/387124123361/MyFirstQueue \
+  --region us-east-1</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Giải thích 4 tham số quyết định trong đề thi SAA-C03</span>
+    <span class="lang-en">4 Critical Parameters Tested in SAA-C03</span>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>--visibility-timeout 30 (Thời gian ẩn tạm thời)</div>
+      <div class="id lang-vi">Khi một Consumer gọi <code>receive-message</code>, tin nhắn vẫn nằm trong SQS nhưng bị <b>ẩn đi trong 30 giây</b> để các Consumer khác không lấy trùng. Nếu sau 30 giây mà Consumer chưa gọi <code>delete-message</code>, tin nhắn sẽ hiện trở lại trong hàng đợi để xử lý lại!</div>
+      <div class="id lang-en">When a Consumer calls <code>receive-message</code>, the message stays in SQS but becomes <b>invisible for 30 seconds</b> to prevent duplicate processing. If <code>delete-message</code> is not called within 30s, the message reappears in the queue!</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>--wait-time-seconds 20 (SQS Long Polling)</div>
+      <div class="id lang-vi">Kích hoạt <b>Long Polling</b> (tối đa <code>20</code> giây): Nếu hàng đợi đang trống, lệnh CLI sẽ kiên nhẫn chờ tối đa 20 giây cho đến khi có tin nhắn mới tới rồi mới trả về. Giúp <b>giảm số lượng API calls rỗng và tiết kiệm chi phí SQS</b>.</div>
+      <div class="id lang-en">Enables <b>Long Polling</b> (max <code>20</code> seconds): If the queue is empty, the request waits up to 20 seconds for a message to arrive before returning, <b>reducing empty API responses and lowering SQS costs</b>.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>--max-number-of-messages 10 (Giới hạn Batch)</div>
+      <div class="id lang-vi">Mỗi lần gọi <code>receive-message</code> có thể lấy tối đa <b>10 tin nhắn cùng lúc</b> (tổng kích thước mỗi tin tối đa 256 KB).</div>
+      <div class="id lang-en">Each <code>receive-message</code> call can retrieve a batch of up to <b>10 messages at once</b> (maximum 256 KB per message).</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>--receipt-handle vs MessageId (Bẫy thực hành!)</div>
+      <div class="id lang-vi">Để xóa tin nhắn bằng <code>delete-message</code>, bạn bắt buộc phải truyền <b><code>ReceiptHandle</code></b> (mã biên nhận sinh ra ở lần <code>receive-message</code> gần nhất), <b>KHÔNG phải</b> <code>MessageId</code>!</div>
+      <div class="id lang-en">To delete a message via <code>delete-message</code>, you MUST pass the <b><code>ReceiptHandle</code></b> returned by the latest <code>receive-message</code> call, <b>NOT</b> the <code>MessageId</code>!</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Bài thực hành 2: Amazon Kinesis Data Streams -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🌊</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Bài thực hành 2: Producer &amp; Consumer trên Amazon Kinesis Data Streams</span>
+        <span class="lang-en">3. Hands-On 2: Producer &amp; Consumer on Amazon Kinesis Data Streams</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/kinesis/kinesis-data-streams.sh</code></span>
+        <span class="lang-en">Source file: <code>aws_document/kinesis/kinesis-data-streams.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/kinesis/kinesis-data-streams.sh</span>
+    <span class="lang-en">Source code in aws_document/kinesis/kinesis-data-streams.sh</span>
+  </div>
+  <div class="json"><span class="jc">#!/bin/bash</span>
+<span class="jk">aws</span> --version
+
+<span class="jc"># ================= PRODUCER =================</span>
+<span class="jc"># AWS CLI v2 (Bắt buộc có cờ --cli-binary-format raw-in-base64-out):</span>
+<span class="jk">aws kinesis put-record</span> --stream-name test --partition-key user1 --data <span class="jv">"user signup"</span> --cli-binary-format raw-in-base64-out
+
+<span class="jc"># AWS CLI v1:</span>
+<span class="jk">aws kinesis put-record</span> --stream-name test --partition-key user1 --data <span class="jv">"user signup"</span>
+
+<span class="jc"># ================= CONSUMER =================</span>
+<span class="jc"># Bước 1: Kiểm tra thông tin Stream và lấy danh sách Shard ID:</span>
+<span class="jk">aws kinesis describe-stream</span> --stream-name test
+
+<span class="jc"># Bước 2: Lấy con trỏ đọc dữ liệu (Shard Iterator) từ đầu luồng (TRIM_HORIZON):</span>
+<span class="jk">aws kinesis get-shard-iterator</span> --stream-name test --shard-id shardId-000000000000 --shard-iterator-type TRIM_HORIZON
+
+<span class="jc"># Bước 3: Đọc bản ghi bằng mã ShardIterator vừa nhận được:</span>
+<span class="jk">aws kinesis get-records</span> --shard-iterator &lt;PASTE_SHARD_ITERATOR_HERE&gt;</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Các bước thực hành &amp; Giải thích chi tiết</span>
+    <span class="lang-en">Step-by-Step Guide &amp; Detailed Explanation</span>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Tạo Kinesis Data Stream tên <code>test</code></b>
+        <b class="lang-en">Create a Kinesis Data Stream Named <code>test</code></b>
+        <span class="lang-vi">Vào <b>Kinesis Console &rarr; Data streams &rarr; Create data stream</b>, đặt tên là <code>test</code>, chọn chế độ <b>Provisioned</b> với <code>1</code> Shard (1 MB/s hoặc 1000 records/s chiều ghi; 2 MB/s chiều đọc) để kiểm soát chi phí thực hành.</span>
+        <span class="lang-en">In <b>Kinesis Console &rarr; Data streams &rarr; Create data stream</b>, name it <code>test</code> and select <b>Provisioned</b> mode with <code>1</code> Shard (1 MB/s or 1000 records/s write; 2 MB/s read).</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Ý nghĩa của <code>--partition-key user1</code> và <code>--cli-binary-format</code></b>
+        <b class="lang-en">Understanding <code>--partition-key user1</code> and <code>--cli-binary-format</code></b>
+        <span class="lang-vi">• Kinesis băm (MD5 hash) giá trị <code>PartitionKey</code> (<code>user1</code>) để quyết định bản ghi sẽ đi vào Shard nào. Nhờ đó, mọi sự kiện của cùng một <code>user1</code> luôn nằm trong cùng 1 Shard và <b>được đảm bảo đúng thứ tự (Ordering per Partition Key)</b>!<br>• Trên AWS CLI v2, mọi tham số kiểu blob mặc định yêu cầu đầu vào đã mã hóa base64; thêm cờ <code>--cli-binary-format raw-in-base64-out</code> giúp bạn truyền chuỗi văn bản thuần <code>"user signup"</code> trực tiếp.</span>
+        <span class="lang-en">• Kinesis hashes the <code>PartitionKey</code> (<code>user1</code>) via MD5 to route records to a specific Shard, guaranteeing <b>strict ordering per Partition Key</b>!<br>• On AWS CLI v2, binary parameters expect base64 input by default; <code>--cli-binary-format raw-in-base64-out</code> lets you pass raw strings like <code>"user signup"</code> directly.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Ý nghĩa của <code>TRIM_HORIZON</code> vs <code>LATEST</code> khi lấy Shard Iterator</b>
+        <b class="lang-en"><code>TRIM_HORIZON</code> vs <code>LATEST</code> Shard Iterator Types</b>
+        <span class="lang-vi">• <b><code>TRIM_HORIZON</code></b>: Bắt đầu đọc từ bản ghi <b>cũ nhất</b> hiện còn lưu trong Shard (như tua lại băng từ đầu).<br>• <b><code>LATEST</code></b>: Chỉ đọc các bản ghi <b>mới phát sinh</b> kể từ thời điểm gọi lệnh.<br>• Khi nhận kết quả từ <code>get-records</code>, trường <code>Data</code> sẽ ở dạng Base64 (ví dụ <code>dXNlciBzaWdudXA=</code> &rarr; giải mã ra <code>user signup</code>), đồng thời trả về <code>NextShardIterator</code> để đọc tiếp vòng sau.</span>
+        <span class="lang-en">• <b><code>TRIM_HORIZON</code></b>: Starts reading from the <b>oldest</b> untrimmed record in the Shard (replay from beginning).<br>• <b><code>LATEST</code></b>: Reads only <b>new records</b> arriving after the iterator is created.<br>• The <code>get-records</code> output returns Base64-encoded <code>Data</code> (<code>dXNlciBzaWdudXA=</code> &rarr; decodes to <code>user signup</code>) along with <code>NextShardIterator</code> for continuous polling.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 6: AWS Lambda &amp; API Gateway Integration — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 6 · Section 18 &amp; 19 (Serverless)</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/api-gateway</div>
+  <h1>
+    <span class="lang-vi">Thực Hành Serverless: Tích Hợp AWS Lambda Với Amazon API Gateway</span>
+    <span class="lang-en">Serverless Hands-On: Integrating AWS Lambda with Amazon API Gateway</span>
+  </h1>
+  <p class="lang-vi">Xây dựng REST API hoàn toàn không máy chủ (Serverless) bằng Python Lambda Function và cấu hình Lambda Proxy Integration trên API Gateway</p>
+  <p class="lang-en">Building a 100% Serverless REST API using a Python Lambda function and configuring Lambda Proxy Integration on Amazon API Gateway</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ kiến trúc -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ luồng xử lý Request/Response qua API Gateway &amp; AWS Lambda</span>
+        <span class="lang-en">1. Request/Response Flow via API Gateway &amp; AWS Lambda</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cơ chế Lambda Proxy Integration chuyển tiếp toàn bộ HTTP Request vào biến event và nhận lại JSON chuẩn</span>
+        <span class="lang-en">How Lambda Proxy Integration forwards the full HTTP request into the event object and parses the structured JSON response</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-apigw">
+    <div class="mermaid-src lang-vi" style="display:none">
+sequenceDiagram
+    autonumber
+    actor Client as Trình duyệt / Postman
+    participant APIGW as Amazon API Gateway<br/>(REST API Stage: /dev)
+    participant Lambda as AWS Lambda<br/>(lambda-code.py)
+    participant CW as CloudWatch Logs
+
+    Client->>APIGW: 1. GET https://abc123.execute-api.region.amazonaws.com/dev/hello
+    APIGW->>Lambda: 2. Invoke lambda_handler(event, context)<br/>(Lambda Proxy Integration)
+    Lambda->>CW: 3. Ghi log thực thi vào Log Group
+    Lambda-->>APIGW: 4. Trả về Dict: {"statusCode": 200, "headers": {...}, "body": "\"Hello from Lambda!\""}
+    APIGW-->>Client: 5. HTTP 200 OK (Content-Type: application/json)<br/>Body: "Hello from Lambda!"
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+sequenceDiagram
+    autonumber
+    actor Client as Browser / Postman
+    participant APIGW as Amazon API Gateway<br/>(REST API Stage: /dev)
+    participant Lambda as AWS Lambda<br/>(lambda-code.py)
+    participant CW as CloudWatch Logs
+
+    Client->>APIGW: 1. GET https://abc123.execute-api.region.amazonaws.com/dev/hello
+    APIGW->>Lambda: 2. Invoke lambda_handler(event, context)<br/>(Lambda Proxy Integration)
+    Lambda->>CW: 3. Stream execution logs to Log Group
+    Lambda-->>APIGW: 4. Return Dict: {"statusCode": 200, "headers": {...}, "body": "\"Hello from Lambda!\""}
+    APIGW-->>Client: 5. HTTP 200 OK (Content-Type: application/json)<br/>Body: "Hello from Lambda!"
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Mã nguồn & Giải thích -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🐍</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Mã nguồn Hàm Lambda &amp; Cấu trúc Phản hồi Chuẩn Proxy Integration</span>
+        <span class="lang-en">2. Lambda Function Code &amp; Standard Proxy Integration Response Schema</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/api-gateway/lambda-code.py</code></span>
+        <span class="lang-en">Source file: <code>aws_document/api-gateway/lambda-code.py</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/api-gateway/lambda-code.py</span>
+    <span class="lang-en">Source code in aws_document/api-gateway/lambda-code.py</span>
+  </div>
+  <div class="json"><span class="jk">import</span> json
+
+<span class="jk">def</span> <span class="jp">lambda_handler</span>(event, context):
+    body = <span class="jv">"Hello from Lambda!"</span>
+    statusCode = <span class="jp">200</span>
+    <span class="jk">return</span> {
+        <span class="jv">"statusCode"</span>: statusCode,
+        <span class="jv">"body"</span>: json.dumps(body),
+        <span class="jv">"headers"</span>: {
+            <span class="jv">"Content-Type"</span>: <span class="jv">"application/json"</span>
+        }
+    }</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Giải thích chi tiết từng thành phần trong Code</span>
+    <span class="lang-en">Detailed Code Breakdown</span>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Tham số event và context</div>
+      <div class="id lang-vi">
+        • <b><code>event</code></b>: Đối tượng Python <code>dict</code> chứa toàn bộ dữ liệu HTTP do API Gateway truyền sang: <code>event['httpMethod']</code>, <code>event['headers']</code>, <code>event['queryStringParameters']</code>, <code>event['pathParameters']</code> và <code>event['body']</code>.<br>
+        • <b><code>context</code></b>: Thông tin môi trường thực thi của hàm Lambda (Function ARN, Request ID, lượng RAM cấp phát, thời gian còn lại trước khi timeout).
+      </div>
+      <div class="id lang-en">
+        • <b><code>event</code></b>: A Python <code>dict</code> containing the full HTTP payload passed by API Gateway: <code>event['httpMethod']</code>, <code>event['headers']</code>, <code>event['queryStringParameters']</code>, <code>event['pathParameters']</code>, and <code>event['body']</code>.<br>
+        • <b><code>context</code></b>: Runtime metadata of the Lambda invocation (Function ARN, Request ID, allocated memory, remaining time before timeout).
+      </div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Tại sao bắt buộc phải dùng json.dumps(body)?</div>
+      <div class="id lang-vi">
+        Khi bật <b>Lambda Proxy Integration</b> trên API Gateway, đối tượng trả về của Lambda <b>BẮT BUỘC</b> phải tuân thủ đúng cấu trúc gồm <code>statusCode</code> (số nguyên), <code>headers</code> (dict) và <b><code>body</code> phải là một chuỗi ký tự (Stringified JSON)</b>. Nếu bạn trả về một dict Python trực tiếp trong trường <code>body</code> mà quên bọc <code>json.dumps()</code>, API Gateway sẽ báo lỗi <b><code>502 Bad Gateway (Malformed Lambda proxy response)</code></b>!
+      </div>
+      <div class="id lang-en">
+        With <b>Lambda Proxy Integration</b> enabled on API Gateway, Lambda's return dictionary <b>MUST</b> contain <code>statusCode</code> (int), <code>headers</code> (dict), and <b><code>body</code> as a serialized string</b>. Returning a raw Python dict in <code>body</code> without <code>json.dumps()</code> triggers a <b><code>502 Bad Gateway (Malformed Lambda proxy response)</code></b> error!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Các bước thực hành trên AWS Console -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🛠️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Các bước thực hành triển khai Lambda &amp; API Gateway trên AWS Console</span>
+        <span class="lang-en">3. Step-by-Step Deployment Guide on AWS Console</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 bước từ lúc tạo hàm Lambda đến khi gọi thử API công khai trên trình duyệt</span>
+        <span class="lang-en">4 steps from creating the Lambda function to invoking the public API endpoint in your browser</span>
+      </div>
+    </div>
+  </div>
+
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Tạo hàm AWS Lambda (Python Runtime)</b>
+        <b class="lang-en">Create the AWS Lambda Function (Python Runtime)</b>
+        <span class="lang-vi">Vào <b>AWS Lambda Console &rarr; Create function &rarr; Author from scratch</b>. Đặt tên hàm (ví dụ <code>my-api-function</code>), chọn Runtime <b>Python 3.12</b>. Trong trình soạn thảo <code>lambda_function.py</code>, dán toàn bộ nội dung file <code>aws_document/api-gateway/lambda-code.py</code> vào và nhấn <b>Deploy</b>.</span>
+        <span class="lang-en">Open <b>AWS Lambda Console &rarr; Create function &rarr; Author from scratch</b>. Name it <code>my-api-function</code> and choose <b>Python 3.12</b>. Paste the code from <code>aws_document/api-gateway/lambda-code.py</code> into <code>lambda_function.py</code> and click <b>Deploy</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Tạo REST API trên Amazon API Gateway</b>
+        <b class="lang-en">Create a REST API in Amazon API Gateway</b>
+        <span class="lang-vi">Mở <b>API Gateway Console &rarr; Create API &rarr; REST API (Build)</b>. Chọn <b>Endpoint Type: Regional</b>. Nhấn <b>Create method</b> (hoặc tạo Resource mới rồi Create method): chọn phương thức <b><code>GET</code></b>, Integration type là <b>Lambda Function</b>, bật công tắc <b>Lambda proxy integration</b> và chọn hàm <code>my-api-function</code>.</span>
+        <span class="lang-en">Open <b>API Gateway Console &rarr; Create API &rarr; REST API (Build)</b>. Choose <b>Endpoint Type: Regional</b>. Click <b>Create method</b>: select <b><code>GET</code></b>, Integration type <b>Lambda Function</b>, toggle ON <b>Lambda proxy integration</b>, and select <code>my-api-function</code>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Deploy API ra Stage (Bước bắt buộc để có URL công khai!)</b>
+        <b class="lang-en">Deploy API to a Stage (Required to Publish Changes!)</b>
+        <span class="lang-vi">Nhấn nút <b>Deploy API</b> ở góc phải &rarr; chọn <b>*New stage*</b> &rarr; đặt tên Stage là <code>dev</code> hoặc <code>prod</code> rồi bấm <b>Deploy</b>. <i>(Lưu ý: Mọi thay đổi cấu hình trên API Gateway sẽ không có hiệu lực cho đến khi bạn nhấn Deploy API!)</i></span>
+        <span class="lang-en">Click <b>Deploy API</b> &rarr; select <b>*New stage*</b> &rarr; name it <code>dev</code> or <code>prod</code> and click <b>Deploy</b>. <i>(Note: Any changes in API Gateway do not take effect until you explicitly Deploy the API to a Stage!)</i></span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">4</div>
+      <div>
+        <b class="lang-vi">Truy cập Invoke URL &amp; Kiểm tra kết quả</b>
+        <b class="lang-en">Open the Invoke URL &amp; Verify Response</b>
+        <span class="lang-vi">Sao chép <b>Invoke URL</b> trong mục Stage details (dạng <code>https://xyz.execute-api.us-east-1.amazonaws.com/dev</code>) và mở trên trình duyệt. Bạn sẽ nhận được chuỗi JSON <code>"Hello from Lambda!"</code> với mã HTTP <code>200</code>.</span>
+        <span class="lang-en">Copy the <b>Invoke URL</b> from Stage details (e.g., <code>https://xyz.execute-api.us-east-1.amazonaws.com/dev</code>) and open it in your browser. You will receive <code>"Hello from Lambda!"</code> with HTTP status <code>200</code>.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 4: S3 Static Web, CORS, Pre-signed URL, MFA Delete &amp; Athena — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_s3.html" class="nav-back">
+      <span class="lang-vi">📖 Lý thuyết Section 11 &amp; 13: S3</span>
+      <span class="lang-en">📖 Theory Section 11 &amp; 13: S3</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 4 · Section 11 &amp; 13</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/s3 &amp; s3-advanced</div>
+  <h1>
+    <span class="lang-vi">Thực Hành Amazon S3: Static Website, CORS, Pre-signed URL, MFA Delete &amp; Athena Logs</span>
+    <span class="lang-en">Amazon S3 Hands-On: Static Website, CORS, Pre-signed URL, MFA Delete &amp; Athena Logs</span>
+  </h1>
+  <p class="lang-vi">Tổng hợp 4 bài thực hành cốt lõi trong thư mục <code>aws_document/s3</code> và <code>aws_document/s3-advanced</code> kèm mã nguồn, sơ đồ và giải thích chi tiết</p>
+  <p class="lang-en">Complete guide to the 4 hands-on labs in <code>aws_document/s3</code> and <code>aws_document/s3-advanced</code> with source files, diagrams, and detailed explanations</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ luồng CORS trên S3 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🌐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Bài thực hành 1: S3 Static Website Hosting &amp; Cross-Origin Resource Sharing (CORS)</span>
+        <span class="lang-en">1. Hands-On 1: S3 Static Website Hosting &amp; Cross-Origin Resource Sharing (CORS)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/s3/index.html</code>, <code>index-with-fetch.html</code>, <code>extra-page.html</code>, <code>CORS_CONFIG.json</code>, <code>coffee.jpg</code>, <code>beach.jpg</code></span>
+        <span class="lang-en">Source files: <code>aws_document/s3/index.html</code>, <code>index-with-fetch.html</code>, <code>extra-page.html</code>, <code>CORS_CONFIG.json</code>, <code>coffee.jpg</code>, <code>beach.jpg</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-s3-cors">
+    <div class="mermaid-src lang-vi" style="display:none">
+sequenceDiagram
+    autonumber
+    actor Browser as Trình duyệt (User Browser)
+    participant B1 as Bucket 1 (Origin A - Website chính)<br/>index-with-fetch.html + coffee.jpg
+    participant B2 as Bucket 2 (Origin B - Tài nguyên phụ)<br/>extra-page.html + CORS_CONFIG.json
+
+    Browser->>B1: 1. GET http://bucket-1.s3-website.../index.html
+    B1-->>Browser: Trả về trang HTML + ảnh coffee.jpg
+    Note over Browser: JavaScript chạy lệnh fetch() sang Bucket 2
+    Browser->>B2: 2. GET http://bucket-2.s3-website.../extra-page.html<br/>Header: Origin: http://bucket-1.s3-website...
+    B2-->>Browser: 3. Kiểm tra CORS_CONFIG.json trên Bucket 2<br/>Trả về extra-page.html + Access-Control-Allow-Origin: http://bucket-1...
+    Note over Browser: Hiển thị "This extra page has been successfully loaded!"
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+sequenceDiagram
+    autonumber
+    actor Browser as User Browser
+    participant B1 as Bucket 1 (Origin A - Main Website)<br/>index-with-fetch.html + coffee.jpg
+    participant B2 as Bucket 2 (Origin B - Cross-Origin Bucket)<br/>extra-page.html + CORS_CONFIG.json
+
+    Browser->>B1: 1. GET http://bucket-1.s3-website.../index.html
+    B1-->>Browser: Returns HTML + coffee.jpg
+    Note over Browser: JavaScript executes fetch() to Bucket 2
+    Browser->>B2: 2. GET http://bucket-2.s3-website.../extra-page.html<br/>Header: Origin: http://bucket-1.s3-website...
+    B2-->>Browser: 3. Evaluates CORS_CONFIG.json on Bucket 2<br/>Returns extra-page.html + Access-Control-Allow-Origin: http://bucket-1...
+    Note over Browser: Renders "This extra page has been successfully loaded!"
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+
+  <div class="cols" style="margin-top:14px">
+    <div class="col">
+      <div class="lbl">aws_document/s3/index-with-fetch.html (Đặt tại Bucket 1)</div>
+      <div class="json"><span class="jk">&lt;html&gt;</span>
+  <span class="jk">&lt;head&gt;&lt;title&gt;</span>My First Webpage<span class="jk">&lt;/title&gt;&lt;/head&gt;</span>
+  <span class="jk">&lt;body&gt;</span>
+    <span class="jk">&lt;h1&gt;</span>I love coffee<span class="jk">&lt;/h1&gt;</span>
+    <span class="jk">&lt;p&gt;</span>Hello world!<span class="jk">&lt;/p&gt;</span>
+  <span class="jk">&lt;/body&gt;</span>
+  <span class="jk">&lt;img</span> <span class="jp">src</span>=<span class="jv">"coffee.jpg"</span> <span class="jp">width</span>=500/<span class="jk">&gt;</span>
+  <span class="jc">&lt;!-- CORS demo --&gt;</span>
+  <span class="jk">&lt;div</span> <span class="jp">id</span>=<span class="jv">"tofetch"</span>/<span class="jk">&gt;</span>
+  <span class="jk">&lt;script&gt;</span>
+    var tofetch = document.getElementById(<span class="jv">"tofetch"</span>);
+    fetch(<span class="jv">'http://&lt;bucket-2-URL&gt;/extra-page.html'</span>)
+    .then((response) =&gt; response.text())
+    .then((html) =&gt; { tofetch.innerHTML = html });
+  <span class="jk">&lt;/script&gt;</span>
+<span class="jk">&lt;/html&gt;</span></div>
+    </div>
+    <div class="col">
+      <div class="lbl">aws_document/s3/CORS_CONFIG.json (Cấu hình trên Bucket 2!)</div>
+      <div class="json">[
+    {
+        <span class="jk">"AllowedHeaders"</span>: [
+            <span class="jv">"Authorization"</span>
+        ],
+        <span class="jk">"AllowedMethods"</span>: [
+            <span class="jv">"GET"</span>
+        ],
+        <span class="jk">"AllowedOrigins"</span>: [
+            <span class="jv">"&lt;url of first bucket with http://...without slash at the end&gt;"</span>
+        ],
+        <span class="jk">"ExposeHeaders"</span>: [],
+        <span class="jk">"MaxAgeSeconds"</span>: <span class="jp">3000</span>
+    }
+]
+<span class="jc">// extra-page.html (Đặt tại Bucket 2):</span>
+<span class="jc">// &lt;p&gt;This &lt;strong&gt;extra page&lt;/strong&gt; has been successfully loaded!&lt;/p&gt;</span></div>
+    </div>
+  </div>
+
+  <!-- Khung xem trước trực tiếp (Live Preview) -->
+  <div style="margin-top:16px;padding:16px;background:var(--sub);border:1px solid var(--bd);border-radius:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <b style="font-size:13px">
+        <span class="lang-vi">👁️ Xem trước kết quả hiển thị của trang <code>aws_document/s3/index.html</code> + <code>extra-page.html</code>:</span>
+        <span class="lang-en">👁️ Live Preview of <code>aws_document/s3/index.html</code> + <code>extra-page.html</code> when CORS succeeds:</span>
+      </b>
+      <a href="../aws_document/s3/index.html" target="_blank" class="tag tb" style="text-decoration:none">
+        <span class="lang-vi">Mở trực tiếp aws_document/s3/index.html ↗</span>
+        <span class="lang-en">Open raw aws_document/s3/index.html ↗</span>
+      </a>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--card);padding:14px;border-radius:8px;border:1px solid var(--bd)">
+      <img src="../aws_document/s3/coffee.jpg" alt="coffee.jpg" style="width:180px;height:120px;object-fit:cover;border-radius:6px;border:1px solid var(--bd)">
+      <img src="../aws_document/s3/beach.jpg" alt="beach.jpg" style="width:180px;height:120px;object-fit:cover;border-radius:6px;border:1px solid var(--bd)">
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">I love coffee</div>
+        <div style="font-size:13px;color:var(--mu);margin-bottom:8px">Hello world!</div>
+        <div style="padding:8px 12px;background:var(--grb);color:var(--gr);border-radius:6px;font-size:12px">
+          ✅ <b>CORS Fetch Result (extra-page.html):</b> This <strong>extra page</strong> has been successfully loaded!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Các bước thực hành &amp; Bẫy đề thi SAA-C03 về CORS</span>
+    <span class="lang-en">Step-by-Step Guide &amp; SAA-C03 CORS Exam Traps</span>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Tạo Bucket 1 &amp; Bucket 2, bật Static Website Hosting và mở Bucket Policy công khai</b>
+        <b class="lang-en">Create Bucket 1 &amp; Bucket 2, Enable Static Website Hosting and Public Read Policy</b>
+        <span class="lang-vi">Tắt <i>Block all public access</i>, gắn Bucket Policy cho phép <code>s3:GetObject</code> công khai, và bật <b>Static website hosting</b> ở tab <i>Properties</i> cho cả 2 bucket. Tải <code>index-with-fetch.html</code> (đổi tên thành <code>index.html</code>) và <code>coffee.jpg</code> lên <b>Bucket 1</b>; tải <code>extra-page.html</code> lên <b>Bucket 2</b>.</span>
+        <span class="lang-en">Disable <i>Block all public access</i>, attach a public read <code>s3:GetObject</code> Bucket Policy, and enable <b>Static website hosting</b> under <i>Properties</i> on both buckets. Upload <code>index-with-fetch.html</code> (as <code>index.html</code>) and <code>coffee.jpg</code> to <b>Bucket 1</b>; upload <code>extra-page.html</code> to <b>Bucket 2</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn" style="background:var(--rd)">!</div>
+      <div>
+        <b style="color:var(--rd)">
+          <span class="lang-vi">Quy tắc vàng SAA-C03: Đặt cấu hình CORS ở Bucket nào?</span>
+          <span class="lang-en">SAA-C03 Golden Rule: Which Bucket Gets the CORS Configuration?</span>
+        </b>
+        <span class="lang-vi">Cấu hình <code>CORS_CONFIG.json</code> <b>BẮT BUỘC phải đặt trên Bucket 2 (Cross-Origin Bucket — nơi chứa <code>extra-page.html</code> được gọi tới)</b>, và giá trị <code>AllowedOrigins</code> phải điền chính xác URL Website Endpoint của <b>Bucket 1</b> (không có dấu <code>/</code> ở cuối, hoặc dùng <code>*</code> nếu cho phép mọi nguồn).</span>
+        <span class="lang-en"><code>CORS_CONFIG.json</code> <b>MUST be configured on Bucket 2 (the Cross-Origin destination bucket hosting <code>extra-page.html</code>)</b>, and <code>AllowedOrigins</code> must match the exact Website Endpoint URL of <b>Bucket 1</b> (without a trailing slash, or <code>*</code> for any origin).</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 2. Bài thực hành 2: S3 Pre-signed URL & MFA Delete -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🔑</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bài thực hành 2: Tạo S3 Pre-signed URL</span>
+        <span class="lang-en">2. Hands-On 2: Generating S3 Pre-signed URLs</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/s3-advanced/pre-signed-url.sh</code></span>
+        <span class="lang-en">Source: <code>aws_document/s3-advanced/pre-signed-url.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="json"><span class="jc"># 1. Luôn truyền tham số --region chính xác của bucket:</span>
+<span class="jk">aws s3 presign</span> s3://mybucket/myobject --region my-region
+
+<span class="jc"># 2. Tùy chỉnh thời gian hết hạn (tính bằng giây, mặc định 3600s = 1 giờ):</span>
+<span class="jk">aws s3 presign</span> s3://mybucket/myobject --expires-in 300 --region my-region
+
+<span class="jc"># 3. Nếu gặp lỗi chữ ký khi tạo URL cho file mã hóa (SSE-KMS), bật s3v4:</span>
+<span class="jk">aws configure set</span> default.s3.signature_version s3v4</div>
+
+  <div class="it" style="margin-top:14px">
+    <div class="in"><div class="dot" style="background:var(--gr)"></div>Giải thích &amp; Ứng dụng thực tế</div>
+    <div class="id lang-vi">
+      • <b>Mục đích:</b> Cấp quyền tải xuống (GET) hoặc tải lên (PUT) tạm thời một tệp Private trên S3 mà không cần mở Public Bucket.<br>
+      • <b>Quyền hạn:</b> Người nhận Pre-signed URL sẽ kế thừa đúng quyền đọc/ghi của IAM User hoặc IAM Role đã sinh ra URL đó.<br>
+      • <b>Khắc phục lỗi:</b> Lệnh <code>aws configure set default.s3.signature_version s3v4</code> bắt buộc dùng chuẩn ký <b>Signature Version 4</b> để tránh lỗi từ chối truy cập với các Region mới hoặc đối tượng mã hóa KMS.
+    </div>
+    <div class="id lang-en">
+      • <b>Purpose:</b> Grant temporary GET or PUT access to a private S3 object without making the bucket public.<br>
+      • <b>Permissions:</b> The URL inherits the permissions of the IAM principal that generated it.<br>
+      • <b>Troubleshooting:</b> Setting <code>default.s3.signature_version s3v4</code> enforces <b>Signature Version 4</b>, preventing signature mismatch errors on newer regions or KMS-encrypted objects.
+    </div>
+  </div>
+</div>
+
+<!-- 3. Bài thực hành 3: S3 MFA Delete -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">🛡️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Bài thực hành 3: Bật/Tắt S3 MFA Delete</span>
+        <span class="lang-en">3. Hands-On 3: Enabling/Disabling S3 MFA Delete</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/s3-advanced/mfa-delete.sh</code></span>
+        <span class="lang-en">Source: <code>aws_document/s3-advanced/mfa-delete.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="json"><span class="jc"># 1. Cấu hình profile CLI bằng Access Key của Root User:</span>
+<span class="jk">aws configure</span> --profile root-mfa-delete-demo
+
+<span class="jc"># 2. Bật MFA Delete (Phải kèm ARN thiết bị MFA và mã 6 số hiện tại):</span>
+<span class="jk">aws s3api put-bucket-versioning</span> --bucket mfa-demo-stephane \
+  --versioning-configuration Status=Enabled,MFADelete=Enabled \
+  --mfa <span class="jv">"arn-of-mfa-device mfa-code"</span> --profile root-mfa-delete-demo
+
+<span class="jc"># 3. Tắt MFA Delete và XÓA NGAY Root Access Keys trong IAM Console!</span>
+<span class="jk">aws s3api put-bucket-versioning</span> --bucket mfa-demo-stephane \
+  --versioning-configuration Status=Enabled,MFADelete=Disabled \
+  --mfa <span class="jv">"arn-of-mfa-device mfa-code"</span> --profile root-mfa-delete-demo</div>
+
+  <div class="it" style="margin-top:14px">
+    <div class="in"><div class="dot" style="background:var(--rd)"></div>3 Quy tắc bắt buộc của MFA Delete trong đề thi</div>
+    <div class="id lang-vi">
+      1. <b>Chỉ có Root Account</b> mới được phép bật/tắt MFA Delete và chỉ thực hiện được qua <b>AWS CLI / API</b> (không thể bật trên giao diện Web Console).<br>
+      2. Bucket bắt buộc phải bật <b>Versioning</b>.<br>
+      3. Khi bật, MFA chỉ yêu cầu khi <b>Xóa vĩnh viễn một Object Version (Delete Version)</b> hoặc <b>Tạm dừng Versioning (Suspend Versioning)</b>; xóa thường (tạo Delete Marker) KHÔNG cần MFA.
+    </div>
+    <div class="id lang-en">
+      1. <b>Only the Root Account</b> can enable/disable MFA Delete, and ONLY via <b>AWS CLI / API</b> (not supported in the Management Console UI).<br>
+      2. Bucket <b>Versioning</b> must be enabled.<br>
+      3. MFA is required ONLY to <b>permanently delete an object version</b> or <b>suspend versioning</b>; simple deletes (creating a Delete Marker) do NOT require MFA.
+    </div>
+  </div>
+</div>
+
+<!-- 4. Bài thực hành 4: Phân tích S3 Access Logs bằng Amazon Athena -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">📊</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Bài thực hành 4: Truy vấn S3 Server Access Logs bằng SQL trên Amazon Athena</span>
+        <span class="lang-en">4. Hands-On 4: Querying S3 Server Access Logs with SQL in Amazon Athena</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/s3-advanced/athena-s3-access-logs.sql</code></span>
+        <span class="lang-en">Source file: <code>aws_document/s3-advanced/athena-s3-access-logs.sql</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn SQL trong aws_document/s3-advanced/athena-s3-access-logs.sql</span>
+    <span class="lang-en">SQL Script in aws_document/s3-advanced/athena-s3-access-logs.sql</span>
+  </div>
+  <div class="json"><span class="jk">create database</span> s3_access_logs_db;
+
+<span class="jk">CREATE EXTERNAL TABLE IF NOT EXISTS</span> s3_access_logs_db.mybucket_logs(
+         BucketOwner <span class="jp">STRING</span>, Bucket <span class="jp">STRING</span>, RequestDateTime <span class="jp">STRING</span>, RemoteIP <span class="jp">STRING</span>,
+         Requester <span class="jp">STRING</span>, RequestID <span class="jp">STRING</span>, Operation <span class="jp">STRING</span>, Key <span class="jp">STRING</span>,
+         RequestURI_operation <span class="jp">STRING</span>, RequestURI_key <span class="jp">STRING</span>, RequestURI_httpProtoversion <span class="jp">STRING</span>,
+         HTTPstatus <span class="jp">STRING</span>, ErrorCode <span class="jp">STRING</span>, BytesSent <span class="jp">BIGINT</span>, ObjectSize <span class="jp">BIGINT</span>,
+         TotalTime <span class="jp">STRING</span>, TurnAroundTime <span class="jp">STRING</span>, Referrer <span class="jp">STRING</span>, UserAgent <span class="jp">STRING</span>,
+         VersionId <span class="jp">STRING</span>, HostId <span class="jp">STRING</span>, SigV <span class="jp">STRING</span>, CipherSuite <span class="jp">STRING</span>,
+         AuthType <span class="jp">STRING</span>, EndPoint <span class="jp">STRING</span>, TLSVersion <span class="jp">STRING</span>
+) 
+<span class="jk">ROW FORMAT SERDE</span> <span class="jv">'org.apache.hadoop.hive.serde2.RegexSerDe'</span>
+<span class="jk">WITH SERDEPROPERTIES</span> (
+         <span class="jv">'serialization.format'</span> = <span class="jv">'1'</span>,
+         <span class="jv">'input.regex'</span> = <span class="jv">'([^ ]*) ([^ ]*) \\[(.*?)\\] ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) \\\"([^ ]*) ([^ ]*) (- |[^ ]*)\\\" (-|[0-9]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) (\"[^\"]*\") ([^ ]*)(?: ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*))?.*$'</span> )
+<span class="jk">LOCATION</span> <span class="jv">'s3://target-bucket-name/prefix/'</span>;
+
+<span class="jc">-- Truy vấn 1: Thống kê số lượng request theo loại thao tác và mã HTTP Status</span>
+<span class="jk">SELECT</span> requesturi_operation, httpstatus, count(*) <span class="jk">FROM</span> <span class="jv">"s3_access_logs_db"</span>.<span class="jv">"mybucket_logs"</span> 
+<span class="jk">GROUP BY</span> requesturi_operation, httpstatus;
+
+<span class="jc">-- Truy vấn 2: Tìm tất cả các truy cập bị từ chối quyền (HTTP 403 Forbidden)</span>
+<span class="jk">SELECT</span> * <span class="jk">FROM</span> <span class="jv">"s3_access_logs_db"</span>.<span class="jv">"mybucket_logs"</span> <span class="jk">WHERE</span> httpstatus=<span class="jv">'403'</span>;</div>
+
+  <div class="g2" style="margin-top:16px">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Các bước thực hiện trên Athena Console</div>
+      <div class="id lang-vi">
+        1. Bật <b>Server access logging</b> trên S3 Bucket nguồn và trỏ đích lưu sang một <b>Target Logging Bucket riêng biệt</b> (tuyệt đối không trỏ vào chính bucket nguồn để tránh vòng lặp vô hạn!).<br>
+        2. Mở <b>Amazon Athena</b>, cấu hình <i>Query result location</i> sang một bucket lưu kết quả.<br>
+        3. Thay <code>s3://target-bucket-name/prefix/</code> bằng đường dẫn chứa log thực tế, chạy lệnh <code>CREATE EXTERNAL TABLE</code> rồi chạy 2 câu lệnh <code>SELECT</code> để kiểm toán bảo mật.
+      </div>
+      <div class="id lang-en">
+        1. Enable <b>Server access logging</b> on your source S3 bucket and specify a <b>separate Target Logging Bucket</b> (never log to the same bucket to avoid an infinite logging loop!).<br>
+        2. Open <b>Amazon Athena</b> and set up a <i>Query result location</i> S3 bucket.<br>
+        3. Replace <code>s3://target-bucket-name/prefix/</code> with your log bucket path, execute <code>CREATE EXTERNAL TABLE</code>, and run the <code>SELECT</code> queries for security auditing.
+      </div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Tại sao dùng Athena (Serverless SQL)?</div>
+      <div class="id lang-vi">
+        • <b>Amazon Athena</b> sử dụng engine Presto/Trino kèm bộ phân tích <code>RegexSerDe</code> để đọc trực tiếp các tệp log văn bản thô trên S3 mà không cần dựng cơ sở dữ liệu hay ETL.<br>
+        • Trong đề thi SAA-C03, khi gặp yêu cầu <i>"phân tích S3 Access Logs / VPC Flow Logs / CloudTrail Logs đột xuất (ad-hoc) bằng SQL với chi phí vận hành thấp nhất (Serverless)"</i> &rarr; Đáp án luôn là <b>Amazon Athena</b>!
+      </div>
+      <div class="id lang-en">
+        • <b>Amazon Athena</b> uses Presto/Trino with <code>RegexSerDe</code> to parse raw S3 text logs directly in-place without provisioning databases or ETL pipelines.<br>
+        • In SAA-C03, whenever a scenario asks for <i>"serverless ad-hoc SQL analysis directly on S3 Access Logs, VPC Flow Logs, or CloudTrail logs"</i> &rarr; the answer is always <b>Amazon Athena</b>!
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

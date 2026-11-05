@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 7: AWS KMS Encryption &amp; SSM Parameter Store — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_iam.html" class="nav-back">
+      <span class="lang-vi">📖 Lý thuyết Section 4: IAM &amp; Security</span>
+      <span class="lang-en">📖 Theory Section 4: IAM &amp; Security</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 7 · KMS &amp; SSM Parameter Store</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/kms &amp; ssm</div>
+  <h1>
+    <span class="lang-vi">Thực Hành Bảo Mật: Mã Hóa AWS KMS CLI &amp; SSM Parameter Store Với Lambda</span>
+    <span class="lang-en">Security Hands-On: AWS KMS CLI Encryption &amp; SSM Parameter Store with Lambda</span>
+  </h1>
+  <p class="lang-vi">Thực hành mã hóa/giải mã tệp tin bí mật bằng khóa KMS trên CLI và quản lý cấu hình phân cấp (Dev/Prod) trong SSM Parameter Store kết hợp AWS Lambda</p>
+  <p class="lang-en">Hands-on encrypting/decrypting secret files via KMS CLI and managing hierarchical configurations (Dev/Prod) in SSM Parameter Store with AWS Lambda</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ luồng KMS & SSM Parameter Store -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ kiến trúc thực hành: KMS Encrypt/Decrypt &amp; SSM Parameter Store</span>
+        <span class="lang-en">1. Lab Architecture: KMS Encrypt/Decrypt &amp; SSM Parameter Store</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cách KMS bảo vệ chuỗi mật khẩu trực tiếp trên CLI hoặc tích hợp ngầm phía sau tham số SecureString của SSM</span>
+        <span class="lang-en">How KMS protects secrets directly via CLI or seamlessly backs SSM SecureString parameters</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-kms-ssm">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart LR
+    subgraph KMSLab["Bài 1: KMS CLI (aws_document/kms)"]
+        Txt["ExampleSecretFile.txt<br/>('SuperSecretPassword')"] -->|"aws kms encrypt<br/>(key-id: alias/tutorial)"| Enc["CiphertextBlob (Base64)<br/>Giải mã Base64 -> Binary"]
+        Enc -->|"aws kms decrypt<br/>(Tự nhận diện KMS Key)"| Dec["Plaintext (Base64)<br/>Giải mã Base64 -> SuperSecretPassword"]
+    end
+
+    subgraph SSMLab["Bài 2: SSM Parameter Store + Lambda (aws_document/ssm)"]
+        L["AWS Lambda (handler.py)<br/>ENV: DEV_OR_PROD = 'dev'"] -->|"boto3: get_parameters()<br/>WithDecryption=True"| SSM["SSM Parameter Store<br/>/my-app/dev/db-url (String)<br/>/my-app/dev/db-password (SecureString)"]
+        SSM <-->|"Giải mã tự động"| KMS[("AWS KMS Key<br/>(aws/ssm hoặc CMK)")]
+    end
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart LR
+    subgraph KMSLab["Lab 1: KMS CLI (aws_document/kms)"]
+        Txt["ExampleSecretFile.txt<br/>('SuperSecretPassword')"] -->|"aws kms encrypt<br/>(key-id: alias/tutorial)"| Enc["CiphertextBlob (Base64)<br/>Base64 decode -> Binary"]
+        Enc -->|"aws kms decrypt<br/>(Auto-detects KMS Key)"| Dec["Plaintext (Base64)<br/>Base64 decode -> SuperSecretPassword"]
+    end
+
+    subgraph SSMLab["Lab 2: SSM Parameter Store + Lambda (aws_document/ssm)"]
+        L["AWS Lambda (handler.py)<br/>ENV: DEV_OR_PROD = 'dev'"] -->|"boto3: get_parameters()<br/>WithDecryption=True"| SSM["SSM Parameter Store<br/>/my-app/dev/db-url (String)<br/>/my-app/dev/db-password (SecureString)"]
+        SSM <-->|"Auto Decrypt"| KMS[("AWS KMS Key<br/>(aws/ssm or CMK)")]
+    end
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Bài thực hành 1: AWS KMS CLI -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🗝️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bài thực hành 1: Mã hóa &amp; Giải mã tệp bí mật với AWS KMS CLI</span>
+        <span class="lang-en">2. Hands-On 1: Encrypting &amp; Decrypting Secret Files with AWS KMS CLI</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/kms/ExampleSecretFile.txt</code> &amp; <code>aws_document/kms/kms-demo-cli.sh</code></span>
+        <span class="lang-en">Source files: <code>aws_document/kms/ExampleSecretFile.txt</code> &amp; <code>aws_document/kms/kms-demo-cli.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/kms/kms-demo-cli.sh (Nội dung ExampleSecretFile.txt: "SuperSecretPassword")</span>
+    <span class="lang-en">Source code in aws_document/kms/kms-demo-cli.sh (ExampleSecretFile.txt contains: "SuperSecretPassword")</span>
+  </div>
+  <div class="json"><span class="jc"># 1) MÃ HÓA (ENCRYPTION)</span>
+<span class="jk">aws kms encrypt</span> --key-id alias/tutorial \
+  --plaintext fileb://ExampleSecretFile.txt \
+  --output text --query CiphertextBlob \
+  --region eu-west-2 &gt; ExampleSecretFileEncrypted.base64
+
+<span class="jc"># Giải mã Base64 ra file nhị phân (Linux / macOS):</span>
+<span class="jk">cat</span> ExampleSecretFileEncrypted.base64 | <span class="jk">base64</span> --decode &gt; ExampleSecretFileEncrypted
+<span class="jc"># Giải mã Base64 trên Windows CMD / PowerShell:</span>
+<span class="jk">certutil</span> -decode .\ExampleSecretFileEncrypted.base64 .\ExampleSecretFileEncrypted
+
+<span class="jc"># 2) GIẢI MÃ (DECRYPTION) — Chú ý: KHÔNG cần truyền --key-id!</span>
+<span class="jk">aws kms decrypt</span> --ciphertext-blob fileb://ExampleSecretFileEncrypted \
+  --output text --query Plaintext \
+  --region eu-west-2 &gt; ExampleFileDecrypted.base64
+
+<span class="jc"># Giải mã Base64 về lại văn bản gốc (Linux / macOS):</span>
+<span class="jk">cat</span> ExampleFileDecrypted.base64 | <span class="jk">base64</span> --decode &gt; ExampleFileDecrypted.txt
+<span class="jc"># Giải mã Base64 trên Windows:</span>
+<span class="jk">certutil</span> -decode .\ExampleFileDecrypted.base64 .\ExampleFileDecrypted.txt</div>
+
+  <div class="g2" style="margin-top:16px">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Tại sao lệnh kms decrypt KHÔNG cần truyền --key-id?</div>
+      <div class="id lang-vi">Khi KMS mã hóa dữ liệu bằng <code>aws kms encrypt</code>, siêu dữ liệu về <b>ARN của khóa KMS (CMK)</b> đã được nhúng trực tiếp bên trong phần header của gói <code>CiphertextBlob</code>. Do đó khi gọi <code>aws kms decrypt</code>, KMS tự động biết phải dùng khóa nào để giải mã!</div>
+      <div class="id lang-en">When KMS encrypts data via <code>aws kms encrypt</code>, the <b>KMS Key ARN metadata</b> is embedded directly inside the <code>CiphertextBlob</code> header. Therefore, <code>aws kms decrypt</code> automatically identifies which KMS key to use without needing <code>--key-id</code>!</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Giới hạn 4 KB của KMS API &amp; Envelope Encryption</div>
+      <div class="id lang-vi">API <code>kms:Encrypt</code> chỉ nhận trực tiếp tối đa <b>4 KB (4096 bytes)</b> dữ liệu. Nếu cần mã hóa file lớn hơn 4 KB, bạn bắt buộc phải dùng cơ chế <b>Envelope Encryption</b>: gọi API <b><code>aws kms generate-data-key</code></b> để lấy Data Key mã hóa file tại máy cục bộ.</div>
+      <div class="id lang-en">The <code>kms:Encrypt</code> API accepts a maximum payload of <b>4 KB (4096 bytes)</b>. To encrypt files larger than 4 KB, you MUST use <b>Envelope Encryption</b> via <b><code>aws kms generate-data-key</code></b>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Bài thực hành 2: SSM Parameter Store (CLI + Lambda Python) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚙️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Bài thực hành 2: Quản lý cấu hình &amp; mật khẩu với SSM Parameter Store (CLI &amp; Lambda)</span>
+        <span class="lang-en">3. Hands-On 2: Managing Configs &amp; Secrets with SSM Parameter Store (CLI &amp; Lambda)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/ssm/cli.sh</code> &amp; <code>aws_document/ssm/handler.py</code></span>
+        <span class="lang-en">Source files: <code>aws_document/ssm/cli.sh</code> &amp; <code>aws_document/ssm/handler.py</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="lbl">aws_document/ssm/cli.sh (Truy vấn qua AWS CLI)</div>
+      <div class="json"><span class="jc"># 1. Lấy tham số theo tên (Chưa giải mã SecureString):</span>
+<span class="jk">aws ssm get-parameters</span> --names /my-app/dev/db-url /my-app/dev/db-password
+
+<span class="jc"># 2. Lấy tham số KÈM giải mã KMS (--with-decryption):</span>
+<span class="jk">aws ssm get-parameters</span> --names /my-app/dev/db-url /my-app/dev/db-password --with-decryption
+
+<span class="jc"># 3. Lấy toàn bộ tham số theo nhánh thư mục (/my-app/dev/):</span>
+<span class="jk">aws ssm get-parameters-by-path</span> --path /my-app/dev/
+
+<span class="jc"># 4. Đệ quy toàn bộ cây (/my-app/) kèm giải mã:</span>
+<span class="jk">aws ssm get-parameters-by-path</span> --path /my-app/ --recursive --with-decryption</div>
+    </div>
+    <div class="col">
+      <div class="lbl">aws_document/ssm/handler.py (Đọc từ AWS Lambda bằng Boto3)</div>
+      <div class="json"><span class="jk">import</span> json
+<span class="jk">import</span> boto3
+<span class="jk">import</span> os
+
+ssm = boto3.client(<span class="jv">'ssm'</span>, region_name=<span class="jv">"eu-west-3"</span>)
+dev_or_prod = os.environ[<span class="jv">'DEV_OR_PROD'</span>]
+
+<span class="jk">def</span> <span class="jp">lambda_handler</span>(event, context):
+    db_url = ssm.get_parameters(
+        Names=[<span class="jv">"/my-app/"</span> + dev_or_prod + <span class="jv">"/db-url"</span>]
+    )
+    <span class="jk">print</span>(db_url)   
+    db_password = ssm.get_parameters(
+        Names=[<span class="jv">"/my-app/"</span> + dev_or_prod + <span class="jv">"/db-password"</span>],
+        WithDecryption=<span class="jp">True</span>
+    )
+    <span class="jk">print</span>(db_password)
+    <span class="jk">return</span> <span class="jv">"worked!"</span></div>
+    </div>
+  </div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Các bước thực hành &amp; Phân quyền IAM cho Lambda</span>
+    <span class="lang-en">Step-by-Step Guide &amp; Lambda IAM Permissions</span>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Tạo cây tham số phân cấp trên Systems Manager &rarr; Parameter Store</b>
+        <b class="lang-en">Create Hierarchical Parameters in Systems Manager &rarr; Parameter Store</b>
+        <span class="lang-vi">Tạo 4 tham số: <code>/my-app/dev/db-url</code>, <code>/my-app/prod/db-url</code> (kiểu <b><code>String</code></b>) và <code>/my-app/dev/db-password</code>, <code>/my-app/prod/db-password</code> (kiểu <b><code>SecureString</code></b> mã hóa bằng KMS). Việc đặt tên theo dạng đường dẫn <code>/app/env/key</code> giúp gom nhóm và phân quyền IAM theo từng môi trường cực kỳ gọn gàng!</span>
+        <span class="lang-en">Create 4 parameters: <code>/my-app/dev/db-url</code>, <code>/my-app/prod/db-url</code> (type <b><code>String</code></b>) and <code>/my-app/dev/db-password</code>, <code>/my-app/prod/db-password</code> (type <b><code>SecureString</code></b> encrypted with KMS). Using path hierarchies like <code>/app/env/key</code> simplifies bulk retrieval and scoped IAM policies!</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Cấp quyền IAM Execution Role cho hàm Lambda (Bẫy thực hành!)</b>
+        <b class="lang-en">Grant IAM Execution Role Permissions to Lambda (Common Pitfall!)</b>
+        <span class="lang-vi">Để <code>handler.py</code> chạy thành công khi có <code>WithDecryption=True</code>, IAM Role của hàm Lambda bắt buộc phải có:<br>• Quyền <b><code>ssm:GetParameters</code></b> (hoặc <code>AmazonSSMReadOnlyAccess</code>).<br>• Nếu <code>SecureString</code> dùng <b>Customer Managed KMS Key (CMK)</b> riêng, IAM Role của Lambda phải có thêm quyền <b><code>kms:Decrypt</code></b> trên khóa CMK đó!</span>
+        <span class="lang-en">For <code>handler.py</code> to succeed with <code>WithDecryption=True</code>, the Lambda Execution Role requires:<br>• <b><code>ssm:GetParameters</code></b> permission (or <code>AmazonSSMReadOnlyAccess</code>).<br>• If the <code>SecureString</code> uses a <b>Customer Managed KMS Key (CMK)</b>, the role ALSO needs <b><code>kms:Decrypt</code></b> permission on that CMK!</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Cấu hình biến môi trường <code>DEV_OR_PROD</code> trên Lambda</b>
+        <b class="lang-en">Set the <code>DEV_OR_PROD</code> Environment Variable in Lambda</b>
+        <span class="lang-vi">Trong tab <b>Configuration &rarr; Environment variables</b> của Lambda, thêm key <code>DEV_OR_PROD</code> với giá trị <code>dev</code> (hoặc <code>prod</code>). Nhờ vậy bạn dùng chung 1 mã nguồn <code>handler.py</code> cho mọi môi trường mà không cần sửa code!</span>
+        <span class="lang-en">Under Lambda's <b>Configuration &rarr; Environment variables</b>, add key <code>DEV_OR_PROD</code> with value <code>dev</code> (or <code>prod</code>). This lets the exact same <code>handler.py</code> code dynamically switch environments without code changes!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

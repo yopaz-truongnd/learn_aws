@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 1: EC2 User Data &amp; Instance Metadata — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_ec2.html" class="nav-back">
+      <span class="lang-vi">📖 Lý thuyết Section 5: EC2</span>
+      <span class="lang-en">📖 Theory Section 5: EC2</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 1 · Section 5</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/ec2-fundamentals &amp; cli</div>
+  <h1>
+    <span class="lang-vi">Thực Hành EC2: User Data Bootstrapping &amp; Instance Metadata</span>
+    <span class="lang-en">EC2 Hands-On: User Data Bootstrapping &amp; Instance Metadata</span>
+  </h1>
+  <p class="lang-vi">Hướng dẫn từng bước khởi tạo Web Server Apache tự động bằng EC2 User Data và truy vấn thông tin nội bộ qua Instance Metadata Service (IMDS)</p>
+  <p class="lang-en">Step-by-step guide to automating Apache Web Server setup via EC2 User Data and querying instance attributes via Instance Metadata Service (IMDS)</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ luồng thực hành -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ kiến trúc &amp; Luồng hoạt động của bài thực hành</span>
+        <span class="lang-en">1. Lab Architecture &amp; Execution Flow</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quá trình EC2 thực thi User Data khi khởi động lần đầu và cách truy vấn địa chỉ link-local 169.254.169.254</span>
+        <span class="lang-en">How EC2 executes User Data at first boot and queries the 169.254.169.254 link-local endpoint</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-ec2">
+    <div class="mermaid-src lang-vi" style="display:none">
+sequenceDiagram
+    autonumber
+    actor User as Người dùng (Admin/Browser)
+    participant EC2 as EC2 Instance (Amazon Linux)
+    participant IMDS as Metadata Service (169.254.169.254)
+
+    User->>EC2: 1. Launch Instance kèm script ec2-user-data.sh
+    Note over EC2: Chạy dưới quyền root (chỉ chạy ở lần boot đầu tiên)
+    EC2->>EC2: 2. yum update & cài đặt Apache (httpd)
+    EC2->>EC2: 3. Ghi hostname vào /var/www/html/index.html
+    User->>EC2: 4. Truy cập HTTP (Port 80) qua Public IPv4
+    EC2-->>User: Trả về "Hello World from ip-xxx.ec2.internal"
+    User->>EC2: 5. SSH vào EC2 & chạy ec2-metadata.sh
+    EC2->>IMDS: 6. curl http://169.254.169.254/latest/meta-data/instance-id
+    IMDS-->>EC2: Trả về i-0123456789abcdef0
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+sequenceDiagram
+    autonumber
+    actor User as User (Admin/Browser)
+    participant EC2 as EC2 Instance (Amazon Linux)
+    participant IMDS as Metadata Service (169.254.169.254)
+
+    User->>EC2: 1. Launch Instance with ec2-user-data.sh
+    Note over EC2: Runs as root (executes ONLY on first boot)
+    EC2->>EC2: 2. yum update & install Apache (httpd)
+    EC2->>EC2: 3. Write hostname to /var/www/html/index.html
+    User->>EC2: 4. Open HTTP (Port 80) via Public IPv4
+    EC2-->>User: Returns "Hello World from ip-xxx.ec2.internal"
+    User->>EC2: 5. SSH into EC2 & run ec2-metadata.sh
+    EC2->>IMDS: 6. curl http://169.254.169.254/latest/meta-data/instance-id
+    IMDS-->>EC2: Returns i-0123456789abcdef0
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Ví dụ 1: EC2 User Data -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📜</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bài thực hành 1: Tự động cài Web Server với EC2 User Data</span>
+        <span class="lang-en">2. Hands-On 1: Automated Web Server Bootstrapping with EC2 User Data</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/ec2-fundamentals/ec2-user-data.sh</code></span>
+        <span class="lang-en">Source file: <code>aws_document/ec2-fundamentals/ec2-user-data.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/ec2-fundamentals/ec2-user-data.sh</span>
+    <span class="lang-en">Source code in aws_document/ec2-fundamentals/ec2-user-data.sh</span>
+  </div>
+  <div class="json"><span class="jc">#!/bin/bash</span>
+<span class="jc"># Use this for your user data (script from top to bottom)</span>
+<span class="jc"># install httpd (Linux 2 version)</span>
+<span class="jk">yum update</span> -y
+<span class="jk">yum install</span> -y httpd
+<span class="jk">systemctl start</span> httpd
+<span class="jk">systemctl enable</span> httpd
+<span class="jk">echo</span> <span class="jv">"&lt;h1&gt;Hello World from $(hostname -f)&lt;/h1&gt;"</span> &gt; /var/www/html/index.html</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Giải thích chi tiết từng câu lệnh</span>
+    <span class="lang-en">Line-by-Line Explanation</span>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>#!/bin/bash &amp; Quyền thực thi Root</div>
+      <div class="id lang-vi">Dòng <b>Shebang</b> khai báo trình thông dịch Bash shell. Mọi lệnh trong EC2 User Data mặc định được dịch vụ <code>cloud-init</code> chạy tự động dưới quyền <b><code>root</code></b>, do đó bạn không cần gõ <code>sudo</code> ở đầu lệnh.</div>
+      <div class="id lang-en">The <b>Shebang</b> line declares the Bash shell interpreter. All commands in EC2 User Data are executed automatically by <code>cloud-init</code> as the <b><code>root</code></b> user, so <code>sudo</code> is not required.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>yum update -y &amp; yum install -y httpd</div>
+      <div class="id lang-vi">Cập nhật toàn bộ gói hệ điều hành và cài đặt gói <b>Apache HTTP Server</b> (<code>httpd</code>). Cờ <b><code>-y</code></b> cực kỳ quan trọng trong script tự động vì nó tự động trả lời "Yes" cho mọi câu hỏi xác nhận (nếu thiếu <code>-y</code>, script sẽ bị treo chờ người dùng bấm phím).</div>
+      <div class="id lang-en">Updates OS packages and installs the <b>Apache HTTP Server</b> (<code>httpd</code>). The <b><code>-y</code></b> flag is mandatory in non-interactive scripts to auto-confirm prompts without hanging.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>systemctl start &amp; systemctl enable httpd</div>
+      <div class="id lang-vi"><code>systemctl start httpd</code> bật dịch vụ web ngay lập tức. <code>systemctl enable httpd</code> đăng ký Apache tự khởi động cùng hệ điều hành nếu sau này máy chủ EC2 bị Reboot hoặc Stop/Start.</div>
+      <div class="id lang-en"><code>systemctl start httpd</code> starts the web server immediately. <code>systemctl enable httpd</code> configures Apache to start automatically across future OS reboots.</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>$(hostname -f) &rarr; /var/www/html/index.html</div>
+      <div class="id lang-vi">Lệnh <code>hostname -f</code> lấy tên miền nội bộ đầy đủ (FQDN, ví dụ <code>ip-172-31-20-15.ec2.internal</code>) của máy chủ và ghi đè vào tệp trang chủ mặc định của Apache. Rất hữu ích khi đứng sau Load Balancer để biết máy chủ nào đang phản hồi!</div>
+      <div class="id lang-en"><code>hostname -f</code> retrieves the instance's Fully Qualified Domain Name (e.g., <code>ip-172-31-20-15.ec2.internal</code>) and writes it to Apache's default web root. Great for verifying Load Balancer distribution!</div>
+    </div>
+  </div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Các bước thực hành trên AWS Console</span>
+    <span class="lang-en">Step-by-Step Guide on AWS Console</span>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Khởi tạo Instance &amp; Chọn AMI</b>
+        <b class="lang-en">Launch Instance &amp; Select AMI</b>
+        <span class="lang-vi">Vào <b>EC2 Console &rarr; Launch instances</b>. Chọn <b>Amazon Linux 2023 AMI</b> hoặc <b>Amazon Linux 2 AMI</b>, loại máy <code>t2.micro</code> hoặc <code>t3.micro</code> (Free Tier eligible).</span>
+        <span class="lang-en">Open <b>EC2 Console &rarr; Launch instances</b>. Select <b>Amazon Linux 2023 AMI</b> or <b>Amazon Linux 2 AMI</b>, instance type <code>t2.micro</code> or <code>t3.micro</code> (Free Tier eligible).</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Cấu hình Network &amp; Security Group (Mở cổng 80 và 22)</b>
+        <b class="lang-en">Configure Network &amp; Security Group (Allow Ports 80 and 22)</b>
+        <span class="lang-vi">Đảm bảo bật <b>Auto-assign public IP: Enable</b>. Trong mục Firewall (Security Group), tích chọn cả <b>Allow SSH traffic from Anywhere (Port 22)</b> và <b>Allow HTTP traffic from the internet (Port 80)</b>.</span>
+        <span class="lang-en">Ensure <b>Auto-assign public IP: Enable</b> is set. Under Firewall (Security Group), check both <b>Allow SSH traffic (Port 22)</b> and <b>Allow HTTP traffic from the internet (Port 80)</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Dán Script vào mục Advanced Details &rarr; User data</b>
+        <b class="lang-en">Paste Script into Advanced Details &rarr; User data</b>
+        <span class="lang-vi">Cuộn xuống dưới cùng, mở rộng mục <b>Advanced details</b>, kéo tới ô <b>User data</b> ở cuối trang và dán toàn bộ nội dung file <code>ec2-user-data.sh</code> vào, sau đó nhấn <b>Launch instance</b>.</span>
+        <span class="lang-en">Scroll to the bottom, expand <b>Advanced details</b>, locate the <b>User data</b> text box at the very end, paste the contents of <code>ec2-user-data.sh</code>, and click <b>Launch instance</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">4</div>
+      <div>
+        <b class="lang-vi">Kiểm tra kết quả trên trình duyệt (Lưu ý lỗi HTTPS!)</b>
+        <b class="lang-en">Verify Result in Browser (Watch out for HTTPS!)</b>
+        <span class="lang-vi">Chờ Instance chuyển sang trạng thái <code>Running</code> (khoảng 30-60 giây để script cài xong <code>httpd</code>). Sao chép <b>Public IPv4 address</b> và mở bằng giao thức <b><code>http://&lt;Public-IP&gt;</code></b> (không dùng <code>https://</code> vì ta chỉ mở cổng 80). Bạn sẽ thấy dòng chữ <i>"Hello World from ip-..."</i>.</span>
+        <span class="lang-en">Wait for the instance state to reach <code>Running</code> (allow 30-60 seconds for <code>httpd</code> installation). Copy the <b>Public IPv4 address</b> and visit <b><code>http://&lt;Public-IP&gt;</code></b> (do NOT use <code>https://</code> since only port 80 is open). You will see <i>"Hello World from ip-..."</i>.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 3. Ví dụ 2: EC2 Instance Metadata -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔍</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Bài thực hành 2: Truy vấn EC2 Instance Metadata từ dòng lệnh</span>
+        <span class="lang-en">3. Hands-On 2: Querying EC2 Instance Metadata via CLI</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/cli/ec2-metadata.sh</code></span>
+        <span class="lang-en">Source file: <code>aws_document/cli/ec2-metadata.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/cli/ec2-metadata.sh &amp; Mở rộng sang IMDSv2</span>
+    <span class="lang-en">Source code in aws_document/cli/ec2-metadata.sh &amp; IMDSv2 Extension</span>
+  </div>
+  <div class="json"><span class="jc">#!/bin/bash</span>
+<span class="jc"># 1. Cách gọi IMDSv1 nguyên bản trong aws_document/cli/ec2-metadata.sh:</span>
+<span class="jk">curl</span> http://169.254.169.254/latest/meta-data/instance-id
+
+<span class="jc"># 2. Cách gọi chuẩn IMDSv2 (Mặc định trên Amazon Linux 2023):</span>
+<span class="jp">TOKEN</span>=$(<span class="jk">curl</span> -X PUT <span class="jv">"http://169.254.169.254/latest/api/token"</span> -H <span class="jv">"X-aws-ec2-metadata-token-ttl-seconds: 21600"</span>)
+<span class="jk">curl</span> -H <span class="jv">"X-aws-ec2-metadata-token: $TOKEN"</span> http://169.254.169.254/latest/meta-data/instance-id</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Các bước thực hành &amp; Giải thích chuyên sâu</span>
+    <span class="lang-en">Hands-On Steps &amp; Deep-Dive Explanation</span>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🛠️ Các bước thực hiện</span>
+        <span class="lang-en">🛠️ Execution Steps</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Bước 1: Kết nối vào EC2 Instance</span><span class="lang-en">Step 1: Connect to EC2 Instance</span></b>
+        <span class="lang-vi">Chọn EC2 instance vừa tạo &rarr; nhấn <b>Connect</b> &rarr; chọn tab <b>EC2 Instance Connect</b> để mở cửa sổ terminal trực tiếp trên trình duyệt (hoặc SSH từ máy cá nhân).</span>
+        <span class="lang-en">Select your running EC2 instance &rarr; click <b>Connect</b> &rarr; choose <b>EC2 Instance Connect</b> to open an in-browser terminal (or SSH from your local terminal).</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Bước 2: Kiểm tra IMDSv1 vs IMDSv2</span><span class="lang-en">Step 2: Test IMDSv1 vs IMDSv2</span></b>
+        <span class="lang-vi">Nếu bạn bật tùy chọn <i>Metadata version: V1 and V2 (token optional)</i>, lệnh <code>curl http://169.254.169.254/latest/meta-data/instance-id</code> sẽ trả về ngay mã <code>i-xxxx</code>. Nếu để <i>V2 only (token required)</i>, lệnh trên sẽ trả về lỗi <code>401 Unauthorized</code> và bạn bắt buộc phải xin <code>TOKEN</code> bằng lệnh <code>PUT</code> trước.</span>
+        <span class="lang-en">If <i>V1 and V2 (token optional)</i> is enabled, <code>curl http://169.254.169.254/latest/meta-data/instance-id</code> immediately returns <code>i-xxxx</code>. If <i>V2 only (token required)</i> is set, it returns <code>401 Unauthorized</code> unless you first obtain a session <code>TOKEN</code> via <code>PUT</code>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Bước 3: Khám phá cây thư mục Metadata</span><span class="lang-en">Step 3: Explore the Metadata Tree</span></b>
+        <span class="lang-vi">Thử truy vấn thêm: <code>.../meta-data/public-ipv4</code>, <code>.../meta-data/placement/availability-zone</code>, hoặc <code>.../meta-data/iam/security-credentials/</code> để xem cách AWS cấp phát STS Token tạm thời cho IAM Role gắn trên EC2.</span>
+        <span class="lang-en">Try querying <code>.../meta-data/public-ipv4</code>, <code>.../meta-data/placement/availability-zone</code>, or <code>.../meta-data/iam/security-credentials/</code> to see how AWS delivers temporary STS credentials to an attached IAM Role.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎯 Kiến thức trọng tâm thi SAA-C03</span>
+        <span class="lang-en">🎯 Key SAA-C03 Exam Takeaways</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Địa chỉ IP 169.254.169.254 là gì?</span><span class="lang-en">What is 169.254.169.254?</span></b>
+        <span class="lang-vi">Đây là địa chỉ <b>Link-local IP</b> cố định chỉ truy cập được từ bên trong chính máy chủ EC2 đó, hoàn toàn không cần kết nối Internet hay NAT Gateway, và không tốn phí truyền dữ liệu.</span>
+        <span class="lang-en">A fixed <b>Link-local IP</b> accessible exclusively from within the EC2 instance itself, requiring no Internet or NAT Gateway connectivity and incurring zero data transfer cost.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Phân biệt Metadata vs User Data</span><span class="lang-en">Metadata vs User Data</span></b>
+        <span class="lang-vi">• <b>Metadata</b> (<code>/latest/meta-data/</code>): Thông tin <i>về</i> bản thân máy chủ EC2 (Instance ID, IP, AZ, Security Group, IAM Role).<br>• <b>User Data</b> (<code>/latest/user-data</code>): Đoạn script khởi động mà <i>bạn</i> đã truyền vào khi Launch instance.</span>
+        <span class="lang-en">• <b>Metadata</b> (<code>/latest/meta-data/</code>): Attributes <i>about</i> the EC2 instance (Instance ID, IP, AZ, SG, IAM Role).<br>• <b>User Data</b> (<code>/latest/user-data</code>): The bootstrap script <i>you</i> supplied at launch time.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Gỡ lỗi khi User Data không chạy</span><span class="lang-en">Debugging User Data Failures</span></b>
+        <span class="lang-vi">Nếu web server không lên, hãy SSH vào máy và kiểm tra file log tại <b><code>/var/log/cloud-init-output.log</code></b> để xem chi tiết lỗi của từng dòng lệnh trong User Data.</span>
+        <span class="lang-en">If the web server fails to start, SSH into the instance and inspect <b><code>/var/log/cloud-init-output.log</code></b> to see the exact stdout/stderr of your User Data script.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

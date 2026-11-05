@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 3: Route 53 Multi-AZ/Region Routing Demo — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_route53.html" class="nav-back">
+      <span class="lang-vi">📖 Lý thuyết Section 9: Route 53</span>
+      <span class="lang-en">📖 Theory Section 9: Route 53</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 3 · Section 9</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/route53</div>
+  <h1>
+    <span class="lang-vi">Thực Hành Route 53: Kiểm Thử Chính Sách Định Tuyến Đa Vùng (Multi-AZ / Multi-Region)</span>
+    <span class="lang-en">Route 53 Hands-On: Testing Multi-AZ / Multi-Region Routing Policies</span>
+  </h1>
+  <p class="lang-vi">Sử dụng script User Data tự động nhận diện IMDSv1/IMDSv2 để in Availability Zone lên giao diện web và kiểm chứng các chính sách định tuyến của Route 53</p>
+  <p class="lang-en">Using an IMDSv1/IMDSv2-aware User Data script to display Availability Zones on web responses and verify Route 53 routing policies</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ kiến trúc -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ kiến trúc bài thực hành định tuyến Route 53</span>
+        <span class="lang-en">1. Route 53 Routing Lab Architecture</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Triển khai các máy chủ EC2 tại nhiều Region/AZ khác nhau cùng chạy script user-data.sh để quan sát kết quả phân giải DNS</span>
+        <span class="lang-en">Deploying EC2 instances across multiple Regions/AZs with user-data.sh to observe DNS resolution behavior</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-r53">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart TD
+    Client["Trình duyệt người dùng / lệnh dig"] -->|"1. Truy vấn DNS app.example.com"| R53["Amazon Route 53<br/>Hosted Zone (Weighted / Latency / Failover)"]
+    R53 -->|"Trả về IP Region 1 (us-east-1)"| EC2_1["EC2 Instance 1 (us-east-1a)<br/>Hiển thị: Hello world from ip-... in AZ us-east-1a"]
+    R53 -->|"Trả về IP Region 2 (eu-central-1)"| EC2_2["EC2 Instance 2 (eu-central-1a)<br/>Hiển thị: Hello world from ip-... in AZ eu-central-1a"]
+    R53 -->|"Trả về IP Region 3 (ap-southeast-1)"| EC2_3["EC2 Instance 3 (ap-southeast-1a)<br/>Hiển thị: Hello world from ip-... in AZ ap-southeast-1a"]
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    Client["User Browser / dig CLI"] -->|"1. DNS Query app.example.com"| R53["Amazon Route 53<br/>Hosted Zone (Weighted / Latency / Failover)"]
+    R53 -->|"Returns Region 1 IP (us-east-1)"| EC2_1["EC2 Instance 1 (us-east-1a)<br/>Displays: Hello world from ip-... in AZ us-east-1a"]
+    R53 -->|"Returns Region 2 IP (eu-central-1)"| EC2_2["EC2 Instance 2 (eu-central-1a)<br/>Displays: Hello world from ip-... in AZ eu-central-1a"]
+    R53 -->|"Returns Region 3 IP (ap-southeast-1)"| EC2_3["EC2 Instance 3 (ap-southeast-1a)<br/>Displays: Hello world from ip-... in AZ ap-southeast-1a"]
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Mã nguồn & Giải thích -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📜</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Phân tích Script User Data tự động tương thích IMDSv1 &amp; IMDSv2</span>
+        <span class="lang-en">2. Analyzing the IMDSv1 &amp; IMDSv2 Compatible User Data Script</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/route53/user-data.sh</code></span>
+        <span class="lang-en">Source file: <code>aws_document/route53/user-data.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/route53/user-data.sh</span>
+    <span class="lang-en">Source code in aws_document/route53/user-data.sh</span>
+  </div>
+  <div class="json"><span class="jc">#!/bin/bash</span>
+<span class="jk">yum update</span> -y
+<span class="jk">yum install</span> -y httpd
+<span class="jk">systemctl start</span> httpd
+<span class="jk">systemctl enable</span> httpd
+<span class="jc"># updated script to make it work with Amazon Linux 2023</span>
+<span class="jp">CHECK_IMDSV1_ENABLED</span>=$(<span class="jk">curl</span> -s -o /dev/null -w <span class="jv">"%{http_code}"</span> http://169.254.169.254/latest/meta-data/)
+<span class="jk">if</span> [[ <span class="jv">"$CHECK_IMDSV1_ENABLED"</span> -eq 200 ]]
+<span class="jk">then</span>
+    <span class="jp">EC2_AVAIL_ZONE</span>=<span class="jv">"$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)"</span>
+<span class="jk">else</span>
+    <span class="jp">EC2_AVAIL_ZONE</span>=<span class="jv">"$(TOKEN=`curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` &amp;&amp; curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/placement/availability-zone)"</span>
+<span class="jk">fi</span>
+<span class="jk">echo</span> <span class="jv">"&lt;h1&gt;Hello world from $(hostname -f) in AZ $EC2_AVAIL_ZONE &lt;/h1&gt;"</span> &gt; /var/www/html/index.html</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Giải thích cơ chế hoạt động của Script</span>
+    <span class="lang-en">How the Script Works Under the Hood</span>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Kiểm tra trạng thái IMDSv1 bằng HTTP Status Code</div>
+      <div class="id lang-vi">Lệnh <code>curl -s -o /dev/null -w "%{http_code}"</code> gửi một request GET không kèm token tới <code>169.254.169.254/latest/meta-data/</code> và chỉ lấy mã HTTP trả về:<br>• Nếu trả về <b><code>200</code></b>: Máy chủ đang cho phép <b>IMDSv1</b>.<br>• Nếu trả về <b><code>401</code></b>: Máy chủ bắt buộc dùng <b>IMDSv2</b> (mặc định trên Amazon Linux 2023).</div>
+      <div class="id lang-en"><code>curl -s -o /dev/null -w "%{http_code}"</code> sends a tokenless GET request to <code>169.254.169.254/latest/meta-data/</code> and extracts the HTTP status code:<br>• <b><code>200</code></b>: <b>IMDSv1</b> is enabled.<br>• <b><code>401</code></b>: <b>IMDSv2</b> is required (default on Amazon Linux 2023).</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Nhánh else: Lấy Session Token IMDSv2</div>
+      <div class="id lang-vi">Khi IMDSv1 bị tắt, script gọi <code>PUT http://169.254.169.254/latest/api/token</code> với header <code>X-aws-ec2-metadata-token-ttl-seconds: 21600</code> (token sống trong 6 giờ), lưu vào biến <code>$TOKEN</code> rồi đính kèm header <code>X-aws-ec2-metadata-token: $TOKEN</code> để lấy tên Availability Zone (<code>placement/availability-zone</code>).</div>
+      <div class="id lang-en">When IMDSv1 is disabled, the script sends a <code>PUT</code> request with <code>X-aws-ec2-metadata-token-ttl-seconds: 21600</code> (6-hour TTL) to obtain <code>$TOKEN</code>, then passes <code>X-aws-ec2-metadata-token: $TOKEN</code> to fetch <code>placement/availability-zone</code>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Các bước thực hành -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🛠️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Các bước thực hành kiểm thử các Routing Policies trên Route 53</span>
+        <span class="lang-en">3. Step-by-Step Guide to Testing Route 53 Routing Policies</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tạo 2-3 máy chủ EC2 ở các Region khác nhau và cấu hình bản ghi A trên Route 53</span>
+        <span class="lang-en">Launch 2-3 EC2 instances across different Regions and configure Route 53 A records</span>
+      </div>
+    </div>
+  </div>
+
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Khởi tạo 2 hoặc 3 EC2 Instances ở các Region khác nhau</b>
+        <b class="lang-en">Launch 2 or 3 EC2 Instances in Different Regions</b>
+        <span class="lang-vi">Tạo các máy chủ <code>t2.micro</code> / <code>t3.micro</code> tại <b>us-east-1</b> (N. Virginia), <b>eu-central-1</b> (Frankfurt) và <b>ap-southeast-1</b> (Singapore). Mở cổng HTTP 80 trong Security Group và dán nội dung file <code>aws_document/route53/user-data.sh</code> vào ô <b>User data</b> của từng máy.</span>
+        <span class="lang-en">Launch <code>t2.micro</code> / <code>t3.micro</code> instances in <b>us-east-1</b>, <b>eu-central-1</b>, and <b>ap-southeast-1</b>. Allow HTTP Port 80 in each Security Group and paste <code>aws_document/route53/user-data.sh</code> into each instance's <b>User data</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Kiểm thử Weighted Routing Policy (Phân phối theo trọng số)</b>
+        <b class="lang-en">Test Weighted Routing Policy</b>
+        <span class="lang-vi">Trong Route 53 Public Hosted Zone, tạo 3 bản ghi kiểu <b>A</b> cùng tên (ví dụ <code>weighted.yourdomain.com</code>), chọn <b>Routing policy: Weighted</b>, đặt TTL = <code>3</code> giây, và gán Weight lần lượt là <code>70</code>, <code>20</code>, <code>10</code> (với Record ID khác nhau). Khi làm mới trình duyệt hoặc chạy <code>dig weighted.yourdomain.com</code> sau khi hết TTL, bạn sẽ thấy trang web đổi giữa các AZ theo đúng tỷ lệ!</span>
+        <span class="lang-en">In your Route 53 Public Hosted Zone, create 3 <b>A</b> records with the same name (e.g., <code>weighted.yourdomain.com</code>), select <b>Routing policy: Weighted</b>, set TTL = <code>3</code> seconds, and assign weights <code>70</code>, <code>20</code>, <code>10</code> with unique Record IDs. Refreshing after TTL expiry rotates responses across AZs!</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Kiểm thử Latency &amp; Failover Routing Policy (Kèm Health Check)</b>
+        <b class="lang-en">Test Latency &amp; Failover Routing Policies (With Health Checks)</b>
+        <span class="lang-vi">• Tạo một <b>Route 53 Health Check</b> kiểm tra cổng 80 đường dẫn <code>/</code> của máy chủ ở <code>us-east-1</code>.<br>• Tạo 2 bản ghi <b>Failover</b>: máy <code>us-east-1</code> làm <b>Primary</b> (gắn Health Check) và máy <code>ap-southeast-1</code> làm <b>Secondary</b>.<br>• Thử tắt dịch vụ Apache trên máy Primary (<code>sudo systemctl stop httpd</code>) &rarr; sau khoảng 1-2 phút Health Check chuyển sang <code>Unhealthy</code>, toàn bộ truy cập sẽ tự động chuyển hướng sang máy chủ ở Singapore (<code>ap-southeast-1</code>)!</span>
+        <span class="lang-en">• Create a <b>Route 53 Health Check</b> monitoring HTTP port 80 path <code>/</code> on your <code>us-east-1</code> instance.<br>• Create 2 <b>Failover</b> records: <code>us-east-1</code> as <b>Primary</b> (associated with the Health Check) and <code>ap-southeast-1</code> as <b>Secondary</b>.<br>• Stop Apache on Primary (<code>sudo systemctl stop httpd</code>) &rarr; once the Health Check turns <code>Unhealthy</code>, traffic automatically fails over to <code>ap-southeast-1</code>!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

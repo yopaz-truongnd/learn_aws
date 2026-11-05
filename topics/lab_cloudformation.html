@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 8: AWS CloudFormation Infrastructure as Code — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_ec2.html" class="nav-back">
+      <span class="lang-vi">📖 Lý thuyết Section 5: EC2</span>
+      <span class="lang-en">📖 Theory Section 5: EC2</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 8 · CloudFormation (IaC)</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/cloudformation</div>
+  <h1>
+    <span class="lang-vi">Thực Hành CloudFormation: Tự Động Hóa Hạ Tầng (Infrastructure as Code)</span>
+    <span class="lang-en">CloudFormation Hands-On: Infrastructure as Code (IaC)</span>
+  </h1>
+  <p class="lang-vi">Phân tích cấu trúc YAML Template từ cơ bản (EC2 đơn lẻ) đến nâng cao (Parameters, Security Groups, Elastic IP, Intrinsic Function !Ref &amp; Outputs)</p>
+  <p class="lang-en">Analyzing CloudFormation YAML templates from basic single-instance deployment to advanced stacks with Parameters, Security Groups, Elastic IP, !Ref, and Outputs</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ quan hệ tham chiếu !Ref trong CloudFormation Stack -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🏗️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ quan hệ phụ thuộc tài nguyên trong <code>1-ec2-with-sg-eip.yaml</code></span>
+        <span class="lang-en">1. Resource Dependency Graph in <code>1-ec2-with-sg-eip.yaml</code></span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cách CloudFormation tự động xác định thứ tự khởi tạo tài nguyên thông qua hàm nội tại <code>!Ref</code></span>
+        <span class="lang-en">How CloudFormation automatically resolves resource creation order via the <code>!Ref</code> intrinsic function</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-cfn">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart LR
+    Param["Parameters:<br/>SecurityGroupDescription"] -->|"!Ref SecurityGroupDescription"| SG2["Resource: ServerSecurityGroup<br/>(AWS::EC2::SecurityGroup)<br/>Port 80 (0.0.0.0/0), Port 22 (192.168.1.1/32)"]
+    SG1["Resource: SSHSecurityGroup<br/>(AWS::EC2::SecurityGroup)<br/>Port 22 (0.0.0.0/0)"] -->|"!Ref SSHSecurityGroup"| EC2["Resource: MyInstance<br/>(AWS::EC2::Instance)<br/>t3.micro · us-east-1a"]
+    SG2 -->|"!Ref ServerSecurityGroup"| EC2
+    EC2 -->|"!Ref MyInstance"| EIP["Resource: MyEIP<br/>(AWS::EC2::EIP)"]
+    EIP -->|"!Ref MyEIP"| Out["Outputs:<br/>ElasticIP (Hiển thị IP tĩnh)"]
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart LR
+    Param["Parameters:<br/>SecurityGroupDescription"] -->|"!Ref SecurityGroupDescription"| SG2["Resource: ServerSecurityGroup<br/>(AWS::EC2::SecurityGroup)<br/>Port 80 (0.0.0.0/0), Port 22 (192.168.1.1/32)"]
+    SG1["Resource: SSHSecurityGroup<br/>(AWS::EC2::SecurityGroup)<br/>Port 22 (0.0.0.0/0)"] -->|"!Ref SSHSecurityGroup"| EC2["Resource: MyInstance<br/>(AWS::EC2::Instance)<br/>t3.micro · us-east-1a"]
+    SG2 -->|"!Ref ServerSecurityGroup"| EC2
+    EC2 -->|"!Ref MyInstance"| EIP["Resource: MyEIP<br/>(AWS::EC2::EIP)"]
+    EIP -->|"!Ref MyEIP"| Out["Outputs:<br/>ElasticIP (Exports static IP)"]
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. So sánh 2 file YAML Template -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Mã nguồn 2 Template CloudFormation từ cơ bản đến hoàn chỉnh</span>
+        <span class="lang-en">2. CloudFormation YAML Templates: From Minimal to Production-Ready</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/cloudformation/0-just-ec2.yaml</code> &amp; <code>1-ec2-with-sg-eip.yaml</code></span>
+        <span class="lang-en">Source files: <code>aws_document/cloudformation/0-just-ec2.yaml</code> &amp; <code>1-ec2-with-sg-eip.yaml</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="lbl">1) 0-just-ec2.yaml (Tối giản: Chỉ có khối Resources)</div>
+      <div class="json">---
+<span class="jk">Resources</span>:
+  <span class="jp">MyInstance</span>:
+    <span class="jk">Type</span>: <span class="jv">AWS::EC2::Instance</span>
+    <span class="jk">Properties</span>:
+      <span class="jk">AvailabilityZone</span>: <span class="jv">us-east-1a</span>
+      <span class="jk">ImageId</span>: <span class="jv">ami-0453ec754f44f9a4a</span>
+      <span class="jk">InstanceType</span>: <span class="jv">t3.micro</span></div>
+
+      <div class="it" style="margin-top:12px">
+        <div class="in"><div class="dot" style="background:var(--bl)"></div>Khối bắt buộc duy nhất trong CloudFormation</div>
+        <div class="id lang-vi">Trong một tệp CloudFormation template, <b><code>Resources</code> là mục BẮT BUỘC duy nhất</b>. Các mục như <code>Parameters</code>, <code>Mappings</code>, <code>Conditions</code>, <code>Outputs</code> đều là tùy chọn (Optional).</div>
+        <div class="id lang-en">In any CloudFormation template, <b><code>Resources</code> is the ONLY mandatory section</b>. Sections like <code>Parameters</code>, <code>Mappings</code>, <code>Conditions</code>, and <code>Outputs</code> are all optional.</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="lbl">2) 1-ec2-with-sg-eip.yaml (Đầy đủ Parameters, Resources, !Ref, Outputs)</div>
+      <div class="json">---
+<span class="jk">Parameters</span>:
+  <span class="jp">SecurityGroupDescription</span>:
+    <span class="jk">Description</span>: <span class="jv">Security Group Description</span>
+    <span class="jk">Type</span>: <span class="jv">String</span>
+
+<span class="jk">Resources</span>:
+  <span class="jp">MyInstance</span>:
+    <span class="jk">Type</span>: <span class="jv">AWS::EC2::Instance</span>
+    <span class="jk">Properties</span>:
+      <span class="jk">AvailabilityZone</span>: <span class="jv">us-east-1a</span>
+      <span class="jk">ImageId</span>: <span class="jv">ami-0453ec754f44f9a4a</span>
+      <span class="jk">InstanceType</span>: <span class="jv">t3.micro</span>
+      <span class="jk">SecurityGroups</span>:
+        - <span class="jp">!Ref</span> SSHSecurityGroup
+        - <span class="jp">!Ref</span> ServerSecurityGroup
+
+  <span class="jp">MyEIP</span>:
+    <span class="jk">Type</span>: <span class="jv">AWS::EC2::EIP</span>
+    <span class="jk">Properties</span>:
+      <span class="jk">InstanceId</span>: <span class="jp">!Ref</span> MyInstance
+
+  <span class="jp">SSHSecurityGroup</span>:
+    <span class="jk">Type</span>: <span class="jv">AWS::EC2::SecurityGroup</span>
+    <span class="jk">Properties</span>:
+      <span class="jk">GroupDescription</span>: <span class="jv">Enable SSH access via port 22</span>
+      <span class="jk">SecurityGroupIngress</span>:
+        - <span class="jk">CidrIp</span>: <span class="jv">0.0.0.0/0</span>
+          <span class="jk">FromPort</span>: <span class="jp">22</span>
+          <span class="jk">IpProtocol</span>: <span class="jv">tcp</span>
+          <span class="jk">ToPort</span>: <span class="jp">22</span>
+
+  <span class="jp">ServerSecurityGroup</span>:
+    <span class="jk">Type</span>: <span class="jv">AWS::EC2::SecurityGroup</span>
+    <span class="jk">Properties</span>:
+      <span class="jk">GroupDescription</span>: <span class="jp">!Ref</span> SecurityGroupDescription
+      <span class="jk">SecurityGroupIngress</span>:
+        - <span class="jk">IpProtocol</span>: <span class="jv">tcp</span>
+          <span class="jk">FromPort</span>: <span class="jp">80</span>
+          <span class="jk">ToPort</span>: <span class="jp">80</span>
+          <span class="jk">CidrIp</span>: <span class="jv">0.0.0.0/0</span>
+        - <span class="jk">IpProtocol</span>: <span class="jv">tcp</span>
+          <span class="jk">FromPort</span>: <span class="jp">22</span>
+          <span class="jk">ToPort</span>: <span class="jp">22</span>
+          <span class="jk">CidrIp</span>: <span class="jv">192.168.1.1/32</span>
+
+<span class="jk">Outputs</span>:
+  <span class="jp">ElasticIP</span>:
+    <span class="jk">Description</span>: <span class="jv">Elastic IP Value</span>
+    <span class="jk">Value</span>: <span class="jp">!Ref</span> MyEIP</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Giải thích & Các bước thực hành -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🛠️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Giải thích các khái niệm cốt lõi &amp; Các bước triển khai Stack</span>
+        <span class="lang-en">3. Core CloudFormation Concepts &amp; Stack Deployment Steps</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hiểu rõ hàm nội tại <code>!Ref</code>, vòng đời Create/Update/Delete Stack và tính năng Rollback tự động</span>
+        <span class="lang-en">Understanding the <code>!Ref</code> intrinsic function, Create/Update/Delete Stack lifecycle, and automatic Rollback</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Hàm nội tại !Ref (Intrinsic Function Fn::Ref) hoạt động thế nào?</div>
+      <div class="id lang-vi">
+        • Khi <code>!Ref</code> trỏ tới một <b>Parameter</b> (như <code>!Ref SecurityGroupDescription</code>): Nó trả về <b>giá trị chuỗi</b> mà người dùng đã nhập vào lúc tạo Stack.<br>
+        • Khi <code>!Ref</code> trỏ tới một <b>Resource</b> (như <code>!Ref MyInstance</code> hoặc <code>!Ref MyEIP</code>): Nó trả về <b>Physical ID</b> của tài nguyên đó (ví dụ Instance ID <code>i-0abc...</code> hoặc địa chỉ IP tĩnh <code>54.x.x.x</code>), đồng thời báo cho CloudFormation biết phải tạo tài nguyên được tham chiếu trước!
+      </div>
+      <div class="id lang-en">
+        • When <code>!Ref</code> references a <b>Parameter</b> (e.g., <code>!Ref SecurityGroupDescription</code>): It returns the runtime <b>value</b> entered by the user.<br>
+        • When <code>!Ref</code> references a <b>Resource</b> (e.g., <code>!Ref MyInstance</code> or <code>!Ref MyEIP</code>): It returns the resource's <b>Physical ID</b> (e.g., Instance ID <code>i-0abc...</code> or Elastic IP <code>54.x.x.x</code>) and implicitly establishes creation order!
+      </div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Lưu ý về mã ImageId (AMI ID) theo Region</div>
+      <div class="id lang-vi">
+        Mã <code>ImageId: ami-0453ec754f44f9a4a</code> và <code>AvailabilityZone: us-east-1a</code> trong template được gắn cứng với Region <b><code>us-east-1</code> (N. Virginia)</b>. Bởi vì <b>AMI ID là duy nhất theo từng Region</b>, bạn phải chuyển Console sang Region <b>us-east-1</b> trước khi chạy template này (hoặc dùng SSM Parameter <code>/aws/service/ami-amazon-linux-latest/...</code> trong thực tế).
+      </div>
+      <div class="id lang-en">
+        The <code>ImageId: ami-0453ec754f44f9a4a</code> and <code>AvailabilityZone: us-east-1a</code> are specific to <b><code>us-east-1</code> (N. Virginia)</b>. Since <b>AMI IDs are Region-scoped</b>, switch your AWS Console to <b>us-east-1</b> before deploying this template.
+      </div>
+    </div>
+  </div>
+
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Bước 1: Tạo Stack từ file <code>0-just-ec2.yaml</code></b>
+        <b class="lang-en">Step 1: Create a Stack from <code>0-just-ec2.yaml</code></b>
+        <span class="lang-vi">Chuyển sang Region <b>us-east-1</b> &rarr; vào <b>CloudFormation &rarr; Create stack &rarr; With new resources (standard)</b>. Chọn <b>Upload a template file</b>, tải lên tệp <code>0-just-ec2.yaml</code>, đặt tên Stack là <code>MyFirstEC2Stack</code> và nhấn Next đến khi <b>Submit</b>.</span>
+        <span class="lang-en">Switch to <b>us-east-1</b> &rarr; go to <b>CloudFormation &rarr; Create stack &rarr; With new resources (standard)</b>. Select <b>Upload a template file</b>, upload <code>0-just-ec2.yaml</code>, name the stack <code>MyFirstEC2Stack</code>, and click Next through to <b>Submit</b>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Bước 2: Nâng cấp hạ tầng (Update Stack) lên <code>1-ec2-with-sg-eip.yaml</code></b>
+        <b class="lang-en">Step 2: Update the Stack Using <code>1-ec2-with-sg-eip.yaml</code></b>
+        <span class="lang-vi">Chọn Stack vừa tạo &rarr; nhấn <b>Update &rarr; Replace existing template</b> và tải lên <code>1-ec2-with-sg-eip.yaml</code>. Ở màn hình tiếp theo, CloudFormation sẽ tự động hiển thị ô nhập <b>Parameter: SecurityGroupDescription</b>! Sau khi Update hoàn tất (<code>UPDATE_COMPLETE</code>), mở tab <b>Outputs</b> để xem địa chỉ <code>ElasticIP</code> vừa được cấp.</span>
+        <span class="lang-en">Select your running stack &rarr; click <b>Update &rarr; Replace existing template</b> and upload <code>1-ec2-with-sg-eip.yaml</code>. CloudFormation will prompt you for the <b>SecurityGroupDescription</b> parameter! Once <code>UPDATE_COMPLETE</code>, check the <b>Outputs</b> tab to see your newly allocated <code>ElasticIP</code>.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Bước 3: Dọn dẹp toàn bộ tài nguyên bằng Delete Stack</b>
+        <b class="lang-en">Step 3: Clean Up All Resources via Delete Stack</b>
+        <span class="lang-vi">Nhấn <b>Delete</b> trên Stack &rarr; CloudFormation sẽ tự động tháo và giải phóng <code>MyEIP</code>, xóa <code>MyInstance</code>, sau đó xóa 2 Security Groups theo đúng thứ tự ngược lại, đảm bảo không bỏ sót bất kỳ tài nguyên tính phí nào (như Elastic IP không gắn máy chủ)!</span>
+        <span class="lang-en">Click <b>Delete</b> on the Stack &rarr; CloudFormation automatically disassociates and releases <code>MyEIP</code>, terminates <code>MyInstance</code>, and deletes both Security Groups in reverse dependency order, preventing orphaned billable resources!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

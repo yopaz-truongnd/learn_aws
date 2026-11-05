@@ -10,10 +10,16 @@
 </head>
 <body>
 <div class="top-nav">
-  <a href="../index.html" class="nav-back">
-    <span class="lang-vi">← Mục lục khóa học</span>
-    <span class="lang-en">← Course Hub</span>
-  </a>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_storage.html" class="nav-back" style="background:var(--grb);color:var(--gr)">
+      <span class="lang-vi">🧪 Thực hành Lab: EBS &amp; EFS Mount →</span>
+      <span class="lang-en">🧪 Hands-On Lab: EBS &amp; EFS Mount →</span>
+    </a>
+  </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span style="font-size:12px;color:var(--mu)">Section 6 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
@@ -715,6 +721,34 @@ flowchart TD
       </div>
     </li>
   </ul>
+</div>
+
+<!-- Hands-on Labs Card -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧪</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bài thực hành Hands-On tương ứng trong <code>aws_document/ebs</code> &amp; <code>efs</code></span>
+        <span class="lang-en">Corresponding Hands-On Lab in <code>aws_document/ebs</code> &amp; <code>efs</code></span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Định dạng ổ đĩa EBS, đo IOPS bằng fio/ioping và mount hệ thống tệp dùng chung EFS lên nhiều máy chủ EC2</span>
+        <span class="lang-en">Format EBS volumes, benchmark IOPS with fio/ioping, and mount shared EFS filesystems across multiple EC2 instances</span>
+      </div>
+    </div>
+  </div>
+  <div class="it">
+    <div class="in"><div class="dot" style="background:var(--gr)"></div>Lab 2: EBS Volume Benchmark &amp; EFS Multi-AZ Shared Mount (commands.txt &amp; efs.sh)</div>
+    <div class="id lang-vi">
+      Hướng dẫn từng bước cài đặt <code>amazon-efs-utils</code>, mở cổng NFS 2049 trên Security Group, mount <code>fs-yourid:/ /efs</code> trên 2 máy chủ EC2 đồng thời và kiểm tra hiệu năng ổ đĩa EBS.<br>
+      <div style="margin-top:8px"><a href="lab_storage.html" class="btn-open">🧪 Mở màn hình thực hành Lab 2: EBS &amp; EFS →</a></div>
+    </div>
+    <div class="id lang-en">
+      Step-by-step guide to installing <code>amazon-efs-utils</code>, opening NFS port 2049, mounting <code>fs-yourid:/ /efs</code> across 2 EC2 instances, and benchmarking EBS disk performance.<br>
+      <div style="margin-top:8px"><a href="lab_storage.html" class="btn-open">🧪 Open Hands-On Lab 2: EBS &amp; EFS →</a></div>
+    </div>
+  </div>
 </div>
 
 <!-- 9. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->

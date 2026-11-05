@@ -10,10 +10,16 @@
 </head>
 <body>
 <div class="top-nav">
-  <a href="../index.html" class="nav-back">
-    <span class="lang-vi">← Mục lục khóa học</span>
-    <span class="lang-en">← Course Hub</span>
-  </a>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_security_ssm_kms.html" class="nav-back" style="background:var(--grb);color:var(--gr)">
+      <span class="lang-vi">🧪 Thực hành Lab: KMS &amp; SSM Parameter Store →</span>
+      <span class="lang-en">🧪 Hands-On Lab: KMS &amp; SSM Parameter Store →</span>
+    </a>
+  </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span style="font-size:12px;color:var(--mu)">Section 4 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
@@ -533,6 +539,34 @@ flowchart TD
       </div>
     </li>
   </ul>
+</div>
+
+<!-- Hands-on Labs Card -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧪</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bài thực hành Hands-On Bảo mật: AWS KMS CLI &amp; SSM Parameter Store</span>
+        <span class="lang-en">Security Hands-On Lab: AWS KMS CLI &amp; SSM Parameter Store</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Thực hành mã hóa/giải mã tệp bí mật với KMS và phân quyền IAM Role cho hàm Lambda đọc cấu hình SSM Parameter Store</span>
+        <span class="lang-en">Encrypt/decrypt secret files via KMS CLI and configure Lambda IAM Execution Roles to read SSM Parameter Store secrets</span>
+      </div>
+    </div>
+  </div>
+  <div class="it">
+    <div class="in"><div class="dot" style="background:var(--gr)"></div>Lab 7: KMS CLI Encryption &amp; SSM Parameter Store with Boto3 Lambda (aws_document/kms &amp; ssm)</div>
+    <div class="id lang-vi">
+      Hướng dẫn từng bước thực hành <code>kms-demo-cli.sh</code>, <code>ExampleSecretFile.txt</code>, <code>ssm/cli.sh</code> và hàm Lambda <code>ssm/handler.py</code>.<br>
+      <div style="margin-top:8px"><a href="lab_security_ssm_kms.html" class="btn-open">🧪 Mở màn hình thực hành Lab 7: KMS &amp; SSM →</a></div>
+    </div>
+    <div class="id lang-en">
+      Step-by-step hands-on guide covering <code>kms-demo-cli.sh</code>, <code>ExampleSecretFile.txt</code>, <code>ssm/cli.sh</code>, and Lambda <code>ssm/handler.py</code>.<br>
+      <div style="margin-top:8px"><a href="lab_security_ssm_kms.html" class="btn-open">🧪 Open Hands-On Lab 7: KMS &amp; SSM →</a></div>
+    </div>
+  </div>
 </div>
 
 <!-- 6. Nguồn bài giảng & Tài liệu tìm hiểu thêm -->

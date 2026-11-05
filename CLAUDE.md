@@ -72,6 +72,14 @@ learn_aws/
 | `topics/aws_route53.html` | **Section 9:** Amazon Route 53 (CNAME vs Alias Record, Cây quyết định Mermaid, 8 Chính sách định tuyến, Health Checks &amp; Failover tự động). | Hoàn thành |
 | `topics/aws_s3.html` | **Section 11 &amp; 13:** Amazon S3 &amp; Advanced Storage (7 Tầng lưu trữ, Cây quyết định Mermaid, Vòng đời Lifecycle, SSE Encryption, Object Lock WORM, Nhân bản CRR/SRR &amp; Multipart Upload). | Hoàn thành |
 | `topics/aws_cloudfront.html` | **Section 14:** CloudFront &amp; AWS Global Accelerator (Cây quyết định Mermaid, Ma trận CloudFront vs Global Accelerator, OAC, Signed URLs vs Cookies, CloudFront Functions vs Lambda@Edge). | Hoàn thành |
+| `topics/lab_ec2.html` | **Hands-on Lab 1 (`aws_document/ec2-fundamentals` &amp; `cli`):** EC2 User Data Bootstrapping &amp; Instance Metadata CLI (IMDSv1/v2). | Hoàn thành |
+| `topics/lab_storage.html` | **Hands-on Lab 2 (`aws_document/ebs` &amp; `efs`):** EBS Volume Formatting/Benchmark (`fio`/`ioping`) &amp; EFS Multi-AZ Mount. | Hoàn thành |
+| `topics/lab_route53.html` | **Hands-on Lab 3 (`aws_document/route53`):** Route 53 Multi-AZ/Region Routing Policies Demo với IMDSv1/v2 User Data. | Hoàn thành |
+| `topics/lab_s3.html` | **Hands-on Lab 4 (`aws_document/s3` &amp; `s3-advanced`):** S3 Static Website, CORS, Pre-signed URL, MFA Delete &amp; Athena Logs SQL. | Hoàn thành |
+| `topics/lab_decoupling.html` | **Hands-on Lab 5 (`aws_document/sqs` &amp; `kinesis`):** SQS Queue CLI &amp; Kinesis Data Streams Producer/Consumer. | Hoàn thành |
+| `topics/lab_serverless.html` | **Hands-on Lab 6 (`aws_document/api-gateway`):** AWS Lambda &amp; API Gateway Proxy Integration. | Hoàn thành |
+| `topics/lab_security_ssm_kms.html` | **Hands-on Lab 7 (`aws_document/kms` &amp; `ssm`):** KMS CLI Encrypt/Decrypt &amp; SSM Parameter Store với Boto3 Lambda. | Hoàn thành |
+| `topics/lab_cloudformation.html` | **Hands-on Lab 8 (`aws_document/cloudformation`):** CloudFormation YAML Templates (EC2, Security Groups, `!Ref`, EIP, Outputs). | Hoàn thành |
 | `assets/css/style.css` | **Hệ thống Design System dùng chung:** Tokens màu, Dark/Light mode, typography, cards, grids, flows, matrix tables, mermaid containers. | Hoàn thành |
 | `assets/js/app.js` | **Xử lý ứng dụng client-side:** Nhận diện và chuyển đổi song ngữ VI/EN, lưu `localStorage`, render tự động sơ đồ Mermaid theo theme/lang. | Hoàn thành |
 | `assets/vendor/mermaid.min.js` | **Thư viện Mermaid.js nội bộ (100% offline):** Dùng để render Decision Trees, Sequence Diagrams, Logic Flowcharts mà không kéo CDN. | Hoàn thành |

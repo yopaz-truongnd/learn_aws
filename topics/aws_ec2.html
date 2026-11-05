@@ -10,10 +10,20 @@
 </head>
 <body>
 <div class="top-nav">
-  <a href="../index.html" class="nav-back">
-    <span class="lang-vi">← Mục lục khóa học</span>
-    <span class="lang-en">← Course Hub</span>
-  </a>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_ec2.html" class="nav-back" style="background:var(--grb);color:var(--gr)">
+      <span class="lang-vi">🧪 Thực hành Lab: User Data &amp; Metadata →</span>
+      <span class="lang-en">🧪 Hands-On Lab: User Data &amp; Metadata →</span>
+    </a>
+    <a href="lab_cloudformation.html" class="nav-back" style="background:var(--orb);color:var(--or)">
+      <span class="lang-vi">🏗️ Lab: CloudFormation EC2 →</span>
+      <span class="lang-en">🏗️ Lab: CloudFormation EC2 →</span>
+    </a>
+  </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span style="font-size:12px;color:var(--mu)">Section 5 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
@@ -591,6 +601,47 @@ stateDiagram-v2
       </div>
     </li>
   </ul>
+</div>
+
+<!-- Hands-on Labs Card -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧪</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bài thực hành Hands-On tương ứng trong <code>aws_document/</code></span>
+        <span class="lang-en">Corresponding Hands-On Labs in <code>aws_document/</code></span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Màn hình hướng dẫn từng bước, sơ đồ luồng và giải thích chi tiết từng dòng code thực hành</span>
+        <span class="lang-en">Step-by-step interactive lab screens, execution flows, and line-by-line code explanations</span>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Lab 1: EC2 User Data &amp; Instance Metadata CLI</div>
+      <div class="id lang-vi">
+        Thực hành tự động cài đặt Apache Web Server bằng <code>ec2-user-data.sh</code> và truy vấn <code>169.254.169.254</code> bằng <code>ec2-metadata.sh</code> (IMDSv1 &amp; IMDSv2).<br>
+        <div style="margin-top:8px"><a href="lab_ec2.html" class="btn-open">🧪 Mở màn hình thực hành Lab 1 →</a></div>
+      </div>
+      <div class="id lang-en">
+        Automate Apache Web Server bootstrapping via <code>ec2-user-data.sh</code> and query <code>169.254.169.254</code> using <code>ec2-metadata.sh</code> (IMDSv1 &amp; IMDSv2).<br>
+        <div style="margin-top:8px"><a href="lab_ec2.html" class="btn-open">🧪 Open Hands-On Lab 1 →</a></div>
+      </div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--or)"></div>Lab 8: CloudFormation EC2, Security Groups &amp; Elastic IP</div>
+      <div class="id lang-vi">
+        Thực hành khởi tạo tự động máy chủ EC2, 2 Security Groups và Elastic IP bằng YAML Template (<code>0-just-ec2.yaml</code> &amp; <code>1-ec2-with-sg-eip.yaml</code>).<br>
+        <div style="margin-top:8px"><a href="lab_cloudformation.html" class="btn-open">🏗️ Mở màn hình thực hành Lab 8 →</a></div>
+      </div>
+      <div class="id lang-en">
+        Provision EC2 instances, Security Groups, and Elastic IPs automatically via CloudFormation YAML templates (<code>0-just-ec2.yaml</code> &amp; <code>1-ec2-with-sg-eip.yaml</code>).<br>
+        <div style="margin-top:8px"><a href="lab_cloudformation.html" class="btn-open">🏗️ Open Hands-On Lab 8 →</a></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 8. Nguồn bài giảng & Tài liệu tìm hiểu thêm -->

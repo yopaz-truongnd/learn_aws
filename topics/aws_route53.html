@@ -10,10 +10,16 @@
 </head>
 <body>
 <div class="top-nav">
-  <a href="../index.html" class="nav-back">
-    <span class="lang-vi">← Mục lục khóa học</span>
-    <span class="lang-en">← Course Hub</span>
-  </a>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_route53.html" class="nav-back" style="background:var(--grb);color:var(--gr)">
+      <span class="lang-vi">🧪 Thực hành Lab: Route 53 Multi-AZ Demo →</span>
+      <span class="lang-en">🧪 Hands-On Lab: Route 53 Multi-AZ Demo →</span>
+    </a>
+  </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span style="font-size:12px;color:var(--mu)">Section 9 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
@@ -477,6 +483,34 @@ flowchart TD
       </div>
     </li>
   </ul>
+</div>
+
+<!-- Hands-on Labs Card -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧪</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bài thực hành Hands-On tương ứng trong <code>aws_document/route53</code></span>
+        <span class="lang-en">Corresponding Hands-On Lab in <code>aws_document/route53</code></span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Triển khai Web Server tự động nhận diện Availability Zone (IMDSv1/IMDSv2) để kiểm thử các Routing Policies của Route 53</span>
+        <span class="lang-en">Deploy AZ-aware Web Servers (IMDSv1/IMDSv2) to test Route 53 Weighted, Latency, and Failover Routing Policies</span>
+      </div>
+    </div>
+  </div>
+  <div class="it">
+    <div class="in"><div class="dot" style="background:var(--gr)"></div>Lab 3: Route 53 Multi-AZ / Multi-Region Routing Demo (user-data.sh)</div>
+    <div class="id lang-vi">
+      Giải thích chi tiết cách script <code>aws_document/route53/user-data.sh</code> tự động kiểm tra HTTP 200/401 để lấy <code>availability-zone</code> qua IMDSv2 token và các bước thực hành kiểm thử Weighted, Latency, Failover Routing.<br>
+      <div style="margin-top:8px"><a href="lab_route53.html" class="btn-open">🧪 Mở màn hình thực hành Lab 3: Route 53 →</a></div>
+    </div>
+    <div class="id lang-en">
+      Detailed breakdown of how <code>aws_document/route53/user-data.sh</code> auto-detects IMDSv1/IMDSv2 to print the instance's Availability Zone and step-by-step testing of Route 53 Routing Policies.<br>
+      <div style="margin-top:8px"><a href="lab_route53.html" class="btn-open">🧪 Open Hands-On Lab 3: Route 53 →</a></div>
+    </div>
+  </div>
 </div>
 
 <!-- 7. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->

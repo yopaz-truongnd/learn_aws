@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab 2: EBS Benchmark &amp; EFS Shared Mount — Hands-on SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_storage.html" class="nav-back">
+      <span class="lang-vi">📖 Lý thuyết Section 6: Storage</span>
+      <span class="lang-en">📖 Theory Section 6: Storage</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Hands-on Lab 2 · Section 6</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Hands-On Lab · aws_document/ebs &amp; efs</div>
+  <h1>
+    <span class="lang-vi">Thực Hành Lưu Trữ: EBS Volume &amp; Chia Sẻ File Đa AZ Với Amazon EFS</span>
+    <span class="lang-en">Storage Hands-On: EBS Volumes &amp; Multi-AZ Shared Mounts with Amazon EFS</span>
+  </h1>
+  <p class="lang-vi">Hướng dẫn định dạng, mount ổ đĩa EBS, đo hiệu năng IOPS và chia sẻ hệ thống tệp EFS đồng thời giữa nhiều máy chủ EC2</p>
+  <p class="lang-en">Step-by-step guide to formatting and mounting EBS volumes, benchmarking IOPS, and mounting a shared EFS filesystem across multiple EC2 instances</p>
+</div>
+
+<div class="grid">
+
+<!-- 1. Sơ đồ kiến trúc -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Sơ đồ so sánh kiến trúc thực hành EBS (AZ-Scoped) vs EFS (Multi-AZ)</span>
+        <span class="lang-en">1. Lab Architecture: EBS (AZ-Scoped) vs EFS (Multi-AZ Shared)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hai máy chủ EC2 ở 2 AZ khác nhau cùng đọc/ghi vào một thư mục /efs thông qua EFS Mount Targets</span>
+        <span class="lang-en">Two EC2 instances across different AZs reading and writing simultaneously to /efs via EFS Mount Targets</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram" id="diag-lab-storage">
+    <div class="mermaid-src lang-vi" style="display:none">
+flowchart LR
+    subgraph AZ1["Availability Zone A (us-east-1a)"]
+        EC2A["EC2 Instance A<br/>Thư mục: /efs"]
+        EBSA["EBS Volume (gp3)<br/>Gắn riêng cho EC2 A"]
+        MTA["EFS Mount Target A<br/>(ENI trong Subnet A)"]
+        EBSA --> EC2A
+        EC2A <-->|"NFSv4.1 (Port 2049)"| MTA
+    end
+
+    subgraph AZ2["Availability Zone B (us-east-1b)"]
+        EC2B["EC2 Instance B<br/>Thư mục: /efs"]
+        MTB["EFS Mount Target B<br/>(ENI trong Subnet B)"]
+        EC2B <-->|"NFSv4.1 (Port 2049)"| MTB
+    end
+
+    EFS[("Amazon EFS<br/>Hệ thống tệp dùng chung<br/>(fs-yourid)")]
+    MTA <--> EFS
+    MTB <--> EFS
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart LR
+    subgraph AZ1["Availability Zone A (us-east-1a)"]
+        EC2A["EC2 Instance A<br/>Mount point: /efs"]
+        EBSA["EBS Volume (gp3)<br/>Dedicated to EC2 A"]
+        MTA["EFS Mount Target A<br/>(ENI in Subnet A)"]
+        EBSA --> EC2A
+        EC2A <-->|"NFSv4.1 (Port 2049)"| MTA
+    end
+
+    subgraph AZ2["Availability Zone B (us-east-1b)"]
+        EC2B["EC2 Instance B<br/>Mount point: /efs"]
+        MTB["EFS Mount Target B<br/>(ENI in Subnet B)"]
+        EC2B <-->|"NFSv4.1 (Port 2049)"| MTB
+    end
+
+    EFS[("Amazon EFS<br/>Shared File System<br/>(fs-yourid)")]
+    MTA <--> EFS
+    MTB <--> EFS
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
+</div>
+
+<!-- 2. Bài thực hành 1: Amazon EFS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📂</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bài thực hành 1: Mount Amazon EFS lên 2 máy chủ EC2 đồng thời</span>
+        <span class="lang-en">2. Hands-On 1: Mounting Amazon EFS Across 2 EC2 Instances Simultaneously</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/efs/efs.sh</code></span>
+        <span class="lang-en">Source file: <code>aws_document/efs/efs.sh</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Mã nguồn trong aws_document/efs/efs.sh</span>
+    <span class="lang-en">Source code in aws_document/efs/efs.sh</span>
+  </div>
+  <div class="json"><span class="jc"># on both instances:</span>
+<span class="jk">sudo yum install</span> -y amazon-efs-utils
+<span class="jk">sudo mkdir</span> /efs
+<span class="jk">sudo mount</span> -t efs fs-yourid:/ /efs
+
+<span class="jc"># you can now write files into /efs and they'll be available on both your ec2 instances!</span>
+<span class="jc"># Ví dụ kiểm tra đồng bộ tức thì:</span>
+<span class="jk">echo</span> <span class="jv">"Hello from Instance 1"</span> | <span class="jk">sudo tee</span> /efs/hello.txt
+<span class="jk">cat</span> /efs/hello.txt</div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Giải thích từng lệnh &amp; Các bước thực hiện</span>
+    <span class="lang-en">Command Breakdown &amp; Step-by-Step Guide</span>
+  </div>
+  <ul class="bp">
+    <li class="bi">
+      <div class="bn">1</div>
+      <div>
+        <b class="lang-vi">Chuẩn bị Security Group cho EFS và EC2 (Rất hay quên!)</b>
+        <b class="lang-en">Configure Security Groups for EFS and EC2 (Critical Step!)</b>
+        <span class="lang-vi">Tạo <code>EFS-SG</code> gắn cho EFS Mount Targets và mở Inbound Rule: giao thức <b>NFS (TCP Port 2049)</b> với Source là <b>Security Group của EC2</b> (<code>EC2-SG</code>). Nếu quên mở cổng 2049, lệnh <code>mount</code> sẽ bị treo vô hạn và báo lỗi <i>Connection timed out</i>.</span>
+        <span class="lang-en">Create an <code>EFS-SG</code> for your EFS Mount Targets and add an Inbound Rule allowing <b>NFS (TCP Port 2049)</b> from your <b>EC2 Security Group</b> (<code>EC2-SG</code>). Without port 2049 open, the <code>mount</code> command hangs and times out.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">2</div>
+      <div>
+        <b class="lang-vi">Cài đặt công cụ hỗ trợ: <code>sudo yum install -y amazon-efs-utils</code></b>
+        <b class="lang-en">Install EFS Mount Helper: <code>sudo yum install -y amazon-efs-utils</code></b>
+        <span class="lang-vi">Gói <code>amazon-efs-utils</code> cung cấp trình mount helper cho kiểu <code>-t efs</code>, tự động phân giải DNS của File System ID sang địa chỉ IP của Mount Target nằm trong cùng AZ với máy chủ EC2 và hỗ trợ mã hóa đường truyền TLS.</span>
+        <span class="lang-en">The <code>amazon-efs-utils</code> package provides the <code>-t efs</code> mount helper, automatically resolving the File System ID DNS to the local AZ's Mount Target IP and supporting in-transit TLS encryption.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">3</div>
+      <div>
+        <b class="lang-vi">Tạo thư mục đích và Mount: <code>sudo mkdir /efs &amp;&amp; sudo mount -t efs fs-yourid:/ /efs</code></b>
+        <b class="lang-en">Create Mount Point &amp; Mount: <code>sudo mkdir /efs &amp;&amp; sudo mount -t efs fs-yourid:/ /efs</code></b>
+        <span class="lang-vi">Thay <code>fs-yourid</code> bằng <b>File system ID</b> thực tế trên EFS Console (ví dụ <code>fs-0a1b2c3d4e5f6g7h8</code>). Nếu muốn mã hóa dữ liệu trên đường truyền (In-transit encryption), thêm cờ <b><code>-o tls</code></b> vào lệnh mount.</span>
+        <span class="lang-en">Replace <code>fs-yourid</code> with your actual EFS <b>File system ID</b> (e.g., <code>fs-0a1b2c3d4e5f6g7h8</code>). To enforce in-transit encryption, add the <b><code>-o tls</code></b> option to the mount command.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">4</div>
+      <div>
+        <b class="lang-vi">Kiểm chứng chia sẻ dữ liệu thời gian thực giữa 2 máy chủ</b>
+        <b class="lang-en">Verify Real-Time File Sharing Across Both Instances</b>
+        <span class="lang-vi">Trên EC2 thứ nhất, tạo tệp <code>/efs/hello.txt</code>. Ngay lập tức chuyển sang cửa sổ terminal của EC2 thứ hai và chạy <code>ls -l /efs</code> &rarr; tệp tin xuất hiện tức thì trên cả 2 máy chủ!</span>
+        <span class="lang-en">On Instance 1, write to <code>/efs/hello.txt</code>. Immediately switch to Instance 2's terminal and run <code>ls -l /efs</code> &rarr; the file is instantaneously visible on both instances!</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 3. Bài thực hành 2: EBS Volume & Đo hiệu năng đĩa -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">💾</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Bài thực hành 2: Gắn ổ đĩa EBS mới &amp; Đo hiệu năng IOPS (fio / ioping)</span>
+        <span class="lang-en">3. Hands-On 2: Attaching New EBS Volumes &amp; Benchmarking IOPS (fio / ioping)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tệp nguồn: <code>aws_document/ebs/commands.txt</code></span>
+        <span class="lang-en">Source file: <code>aws_document/ebs/commands.txt</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lbl">
+    <span class="lang-vi">Nội dung tham chiếu trong aws_document/ebs/commands.txt &amp; Bộ lệnh thực hành đầy đủ</span>
+    <span class="lang-en">Reference in aws_document/ebs/commands.txt &amp; Complete Hands-On Commands</span>
+  </div>
+  <div class="json"><span class="jc"># Tài liệu gốc trong aws_document/ebs/commands.txt:</span>
+<span class="jc"># See: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html</span>
+<span class="jc"># See: https://www.unixmen.com/how-to-measure-disk-performance-with-fio-and-ioping/</span>
+
+<span class="jc"># 1. Liệt kê các ổ đĩa khối (Block devices) đã gắn vào EC2:</span>
+<span class="jk">lsblk</span>
+
+<span class="jc"># 2. Kiểm tra ổ đĩa mới (ví dụ /dev/xvdf hoặc /dev/nvme1n1) đã có filesystem chưa:</span>
+<span class="jk">sudo file</span> -s /dev/xvdf   <span class="jc"># Nếu trả về "/dev/xvdf: data" nghĩa là ổ đĩa trống</span>
+
+<span class="jc"># 3. Định dạng (Format) ổ đĩa mới sang chuẩn XFS và mount vào thư mục /data:</span>
+<span class="jk">sudo mkfs</span> -t xfs /dev/xvdf
+<span class="jk">sudo mkdir</span> /data
+<span class="jk">sudo mount</span> /dev/xvdf /data
+
+<span class="jc"># 4. Đo độ trễ đĩa (Latency) bằng ioping và đo IOPS bằng fio:</span>
+<span class="jk">sudo yum install</span> -y fio ioping
+<span class="jk">ioping</span> -c 10 /data
+<span class="jk">sudo fio</span> --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=/data/test --bs=4k --iodepth=64 --size=1G --readwrite=randrw --rwmixread=75</div>
+
+  <div class="g2" style="margin-top:16px">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Lưu ý khi Format ổ đĩa từ Snapshot</div>
+      <div class="id lang-vi">Chỉ chạy lệnh <code>mkfs -t xfs</code> đối với ổ đĩa EBS <b>mới tinh (trống)</b>. Nếu bạn tạo EBS Volume từ một <b>Snapshot</b> có sẵn dữ liệu, tuyệt đối KHÔNG chạy <code>mkfs</code> vì nó sẽ xóa sạch toàn bộ dữ liệu trong Snapshot!</div>
+      <div class="id lang-en">Only run <code>mkfs -t xfs</code> on a <b>brand-new empty</b> EBS volume. If you restored the volume from an existing <b>Snapshot</b>, NEVER run <code>mkfs</code> as it will wipe the restored filesystem!</div>
+    </div>
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Tự động Mount khi khởi động lại (/etc/fstab)</div>
+      <div class="id lang-vi">Lệnh <code>mount</code> thông thường sẽ mất hiệu lực khi Reboot máy. Để tự động gắn ổ đĩa EBS hoặc EFS mỗi khi khởi động, hãy thêm cấu hình UUID của ổ đĩa vào tệp <b><code>/etc/fstab</code></b> kèm tham số <code>nofail</code>.</div>
+      <div class="id lang-en">Manual <code>mount</code> commands do not persist across reboots. To auto-mount EBS or EFS volumes at boot, add an entry using the volume's UUID to <b><code>/etc/fstab</code></b> with the <code>nofail</code> option.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
