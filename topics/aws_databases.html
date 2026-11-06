@@ -203,6 +203,80 @@ flowchart TD
   </div>
 </div>
 
+<!-- BẢNG TRA CỨU PORT MẠNG & SECURITY GROUP CHO RDS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔌</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Danh sách Port cần nắm vững &amp; Cấu hình Security Group cho RDS</span>
+        <span class="lang-en">Standard Ports Reference &amp; RDS Security Group Rules</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân biệt Important Ports (Web/Admin) vs Database Ports để chọn đúng luật Security Group 3 tầng</span>
+        <span class="lang-en">Differentiating Important Ports (Web/Admin) vs Database Ports for multi-tier Security Group architectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Important / Standard Ports (Web &amp; Quản trị)</div>
+      <div class="id lang-vi">
+        Các cổng giao thức mạng tiêu chuẩn dành cho Client, Web Server, ALB và quản trị từ xa:<br>
+        • <b>Port 21 — FTP:</b> Truyền tải tệp không mã hóa.<br>
+        • <b>Port 22 — SSH &amp; SFTP:</b> Đăng nhập shell mã hóa từ xa vào Linux EC2 và truyền tệp bảo mật (SFTP dùng cùng port 22 với SSH).<br>
+        • <b>Port 80 — HTTP:</b> Truy cập Web dạng văn bản rõ (Cleartext Web traffic).<br>
+        • <b>Port 443 — HTTPS:</b> Truy cập Web mã hóa bảo mật SSL/TLS (Cực kỳ quan trọng).<br>
+        <span class="tag tb">Web Tier (ALB/EC2)</span><span class="tag ty">Không dùng cho Database</span>
+      </div>
+      <div class="id lang-en">
+        Standard networking and administrative ports for Clients, Web Servers, ALB, and remote access:<br>
+        • <b>Port 21 — FTP:</b> File Transfer Protocol (unencrypted).<br>
+        • <b>Port 22 — SSH &amp; SFTP:</b> Secure Shell remote administration and secure file transfer (SFTP shares port 22 with SSH).<br>
+        • <b>Port 80 — HTTP:</b> Cleartext web browsing.<br>
+        • <b>Port 443 — HTTPS:</b> SSL/TLS encrypted secure web browsing (Mission-critical).<br>
+        <span class="tag tb">Web Tier (ALB/EC2)</span><span class="tag ty">Never for Databases</span>
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>RDS Databases Ports (Cổng cơ sở dữ liệu quan hệ)</div>
+      <div class="id lang-vi">
+        Các cổng chuyên dụng để ứng dụng backend (App Tier) kết nối vào cơ sở dữ liệu quan hệ:<br>
+        • <b>Port 5432 — PostgreSQL:</b> Cổng mặc định của PostgreSQL.<br>
+        • <b>Port 3306 — MySQL &amp; MariaDB:</b> Cổng chuẩn của họ MySQL và MariaDB.<br>
+        • <b>Port 1521 — Oracle RDS:</b> Cổng kết nối cơ sở dữ liệu Oracle.<br>
+        • <b>Port 1433 — Microsoft SQL Server:</b> Cổng kết nối MSSQL Server.<br>
+        • <b>Port 5432 hoặc 3306 — Amazon Aurora:</b> 5432 (nếu PostgreSQL-compatible) hoặc 3306 (nếu MySQL-compatible).<br>
+        <span class="tag tg">Database Tier</span><span class="tag to">Private Subnet Only</span>
+      </div>
+      <div class="id lang-en">
+        Dedicated listening ports for application backend tiers connecting to relational database engines:<br>
+        • <b>Port 5432 — PostgreSQL:</b> Default PostgreSQL port.<br>
+        • <b>Port 3306 — MySQL &amp; MariaDB:</b> Standard MySQL &amp; MariaDB port.<br>
+        • <b>Port 1521 — Oracle RDS:</b> Oracle Database listener port.<br>
+        • <b>Port 1433 — Microsoft SQL Server:</b> MSSQL connection port.<br>
+        • <b>Port 5432 or 3306 — Amazon Aurora:</b> 5432 (PostgreSQL-compatible) or 3306 (MySQL-compatible).<br>
+        <span class="tag tg">Database Tier</span><span class="tag to">Private Subnet Only</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding:12px 14px;background:var(--sub);border-radius:8px;border-left:4px solid var(--bl);font-size:12px;line-height:1.6">
+    <b class="lang-vi">💡 Mẹo phòng thi SAA-C03 (Exam Tip): Phân biệt Important Port vs RDS Port &amp; Security Group Chaining</b>
+    <b class="lang-en">💡 SAA-C03 Exam Tip: Differentiating Important vs Database Ports &amp; Security Group Chaining</b>
+    <div class="lang-vi" style="margin-top:4px">
+      • <b>Không cần học vẹt:</b> Đề thi SAA-C03 không yêu cầu bạn nhớ lòng từng cổng mạng. Bạn chỉ cần <b>phân biệt rõ ràng giữa Cổng Web/Admin (Port 80, 443, 22) với Cổng Cơ sở dữ liệu (Port 5432, 3306, 1433, 1521)</b>.<br>
+      • <b>Bẫy đề thi kinh điển:</b> Khi cấu hình <b>Security Group Inbound Rule</b> cho RDS, đáp án đúng LUÔN là mở đúng Database Port (ví dụ MySQL 3306 hoặc PostgreSQL 5432) và <b>Source là Security Group ID của App/Web Server (<code>sg-xxxx</code>)</b>. Bất kỳ đáp án nào mở Port 80/443 trên RDS hoặc đặt Source là <code>0.0.0.0/0</code> đều là ĐÁP ÁN SAI!
+    </div>
+    <div class="lang-en" style="margin-top:4px">
+      • <b>No need to memorize rote numbers:</b> SAA-C03 will not test you on port numbers in isolation. You only need to <b>differentiate an Important Port (Web/Admin: 80, 443, 22) from an RDS Database Port (PostgreSQL 5432, MySQL 3306, etc.)</b>.<br>
+      • <b>Classic Exam Trap:</b> When configuring an <b>Inbound Rule for an RDS Security Group</b>, the correct answer ALWAYS allows the Database Port (e.g. MySQL 3306 or PostgreSQL 5432) with <b>Source set to the App/Web Security Group ID (<code>sg-xxxx</code>)</b>. Any choice opening Port 80/443 on RDS or allowing <code>0.0.0.0/0</code> is strictly INCORRECT!
+    </div>
+  </div>
+</div>
+
 <!-- 3. AMAZON AURORA ARCHITECTURE -->
 <div class="card full">
   <div class="ch">
@@ -563,6 +637,15 @@ flowchart TD
         <b class="lang-en">Aurora replicates 6 copies across 3 AZs and supports up to 15 Read Replicas</b>
         <span class="lang-vi">Nhớ con số vàng của Aurora: 6 bản sao dữ liệu phân bố đều trên 3 AZ. Hỗ trợ tối đa 15 Read Replicas (so với chỉ 5 của RDS thông thường) và tất cả các replica đều dùng chung 1 tầng lưu trữ phân tán.</span>
         <span class="lang-en">Remember the golden metrics: 6 copies across 3 AZs by default. Scales up to 15 Read Replicas (versus 5 for standard RDS), backed by unified shared storage fabric.</span>
+      </div>
+    </li>
+    <li class="bi">
+      <div class="bn">4</div>
+      <div>
+        <b class="lang-vi">Phân biệt Web Port (80/443) vs Database Port (3306/5432) khi cấu hình Security Group</b>
+        <b class="lang-en">Differentiate Web Ports (80/443) vs Database Ports (3306/5432) in Security Group Rules</b>
+        <span class="lang-vi">Trong đề thi SAA-C03, RDS Security Group Inbound Rule luôn cho phép đúng Database Port (MySQL 3306, Postgres 5432, MSSQL 1433, Oracle 1521...) với Source là Security Group của EC2 Web/App (<code>sg-app</code>). Tuyệt đối không chọn đáp án mở port 80/443 hay mở 0.0.0.0/0 cho Database.</span>
+        <span class="lang-en">In SAA-C03 questions, RDS Security Group Inbound rules strictly allow the Database Port (MySQL 3306, Postgres 5432, MSSQL 1433, Oracle 1521...) with Source set to the EC2 Security Group ID (<code>sg-app</code>). Never choose answers opening port 80/443 or 0.0.0.0/0 to database tiers.</span>
       </div>
     </li>
     <li class="bi">
