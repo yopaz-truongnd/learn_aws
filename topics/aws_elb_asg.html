@@ -15,7 +15,7 @@
     <span class="lang-en">← Course Hub</span>
   </a>
   <div style="display:flex;align-items:center;gap:12px">
-    <span style="font-size:12px;color:var(--mu)">Section 7 · Udemy SAA-C03</span>
+    <span style="font-size:12px;color:var(--mu)">Section 8 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
       <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
       <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
@@ -125,6 +125,46 @@
       <b>4. Auto Scaling Group</b>
       <span class="lang-vi">Co giãn số máy EC2 theo tải</span>
       <span class="lang-en">Scales EC2 fleet dynamically</span>
+    </div>
+  </div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Tóm tắt nhanh 4 dịch vụ trong Phần 8 (4 Tiêu chí SAA-C03 Service Cheat Sheet)</span>
+    <span class="lang-en">Quick 4-Point Service Cheat Sheet for Section 8 (SAA-C03 Exam Summary)</span>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧠 1. ALB (Layer 7) vs ⚡ 2. NLB (Layer 4)</span>
+        <span class="lang-en">🧠 1. ALB (Layer 7) vs ⚡ 2. NLB (Layer 4)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Application Load Balancer — ALB (4 tiêu chí)</span><span class="lang-en">Application Load Balancer — ALB (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Bộ cân bằng tải <b>Layer 7 (HTTP/HTTPS/gRPC/WebSocket)</b> định tuyến thông minh theo nội dung gói tin HTTP.<br>• <b>Dùng khi nào:</b> Kiến trúc <b>Microservices / Containers (ECS, EKS)</b> chia luồng theo URL Path (<code>/users</code>), Hostname, Query String, Header.<br>• <b>Khác gì NLB:</b> ALB có <b>DNS Name cố định</b> nhưng không có Static IP; tích hợp trực tiếp <b>AWS WAF</b>.<br>• <b>Điểm hay hỏi:</b> <b>Cross-Zone LB luôn BẬT mặc định (miễn phí)</b>. IP thật của Client nằm ở header <code>X-Forwarded-For</code>.</span>
+        <span class="lang-en">• <b>What is it:</b> <b>Layer 7 (HTTP/HTTPS/gRPC/WebSocket)</b> load balancer with content-aware routing.<br>• <b>When to use:</b> <b>Microservices / Containers (ECS, EKS)</b> routing by URL Path, Hostname, Query String, Header.<br>• <b>vs NLB:</b> ALB has a fixed DNS name (no Static IP) and native <b>AWS WAF</b> integration.<br>• <b>Hotspots:</b> <b>Cross-Zone LB is ALWAYS ENABLED (free)</b>. True client IP is passed in <code>X-Forwarded-For</code>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Network Load Balancer — NLB (4 tiêu chí)</span><span class="lang-en">Network Load Balancer — NLB (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Bộ cân bằng tải <b>Layer 4 (TCP/UDP/TLS)</b> xử lý hàng triệu requests/s với độ trễ siêu thấp (~100 ms).<br>• <b>Dùng khi nào:</b> Hiệu năng cực cao, giao thức TCP/UDP, hoặc khi đối tác yêu cầu <b>Static IP / Elastic IP cố định</b> để Whitelist Firewall.<br>• <b>Điểm hay hỏi:</b> Cung cấp <b>1 Static/Elastic IP mỗi AZ</b>. Có thể đặt <b>NLB đứng trước ALB</b> để vừa có IP tĩnh vừa có luật Layer 7. <b>Cross-Zone LB mặc định TẮT (bật sẽ tính phí liên AZ)</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> <b>Layer 4 (TCP/UDP/TLS)</b> load balancer handling millions of req/s at ultra-low latency (~100 ms).<br>• <b>When to use:</b> Extreme performance, TCP/UDP traffic, or <b>Static / Elastic IP whitelisting</b>.<br>• <b>Hotspots:</b> <b>1 Static/Elastic IP per AZ</b>. Can place <b>NLB in front of ALB</b>. <b>Cross-Zone LB is DISABLED by default (paid if enabled)</b>.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🛡️ 3. GWLB (Layer 3) &amp; 📈 4. Auto Scaling Group</span>
+        <span class="lang-en">🛡️ 3. GWLB (Layer 3) &amp; 📈 4. Auto Scaling Group</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Gateway Load Balancer — GWLB (4 tiêu chí)</span><span class="lang-en">Gateway Load Balancer — GWLB (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Bộ cân bằng tải <b>Layer 3 (Network Layer — IP Packets)</b> dùng để triển khai, co giãn và quản lý đội thiết bị mạng ảo bên thứ 3.<br>• <b>Dùng khi nào:</b> Cho <b>toàn bộ lưu lượng mạng</b> đi qua cụm <b>3rd-party Virtual Appliances (Firewalls, IDS/IPS, Deep Packet Inspection)</b> trước khi vào ứng dụng.<br>• <b>Khác gì ALB/NLB &amp; Điểm hay hỏi:</b> Là Transparent Network Gateway + Load Balancer, đóng gói gói tin bằng giao thức <b>GENEVE trên cổng UDP 6081</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> <b>Layer 3 (IP Packet)</b> load balancer managing fleets of 3rd-party virtual network appliances.<br>• <b>When to use:</b> Route <b>all traffic</b> through inline <b>Firewalls, IDS/IPS, or Deep Packet Inspection (DPI)</b>.<br>• <b>vs ALB/NLB &amp; Hotspots:</b> Acts as a transparent bump-in-the-wire gateway + load balancer using the <b>GENEVE protocol on UDP Port 6081</b>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Auto Scaling Group — ASG (4 tiêu chí)</span><span class="lang-en">Auto Scaling Group — ASG (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ tự động <code>Scale Out / Scale In</code> số lượng EC2 theo tải, tự thay thế máy lỗi và đăng ký vào ELB.<br>• <b>Dùng khi nào:</b> Đảm bảo số lượng máy <code>Min / Desired / Max</code> qua nhiều AZ và co giãn theo CloudWatch Alarms.<br>• <b>Khác gì Launch Configuration:</b> Luôn dùng <b>Launch Template</b> (phiên bản mới, hỗ trợ Versioning, Spot + On-Demand mix).<br>• <b>Điểm hay hỏi:</b> <b>Default Cooldown = 300s</b>. Khi Scale In, ưu tiên xóa ở <b>AZ có nhiều EC2 nhất</b> &rarr; máy có <b>Launch Template cũ nhất</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> Automatically <code>Scales Out / Scales In</code> EC2 fleets, replaces unhealthy nodes, and registers with ELB.<br>• <b>When to use:</b> Maintain <code>Min / Desired / Max</code> capacity across Multi-AZ and scale on CloudWatch metrics.<br>• <b>vs Launch Config:</b> Always use <b>Launch Templates</b>.<br>• <b>Hotspots:</b> <b>Default Cooldown = 300s</b>. Default Termination picks <b>AZ with most instances</b> &rarr; <b>oldest Launch Template</b>.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -463,8 +503,8 @@ flowchart TD
       </div>
       <div class="pi">
         <b>Sticky Sessions (Session Affinity)</b>
-        <span class="lang-vi">Bắt buộc các request từ 1 người dùng cụ thể luôn luôn được chuyển hướng đến <b>cùng một EC2 instance backend</b> duy nhất. Hỗ trợ thông qua <b>Duration-based Cookie</b> (do ALB sinh) hoặc <b>Application Cookie</b> (do app sinh). Nhược điểm: Có thể gây mất cân bằng tải giữa các máy chủ.</span>
-        <span class="lang-en">Pins user requests to the exact same backend instance via cookies. Supported via ALB duration-based or application-based cookies. Tradeoff: Potential workload imbalance.</span>
+        <span class="lang-vi">Bắt buộc các request từ 1 người dùng cụ thể luôn chuyển hướng đến <b>cùng một EC2 instance backend</b>:<br>• <b>Application-based Cookies:</b> <i>Custom cookie</i> do ứng dụng tự sinh (không được đặt trùng tên <code>AWSALB</code>, <code>AWSALBAPP</code>, <code>AWSALBTG</code>) hoặc <i>Application cookie</i> (<code>AWSALBAPP</code>) do ALB sinh.<br>• <b>Duration-based Cookies:</b> Cookie <code>AWSALB</code> (ALB) / <code>AWSELB</code> (CLB) hết hạn theo thời gian cố định do Load Balancer cấu hình.</span>
+        <span class="lang-en">Pins user requests to the exact same backend instance via cookies:<br>• <b>Application-based Cookies:</b> <i>Custom cookie</i> generated by the target (cannot use reserved names <code>AWSALB</code>, <code>AWSALBAPP</code>, <code>AWSALBTG</code>) or <i>Application cookie</i> (<code>AWSALBAPP</code>) generated by ALB.<br>• <b>Duration-based Cookies:</b> <code>AWSALB</code> / <code>AWSELB</code> cookie with fixed expiration managed by the load balancer.</span>
       </div>
       <div class="pi">
         <b>Connection Draining (Deregistration Delay)</b>
@@ -759,19 +799,19 @@ flowchart TD
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
       <div class="pi">
-        <b>Section 7 · Lecture 26098198 &amp; 26098204</b>
-        <span class="lang-vi">Tổng quan về Scalability, High Availability và Application Load Balancer hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098198" target="_blank" style="color:var(--bl)">▶ Bài giảng Tổng quan ELB</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098204" target="_blank" style="color:var(--bl)">ALB Hands-on</a></span>
-        <span class="lang-en">Scalability, High Availability fundamentals, and Application Load Balancer hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098198" target="_blank" style="color:var(--bl)">▶ ELB Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098204" target="_blank" style="color:var(--bl)">ALB Hands-on</a></span>
+        <b>Section 8 · Lectures 70 – 77 (13531374, 13528090, 18078003, 18078013, 28874688)</b>
+        <span class="lang-vi">Scalability &amp; HA, ELB Overview, Application Load Balancer (L7), Network Load Balancer (L4) và Gateway Load Balancer (L3 - GENEVE 6081).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528090" target="_blank" style="color:var(--bl)">▶ ELB Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078003" target="_blank" style="color:var(--bl)">ALB</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078013" target="_blank" style="color:var(--bl)">NLB</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874688" target="_blank" style="color:var(--bl)">GWLB</a></span>
+        <span class="lang-en">Scalability &amp; HA, ELB Overview, Application Load Balancer (L7), Network Load Balancer (L4), and Gateway Load Balancer (L3 - GENEVE 6081).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528090" target="_blank" style="color:var(--bl)">▶ ELB Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078003" target="_blank" style="color:var(--bl)">ALB</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078013" target="_blank" style="color:var(--bl)">NLB</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874688" target="_blank" style="color:var(--bl)">GWLB</a></span>
       </div>
       <div class="pi">
-        <b>Section 7 · Lecture 26098216 &amp; 26098226</b>
-        <span class="lang-vi">Network Load Balancer (NLB), Gateway Load Balancer, Sticky Sessions và Cross-Zone Balancing.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098216" target="_blank" style="color:var(--bl)">▶ NLB Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098226" target="_blank" style="color:var(--bl)">ELB Features</a></span>
-        <span class="lang-en">Network Load Balancer (NLB), Gateway LB, Sticky Sessions, and Cross-Zone Balancing.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098216" target="_blank" style="color:var(--bl)">▶ NLB Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098226" target="_blank" style="color:var(--bl)">ELB Features</a></span>
+        <b>Section 8 · Lectures 78 – 82 (13528094, 18078093, 18078099, 18611524)</b>
+        <span class="lang-vi">Sticky Sessions, Cross-Zone Load Balancing, SSL Certificates (SNI) và Connection Draining (Deregistration Delay).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528094" target="_blank" style="color:var(--bl)">▶ Sticky Sessions</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078093" target="_blank" style="color:var(--bl)">Cross-Zone</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078099" target="_blank" style="color:var(--bl)">SSL &amp; SNI</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18611524" target="_blank" style="color:var(--bl)">Draining</a></span>
+        <span class="lang-en">Sticky Sessions, Cross-Zone Load Balancing, SSL Certificates (SNI), and Connection Draining (Deregistration Delay).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528094" target="_blank" style="color:var(--bl)">▶ Sticky Sessions</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078093" target="_blank" style="color:var(--bl)">Cross-Zone</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078099" target="_blank" style="color:var(--bl)">SSL &amp; SNI</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18611524" target="_blank" style="color:var(--bl)">Draining</a></span>
       </div>
       <div class="pi">
-        <b>Section 7 · Lecture 26098236</b>
-        <span class="lang-vi">Auto Scaling Groups (ASG): Launch Templates, Scaling Policies và Lifecycle Hooks.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098236" target="_blank" style="color:var(--bl)">▶ Bài giảng ASG Hands-on &amp; Policies</a></span>
-        <span class="lang-en">Auto Scaling Groups: Launch Templates, Scaling Policies, and Lifecycle management.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098236" target="_blank" style="color:var(--bl)">▶ ASG Hands-on &amp; Policies</a></span>
+        <b>Section 8 · Lectures 83 – 86 (13528102, 26148326) &amp; Bản ghi bài giảng</b>
+        <span class="lang-vi">Auto Scaling Groups (ASG), Scaling Policies, Default Cooldown (300s) và toàn bộ 17 bài học chi tiết trong kho dự án.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528102" target="_blank" style="color:var(--bl)">▶ ASG Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26148326" target="_blank" style="color:var(--bl)">Scaling Policies</a> · <a href="../lectures/section-08-elb-and-asg/README.md" style="color:var(--gr)">📂 Xem thư mục lectures/section-08-elb-and-asg</a></span>
+        <span class="lang-en">Auto Scaling Groups (ASG), Scaling Policies, Default Cooldown (300s), and all 17 detailed lecture notes.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528102" target="_blank" style="color:var(--bl)">▶ ASG Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26148326" target="_blank" style="color:var(--bl)">Scaling Policies</a> · <a href="../lectures/section-08-elb-and-asg/README.md" style="color:var(--gr)">📂 Open lectures/section-08-elb-and-asg</a></span>
       </div>
     </div>
 

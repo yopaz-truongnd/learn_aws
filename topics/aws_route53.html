@@ -21,7 +21,7 @@
     </a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span style="font-size:12px;color:var(--mu)">Section 9 · Udemy SAA-C03</span>
+    <span style="font-size:12px;color:var(--mu)">Section 10 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
       <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
       <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
@@ -30,13 +30,66 @@
 </div>
 
 <div class="header">
-  <div class="badge">Global DNS &amp; Traffic Management</div>
-  <h1>AWS Route 53 — DNS &amp; Traffic Routing</h1>
-  <p class="lang-vi">Dịch vụ phân giải tên miền toàn cầu: CNAME vs Alias Record, 8 Chính sách định tuyến (Routing Policies) &amp; Kiểm tra sức khỏe tự động</p>
-  <p class="lang-en">Highly Available Global DNS Service: CNAME vs Alias Record, 8 Routing Policies &amp; Automated Health Checks</p>
+  <div class="badge">Global DNS &amp; Traffic Management (100% SLA)</div>
+  <h1>AWS Route 53 — DNS, Routing Policies &amp; Hybrid Resolver</h1>
+  <p class="lang-vi">Dịch vụ phân giải tên miền toàn cầu: CNAME vs Alias Record, 8 Chính sách định tuyến (Routing Policies), Health Checks &amp; Route 53 Resolver Hybrid DNS</p>
+  <p class="lang-en">Highly Available Global DNS Service: CNAME vs Alias Record, 8 Routing Policies, Automated Health Checks &amp; Route 53 Resolver Hybrid DNS</p>
 </div>
 
 <div class="grid">
+
+<!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 10 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 10 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi từ bài giảng Phần 10 (Bài 101 – Bài 120): Là gì · Dùng khi nào · Khác gì dịch vụ gần giống · Điểm hay bị hỏi</span>
+        <span class="lang-en">4 core exam criteria from Section 10 (Lectures 101 – 120): What it is · When to use · How it differs · High-yield exam traps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🌐 1. Amazon Route 53 (Authoritative DNS)</span>
+        <span class="lang-en">🌐 1. Amazon Route 53 (Authoritative DNS)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ <b>Managed Authoritative DNS</b>, <b>Domain Registrar</b> và <b>Health Checks</b> toàn cầu duy nhất trên AWS cam kết <b>100% Availability SLA</b> (Port 53).<br>• <b>Dùng khi nào:</b> Phân giải tên miền ngoài Internet (<b>Public Hosted Zone</b>) hoặc nội bộ VPC (<b>Private Hosted Zone</b>), và điều hướng lưu lượng theo <b>8 Routing Policies</b> (<code>Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, IP-based, Multi-Value</code>).</span>
+        <span class="lang-en">• <b>What is it:</b> Fully managed <b>Authoritative DNS</b>, <b>Domain Registrar</b>, and <b>Health Checking</b> service backed by a <b>100% Availability SLA</b> (Port 53).<br>• <b>When to use:</b> Route public Internet traffic (<b>Public Hosted Zone</b>) or internal VPC traffic (<b>Private Hosted Zone</b>) using <b>8 Routing Policies</b>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
+        <span class="lang-vi">• <b>Route 53 vs ELB / Global Accelerator:</b> Route 53 chỉ trả lời truy vấn DNS (chịu ảnh hưởng bởi <code>TTL</code> caching); ELB chuyển tiếp gói tin trực tiếp; Global Accelerator cấp 2 Anycast IP tĩnh đi qua mạng trục AWS.<br>• <b>Alias vs CNAME:</b> <code>Alias</code> (kiểu A/AAAA) trỏ tới tài nguyên AWS (<b>TRỪ EC2 DNS Name!</b>), <b>miễn phí</b>, dùng được ở <b>Zone Apex (<code>example.com</code>)</b>; <code>CNAME</code> tính phí và <b>chỉ dùng được cho Subdomain</b>.<br>• <b>Điểm hay hỏi:</b> Health Check cần <b>&gt; 18%</b> checkers toàn cầu trả về <code>2xx/3xx</code> (hoặc khớp chuỗi trong <b>5,120 bytes đầu tiên</b>). Tên miền bên thứ 3 (GoDaddy): Tạo Public Hosted Zone trên Route 53 rồi đổi <b>4 NS records</b> trên GoDaddy.</span>
+        <span class="lang-en">• <b>Route 53 vs ELB / Global Accelerator:</b> Route 53 operates at the DNS layer (subject to client <code>TTL</code> caching); ELB proxies packets; Global Accelerator uses 2 static Anycast IPs.<br>• <b>Alias vs CNAME:</b> <code>Alias</code> targets AWS resources (<b>EXCEPT EC2 DNS names!</b>), is <b>free</b>, and works at the <b>Zone Apex (<code>example.com</code>)</b>; <code>CNAME</code> is billed and <b>Subdomain-only</b>.<br>• <b>Hotspots:</b> Health checks pass when <b>&gt; 18%</b> of checkers receive <code>2xx/3xx</code> (or match text in the <b>first 5,120 bytes</b>). For 3rd-party domains (GoDaddy), create a Public Hosted Zone and update the registrar's <b>NS records</b>.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔀 2. Route 53 Resolver (Hybrid DNS)</span>
+        <span class="lang-en">🔀 2. Route 53 Resolver (Hybrid DNS)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ phân giải DNS hai chiều giữa môi trường <b>AWS VPC (Private Hosted Zones)</b> và mạng <b>On-Premises Data Center</b> qua kết nối VPN hoặc AWS Direct Connect.<br>• <b>Dùng khi nào:</b> Kiến trúc Hybrid Cloud cần máy chủ On-Premises phân giải tên miền nội bộ trong AWS VPC và ngược lại máy chủ EC2 trong VPC phân giải tên miền nội bộ của công ty dưới On-Premises.</span>
+        <span class="lang-en">• <b>What is it:</b> Bi-directional DNS resolution bridge between <b>AWS VPCs (Private Hosted Zones)</b> and <b>On-Premises Data Centers</b> over VPN or Direct Connect.<br>• <b>When to use:</b> Hybrid Cloud architectures requiring seamless private domain resolution across both AWS VPCs and corporate on-premises networks.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì giữa Inbound vs Outbound Endpoint &amp; Điểm hay bị hỏi</span><span class="lang-en">Inbound vs Outbound Endpoint &amp; Exam Hotspots</span></b>
+        <span class="lang-vi">• <b>Inbound Resolver Endpoint:</b> Cho phép truy vấn DNS đi <b>TỪ On-Premises VÀO AWS VPC</b> (DNS Server ở On-Premises forward truy vấn tới IP của Inbound Endpoint để phân giải Private Hosted Zone).<br>• <b>Outbound Resolver Endpoint (+ Forwarding Rules):</b> Cho phép truy vấn DNS đi <b>TỪ AWS VPC RA On-Premises</b> (EC2 trong VPC dùng Resolver Rule đẩy truy vấn qua Outbound Endpoint về DNS Server dưới On-Premises).<br>• <b>Điểm hay hỏi:</b> Triển khai ENI của Resolver Endpoint trên tối thiểu <b>2 Subnets thuộc 2 AZs</b> để đảm bảo High Availability.</span>
+        <span class="lang-en">• <b>Inbound Resolver Endpoint:</b> DNS queries flow <b>FROM On-Premises INTO AWS VPC</b> (On-Premises DNS forwards queries to Inbound Endpoint IPs to resolve Private Hosted Zones).<br>• <b>Outbound Resolver Endpoint (+ Forwarding Rules):</b> DNS queries flow <b>FROM AWS VPC OUT TO On-Premises</b> (VPC Resolver forwards queries via Outbound Endpoint to On-Premises DNS servers).<br>• <b>Hotspots:</b> Deploy Resolver Endpoint ENIs across at least <b>2 Subnets in 2 AZs</b> for High Availability.</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- 1. TỔNG QUAN DNS & ROUTE 53 HOSTED ZONES -->
 <div class="card full">
@@ -104,9 +157,9 @@
       </thead>
       <tbody>
         <tr>
-          <td><b>Định nghĩa kỹ thuật</b></td>
-          <td>Chuẩn DNS quốc tế trỏ từ <b>một Hostname này sang một Hostname khác</b> (ví dụ: `app.domain.com` &rarr; `my-alb.amazonaws.com`).</td>
-          <td>Tính năng mở rộng độc quyền của Route 53 trỏ một Hostname tới trực tiếp <b>một tài nguyên AWS mục tiêu</b> (ALB, NLB, CloudFront, S3 Website, API Gateway).</td>
+          <td><b>Định nghĩa kỹ thuật &amp; Đích trỏ (Targets)</b></td>
+          <td>Chuẩn DNS quốc tế trỏ từ <b>một Hostname này sang bất kỳ Hostname nào khác</b> (ví dụ: <code>app.domain.com</code> &rarr; <code>anything.com</code>).</td>
+          <td>Tính năng độc quyền của Route 53 (kiểu <code>A/AAAA</code>) trỏ tới <b>tài nguyên AWS</b>: ALB/NLB/CLB, CloudFront, API Gateway, Elastic Beanstalk, S3 Website, VPC Interface Endpoint, Global Accelerator, hoặc bản ghi cùng Hosted Zone.<br><span class="tag tr">Bẫy thi: KHÔNG THỂ trỏ Alias tới EC2 DNS Name!</span></td>
         </tr>
         <tr>
           <td><b>Hỗ trợ Root Domain (Apex / Naked Domain)</b></td>
@@ -290,8 +343,8 @@ flowchart TD
       </div>
       <div class="pi">
         <b>Mạng lưới Health Checkers phân tán toàn cầu</b>
-        <span class="lang-vi">Khoảng 15 máy chủ kiểm tra của Route 53 trên toàn thế giới gửi yêu cầu HTTP/HTTPS/TCP định kỳ (mỗi 30s hoặc nhanh là 10s) tới IP công khai của bạn. Endpoint được coi là Khỏe mạnh nếu nhận phản hồi mã <b>2xx hoặc 3xx</b> trong thời gian Timeout. Cần đạt ngưỡng Healthy/Unhealthy threshold (mặc định 3 lần liên tiếp) để chuyển trạng thái.</span>
-        <span class="lang-en">~15 global health checkers query your public endpoint via HTTP/HTTPS/TCP every 30s (or 10s fast interval). Passes if receiving <b>2xx/3xx HTTP codes</b> within timeout. State changes after crossing consecutive threshold (default 3).</span>
+        <span class="lang-vi">Khoảng 15 máy chủ kiểm tra của Route 53 trên toàn thế giới gửi yêu cầu HTTP/HTTPS/TCP định kỳ (mỗi 30s hoặc nhanh là 10s) tới IP công khai của bạn. Endpoint được coi là Khỏe mạnh nếu <b>trên 18% (&gt; 18%) Health Checkers</b> nhận phản hồi mã <b>2xx hoặc 3xx</b> (hoặc khớp chuỗi văn bản trong <b>5,120 bytes đầu tiên</b> của response body). Lưu ý: Phải mở <b>Security Group Inbound</b> cho dải IP của Route 53 Health Checkers!</span>
+        <span class="lang-en">~15 global health checkers query your public endpoint via HTTP/HTTPS/TCP every 30s (or 10s fast interval). Marked Healthy if <b>&gt; 18% of health checkers</b> receive <b>2xx/3xx HTTP codes</b> (or match a string in the <b>first 5,120 bytes</b> of the response). Remember to allow Route 53 Health Checker IP ranges in your <b>Incoming Security Group</b>!</span>
       </div>
     </div>
 
@@ -526,14 +579,19 @@ flowchart TD
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
       <div class="pi">
-        <b>Section 9 · Lecture 26098290 &amp; 26098302</b>
-        <span class="lang-vi">Tổng quan về DNS, đăng ký Domain, CNAME vs Alias Records và Simple Routing.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098290" target="_blank" style="color:var(--bl)">▶ Bài giảng DNS &amp; Route 53</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098302" target="_blank" style="color:var(--bl)">CNAME vs Alias</a></span>
-        <span class="lang-en">DNS fundamentals, Hosted Zones, CNAME vs Alias records, and Simple Routing.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098290" target="_blank" style="color:var(--bl)">▶ Route 53 Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098302" target="_blank" style="color:var(--bl)">CNAME vs Alias</a></span>
+        <b>Section 10 · Lectures 101 – 107 (28384280, 13528180, 13528188, 13528190)</b>
+        <span class="lang-vi">Nền tảng DNS, Route 53 Overview, Đăng ký Domain, bản ghi TTL và phân tích chuyên sâu CNAME vs Alias.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28384280" target="_blank" style="color:var(--bl)">▶ What is DNS?</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528180" target="_blank" style="color:var(--bl)">Route 53 Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528188" target="_blank" style="color:var(--bl)">TTL</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528190" target="_blank" style="color:var(--bl)">CNAME vs Alias</a></span>
+        <span class="lang-en">DNS Fundamentals, Route 53 Overview, Domain Registration, Record TTL, and CNAME vs Alias deep dive.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28384280" target="_blank" style="color:var(--bl)">▶ What is DNS?</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528180" target="_blank" style="color:var(--bl)">Route 53 Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528188" target="_blank" style="color:var(--bl)">TTL</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528190" target="_blank" style="color:var(--bl)">CNAME vs Alias</a></span>
       </div>
       <div class="pi">
-        <b>Section 9 · Lecture 26098314 &amp; 26098326</b>
-        <span class="lang-vi">8 Routing Policies chuyên sâu: Weighted, Latency, Failover, Geolocation và Health Checks.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098314" target="_blank" style="color:var(--bl)">▶ Routing Policies</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098326" target="_blank" style="color:var(--bl)">Health Checks &amp; Failover</a></span>
-        <span class="lang-en">In-depth Routing Policies: Weighted, Latency, Failover, Geolocation, and Health Checks.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098314" target="_blank" style="color:var(--bl)">▶ Routing Policies</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098326" target="_blank" style="color:var(--bl)">Health Checks &amp; Failover</a></span>
+        <b>Section 10 · Lectures 108 – 117 (13528192, 13528194, 13528196, 13528200, 13528204, 13528206, 26099214, 37045728, 13528210)</b>
+        <span class="lang-vi">8 Routing Policies (Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, IP-based, Multi-Value) &amp; Health Checks.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528200" target="_blank" style="color:var(--bl)">▶ Health Checks</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528204" target="_blank" style="color:var(--bl)">Failover</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26099214" target="_blank" style="color:var(--bl)">Geoproximity</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/37045728" target="_blank" style="color:var(--bl)">IP-based</a></span>
+        <span class="lang-en">8 Routing Policies (Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, IP-based, Multi-Value) &amp; Health Checks.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528200" target="_blank" style="color:var(--bl)">▶ Health Checks</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528204" target="_blank" style="color:var(--bl)">Failover</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26099214" target="_blank" style="color:var(--bl)">Geoproximity</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/37045728" target="_blank" style="color:var(--bl)">IP-based</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 10 · Lectures 118 – 120 (13528212, 51771513) &amp; Bản ghi bài giảng</b>
+        <span class="lang-vi">Tên miền bên thứ 3 (3rd Party Domains), Route 53 Resolvers &amp; Hybrid DNS và toàn bộ 20 bài học chi tiết trong kho dự án.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528212" target="_blank" style="color:var(--bl)">▶ 3rd Party Domains</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/51771513" target="_blank" style="color:var(--bl)">Hybrid DNS Resolver</a> · <a href="../lectures/section-10-route-53/README.md" style="color:var(--gr)">📂 Xem thư mục lectures/section-10-route-53</a></span>
+        <span class="lang-en">3rd Party Domains, Route 53 Resolvers &amp; Hybrid DNS, and all 20 detailed lecture notes.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528212" target="_blank" style="color:var(--bl)">▶ 3rd Party Domains</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/51771513" target="_blank" style="color:var(--bl)">Hybrid DNS Resolver</a> · <a href="../lectures/section-10-route-53/README.md" style="color:var(--gr)">📂 Open lectures/section-10-route-53</a></span>
       </div>
     </div>
 

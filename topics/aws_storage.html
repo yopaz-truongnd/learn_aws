@@ -21,7 +21,7 @@
     </a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span style="font-size:12px;color:var(--mu)">Section 6 · Udemy SAA-C03</span>
+    <span style="font-size:12px;color:var(--mu)">Section 7 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
       <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
       <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
@@ -30,13 +30,83 @@
 </div>
 
 <div class="header">
-  <div class="badge">Block &amp; File Storage</div>
-  <h1>AWS EC2 Storage — EBS, EFS &amp; Instance Store</h1>
-  <p class="lang-vi">Lưu trữ khối và hệ thống tệp cho máy chủ EC2: Phân loại EBS Volume, Snapshot, Multi-Attach, EFS Multi-AZ &amp; Bộ nhớ tạm thời Instance Store</p>
-  <p class="lang-en">Block &amp; File Storage for EC2: EBS Volume Types, Snapshots, Multi-Attach, EFS Multi-AZ &amp; Ephemeral Instance Store</p>
+  <div class="badge">Block, File &amp; Image Storage</div>
+  <h1>AWS EC2 Storage — EBS, EFS, AMI &amp; Instance Store</h1>
+  <p class="lang-vi">Lưu trữ khối, hệ thống tệp và đóng gói AMI cho EC2: EBS Volume Types, Snapshots, Multi-Attach, Golden AMI, EFS Multi-AZ &amp; Instance Store</p>
+  <p class="lang-en">Block, File &amp; Image Storage for EC2: EBS Volume Types, Snapshots, Multi-Attach, Golden AMI, EFS Multi-AZ &amp; Ephemeral Instance Store</p>
 </div>
 
 <div class="grid">
+
+<!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 7 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 7 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi từ bài giảng Phần 7 (Bài 56 – Bài 69): Là gì · Dùng khi nào · Khác gì dịch vụ gần giống · Điểm hay bị hỏi</span>
+        <span class="lang-en">4 core exam criteria from Section 7 (Lectures 56 – 69): What it is · When to use · How it differs · High-yield exam traps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💾 1. Amazon EBS &amp; EBS Snapshots</span>
+        <span class="lang-en">💾 1. Amazon EBS &amp; EBS Snapshots</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Ổ đĩa mạng dạng khối (<b>Network Block Storage</b>) gắn vào EC2 tại <b>1 Availability Zone (AZ)</b> cụ thể.<br>• <b>Dùng khi nào:</b> Làm ổ đĩa Boot OS hoặc Database bền vững. Dùng <code>gp3</code> cho đa mục đích; <code>io1/io2</code> khi cần <b>&gt; 16,000 IOPS</b> hoặc <b>Multi-Attach</b>; <code>st1/sc1</code> cho Big Data tuần tự giá rẻ.</span>
+        <span class="lang-en">• <b>What is it:</b> Persistent <b>Network Block Storage</b> attached to EC2 within a <b>single Availability Zone (AZ)</b>.<br>• <b>When to use:</b> OS Boot drives or persistent DB storage. <code>gp3</code> for general workloads; <code>io1/io2</code> for <b>&gt; 16,000 IOPS</b> or <b>Multi-Attach</b>; <code>st1/sc1</code> for sequential HDD workloads.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
+        <span class="lang-vi">• <b>EBS vs Instance Store vs EFS:</b> EBS là ổ mạng bền vững trong <b>1 AZ</b>; Instance Store gắn cứng trên host vật lý (mất dữ liệu khi Stop); EFS chia sẻ file NFS qua <b>Multi-AZ</b>.<br>• <b>Điểm hay hỏi:</b> Khi Terminate EC2, <b>Root EBS mặc định bị xóa</b>, EBS phụ được giữ lại. Chuyển AZ phải qua <b>Snapshot</b>. Dùng <b>Recycle Bin</b> (1 ngày – 1 năm) chống xóa nhầm và <b>Fast Snapshot Restore (FSR)</b> xóa độ trễ khởi tạo.</span>
+        <span class="lang-en">• <b>EBS vs Instance Store vs EFS:</b> EBS is persistent network block storage in <b>1 AZ</b>; Instance Store is ephemeral physical host storage; EFS is Multi-AZ shared NFS.<br>• <b>Hotspots:</b> Root EBS defaults to <code>DeleteOnTermination=true</code>. Cross-AZ migration requires a <b>Snapshot</b>. Use <b>Recycle Bin</b> for accidental deletion protection and <b>FSR</b> for instant full IOPS.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ 2. EC2 Instance Store &amp; Amazon AMI</span>
+        <span class="lang-en">⚡ 2. EC2 Instance Store &amp; Amazon AMI</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">EC2 Instance Store (4 tiêu chí)</span><span class="lang-en">EC2 Instance Store (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Ổ cứng NVMe/SSD vật lý gắn trực tiếp trên máy chủ host (Ephemeral Block Storage).<br>• <b>Dùng khi nào:</b> Cần <b>IOPS cực đại (hàng triệu IOPS)</b> cho dữ liệu tạm: <code>buffer, cache, scratch data, temporary processing</code>.<br>• <b>Khác gì EBS:</b> Nhanh hơn EBS nhưng <b>mất sạch dữ liệu khi EC2 Stop, Hibernate hoặc Terminate</b> (vẫn giữ dữ liệu khi OS Reboot).</span>
+        <span class="lang-en">• <b>What is it:</b> Physical host-attached NVMe/SSD ephemeral block storage.<br>• <b>When to use:</b> Require <b>extreme IOPS (millions)</b> for <code>buffers, caches, scratch data, temporary files</code>.<br>• <b>vs EBS:</b> Faster than EBS, but <b>loses all data on Stop, Hibernate, or Terminate</b> (survives OS Reboot).</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Amazon Machine Image — AMI (4 tiêu chí)</span><span class="lang-en">Amazon Machine Image — AMI (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Bản đóng gói mẫu (Image template) chứa OS, cấu hình và phần mềm cài sẵn để tạo nhanh EC2.<br>• <b>Dùng khi nào:</b> Tạo <b>Golden AMI</b> để <b>giảm thời gian khởi động (boot time)</b> khi Auto Scaling Group scale out.<br>• <b>Khác gì User Data &amp; Giới hạn:</b> <code>User Data</code> cài đặt lúc boot (chậm); <code>AMI</code> đóng gói sẵn (nhanh nhất). AMI có phạm vi <b>Regional</b> (muốn dùng ở Region khác phải <b>Copy AMI</b>).</span>
+        <span class="lang-en">• <b>What is it:</b> Pre-packaged image template containing OS, configs, and software to launch EC2.<br>• <b>When to use:</b> Build a <b>Golden AMI</b> to <b>accelerate launch/boot time</b> in Auto Scaling Groups.<br>• <b>vs User Data &amp; Limits:</b> <code>User Data</code> installs on boot (slower); <code>AMI</code> pre-bakes software (fastest). AMIs are <b>Region-scoped</b> (must <b>Copy AMI</b> across Regions).</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📂 3. Amazon EFS (Elastic File System)</span>
+        <span class="lang-en">📂 3. Amazon EFS (Elastic File System)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Hệ thống tệp mạng quản lý hoàn toàn (<b>Managed NFSv4.1</b>) mount đồng thời lên hàng trăm máy chủ <b>Linux EC2</b> qua <b>Multi-AZ</b>.<br>• <b>Dùng khi nào:</b> Chia sẻ thư mục code/media chung (WordPress, CMS, Web server farm) giữa nhiều máy chủ Linux ở nhiều AZs với chuẩn <b>POSIX</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> Fully managed <b>Multi-AZ NFSv4.1</b> network file system mountable across hundreds of <b>Linux EC2</b> instances.<br>• <b>When to use:</b> Shared content repositories (WordPress, CMS, web farms) across multiple Linux instances and AZs requiring <b>POSIX</b> compliance.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
+        <span class="lang-vi">• <b>EFS vs EBS vs FSx for Windows:</b> EFS là Multi-AZ File System chỉ dành cho <b>Linux (POSIX)</b>; EBS là 1-AZ Block Storage; nếu chia sẻ file cho <b>Windows (SMB)</b> phải chọn <b>FSx for Windows File Server</b>.<br>• <b>Điểm hay hỏi:</b> Kiểm soát truy cập mạng tới EFS Mount Target bằng <b>Security Group (Port 2049)</b>. Tối ưu chi phí tới 92% bằng <b>EFS Lifecycle Management (chuyển sang EFS-IA)</b> hoặc <b>EFS One Zone</b>.</span>
+        <span class="lang-en">• <b>EFS vs EBS vs FSx for Windows:</b> EFS is Multi-AZ <b>Linux (POSIX)</b> file storage; EBS is 1-AZ block storage; for <b>Windows SMB shares</b> choose <b>FSx for Windows File Server</b>.<br>• <b>Hotspots:</b> EFS Mount Targets are protected by <b>Security Groups (TCP Port 2049)</b>. Save up to 92% using <b>EFS Lifecycle Policies (EFS-IA)</b> or <b>EFS One Zone</b>.</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- 1. TỔNG QUAN 3 MÔ HÌNH LƯU TRỮ CỐT LÕI -->
 <div class="card full">
@@ -259,9 +329,9 @@ flowchart TD
         <span class="lang-en">Snapshots are stored under the hood in <b>Amazon S3</b>. The initial snapshot copies all written blocks; subsequent snapshots only capture modified blocks (deltas). Deleting an earlier snapshot does not corrupt subsequent ones.</span>
       </div>
       <div class="pi">
-        <b>EBS Snapshot Archive &amp; FSR</b>
-        <span class="lang-vi"><b>Archive Tier:</b> Giảm chi phí tới 75% cho các snapshot lưu trữ dài hạn (trên 90 ngày). Thời gian khôi phục mất từ 24 đến 72 giờ.<br><b>Fast Snapshot Restore (FSR):</b> Loại bỏ hoàn toàn độ trễ khởi tạo (I/O latency) khi restore volume từ snapshot, đạt hiệu năng tối đa ngay từ giây đầu tiên.</span>
-        <span class="lang-en"><b>Archive Tier:</b> Up to 75% cheaper for long-term compliance retention (&gt;90 days). Restores take 24–72 hours.<br><b>Fast Snapshot Restore (FSR):</b> Eliminates initialization I/O latency when instantiating new volumes from snapshots.</span>
+        <b>EBS Snapshot Archive, Recycle Bin &amp; FSR</b>
+        <span class="lang-vi">• <b>Archive Tier:</b> Giảm chi phí tới 75% cho các snapshot lưu trữ dài hạn (trên 90 ngày); thời gian khôi phục mất từ <b>24 đến 72 giờ</b>.<br>• <b>Recycle Bin for EBS Snapshots:</b> Lưu giữ các snapshot bị xóa trong khoảng từ <b>1 ngày đến 1 năm</b> để chống xóa nhầm.<br>• <b>Fast Snapshot Restore (FSR):</b> Khởi tạo trước toàn bộ volume từ snapshot để đạt hiệu năng I/O tối đa ngay lập tức (tính phí cao).</span>
+        <span class="lang-en">• <b>Archive Tier:</b> Up to 75% cheaper for long-term retention (&gt;90 days); restores take <b>24–72 hours</b>.<br>• <b>Recycle Bin for EBS Snapshots:</b> Retains deleted snapshots from <b>1 day to 1 year</b> to protect against accidental deletion.<br>• <b>Fast Snapshot Restore (FSR):</b> Pre-warms volumes from snapshots to eliminate first-read I/O latency.</span>
       </div>
       <div class="pi">
         <b>Chuyển đĩa sang AZ hoặc Region khác</b>
@@ -654,6 +724,30 @@ flowchart TD
         • Pairing EFS One Zone with <b>AWS Backup</b> is the canonical best practice to mitigate single-AZ failure risks.
       </div>
     </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--bl)"></div>Golden AMI vs EC2 User Data (Tăng tốc Boot Time)</div>
+      <div class="id lang-vi">
+        • <b>Quy trình tạo Custom AMI:</b> Khởi chạy EC2 ở <code>AZ-a</code> &rarr; Cài đặt phần mềm &rarr; Stop máy (hoặc chọn <code>No reboot</code>) &rarr; Tạo <b>AMI</b> (tự động tạo các EBS Snapshots trên S3) &rarr; Khởi chạy EC2 mới ở bất kỳ AZ nào (<code>AZ-b</code>).<br>
+        • <b>Khi nào chọn Golden AMI:</b> Khi Auto Scaling Group cần khởi chạy máy mới <b>nhanh nhất có thể</b> mà không muốn chờ chạy script cài đặt nặng trong <code>EC2 User Data</code>.
+      </div>
+      <div class="id lang-en">
+        • <b>Custom AMI Lifecycle:</b> Launch EC2 in <code>AZ-a</code> &rarr; Customize software &rarr; Stop instance (or enable <code>No reboot</code>) &rarr; Create <b>AMI</b> (backed by S3 EBS Snapshots) &rarr; Launch instances in any AZ (<code>AZ-b</code>).<br>
+        • <b>When to choose Golden AMI:</b> When Auto Scaling Groups need the <b>fastest possible launch/boot time</b> instead of running slow <code>EC2 User Data</code> installation scripts.
+      </div>
+    </div>
+
+    <div class="it">
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>Bẫy EFS Access Denied khi đã mở Security Group</div>
+      <div class="id lang-vi">
+        • Nếu EC2 đã mở đúng Security Group cổng <b>TCP 2049 (NFS)</b> tới EFS Mount Target nhưng vẫn bị lỗi <code>Access Denied</code> hoặc <code>Operation not permitted</code> khi mount:<br>
+        • Nguyên nhân trong đề thi: <b>EFS File System Policy (IAM Resource Policy)</b> đang chặn quyền <code>elasticfilesystem:ClientMount</code> / <code>ClientWrite</code> hoặc khách hàng chưa truyền cờ <code>-o iam</code> khi mount.
+      </div>
+      <div class="id lang-en">
+        • If EC2 Security Groups already allow <b>TCP Port 2049 (NFS)</b> to the EFS Mount Target but mounting still fails with <code>Access Denied</code>:<br>
+        • Exam root cause: The <b>EFS File System Policy (IAM Resource Policy)</b> is restricting <code>elasticfilesystem:ClientMount</code> / <code>ClientWrite</code> or missing the <code>-o iam</code> mount option.
+      </div>
+    </div>
   </div>
 </div>
 
@@ -764,19 +858,19 @@ flowchart TD
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
       <div class="pi">
-        <b>Section 6 · Lecture 26098144 &amp; 26098150</b>
-        <span class="lang-vi">Tổng quan về EBS Volume, đính kèm đĩa và cơ chế EBS Snapshots.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098144" target="_blank" style="color:var(--bl)">▶ Bài giảng EBS Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098150" target="_blank" style="color:var(--bl)">EBS Snapshots</a></span>
-        <span class="lang-en">EBS Overview, volume attachment, and EBS Snapshots hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098144" target="_blank" style="color:var(--bl)">▶ EBS Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098150" target="_blank" style="color:var(--bl)">EBS Snapshots</a></span>
+        <b>Section 7 · Lectures 56 – 61 (26098272, 26098276, 26098280)</b>
+        <span class="lang-vi">EBS Overview, EBS Snapshots (Archive, Recycle Bin, FSR) và Amazon Machine Image (AMI Lifecycle).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098272" target="_blank" style="color:var(--bl)">▶ EBS Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098276" target="_blank" style="color:var(--bl)">EBS Snapshots</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098280" target="_blank" style="color:var(--bl)">AMI Overview</a></span>
+        <span class="lang-en">EBS Overview, EBS Snapshots (Archive, Recycle Bin, FSR), and Amazon Machine Image (AMI Lifecycle).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098272" target="_blank" style="color:var(--bl)">▶ EBS Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098276" target="_blank" style="color:var(--bl)">EBS Snapshots</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098280" target="_blank" style="color:var(--bl)">AMI Overview</a></span>
       </div>
       <div class="pi">
-        <b>Section 6 · Lecture 26098158 &amp; 26098170</b>
-        <span class="lang-vi">So sánh chuyên sâu các loại đĩa EBS Volume Types và cơ chế EC2 Instance Store.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098158" target="_blank" style="color:var(--bl)">▶ EBS Volume Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098170" target="_blank" style="color:var(--bl)">Instance Store</a></span>
-        <span class="lang-en">In-depth comparison of EBS Volume Types and EC2 Instance Store.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098158" target="_blank" style="color:var(--bl)">▶ EBS Volume Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098170" target="_blank" style="color:var(--bl)">Instance Store</a></span>
+        <b>Section 7 · Lectures 62 – 65 (26098288, 26098296, 26098298, 13528122)</b>
+        <span class="lang-vi">EC2 Instance Store, 6 loại EBS Volume Types, EBS Multi-Attach (io1/io2) và mã hóa EBS Encryption.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098288" target="_blank" style="color:var(--bl)">▶ Instance Store</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098296" target="_blank" style="color:var(--bl)">Volume Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098298" target="_blank" style="color:var(--bl)">Multi-Attach</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528122" target="_blank" style="color:var(--bl)">Encryption</a></span>
+        <span class="lang-en">EC2 Instance Store, 6 EBS Volume Types, EBS Multi-Attach (io1/io2), and EBS Encryption.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098288" target="_blank" style="color:var(--bl)">▶ Instance Store</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098296" target="_blank" style="color:var(--bl)">Volume Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098298" target="_blank" style="color:var(--bl)">Multi-Attach</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528122" target="_blank" style="color:var(--bl)">Encryption</a></span>
       </div>
       <div class="pi">
-        <b>Section 6 · Lecture 26098182</b>
-        <span class="lang-vi">Amazon EFS: Tạo file system, thiết lập Mount Targets và phân tích lưu trữ dùng chung.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098182" target="_blank" style="color:var(--bl)">▶ Bài giảng Amazon EFS Hands-on</a></span>
-        <span class="lang-en">Amazon EFS: Creating shared filesystems, mount targets, and performance analysis.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098182" target="_blank" style="color:var(--bl)">▶ Amazon EFS Hands-on Lecture</a></span>
+        <b>Section 7 · Lectures 66 – 69 (13528128, 13528130, 13528138) &amp; Bản ghi bài giảng</b>
+        <span class="lang-vi">Amazon EFS, Mount Targets, EFS vs EBS vs Instance Store và toàn bộ 14 bài học chi tiết trong kho dự án.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528128" target="_blank" style="color:var(--bl)">▶ Amazon EFS</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528138" target="_blank" style="color:var(--bl)">EFS vs EBS</a> · <a href="../lectures/section-07-ec2-instance-storage/README.md" style="color:var(--gr)">📂 Xem thư mục lectures/section-07-ec2-instance-storage</a></span>
+        <span class="lang-en">Amazon EFS, Mount Targets, EFS vs EBS vs Instance Store, and all 14 detailed lecture notes.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528128" target="_blank" style="color:var(--bl)">▶ Amazon EFS</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528138" target="_blank" style="color:var(--bl)">EFS vs EBS</a> · <a href="../lectures/section-07-ec2-instance-storage/README.md" style="color:var(--gr)">📂 Open lectures/section-07-ec2-instance-storage</a></span>
       </div>
     </div>
 

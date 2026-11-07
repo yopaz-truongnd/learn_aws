@@ -15,7 +15,7 @@
     <span class="lang-en">← Course Hub</span>
   </a>
   <div style="display:flex;align-items:center;gap:12px">
-    <span style="font-size:12px;color:var(--mu)">Section 8 &amp; 20 · Udemy SAA-C03</span>
+    <span style="font-size:12px;color:var(--mu)">Section 9 &amp; 20 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
       <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
       <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
@@ -25,12 +25,82 @@
 
 <div class="header">
   <div class="badge">Relational, NoSQL &amp; In-Memory Data Tier</div>
-  <h1>AWS Databases — RDS, Aurora, DynamoDB &amp; ElastiCache</h1>
-  <p class="lang-vi">Hệ thống cơ sở dữ liệu trên AWS: RDS Multi-AZ vs Read Replicas, Aurora Serverless &amp; Global DB, DynamoDB NoSQL &amp; DAX, ElastiCache In-Memory</p>
-  <p class="lang-en">Database Tier on AWS: RDS Multi-AZ vs Read Replicas, Aurora Serverless &amp; Global DB, DynamoDB NoSQL &amp; DAX, ElastiCache In-Memory</p>
+  <h1>AWS Databases — RDS, Aurora, RDS Proxy, ElastiCache &amp; DynamoDB</h1>
+  <p class="lang-vi">Hệ thống cơ sở dữ liệu trên AWS: RDS Multi-AZ vs Read Replicas, RDS Custom, Aurora (6 copies / 3 AZs), RDS Proxy, ElastiCache &amp; DynamoDB</p>
+  <p class="lang-en">Database Tier on AWS: RDS Multi-AZ vs Read Replicas, RDS Custom, Aurora (6 copies / 3 AZs), RDS Proxy, ElastiCache &amp; DynamoDB</p>
 </div>
 
 <div class="grid">
+
+<!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 9 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 9 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi từ bài giảng Phần 9 (Bài 87 – Bài 100): Là gì · Dùng khi nào · Khác gì dịch vụ gần giống · Điểm hay bị hỏi</span>
+        <span class="lang-en">4 core exam criteria from Section 9 (Lectures 87 – 100): What it is · When to use · How it differs · High-yield exam traps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🗄️ 1. Amazon RDS &amp; RDS Custom</span>
+        <span class="lang-en">🗄️ 1. Amazon RDS &amp; RDS Custom</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Amazon RDS (4 tiêu chí)</span><span class="lang-en">Amazon RDS (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ CSDL quan hệ (SQL) quản lý hoàn toàn cho 6 engines: <b>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, IBM Db2</b>.<br>• <b>Dùng khi nào:</b> Chạy RDBMS với chi phí vận hành tối thiểu (<code>least operational overhead</code>), tự động vá lỗi, sao lưu Point-in-Time và Multi-AZ.<br>• <b>Khác gì dịch vụ gần giống:</b> <b>Read Replicas</b> (tối đa 15, Async) dùng để <b>Scale Reads</b>; <b>Multi-AZ</b> (Sync) dùng cho <b>HA / DR</b> (Standby không đọc được).<br>• <b>Điểm hay hỏi:</b> <b>Automated Backups</b> tối đa <b>35 ngày</b>. Nhân bản Read Replica <b>cùng Region là MIỄN PHÍ</b> (Cross-Region tính phí).</span>
+        <span class="lang-en">• <b>What is it:</b> Fully managed relational SQL database supporting <b>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, IBM Db2</b>.<br>• <b>When to use:</b> Managed RDBMS with <code>least operational overhead</code>, automated patching, PITR backups, and Multi-AZ HA.<br>• <b>Differences:</b> <b>Read Replicas</b> (up to 15, Async) for <b>Read Scaling</b>; <b>Multi-AZ</b> (Sync) for <b>HA / DR</b>.<br>• <b>Hotspots:</b> <b>Automated Backups</b> up to <b>35 days</b>. Same-Region Read Replica replication is <b>FREE</b>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Amazon RDS Custom (4 tiêu chí)</span><span class="lang-en">Amazon RDS Custom (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Phiên bản RDS cho phép quyền <b>OS Admin / SSH / RDP</b> vào máy chủ bên dưới.<br>• <b>Dùng khi nào &amp; Giới hạn:</b> Chỉ hỗ trợ <b>2 engines duy nhất: Oracle và Microsoft SQL Server</b> khi ứng dụng đóng gói cần can thiệp OS/cài custom patches (nhớ bật <b>Pause Automation Mode</b> tối đa 24h).</span>
+        <span class="lang-en">• <b>What is it:</b> Managed RDS variant granting full <b>underlying OS root/SSH/RDP access</b>.<br>• <b>When to use &amp; Limits:</b> Exclusively supports <b>Oracle and Microsoft SQL Server</b> for legacy apps requiring OS customization (pause automation up to 24h).</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ 2. Amazon Aurora &amp; RDS Proxy</span>
+        <span class="lang-en">⚡ 2. Amazon Aurora &amp; RDS Proxy</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Amazon Aurora (4 tiêu chí)</span><span class="lang-en">Amazon Aurora (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> CSDL đám mây độc quyền của AWS tương thích <b>MySQL &amp; PostgreSQL</b>, nhanh gấp 5x MySQL và 3x Postgres.<br>• <b>Dùng khi nào:</b> CSDL quan hệ cấp doanh nghiệp cần tự mở rộng dung lượng (10 GB &rarr; <b>128 TB</b>), Failover &lt; 30s, hoặc <b>Aurora Global Database</b> (&lt; 1s lag).<br>• <b>Khác gì RDS thường:</b> Lưu <b>6 bản sao trên 3 AZs</b> (4/6 ghi, 3/6 đọc); tối đa <b>15 Replicas</b> dùng chung Shared Storage thông qua <b>Reader Endpoint</b>.<br>• <b>Điểm hay hỏi:</b> <b>Aurora Cloning</b> (<code>Copy-on-Write</code>) tạo bản sao DB staging cực nhanh không cần copy dữ liệu thật.</span>
+        <span class="lang-en">• <b>What is it:</b> AWS cloud-native RDBMS compatible with <b>MySQL &amp; PostgreSQL</b> (5x/3x faster).<br>• <b>When to use:</b> Enterprise SQL needing auto-expanding storage (10 GB &rarr; <b>128 TB</b>), instant failover, or <b>Aurora Global DB</b> (&lt;1s lag).<br>• <b>vs RDS:</b> Stores <b>6 copies across 3 AZs</b>; up to <b>15 Replicas</b> sharing storage via a single <b>Reader Endpoint</b>.<br>• <b>Hotspots:</b> <b>Aurora Cloning</b> uses <code>Copy-on-Write</code> for instant staging clones.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Amazon RDS Proxy (4 tiêu chí)</span><span class="lang-en">Amazon RDS Proxy (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ quản lý và gom nhóm kết nối DB (<b>Managed Connection Pooling</b>) cho RDS/Aurora.<br>• <b>Dùng khi nào &amp; Điểm hay hỏi:</b> Ngăn <b>AWS Lambda</b> làm tràn kết nối DB (<code>Too many connections</code>), <b>giảm tới 66% thời gian Failover</b>, ép buộc <b>IAM Authentication + Secrets Manager</b>, chỉ truy cập nội bộ trong <b>VPC</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> Fully managed serverless <b>Database Connection Pooling</b> proxy for RDS/Aurora.<br>• <b>When to use &amp; Hotspots:</b> Prevents <b>AWS Lambda</b> connection exhaustion, <b>reduces failover time by up to 66%</b>, enforces <b>IAM Auth + Secrets Manager</b>, strictly <b>VPC-private</b>.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧠 3. Amazon ElastiCache (Redis vs Memcached)</span>
+        <span class="lang-en">🧠 3. Amazon ElastiCache (Redis vs Memcached)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ cơ sở dữ liệu bộ nhớ đệm trên RAM (<b>Managed In-Memory Cache</b>) với độ trễ <b>sub-millisecond</b>.<br>• <b>Dùng khi nào:</b> Giảm tải đọc lặp lại cho RDS/Aurora (<b>Cache-Aside / Lazy Loading</b>), lưu trữ phiên đăng nhập (<b>Stateless User Session Store</b>), hoặc làm bảng xếp hạng (<b>Gaming Leaderboards</b>).</span>
+        <span class="lang-en">• <b>What is it:</b> Managed <b>In-Memory Data Store &amp; Cache</b> delivering <b>sub-millisecond</b> latency.<br>• <b>When to use:</b> Offload repetitive RDS reads (<b>Lazy Loading</b>), store <b>Stateless User Sessions</b>, or power real-time <b>Gaming Leaderboards</b>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
+        <span class="lang-vi">• <b>Redis vs Memcached:</b> <code>Redis</code> có <b>Multi-AZ Auto-Failover</b>, Read Replicas, Backup/Restore (AOF), và <b>Sorted Sets</b> (Leaderboards); <code>Memcached</code> là bộ đệm đa luồng phân mảnh (Sharding) đơn giản, <b>KHÔNG có HA, KHÔNG có Backup</b>.<br>• <b>ElastiCache vs DAX:</b> Dùng <code>DAX</code> nếu cache riêng cho <b>DynamoDB</b>; dùng <code>ElastiCache</code> cho <b>RDS/Aurora</b>, Session Store, hoặc Leaderboards.</span>
+        <span class="lang-en">• <b>Redis vs Memcached:</b> <code>Redis</code> supports <b>Multi-AZ Auto-Failover</b>, Read Replicas, Backups, and <b>Sorted Sets</b> (Leaderboards); <code>Memcached</code> is multi-threaded sharded cache with <b>NO HA and NO persistence</b>.<br>• <b>ElastiCache vs DAX:</b> Use <code>DAX</code> exclusively for <b>DynamoDB</b>; use <code>ElastiCache</code> for <b>RDS/Aurora</b>, Sessions, or Leaderboards.</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- 1. TỔNG QUAN HỆ SINH THÁI DATABASE AWS -->
 <div class="card full">
@@ -241,24 +311,26 @@ flowchart TD
     </div>
 
     <div class="it">
-      <div class="in"><div class="dot" style="background:var(--gr)"></div>RDS Databases Ports (Cổng cơ sở dữ liệu quan hệ)</div>
+      <div class="in"><div class="dot" style="background:var(--gr)"></div>RDS Databases &amp; ElastiCache Ports (Lecture 100)</div>
       <div class="id lang-vi">
-        Các cổng chuyên dụng để ứng dụng backend (App Tier) kết nối vào cơ sở dữ liệu quan hệ:<br>
+        Các cổng chuyên dụng để ứng dụng backend (App Tier) kết nối vào Database &amp; Cache:<br>
         • <b>Port 5432 — PostgreSQL:</b> Cổng mặc định của PostgreSQL.<br>
         • <b>Port 3306 — MySQL &amp; MariaDB:</b> Cổng chuẩn của họ MySQL và MariaDB.<br>
         • <b>Port 1521 — Oracle RDS:</b> Cổng kết nối cơ sở dữ liệu Oracle.<br>
         • <b>Port 1433 — Microsoft SQL Server:</b> Cổng kết nối MSSQL Server.<br>
-        • <b>Port 5432 hoặc 3306 — Amazon Aurora:</b> 5432 (nếu PostgreSQL-compatible) hoặc 3306 (nếu MySQL-compatible).<br>
-        <span class="tag tg">Database Tier</span><span class="tag to">Private Subnet Only</span>
+        • <b>Port 5432 hoặc 3306 — Amazon Aurora:</b> 5432 (PostgreSQL) hoặc 3306 (MySQL).<br>
+        • <b>Port 6379 — ElastiCache for Redis</b> · <b>Port 11211 — Memcached</b> · <b>Port 2049 — EFS (NFS)</b>.<br>
+        <span class="tag tg">Database &amp; Cache Tier</span><span class="tag to">Private Subnet Only</span>
       </div>
       <div class="id lang-en">
-        Dedicated listening ports for application backend tiers connecting to relational database engines:<br>
+        Dedicated listening ports for application backend tiers connecting to Databases &amp; Caches:<br>
         • <b>Port 5432 — PostgreSQL:</b> Default PostgreSQL port.<br>
         • <b>Port 3306 — MySQL &amp; MariaDB:</b> Standard MySQL &amp; MariaDB port.<br>
         • <b>Port 1521 — Oracle RDS:</b> Oracle Database listener port.<br>
         • <b>Port 1433 — Microsoft SQL Server:</b> MSSQL connection port.<br>
-        • <b>Port 5432 or 3306 — Amazon Aurora:</b> 5432 (PostgreSQL-compatible) or 3306 (MySQL-compatible).<br>
-        <span class="tag tg">Database Tier</span><span class="tag to">Private Subnet Only</span>
+        • <b>Port 5432 or 3306 — Amazon Aurora:</b> 5432 (PostgreSQL) or 3306 (MySQL).<br>
+        • <b>Port 6379 — ElastiCache for Redis</b> · <b>Port 11211 — Memcached</b> · <b>Port 2049 — EFS (NFS)</b>.<br>
+        <span class="tag tg">Database &amp; Cache Tier</span><span class="tag to">Private Subnet Only</span>
       </div>
     </div>
   </div>
@@ -341,14 +413,16 @@ flowchart TD
     </div>
 
     <div class="it">
-      <div class="in"><div class="dot" style="background:var(--rd)"></div>Aurora Global Database &amp; Backtrack</div>
+      <div class="in"><div class="dot" style="background:var(--rd)"></div>Aurora Global Database, Backtrack &amp; Cloning</div>
       <div class="id lang-vi">
-        • <b>Aurora Global Database:</b> 1 Region chính cho phép đọc/ghi + tối đa <b>5 Secondary Regions (Chỉ đọc)</b>. Độ trễ đồng bộ xuyên lục địa dưới <b>1 giây</b>. Khôi phục thảm họa (Disaster Recovery) với RPO &lt; 1 giây và RTO &lt; 1 phút.<br>
-        • <b>Aurora Backtrack:</b> "Tua ngược thời gian" dữ liệu về bất kỳ thời điểm cụ thể nào trong quá khứ chỉ mất vài giây mà không cần khôi phục từ bản sao lưu (Backup Restore).
+        • <b>Aurora Global Database:</b> 1 Primary Region + tối đa <b>5 Secondary Regions (Read Only)</b>, độ trễ đồng bộ <b>&lt; 1 giây</b>, khôi phục thảm họa (DR) với RTO &lt; 1 phút.<br>
+        • <b>Aurora Cloning (Copy-on-Write):</b> Tạo bản sao DB Staging/Testing từ Production <b>nhanh hơn và rẻ hơn</b> rất nhiều so với Snapshot Restore vì ban đầu dùng chung tầng lưu trữ và chỉ tách block khi có dữ liệu ghi mới.<br>
+        • <b>Aurora Custom Endpoints:</b> Định nghĩa một Endpoint riêng trỏ tới nhóm các Aurora Replicas cấu hình lớn để chuyên chạy báo cáo phân tích (Analytical queries).
       </div>
       <div class="id lang-en">
-        • <b>Aurora Global Database:</b> 1 Primary Region (Read/Write) + up to <b>5 Secondary Regions (Read Only)</b>. Cross-region replication latency &lt;1 second. Disaster Recovery with RPO &lt;1s and RTO &lt;1m.<br>
-        • <b>Aurora Backtrack:</b> Rewinds database state to a specific point-in-time within seconds without restoring from snapshot backups.
+        • <b>Aurora Global Database:</b> 1 Primary Region + up to <b>5 Secondary Regions (Read Only)</b> with <b>&lt;1s</b> replication lag and RTO &lt;1m.<br>
+        • <b>Aurora Cloning (Copy-on-Write):</b> Creates fast, cost-effective staging/test clones from Production without physically duplicating storage blocks upfront.<br>
+        • <b>Aurora Custom Endpoints:</b> Isolates a subset of larger Aurora Replicas dedicated to analytical queries.
       </div>
     </div>
   </div>
@@ -684,14 +758,14 @@ flowchart TD
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
       <div class="pi">
-        <b>Section 8 · Lecture 26098250 &amp; 26098260</b>
-        <span class="lang-vi">Tổng quan RDS, tạo Database, cơ chế Multi-AZ và Read Replicas hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098250" target="_blank" style="color:var(--bl)">▶ Bài giảng RDS Overview</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098260" target="_blank" style="color:var(--bl)">RDS Multi-AZ &amp; Replicas</a></span>
-        <span class="lang-en">RDS Overview, database provisioning, Multi-AZ and Read Replicas hands-on.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098250" target="_blank" style="color:var(--bl)">▶ RDS Overview Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098260" target="_blank" style="color:var(--bl)">RDS Multi-AZ &amp; Replicas</a></span>
+        <b>Section 9 · Lectures 87 – 90 (RDS Overview, Multi-AZ vs Read Replicas, RDS Custom)</b>
+        <span class="lang-vi">Tổng quan RDS, so sánh Read Replicas vs Multi-AZ, thực hành RDS và RDS Custom cho Oracle &amp; Microsoft SQL Server.<br><a href="../lectures/section-09-rds-aurora-elasticache/87-amazon-rds-overview.md" style="color:var(--bl)">📖 Bài 87: RDS Overview</a> · <a href="../lectures/section-09-rds-aurora-elasticache/88-rds-read-replicas-vs-multi-az.md" style="color:var(--bl)">Bài 88: Multi-AZ vs Replicas</a> · <a href="../lectures/section-09-rds-aurora-elasticache/90-rds-custom-for-oracle-and-microsoft-sql-server.md" style="color:var(--bl)">Bài 90: RDS Custom</a></span>
+        <span class="lang-en">RDS Overview, Read Replicas vs Multi-AZ, RDS Hands-On, and RDS Custom for Oracle &amp; MS SQL Server.<br><a href="../lectures/section-09-rds-aurora-elasticache/87-amazon-rds-overview.md" style="color:var(--bl)">📖 Lecture 87: RDS Overview</a> · <a href="../lectures/section-09-rds-aurora-elasticache/88-rds-read-replicas-vs-multi-az.md" style="color:var(--bl)">Lecture 88: Multi-AZ vs Replicas</a> · <a href="../lectures/section-09-rds-aurora-elasticache/90-rds-custom-for-oracle-and-microsoft-sql-server.md" style="color:var(--bl)">Lecture 90: RDS Custom</a></span>
       </div>
       <div class="pi">
-        <b>Section 8 · Lecture 26098270 &amp; 26098282</b>
-        <span class="lang-vi">Amazon Aurora: Kiến trúc lưu trữ, Aurora Serverless, Global Database và ElastiCache.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098270" target="_blank" style="color:var(--bl)">▶ Aurora Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098282" target="_blank" style="color:var(--bl)">ElastiCache Strategies</a></span>
-        <span class="lang-en">Amazon Aurora storage architecture, Serverless, Global DB, and ElastiCache.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098270" target="_blank" style="color:var(--bl)">▶ Aurora Hands-on</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098282" target="_blank" style="color:var(--bl)">ElastiCache Strategies</a></span>
+        <b>Section 9 · Lectures 91 – 100 (Aurora, RDS Proxy, ElastiCache &amp; Ports)</b>
+        <span class="lang-vi">Amazon Aurora, Aurora Cloning/Custom Endpoints, RDS Proxy, ElastiCache (Redis vs Memcached) và toàn bộ 14 bài học trong kho dự án.<br><a href="../lectures/section-09-rds-aurora-elasticache/91-amazon-aurora.md" style="color:var(--bl)">📖 Bài 91: Aurora</a> · <a href="../lectures/section-09-rds-aurora-elasticache/96-amazon-rds-proxy.md" style="color:var(--bl)">Bài 96: RDS Proxy</a> · <a href="../lectures/section-09-rds-aurora-elasticache/97-elasticache-overview.md" style="color:var(--bl)">Bài 97: ElastiCache</a> · <a href="../lectures/section-09-rds-aurora-elasticache/README.md" style="color:var(--gr)">📂 Section 09 Notes</a></span>
+        <span class="lang-en">Amazon Aurora, Aurora Cloning/Custom Endpoints, RDS Proxy, ElastiCache (Redis vs Memcached), and all 14 lecture notes.<br><a href="../lectures/section-09-rds-aurora-elasticache/91-amazon-aurora.md" style="color:var(--bl)">📖 Lecture 91: Aurora</a> · <a href="../lectures/section-09-rds-aurora-elasticache/96-amazon-rds-proxy.md" style="color:var(--bl)">Lecture 96: RDS Proxy</a> · <a href="../lectures/section-09-rds-aurora-elasticache/97-elasticache-overview.md" style="color:var(--bl)">Lecture 97: ElastiCache</a> · <a href="../lectures/section-09-rds-aurora-elasticache/README.md" style="color:var(--gr)">📂 Section 09 Notes</a></span>
       </div>
       <div class="pi">
         <b>Section 20 · Lecture 26098550 &amp; 26098562</b>

@@ -25,7 +25,7 @@
     </a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span style="font-size:12px;color:var(--mu)">Section 5 · Udemy SAA-C03</span>
+    <span style="font-size:12px;color:var(--mu)">Section 5 &amp; 6 · Udemy SAA-C03</span>
     <div class="lang-switch" role="group" aria-label="Language selector">
       <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
       <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
@@ -147,6 +147,63 @@
       <b>6. User Data &amp; Launch</b>
       <span class="lang-vi">Chạy script khởi tạo</span>
       <span class="lang-en">Run bootstrap script</span>
+    </div>
+  </div>
+
+  <div class="lbl" style="margin-top:18px">
+    <span class="lang-vi">Tóm tắt nhanh 4 nhóm dịch vụ &amp; tính năng trong Phần 5 &amp; 6 (4 Tiêu chí SAA-C03 Cheat Sheet)</span>
+    <span class="lang-en">Quick 4-Point Service Cheat Sheet for Section 5 &amp; 6 (SAA-C03 Exam Summary)</span>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💻 1. Amazon EC2 &amp; Purchasing Options</span>
+        <span class="lang-en">💻 1. Amazon EC2 &amp; Purchasing Options</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Dịch vụ máy chủ ảo (IaaS) cho phép toàn quyền kiểm soát OS và tùy chỉnh CPU, RAM, Storage, Networking.<br>• <b>Dùng khi nào:</b> Cần quyền quản trị cấp OS, chạy script tự động lần đầu qua <b>EC2 User Data</b>, hoặc tối ưu chi phí theo tải (On-Demand, Reserved/Savings Plans, Spot, Dedicated Hosts).</span>
+        <span class="lang-en">• <b>What is it:</b> Virtual Machine IaaS offering full OS control and customizable CPU, RAM, Storage, and Networking.<br>• <b>When to use:</b> Require OS-level control, first-boot automation via <b>EC2 User Data</b>, or tailored billing models.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
+        <span class="lang-vi">• <b>EC2 vs Lambda / Fargate:</b> EC2 quản lý cấp VM chạy liên tục; Lambda là Serverless FaaS (tối đa 15 phút); Fargate là Serverless Container.<br>• <b>Dedicated Hosts vs Dedicated Instances:</b> Chỉ <b>Dedicated Hosts</b> mới nhìn thấy Physical Sockets/Cores để dùng cho <b>BYOL (Bring Your Own License)</b>.<br>• <b>Mặc định &amp; Từ khóa:</b> <code>EC2 User Data</code> chỉ chạy <b>1 lần ở lần Launch đầu tiên</b> dưới quyền <code>root</code>. Mặc định <b>1 CPU Core = 2 Threads (2 vCPUs)</b>.</span>
+        <span class="lang-en">• <b>EC2 vs Lambda / Fargate:</b> EC2 is VM-level IaaS; Lambda is Serverless FaaS (max 15m); Fargate is Serverless Container.<br>• <b>Dedicated Hosts vs Instances:</b> Only <b>Dedicated Hosts</b> expose physical sockets/cores for <b>server-bound BYOL</b>.<br>• <b>Defaults &amp; Keywords:</b> <code>EC2 User Data</code> runs <b>once at first launch</b> as <code>root</code>. Default <b>1 CPU Core = 2 Threads (2 vCPUs)</b>.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🛡️ 2. Security Groups, EIP &amp; ENI</span>
+        <span class="lang-en">🛡️ 2. Security Groups, EIP &amp; ENI</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Security Groups (4 tiêu chí)</span><span class="lang-en">Security Groups (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Tường lửa ảo cấp độ Instance/ENI lọc lưu lượng theo Port, Protocol và IP/SG nguồn.<br>• <b>Dùng khi nào:</b> Cô lập các tầng Web &rarr; App &rarr; DB bằng <b>Security Group Referencing</b>.<br>• <b>Khác gì NACL:</b> SG là <b>Stateful</b>, chỉ có <b>Allow</b>; NACL ở cấp Subnet, <b>Stateless</b>, có cả Allow &amp; Deny.<br>• <b>Điểm hay hỏi:</b> Mặc định Inbound chặn hết, Outbound mở hết. Lỗi <code>Connection Timeout</code> = do <b>Security Group chặn</b>; lỗi <code>Connection Refused</code> = ứng dụng trong EC2 chưa chạy!</span>
+        <span class="lang-en">• <b>What is it:</b> Instance/ENI-level virtual firewall filtering by Port, Protocol, and Source IP/SG.<br>• <b>When to use:</b> Isolate Web &rarr; App &rarr; DB tiers via <b>SG Referencing</b>.<br>• <b>vs NACL:</b> SG is <b>Stateful</b>, <b>Allow-only</b>; NACL is Subnet-level, <b>Stateless</b>, Allow &amp; Deny.<br>• <b>Hotspots:</b> Default Inbound Deny All, Outbound Allow All. <code>Connection Timeout</code> = <b>SG blocked</b>; <code>Connection Refused</code> = app down!</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Elastic IP (EIP) &amp; ENI (4 tiêu chí)</span><span class="lang-en">Elastic IP (EIP) &amp; ENI (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> <code>EIP</code> là Public IPv4 tĩnh cấp Region; <code>ENI</code> là card mạng ảo trong VPC gắn chặt với <b>1 AZ</b>.<br>• <b>Dùng khi nào:</b> Dùng <code>EIP</code> khi cần cố định Public IPv4 qua Stop/Start hoặc whitelist firewall; dùng <code>ENI</code> khi cần failover <b>Private IP cố định</b> hoặc license gắn theo <b>MAC address</b>.<br>• <b>Điểm hay hỏi:</b> Tối đa <b>5 EIPs / Region</b> mặc định; EIP bị tính phí nếu gắn vào máy Stopped hoặc để trống. Card chính <code>eth0</code> không tháo rời được.</span>
+        <span class="lang-en">• <b>What is it:</b> <code>EIP</code> is a static regional Public IPv4; <code>ENI</code> is an <b>AZ-bound</b> virtual network card.<br>• <b>When to use:</b> <code>EIP</code> for fixed Public IPv4 across Stop/Start; <code>ENI</code> to failover a specific <b>Private IP</b> or <b>MAC-bound license</b>.<br>• <b>Hotspots:</b> Default limit <b>5 EIPs / Region</b>; billed if unattached or on Stopped EC2. Primary <code>eth0</code> cannot be detached.</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📦 3. Placement Groups &amp; EC2 Hibernate</span>
+        <span class="lang-en">📦 3. Placement Groups &amp; EC2 Hibernate</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">EC2 Placement Groups (4 tiêu chí)</span><span class="lang-en">EC2 Placement Groups (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Kiểm soát cách AWS đặt vị trí vật lý của EC2 trên phần cứng Rack.<br>• <b>Khác nhau &amp; Dùng khi nào:</b><br>&nbsp;&nbsp;1. <b>Cluster:</b> Cùng 1 Rack / 1 AZ &rarr; mạng <b>10 Gbps+</b>, độ trễ cực thấp cho <b>HPC</b>.<br>&nbsp;&nbsp;2. <b>Spread:</b> Mỗi máy nằm trên 1 Rack riêng &rarr; tối đa <b>7 instances / AZ</b> cho các Critical instances.<br>&nbsp;&nbsp;3. <b>Partition:</b> Tối đa <b>7 partitions / AZ</b> (hàng trăm EC2) cho <b>HDFS, HBase, Cassandra, Kafka</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> Controls physical placement of EC2 across AWS hardware racks.<br>• <b>Differences &amp; Use Cases:</b><br>&nbsp;&nbsp;1. <b>Cluster:</b> Same rack / 1 AZ &rarr; <b>10 Gbps+</b> low-latency network for <b>HPC</b>.<br>&nbsp;&nbsp;2. <b>Spread:</b> Separate hardware per instance &rarr; max <b>7 instances / AZ</b> for critical VMs.<br>&nbsp;&nbsp;3. <b>Partition:</b> Up to <b>7 partitions / AZ</b> (100s of VMs) for <b>HDFS, HBase, Cassandra, Kafka</b>.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">EC2 Hibernate (4 tiêu chí)</span><span class="lang-en">EC2 Hibernate (4-Point Summary)</span></b>
+        <span class="lang-vi">• <b>Là gì:</b> Bảo toàn trạng thái in-memory (<b>RAM</b>) bằng cách ghi RAM xuống ổ <b>Root EBS Volume</b> khi tắt máy.<br>• <b>Dùng khi nào:</b> Ứng dụng mất nhiều thời gian khởi tạo hoặc cần giữ nguyên cache lớn trong RAM.<br>• <b>Điểm hay hỏi:</b> Ổ <b>Root EBS bắt buộc phải mã hóa (Encrypted)</b>, RAM <b>&lt; 150 GB</b>, tối đa <b>60 ngày</b>.</span>
+        <span class="lang-en">• <b>What is it:</b> Preserves in-memory (<b>RAM</b>) state by dumping RAM to the <b>Root EBS Volume</b> on stop.<br>• <b>When to use:</b> Long-running boot initialization or pre-warmed memory caches.<br>• <b>Hotspots:</b> <b>Root EBS MUST be Encrypted</b>, RAM <b>&lt; 150 GB</b>, max <b>60 days</b>.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -652,6 +709,36 @@ stateDiagram-v2
       <div class="id lang-vi">Mặc định khi tạo instance, <b>Root EBS Volume</b> được bật <code>DeleteOnTermination = true</code> (sẽ bị xóa khi xóa instance). Các ổ đĩa EBS phụ gắn thêm (Attached Volumes) mặc định là <code>false</code> (vẫn tồn tại sau khi terminate instance).</div>
       <div class="id lang-en">By default at launch, the <b>Root EBS Volume</b> has <code>DeleteOnTermination = true</code> (deleted when instance is terminated). Additional attached EBS volumes default to <code>false</code> (preserved after termination).</div>
     </div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">Chẩn đoán lỗi SSH/HTTP: Connection Timeout vs Connection Refused</span>
+        <span class="lang-en">Troubleshooting: Connection Timeout vs Connection Refused</span>
+      </div>
+      <div class="id lang-vi">
+        • <b>Connection Timeout (Hết thời gian chờ):</b> Gói tin bị chặn ở tầng mạng — 100% do <b>Security Group</b> chưa mở port (Port 22/80) hoặc sai IP nguồn.<br>
+        • <b>Connection Refused (Từ chối kết nối):</b> Đã đi qua được Security Group vào tới EC2, nhưng dịch vụ web (<code>httpd</code>/<code>nginx</code>) bên trong chưa chạy!<br>
+        • <b>EC2 Instance Connect:</b> Đăng nhập SSH ngay trên trình duyệt mà không cần quản lý file <code>.pem</code> (AWS đẩy khóa SSH tạm thời lên máy nhưng <b>vẫn cần mở Port 22</b>).
+      </div>
+      <div class="id lang-en">
+        • <b>Connection Timeout:</b> Packet dropped silently at firewall — caused by <b>Security Group</b> blocking port 22/80.<br>
+        • <b>Connection Refused:</b> Passed Security Group, but application daemon (<code>httpd</code>/<code>nginx</code>) inside OS is not running!<br>
+        • <b>EC2 Instance Connect:</b> Browser-based SSH using ephemeral keys pushed by AWS (still requires Port 22 open unless using Instance Connect Endpoint).
+      </div>
+    </div>
+    <div class="it">
+      <div class="in">
+        <span class="lang-vi">Tùy chỉnh CPU Options (vCPU &amp; Threads per Core)</span>
+        <span class="lang-en">Optimize CPU Options (vCPU &amp; Threads per Core)</span>
+      </div>
+      <div class="id lang-vi">
+        • Mặc định trên EC2: <b>1 Physical CPU Core = 2 Threads (2 vCPUs)</b> nhờ công nghệ Hyper-Threading (Simultaneous Multithreading).<br>
+        • Có thể tùy chỉnh <b>chỉ lúc Launch Instance</b>: Tắt multithreading (<code>ThreadsPerCore = 1</code>) cho bài toán HPC, hoặc giảm số lượng Active CPU Cores để tiết kiệm chi phí bản quyền phần mềm tính theo vCPU (BYOL).
+      </div>
+      <div class="id lang-en">
+        • By default on EC2: <b>1 Physical CPU Core = 2 Threads (2 vCPUs)</b> via Simultaneous Multithreading.<br>
+        • Configurable <b>only at instance launch</b>: Disable multithreading (<code>ThreadsPerCore = 1</code>) for HPC workloads, or reduce active CPU core count to cut per-vCPU software licensing costs (BYOL).
+      </div>
+    </div>
   </div>
 </div>
 
@@ -775,14 +862,19 @@ stateDiagram-v2
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
       <div class="pi">
-        <b>Section 5 · Lecture 26098112 &amp; 26098122</b>
-        <span class="lang-vi">EC2 User Data (Bootstrapping) và vòng đời khởi tạo/tắt máy chủ EC2.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ User Data</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098122" target="_blank" style="color:var(--bl)">Instance Lifecycle</a></span>
-        <span class="lang-en">User Data bootstrapping and EC2 instance lifecycle &amp; termination.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ User Data</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098122" target="_blank" style="color:var(--bl)">Instance Lifecycle</a></span>
+        <b>Section 5 · Lectures 32 – 43 (26098112, 26098122, 26098128, 26098134, 26098164)</b>
+        <span class="lang-vi">EC2 Basics, User Data Bootstrapping, Instance Types, Security Groups, SSH &amp; EC2 Instance Connect.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ EC2 Basics</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
+        <span class="lang-en">EC2 Basics, User Data Bootstrapping, Instance Types, Security Groups, SSH &amp; EC2 Instance Connect.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ EC2 Basics</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
       </div>
       <div class="pi">
-        <b>Section 5 · Lecture 26098128 &amp; 26098134</b>
-        <span class="lang-vi">Tổng quan họ Instance Types và phân tích chuyên sâu Security Groups.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">▶ Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
-        <span class="lang-en">Instance Types family overview and Security Groups deep dive.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">▶ Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
+        <b>Section 5 · Lectures 44 – 46 (26098170, 18756818, 27694918)</b>
+        <span class="lang-vi">EC2 Purchasing Options (On-Demand, RI, Savings Plans, Dedicated Hosts) &amp; Spot Instances / Spot Fleet.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098170" target="_blank" style="color:var(--bl)">▶ Purchasing Options</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18756818" target="_blank" style="color:var(--bl)">Spot Fleet</a> · <a href="../lectures/section-05-ec2-fundamentals/README.md" style="color:var(--gr)">📂 Section 05 Notes</a></span>
+        <span class="lang-en">EC2 Purchasing Options (On-Demand, RI, Savings Plans, Dedicated Hosts) &amp; Spot Instances / Spot Fleet.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098170" target="_blank" style="color:var(--bl)">▶ Purchasing Options</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18756818" target="_blank" style="color:var(--bl)">Spot Fleet</a> · <a href="../lectures/section-05-ec2-fundamentals/README.md" style="color:var(--gr)">📂 Section 05 Notes</a></span>
+      </div>
+      <div class="pi">
+        <b>Section 6 · Lectures 47 – 55 (13528052, 13528080, 18077955, 18104377)</b>
+        <span class="lang-vi">Private/Public/Elastic IP, EC2 Placement Groups, Elastic Network Interfaces (ENI) &amp; EC2 Hibernate.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528052" target="_blank" style="color:var(--bl)">▶ Elastic IP</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528080" target="_blank" style="color:var(--bl)">Placement Groups</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18077955" target="_blank" style="color:var(--bl)">ENI</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18104377" target="_blank" style="color:var(--bl)">Hibernate</a> · <a href="../lectures/section-06-ec2-saa-level/README.md" style="color:var(--gr)">📂 Section 06 Notes</a></span>
+        <span class="lang-en">Private/Public/Elastic IP, EC2 Placement Groups, Elastic Network Interfaces (ENI) &amp; EC2 Hibernate.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528052" target="_blank" style="color:var(--bl)">▶ Elastic IP</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528080" target="_blank" style="color:var(--bl)">Placement Groups</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18077955" target="_blank" style="color:var(--bl)">ENI</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18104377" target="_blank" style="color:var(--bl)">Hibernate</a> · <a href="../lectures/section-06-ec2-saa-level/README.md" style="color:var(--gr)">📂 Section 06 Notes</a></span>
       </div>
     </div>
     <div class="col">

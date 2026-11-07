@@ -38,6 +38,123 @@
 
 <div class="grid">
 
+<!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 4 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 4 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi từ bài giảng Phần 4 (Bài 11 – Bài 30): Là gì · Dùng khi nào · Khác gì dịch vụ gần giống · Điểm hay bị hỏi</span>
+        <span class="lang-en">4 core exam criteria from Section 4 (Lectures 11 – 30): What it is · When to use · How it differs · High-yield exam traps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">👤 1. AWS IAM (Identity &amp; Access Management)</span>
+        <span class="lang-en">👤 1. AWS IAM (Identity &amp; Access Management)</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì (1 câu)</span><span class="lang-en">What is it (1 sentence)</span></b>
+        <span class="lang-vi">Dịch vụ toàn cầu (<b>Global Service</b>) quản lý danh tính người dùng và phân quyền truy cập an toàn vào các tài nguyên AWS.</span>
+        <span class="lang-en">A <b>Global Service</b> that manages user identities and securely controls permissions to AWS resources.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Dùng khi nào (Use case điển hình trong đề)</span><span class="lang-en">When to use (Canonical Exam Use Cases)</span></b>
+        <span class="lang-vi">
+          • Cấp quyền theo nguyên tắc đặc quyền tối thiểu (<b>Least Privilege</b>) cho Users/Groups.<br>
+          • Cho phép dịch vụ AWS (<code>EC2</code>, <code>Lambda</code>, <code>ECS</code>) gọi dịch vụ khác (<code>S3</code>, <code>DynamoDB</code>) mà <b>không cần lưu trữ Access Keys trong code</b> bằng <b>IAM Roles</b>.<br>
+          • Kiểm toán bảo mật bằng <b>IAM Credentials Report</b> (cấp Account) và <b>IAM Access Advisor</b> (cấp User/Role).
+        </span>
+        <span class="lang-en">
+          • Grant permissions following <b>Least Privilege</b> for Users/Groups.<br>
+          • Allow AWS services (<code>EC2</code>, <code>Lambda</code>, <code>ECS</code>) to access other services (<code>S3</code>, <code>DynamoDB</code>) <b>without hardcoding credentials</b> using <b>IAM Roles</b>.<br>
+          • Audit security using <b>IAM Credentials Report</b> (account-level) and <b>IAM Access Advisor</b> (entity-level).
+        </span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống</span><span class="lang-en">How it differs from similar concepts</span></b>
+        <span class="lang-vi">
+          • <b>IAM Policies vs S3 Bucket Policies:</b> <code>IAM Policy</code> gắn vào Identity (User/Group/Role); <code>S3 Bucket Policy</code> gắn trực tiếp vào S3 Bucket (cấp quyền Cross-Account trực tiếp hoặc mở Public).<br>
+          • <b>IAM Roles vs Access Keys:</b> <code>IAM Role</code> cấp <b>Temporary Credentials</b> tự động xoay vòng qua STS; <code>Access Keys</code> là khóa dài hạn gắn với IAM User.<br>
+          • <b>Credentials Report vs Access Advisor:</b> <code>Credentials Report</code> xuất CSV toàn bộ Users/MFA/Key age trong Account; <code>Access Advisor</code> xem dịch vụ truy cập lần cuối của 1 User/Role để cắt quyền dư thừa.
+        </span>
+        <span class="lang-en">
+          • <b>IAM Policies vs S3 Bucket Policies:</b> <code>IAM Policy</code> attaches to Identities; <code>S3 Bucket Policy</code> attaches directly to buckets (direct cross-account or public access).<br>
+          • <b>IAM Roles vs Access Keys:</b> <code>IAM Role</code> issues short-lived <b>Temporary STS Credentials</b>; <code>Access Keys</code> are long-term static user credentials.<br>
+          • <b>Credentials Report vs Access Advisor:</b> <code>Credentials Report</code> exports account-wide CSV of user MFA/keys; <code>Access Advisor</code> shows last-accessed services per User/Role.
+        </span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Điểm hay bị hỏi (Giới hạn, Mặc định, Từ khóa)</span><span class="lang-en">Exam Hotspots (Limits, Defaults, Keywords)</span></b>
+        <span class="lang-vi">
+          • <b>Mặc định:</b> Mọi hành động đều bị <b>Implicit Deny</b> trừ khi có <code>Allow</code>; một <b>Explicit Deny</b> luôn ghi đè mọi lệnh <code>Allow</code>.<br>
+          • <b>Giới hạn:</b> <code>IAM Groups</code> chỉ chứa Users, <b>không thể lồng Group trong Group</b> (No nested groups).<br>
+          • <b>Từ khóa:</b> <code>"without hardcoding credentials"</code> &rarr; <b>IAM Role</b>; <code>"remove unused permissions / last accessed"</code> &rarr; <b>Access Advisor</b>; <code>"simultaneous sign-in up to 5 accounts"</code> &rarr; <b>Multi-session support</b>.
+        </span>
+        <span class="lang-en">
+          • <b>Defaults:</b> All actions default to <b>Implicit Deny</b>; an <b>Explicit Deny</b> overrides all <code>Allow</code> statements.<br>
+          • <b>Limits:</b> <code>IAM Groups</code> only contain Users and <b>cannot be nested</b>.<br>
+          • <b>Keywords:</b> <code>"without hardcoding credentials"</code> &rarr; <b>IAM Role</b>; <code>"remove unused permissions / last accessed"</code> &rarr; <b>Access Advisor</b>; <code>"simultaneous sign-in up to 5 accounts"</code> &rarr; <b>Multi-session support</b>.
+        </span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💻 2. AWS CLI, AWS SDK &amp; AWS CloudShell</span>
+        <span class="lang-en">💻 2. AWS CLI, AWS SDK &amp; AWS CloudShell</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Là gì (1 câu)</span><span class="lang-en">What is it (1 sentence)</span></b>
+        <span class="lang-vi">Bộ công cụ dòng lệnh (<code>AWS CLI</code>), thư viện lập trình (<code>AWS SDK</code>) và terminal trực tiếp trên trình duyệt (<code>AWS CloudShell</code>) giúp tương tác với các API của AWS.</span>
+        <span class="lang-en">Command-line interface (<code>AWS CLI</code>), programming libraries (<code>AWS SDK</code>), and browser-based terminal (<code>AWS CloudShell</code>) for interacting with AWS APIs.</span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Dùng khi nào (Use case điển hình trong đề)</span><span class="lang-en">When to use (Canonical Exam Use Cases)</span></b>
+        <span class="lang-vi">
+          • Tự động hóa quản trị tài nguyên AWS bằng script (<code>AWS CLI</code>).<br>
+          • Gọi trực tiếp các API AWS bên trong mã nguồn ứng dụng Python/Java/Node.js (<code>AWS SDK</code>).<br>
+          • Chạy lệnh CLI ngay trên trình duyệt mà không cần cài đặt hay cấu hình Access Key trên máy cá nhân (<code>AWS CloudShell</code>).
+        </span>
+        <span class="lang-en">
+          • Automate AWS infrastructure management via scripts (<code>AWS CLI</code>).<br>
+          • Invoke AWS APIs programmatically inside application code (<code>AWS SDK</code>).<br>
+          • Run CLI commands directly in the browser without local setup or static keys (<code>AWS CloudShell</code>).
+        </span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Khác gì dịch vụ gần giống</span><span class="lang-en">How it differs from similar concepts</span></b>
+        <span class="lang-vi">
+          • <b>AWS CLI cá nhân vs AWS CloudShell:</b> Máy cá nhân phải tự cài đặt CLI và chạy <code>aws configure</code> nhập Access Key ID + Secret Access Key; <b>AWS CloudShell</b> miễn phí, tự động kế thừa quyền của User đang đăng nhập Console và có sẵn <b>1 GB bộ nhớ lưu trữ bền vững (<code>$HOME</code>)</b> theo từng Region.
+        </span>
+        <span class="lang-en">
+          • <b>Local AWS CLI vs AWS CloudShell:</b> Local CLI requires installation and <code>aws configure</code> with Access Keys; <b>AWS CloudShell</b> is free, pre-authenticated with your Console credentials, and includes <b>1 GB of free persistent storage (<code>$HOME</code>)</b> per Region.
+        </span>
+      </div>
+      <div class="pi">
+        <b><span class="lang-vi">Điểm hay bị hỏi (Giới hạn, Mặc định, Từ khóa)</span><span class="lang-en">Exam Hotspots (Limits, Defaults, Keywords)</span></b>
+        <span class="lang-vi">
+          • <b>Mặc định:</b> Nếu bạn không khai báo Region trong AWS SDK, một số SDK sẽ mặc định chọn <b><code>us-east-1</code></b>.<br>
+          • <b>Bẫy bảo mật:</b> Khi dùng AWS CLI hoặc SDK bên trong máy chủ EC2, <b>tuyệt đối KHÔNG chạy <code>aws configure</code></b> điền Access Key cá nhân — phải gắn <b>IAM Role</b> cho EC2 để CLI/SDK tự lấy Temporary Credentials từ IMDS!<br>
+          • <b>Từ khóa:</b> <code>"browser-based shell with 1 GB persistent storage in $HOME"</code> &rarr; <b>AWS CloudShell</b>.
+        </span>
+        <span class="lang-en">
+          • <b>Defaults:</b> If no default Region is specified in AWS SDKs, certain SDKs default to <b><code>us-east-1</code></b>.<br>
+          • <b>Security Trap:</b> Inside an EC2 instance, <b>NEVER run <code>aws configure</code></b> with personal Access Keys — attach an <b>IAM Role</b> so CLI/SDK automatically retrieves STS credentials via IMDS!<br>
+          • <b>Keywords:</b> <code>"browser-based shell with 1 GB persistent storage in $HOME"</code> &rarr; <b>AWS CloudShell</b>.
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 1. Identities -->
 <div class="card full">
   <div class="ch">
@@ -591,19 +708,19 @@ flowchart TD
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
       <div class="pi">
-        <b>Section 4 · Lecture 26097996</b>
-        <span class="lang-vi">Tổng quan về IAM, Users, Groups và Policies.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl)">▶ Mở bài giảng trên Udemy</a></span>
-        <span class="lang-en">IAM Overview: Users, Groups, and Policies.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl)">▶ Open Udemy Lecture</a></span>
+        <b>Section 4 · Lectures 11 – 17 (26097996, 51960287, 26623458, 26098020)</b>
+        <span class="lang-vi">Tổng quan IAM Users/Groups, Simultaneous Sign-in, JSON Policies và MFA (Virtual MFA, U2F Security Key, Hardware Key Fob).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl)">▶ IAM Intro</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl)">Policies</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl)">MFA Overview</a></span>
+        <span class="lang-en">IAM Users/Groups, Simultaneous Sign-in, JSON Policies, and MFA devices (Virtual, U2F, Hardware Key Fob).<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26097996" target="_blank" style="color:var(--bl)">▶ IAM Intro</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl)">Policies</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl)">MFA Overview</a></span>
       </div>
       <div class="pi">
-        <b>Section 4 · Lecture 26098020 &amp; 26098028</b>
-        <span class="lang-vi">Bảo mật Root User, bật MFA và quản lý Access Keys.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl)">▶ Bài giảng Root MFA</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl)">Credentials</a></span>
-        <span class="lang-en">Securing Root User, MFA enforcement and Access Keys.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098020" target="_blank" style="color:var(--bl)">▶ Root MFA Lecture</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098028" target="_blank" style="color:var(--bl)">Credentials</a></span>
+        <b>Section 4 · Lectures 18 – 26 (26098034, 26098060, 26098066)</b>
+        <span class="lang-vi">Access Keys, AWS CLI, AWS SDK, AWS CloudShell (1 GB <code>$HOME</code>) và IAM Roles cho dịch vụ AWS.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098034" target="_blank" style="color:var(--bl)">▶ CLI &amp; SDK</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098060" target="_blank" style="color:var(--bl)">CloudShell</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098066" target="_blank" style="color:var(--bl)">IAM Roles</a></span>
+        <span class="lang-en">Access Keys, AWS CLI, AWS SDK, AWS CloudShell (1 GB <code>$HOME</code>), and IAM Roles for AWS Services.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098034" target="_blank" style="color:var(--bl)">▶ CLI &amp; SDK</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098060" target="_blank" style="color:var(--bl)">CloudShell</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098066" target="_blank" style="color:var(--bl)">IAM Roles</a></span>
       </div>
       <div class="pi">
-        <b>Section 4 · Lecture 26098070 &amp; 26623458</b>
-        <span class="lang-vi">IAM Audit tools và giải phẫu chuyên sâu cấu trúc JSON Policy.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl)">▶ Audit Tools</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl)">Policies in Depth</a></span>
-        <span class="lang-en">IAM Audit tools and JSON policy anatomy in depth.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl)">▶ Audit Tools</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26623458" target="_blank" style="color:var(--bl)">Policies in Depth</a></span>
+        <b>Section 4 · Lectures 27 – 30 (26098070, 26098082) &amp; Bản ghi bài giảng</b>
+        <span class="lang-vi">IAM Security Tools (Credentials Report &amp; Access Advisor), Best Practices và toàn bộ 20 bài học chi tiết trong kho dự án.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl)">▶ Security Tools</a> · <a href="../lectures/section-04-iam-and-aws-cli/README.md" style="color:var(--gr)">📂 Xem thư mục lectures/section-04-iam-and-aws-cli</a></span>
+        <span class="lang-en">IAM Security Tools (Credentials Report &amp; Access Advisor), Best Practices, and full 20 lecture notes.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098070" target="_blank" style="color:var(--bl)">▶ Security Tools</a> · <a href="../lectures/section-04-iam-and-aws-cli/README.md" style="color:var(--gr)">📂 Open lectures/section-04-iam-and-aws-cli</a></span>
       </div>
     </div>
     <div class="col">
