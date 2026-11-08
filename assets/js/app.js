@@ -117,3 +117,25 @@ if (window.matchMedia) {
     renderAllMermaid();
   });
 }
+
+
+/**
+ * Study Mode: Toggle Focus on Exam Traps only
+ */
+function toggleExamFocus(btn) {
+  document.body.classList.toggle('study-focus-exam');
+  var active = document.body.classList.contains('study-focus-exam');
+  if (btn) btn.classList.toggle('active', active);
+}
+
+/**
+ * Study Mode: Toggle Flashcard Mode (blur answers until hovered)
+ */
+function toggleHideAnswers(btn) {
+  document.body.classList.toggle('study-hide-answers');
+  var active = document.body.classList.contains('study-hide-answers');
+  if (btn) btn.classList.toggle('active', active);
+}
+
+window.toggleExamFocus = toggleExamFocus;
+window.toggleHideAnswers = toggleHideAnswers;
