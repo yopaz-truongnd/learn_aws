@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `16666654` (`Article`)
 - **Thời lượng:** `01:23`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

@@ -3,6 +3,7 @@
 - **Phần:** Phần 4: IAM & AWS CLI
 - **Lecture ID:** `13528248` (`CLI - Install on Mac v2.mp4`)
 - **Thời lượng:** `01:28`
+- **Cheat sheet:** [topics/aws_iam.html](../../topics/aws_iam.html)
 
 ---
 

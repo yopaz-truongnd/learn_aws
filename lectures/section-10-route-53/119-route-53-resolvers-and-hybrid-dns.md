@@ -4,6 +4,7 @@
 - **Lecture ID:** `51771513`
 - **Video:** `SAA - Route 53 - Private Resolver v1.mp4`
 - **Thời lượng:** `02:56`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

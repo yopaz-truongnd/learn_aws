@@ -3,6 +3,7 @@
 - **Phần:** Phần 4: IAM & AWS CLI
 - **Lecture ID:** `13528250` (`CLI - Install on Linux v2.mp4`)
 - **Thời lượng:** `01:30`
+- **Cheat sheet:** [topics/aws_iam.html](../../topics/aws_iam.html)
 
 ---
 

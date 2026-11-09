@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528052`
 - **Video gốc:** `EC2_-_Private_vs_Public_vs_Elastic_IP_v2.mp4`
 - **Thời lượng:** `04:42`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 
@@ -15,7 +16,7 @@
 > - **Dùng khi nào:** Cần một địa chỉ Public IPv4 cố định không đổi khi Stop/Start EC2 instance hoặc khi đối tác yêu cầu whitelist IP cố định trên Firewall, hoặc fail-over nhanh IP sang Standby EC2 instance.
 > - **Khác gì dịch vụ gần giống:**
 >   - **Elastic IP vs Public IPv4 mặc định:** Public IPv4 mặc định bị mất và đổi sang IP mới mỗi khi EC2 **Stop/Start**; Elastic IP giữ nguyên cố định cho đến khi bạn chủ động Release.
->   - **Elastic IP Failover vs Route 53 / ALB:** AWS khuyến khích dùng DNS (Route 53) hoặc Load Balancer (ALB/NLB) cho kiến trúc lớn thay vì переmap Elastic IP thủ công.
+>   - **Elastic IP Failover vs Route 53 / ALB:** AWS khuyến khích dùng DNS (Route 53) hoặc Load Balancer (ALB/NLB) cho kiến trúc lớn thay vì remap Elastic IP thủ công.
 > - **Điểm hay bị hỏi:**
 >   - **Giới hạn & Mặc định:** Mặc định tối đa **5 Elastic IPs / Region** (Soft limit, xin tăng được). **Miễn phí** chỉ khi đang gắn vào một EC2 instance đang **Running** và chỉ có **1 EIP** gắn trên instance đó (bị tính phí nếu EIP không gắn vào đâu, gắn vào EC2 đang Stopped, hoặc là EIP thứ 2 trở lên trên cùng instance).
 >   - **Từ khóa gợi ý:** `"static public IPv4"`, `"fixed IP address for firewall whitelisting"`, `"rapidly remap IP to standby instance"`.

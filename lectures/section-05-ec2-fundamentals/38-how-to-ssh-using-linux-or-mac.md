@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `13528044` (`CCP_-_EC2_-_SSH_Linux_Mac_v2.mp4`)
 - **Thời lượng:** `07:05`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

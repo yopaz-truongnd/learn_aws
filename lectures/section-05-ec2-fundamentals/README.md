@@ -3,6 +3,7 @@
 - **Khóa học:** Ultimate AWS Certified Solutions Architect Associate 2026 (`SAA-C03`)
 - **Chapter ID:** `6258026`
 - **Tổng số bài giảng:** 16 bài giảng (Bài 31 -> Bài 46) + 1 bài kiểm tra trắc nghiệm (Quiz 2)
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

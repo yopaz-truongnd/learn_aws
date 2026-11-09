@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #94 (`id: 33878680`)
 - **Video gốc:** `SAA_-_RDS_-_Backup_and_Monitoring_v2.mp4`
 - **Thời lượng:** `05:36` (336 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

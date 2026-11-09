@@ -5,6 +5,7 @@
 - **Video gốc:** `SAA - Route 53 - Overview v2.mp4`
 - **Thời lượng:** `06:18`
 - **URL bài học:** https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528180#overview
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

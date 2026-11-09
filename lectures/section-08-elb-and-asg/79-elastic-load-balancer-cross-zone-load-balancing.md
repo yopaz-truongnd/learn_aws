@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `18078093`
 - **Tệp video:** `SAA_-_ELB_-_Cross_Zone_Load_Balancing_v5D.mp4`
 - **Thời lượng:** `05:53`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

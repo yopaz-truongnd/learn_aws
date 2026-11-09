@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528186`
 - **Video:** `SAA_-_Route_53_-_EC2_Setup_v3.mp4`
 - **Thời lượng:** `05:40`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

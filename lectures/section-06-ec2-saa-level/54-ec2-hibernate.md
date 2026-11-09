@@ -4,6 +4,7 @@
 - **Lecture ID:** `18104377`
 - **Video gốc:** `SAA_-_EC2_-_Hibernate_Overview_v3.mp4`
 - **Thời lượng:** `03:13`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

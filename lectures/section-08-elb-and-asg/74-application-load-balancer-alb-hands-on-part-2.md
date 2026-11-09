@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `26099120`
 - **Tệp video:** `SAA_-_ELB_-_Application_Load_Balancer_Hands_On_Part_2_v8.mp4`
 - **Thời lượng:** `05:37`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

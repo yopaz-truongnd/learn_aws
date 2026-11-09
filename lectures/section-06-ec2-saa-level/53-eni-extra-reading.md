@@ -4,6 +4,7 @@
 - **Lecture ID:** `20680996`
 - **Loại bài học:** Bài đọc bổ sung (Article)
 - **Thời lượng ước tính:** `00:21`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

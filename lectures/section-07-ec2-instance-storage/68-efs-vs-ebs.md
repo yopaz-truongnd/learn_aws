@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528138`
 - **Video gốc:** `SAA_-_EFS_-_EFS_vs_EBS_v5.mp4`
 - **Thời lượng:** `02:11`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

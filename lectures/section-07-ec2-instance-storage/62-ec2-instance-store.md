@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098288`
 - **Video gốc:** `CCP_-_EC2_-_Instance_Store.mp4`
 - **Thời lượng:** `02:47`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

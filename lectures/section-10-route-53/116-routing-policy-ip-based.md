@@ -4,6 +4,7 @@
 - **Lecture ID:** `37045728`
 - **Video:** `SAA_-_Route_53_-_Routing_IP_Based_v1.mp4`
 - **Thời lượng:** `01:45`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

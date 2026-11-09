@@ -39,55 +39,106 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 # Bảng phiên âm quốc tế IPA chuẩn (UK/US) cho toàn bộ từ vựng khóa học
 IPA_MAP = {
-    'Advisor': "/ədˈvaɪ.zər/",
+    'accelerate': "/əkˈsel.ə.reɪt/",
     'accelerated': "/əkˈsel.ə.reɪ.tɪd/",
+    'accessible': "/əkˈses.ə.bəl/",
+    'across': "/əˈkrɒs/",
     'adjacent': "/əˈdʒeɪ.sənt/",
+    'advance': "/ədˈvɑːns/",
     'advanced': "/ədˈvɑːnst/",
+    'Advisor': "/ədˈvaɪ.zər/",
+    'advisor': "/ədˈvaɪ.zər/",
     'alphabetical': "/ˌæl.fəˈbet.ɪ.kəl/",
     'alternative': "/ɒlˈtɜː.nə.tɪv/",
     'approach': "/əˈprəʊtʃ/",
     'architecture': "/ˈɑː.kɪ.tek.tʃər/",
+    'argument': "/ˈɑːɡ.jə.mənt/",
     'arguments': "/ˈɑːɡ.jə.mənts/",
+    'around': "/əˈraʊnd/",
+    'at-rest': "/æt rest/",
     'attention': "/əˈten.ʃən/",
     'automate': "/ˈɔː.tə.meɪt/",
+    'base': "/beɪs/",
     'based': "/beɪst/",
+    'benefit': "/ˈben.ɪ.fɪt/",
+    'benefits': "/ˈben.ɪ.fɪts/",
+    'bill': "/bɪl/",
     'billing': "/ˈbɪl.ɪŋ/",
+    'bootstrap': "/ˈbuːt.stræp/",
     'bootstrapping': "/ˈbuːt.stræp.ɪŋ/",
     'briefly': "/ˈbriːf.li/",
+    'cache': "/kæʃ/",
+    'caching': "/ˈkæʃ.ɪŋ/",
     'certain': "/ˈsɜː.tən/",
+    'clone': "/kləʊn/",
+    'cloning': "/ˈkləʊ.nɪŋ/",
+    'combine': "/kəmˈbaɪn/",
     'combined': "/kəmˈbaɪnd/",
     'commonly': "/ˈkɒm.ən.li/",
     'compatible': "/kəmˈpæt.ə.bəl/",
+    'complex': "/ˈkɒm.pleks/",
+    'complicate': "/ˈkɒm.plɪ.keɪt/",
+    'complicated': "/ˈkɒm.plɪ.keɪ.tɪd/",
+    'configuration': "/kənˌfɪɡ.əˈreɪ.ʃən/",
+    'confuse': "/kənˈfjuːz/",
     'confusing': "/kənˈfjuː.zɪŋ/",
+    'consist': "/kənˈsɪst/",
     'consists': "/kənˈsɪsts/",
     'cost': "/kɒst/",
+    'credential': "/krəˈden.ʃəl/",
     'credentials': "/krəˈden.ʃəlz/",
+    'deactivate': "/diːˈæk.tɪ.veɪt/",
     'deactivated': "/diːˈæk.tɪ.veɪ.tɪd/",
+    'dedicate': "/ˈded.ɪ.keɪt/",
+    'dedicated': "/ˈded.ɪ.keɪ.tɪd/",
     'demonstrate': "/ˈdem.ən.streɪt/",
     'depth': "/depθ/",
+    'describe': "/dɪˈskraɪb/",
     'describing': "/dɪˈskraɪ.bɪŋ/",
     'deserve': "/dɪˈzɜːv/",
+    'difficulty': "/ˈdɪf.ɪ.kəl.ti/",
     'directly': "/daɪˈrekt.li/",
     'discuss': "/dɪˈskʌs/",
     'disregard': "/ˌdɪs.rɪˈɡɑːd/",
-    'distributed': "/dɪˈstrɪb.juː.tɪd/",
+    'distribute': "/dɪˈstrɪb.juːt/",
+    'distributed': "/dɪˈstrɪb.juːtɪd/",
     'drill': "/drɪl/",
+    'efficiency': "/ɪˈfɪʃ.ən.si/",
     'eligible': "/ˈel.ɪ.dʒə.bəl/",
     'emphasis': "/ˈem.fə.sɪs/",
+    'enhance': "/ɪnˈhɑːns/",
+    'enhanced': "/ɪnˈhɑːnst/",
     'entire': "/ɪnˈtaɪər/",
+    'failover': "/ˈfeɪlˌəʊ.vər/",
+    'failure': "/ˈfeɪ.ljər/",
+    'feller': "/ˈfel.ər/",
     'forecast': "/ˈfɔː.kɑːst/",
     'frequency': "/ˈfriː.kwən.si/",
+    'fully': "/ˈfʊl.i/",
     'granular': "/ˈɡræn.jə.lər/",
     'guarantee': "/ˌɡær.ənˈtiː/",
+    'guarantees': "/ˌɡær.ənˈtiːz/",
+    'handle': "/ˈhæn.dəl/",
+    'illustrate': "/ˈɪl.ə.streɪt/",
+    'improve': "/ɪmˈpruːv/",
     'inbound': "/ˈɪn.baʊnd/",
     'infrastructure': "/ˈɪn.frəˌstrʌk.tʃər/",
     'initiate': "/ɪˈnɪʃ.i.eɪt/",
     'insufficient': "/ˌɪn.səˈfɪʃ.ənt/",
+    'interest': "/ˈɪn.trəst/",
     'interested': "/ˈɪn.trəs.tɪd/",
+    'invalidation': "/ɪnˌvæl.ɪˈdeɪ.ʃən/",
     'latency': "/ˈleɪ.tən.si/",
+    'leaderboard': "/ˈliː.də.bɔːd/",
+    'leverage': "/ˈliː.vər.ɪdʒ/",
     'lifecycle': "/ˈlaɪfˌsaɪ.kəl/",
+    'map': "/mæp/",
     'mapped': "/mæpt/",
+    'memcached': "/memˈkæʃt/",
+    'mistake': "/mɪˈsteɪk/",
     'mistakes': "/mɪˈsteɪks/",
+    'monitor': "/ˈmɒn.ɪ.tər/",
+    'monitoring': "/ˈmɒn.ɪ.tər.ɪŋ/",
     'mostly': "/ˈməʊst.li/",
     'necessary': "/ˈnes.ə.ser.i/",
     'nightmare': "/ˈnaɪt.meər/",
@@ -95,36 +146,71 @@ IPA_MAP = {
     'obviously': "/ˈɒb.vi.əs.li/",
     'otherwise': "/ˈʌð.ə.waɪz/",
     'outbound': "/ˈaʊt.baʊnd/",
+    'overview': "/ˈəʊ.və.vjuː/",
+    'partition': "/pɑːˈtɪʃ.ən/",
+    'partitioning': "/pɑːˈtɪʃ.ən.ɪŋ/",
+    'period': "/ˈpɪə.ri.əd/",
+    'policy': "/ˈpɒl.ə.si/",
     'policies': "/ˈpɒl.ə.siz/",
     'potentially': "/pəˈten.ʃəl.i/",
     'pretty': "/ˈprɪt.i/",
     'previous': "/ˈpriː.vi.əs/",
     'principle': "/ˈprɪn.sə.pəl/",
     'probably': "/ˈprɒb.ə.bli/",
+    'provide': "/prəˈvaɪd/",
     'provided': "/prəˈvaɪ.dɪd/",
+    'purpose': "/ˈpɜː.pəs/",
+    'purposes': "/ˈpɜː.pə.sɪz/",
+    'quick': "/kwɪk/",
+    'quicker': "/ˈkwɪk.ər/",
+    'read-intensive': "/riːd ɪnˈten.sɪv/",
+    'recommendation': "/ˌrek.ə.menˈdeɪ.ʃən/",
+    'recommendations': "/ˌrek.ə.menˈdeɪ.ʃənz/",
+    'reduce': "/rɪˈdʒuːs/",
     'reference': "/ˈref.ər.əns/",
     'regardless': "/rɪˈɡɑːd.ləs/",
+    'replacement': "/rɪˈpleɪs.mənt/",
+    'replica': "/ˈrep.lɪ.kə/",
+    'represent': "/ˌrep.rɪˈzent/",
     'represented': "/ˌrep.rɪˈzen.tɪd/",
+    'science': "/ˈsaɪ.əns/",
+    'scratch': "/skrætʃ/",
     'scratched': "/skrætʃt/",
+    'separate': "/ˈsep.ər.eɪt/",
+    'separated': "/ˈsep.ər.eɪtɪd/",
     'separately': "/ˈsep.ər.ət.li/",
+    'several': "/ˈsev.ər.əl/",
+    'simplification': "/ˌsɪm.plɪ.fɪˈkeɪ.ʃən/",
+    'simplify': "/ˈsɪm.plɪ.faɪ/",
     'simplified': "/ˈsɪm.plɪ.faɪd/",
     'spend': "/spend/",
     'standard': "/ˈstæn.dəd/",
     'standpoint': "/ˈstænd.pɔɪnt/",
     'statement': "/ˈsteɪt.mənt/",
+    'strategy': "/ˈstræt.ə.dʒi/",
     'stuff': "/stʌf/",
     'such': "/sʌtʃ/",
     'summary': "/ˈsʌm.ər.i/",
     'surface': "/ˈsɜː.fɪs/",
+    'technology': "/tekˈnɒl.ə.dʒi/",
+    'technologies': "/tekˈnɒl.ə.dʒiz/",
     'template': "/ˈtem.pleɪt/",
     'terminate': "/ˈtɜː.mɪ.neɪt/",
     'termination': "/ˌtɜː.mɪˈneɪ.ʃən/",
+    'therefore': "/ˈðeə.fɔːr/",
+    'threshold': "/ˈθreʃ.həʊld/",
     'thresholds': "/ˈθreʃ.həʊldz/",
+    'turn': "/tɜːn/",
     'turns': "/tɜːnz/",
+    'uniqueness': "/juːˈniːk.nəs/",
     'unstructured': "/ʌnˈstrʌk.tʃəd/",
     'utility': "/juːˈtɪl.ə.ti/",
     'various': "/ˈveə.ri.əs/",
-    'warehousing': "/ˈweəˌhaʊ.zɪŋ/"
+    'warehouse': "/ˈweə.haʊs/",
+    'warehousing': "/ˈweəˌhaʊ.zɪŋ/",
+    'within': "/wɪˈðɪn/",
+    'workload': "/ˈwɜːk.ləʊd/",
+    'workloads': "/ˈwɜːk.ləʊdz/",
 }
 
 def get_ipa(word):
@@ -158,13 +244,81 @@ def make_suggestion(word):
     return f"<div>{clean[0]}{middle}{clean[-1]}</div>"
 
 def make_cloze(sentence, word):
-    """Đục lỗ {{c1::word}} trong câu ngữ cảnh"""
+    """
+    Đục lỗ {{c1::...}} trong câu ngữ cảnh.
+    Hỗ trợ cả trường hợp word là từ nguyên bản (base form)
+    nhưng trong câu ngữ cảnh xuất hiện dưới dạng chia thì/số nhiều (inflected form), ví dụ:
+    word="describe" -> câu có "describing" -> {{c1::describing}}
+    word="policy"   -> câu có "policies"   -> {{c1::policies}}
+    """
+    # 1. Khớp chính xác từ nguyên bản
     pattern = re.compile(rf"\b{re.escape(word)}\b", re.IGNORECASE)
     if pattern.search(sentence):
         return pattern.sub(lambda m: f"{{{{c1::{m.group(0)}}}}}", sentence, count=1)
+
+    # 2. Sinh các dạng biến thể hình thái học (inflections) phổ biến
+    w = word.lower()
+    variants = []
+    if w.endswith("e"):
+        stem = w[:-1]
+        variants.extend([w + "s", w + "d", stem + "ing", w + "ing"])
+    elif w.endswith("y") and len(w) > 1 and w[-2] not in "aeiou":
+        stem = w[:-1]
+        variants.extend([stem + "ies", stem + "ied", w + "ing", w + "s"])
     else:
-        pattern2 = re.compile(re.escape(word), re.IGNORECASE)
-        return pattern2.sub(lambda m: f"{{{{c1::{m.group(0)}}}}}", sentence, count=1)
+        variants.extend([w + "s", w + "es", w + "ed", w + "ing"])
+        if len(w) >= 3 and w[-1] not in "aeiou" and w[-2] in "aeiou" and w[-3] not in "aeiou":
+            double_c = w + w[-1]
+            variants.extend([double_c + "ed", double_c + "ing"])
+
+    if w.endswith("k"):
+        variants.extend([w + "er", w + "est"])
+    elif w.endswith("e"):
+        variants.extend([w + "r", w + "st"])
+
+    special = {
+        "failure": ["feller", "failures"],
+        "credential": ["credentials"],
+        "technology": ["technologies"],
+        "policy": ["policies"],
+        "workload": ["workloads"],
+        "recommendation": ["recommendations"],
+        "purpose": ["purposes"],
+        "benefit": ["benefits"],
+        "threshold": ["thresholds"],
+        "mistake": ["mistakes"],
+        "argument": ["arguments"],
+        "bootstrap": ["bootstrapping", "bootstrapped"],
+        "warehouse": ["warehousing", "warehouses"],
+        "cache": ["caching", "cached", "caches"],
+        "partition": ["partitioning", "partitioned", "partitions"],
+        "monitor": ["monitoring", "monitored", "monitors"],
+        "clone": ["cloning", "cloned", "clones"],
+        "map": ["mapped", "mapping", "maps"],
+        "turn": ["turns", "turned", "turning"],
+        "bill": ["billing", "billed", "bills"],
+        "base": ["based", "basing", "bases"]
+    }
+    if w in special:
+        variants.extend(special[w])
+
+    for v in variants:
+        pat = re.compile(rf"\b{re.escape(v)}\b", re.IGNORECASE)
+        if pat.search(sentence):
+            return pat.sub(f"{{{{c1::{word}}}}}", sentence, count=1)
+
+    # 3. Fallback theo tiền tố (stem) nếu từ có độ dài >= 4
+    if len(w) >= 4:
+        pat_stem = re.compile(rf"\b{re.escape(w[:4])}\w*", re.IGNORECASE)
+        if pat_stem.search(sentence):
+            return pat_stem.sub(f"{{{{c1::{word}}}}}", sentence, count=1)
+
+    # 4. Fallback tìm chuỗi con không phân biệt hoa thường
+    pattern2 = re.compile(re.escape(word), re.IGNORECASE)
+    if pattern2.search(sentence):
+        return pattern2.sub(f"{{{{c1::{word}}}}}", sentence, count=1)
+
+    return sentence
 
 def make_guid(idx):
     s = f"aws_saa_c03_vocab_{idx}_{time.time()}"

@@ -43,6 +43,7 @@ learn_aws/
 │   ├── js/app.js       #   Xử lý ngôn ngữ, theme listener, auto-render Mermaid
 │   └── vendor/         #   Thư viện nội bộ (mermaid.min.js)
 ├── scripts/            # Script tiện ích: export_anki_4000.py
+├── tools/              # Công cụ kiểm tra & bảo trì chất lượng: verify_all.py
 ├── data/               # Dữ liệu đầu vào: lecturesub-tu-vung.csv (gitignored)
 ├── dist/               # Output sinh tự động: .apkg, .tsv (gitignored)
 ├── .claude/skills/     # Skill: new-topic, csv-to-apkg
@@ -83,10 +84,15 @@ learn_aws/
 | `assets/css/style.css` | **Hệ thống Design System dùng chung:** Tokens màu, Dark/Light mode, typography, cards, grids, flows, matrix tables, mermaid containers. | Hoàn thành |
 | `assets/js/app.js` | **Xử lý ứng dụng client-side:** Nhận diện và chuyển đổi song ngữ VI/EN, lưu `localStorage`, render tự động sơ đồ Mermaid theo theme/lang. | Hoàn thành |
 | `assets/vendor/mermaid.min.js` | **Thư viện Mermaid.js nội bộ (100% offline):** Dùng để render Decision Trees, Sequence Diagrams, Logic Flowcharts mà không kéo CDN. | Hoàn thành |
+| `anki.apkg` | **Deck Anki cơ sở hoàn thiện (Master Base Deck):** Chứa toàn bộ 132 từ vựng, hình ảnh minh họa (`hunter_...jpg`), âm thanh phát âm TTS (`superfreetts-...mp3`) và cấu trúc Note Type `4000Book1`. Đây là nguồn dữ liệu chuẩn (base hoàn thiện) để nối tiếp từ vựng mới. | Master Base |
+| `scripts/manage_anki_base.py` | **Script quản lý Deck cơ sở (`anki.apkg`):** Nạp `anki.apkg`, kiểm tra trạng thái (`info`), thêm từ mới từ CSV nối tiếp vào Unit đang mở/tạo Unit mới (`add <file.csv>`) mà không làm mất ảnh/âm thanh hiện có, và xuất TSV (`export_tsv`). | Hoàn thành |
 | `scripts/export_anki_4000.py` | **Script CSV → Anki (tự chứa 100%):** Tự sinh SQLite và đóng gói `.apkg` + `.tsv`, không cần file `.apkg` mẫu. Cú pháp: `python3 scripts/export_anki_4000.py [input.csv] [output.apkg] [output.tsv]`. | Hoàn thành |
 | `scripts/csv_to_sub_json.py` | **Script CSV → Subtitle JSON:** Chuyển đổi danh sách từ vựng CSV sang JSON chuẩn cấu trúc subtitle extension (`sub.json`), tự động bảo tồn `createdAt` và SRS state. Cú pháp: `python3 scripts/csv_to_sub_json.py [input.csv] [output.json]`. | Hoàn thành |
 | `scripts/find_diff_vocab.py` | **Script so sánh từ vựng CSV:** So sánh đối chiếu 2 file CSV từ vựng, lọc ra các từ không chung hoặc từ mới. Cú pháp: `python3 scripts/find_diff_vocab.py [file1.csv] [file2.csv]`. | Hoàn thành |
 | `scripts/clean.py` | **Script dọn dẹp Anki & Vocabulary:** Quét và xóa các tệp JSON (`sub.json`), CSV tạm/so sánh (`tu-vung-khong-chung.csv`, `tu-vung-moi.csv`, `lecturesub-tu-vung (*).csv`), bản build trong `dist/` và cache. Có bước xác nhận `y/N` hoặc cờ `-y`. Cú pháp: `python scripts/clean.py [-y]`. | Hoàn thành |
+| `tools/verify_all.py` | **Validator chất lượng toàn diện:** Tự động kiểm tra tính hợp lệ cấu trúc HTML (`<div\b` vs `</div>`), cân bằng song ngữ `lang-vi`/`lang-en`, liên kết nội bộ `href`/`src` và quét ký tự ngoại ngữ bất thường (Ả Rập, Kirin, CJK, Thái). Chạy từ bất kỳ thư mục nào: `python3 tools/verify_all.py`. | Hoàn thành |
+| `tools/update_style.py` | **Script bảo trì:** Đồng bộ và cập nhật CSS / stylesheet cho toàn bộ cheat sheet. | Hoàn thành |
+| `tools/update_iam_cheat_sheet.py` | **Script bảo trì:** Hỗ trợ chuẩn hóa nội dung và cấu trúc trang `aws_iam.html`. | Hoàn thành |
 | `data/lecturesub-tu-vung.csv` | **Bộ từ vựng trích xuất từ phụ đề bài giảng:** UTF-8 with BOM, trường bọc ngoặc kép (`"Từ"`, `"Nghĩa"`, `"Nguồn"`, `"Đích"`, `"Câu gốc"`, `"Bài học"`, `"Giây"`, `"Liên kết"`). Đọc bằng CSV parser (có trường chứa dấu phẩy/xuống dòng). | Đang duy trì (86+ từ), gitignored |
 | `dist/AWS_SAA_C03_Vocabulary.apkg` | **Gói Anki chuẩn Note Type 4000Book1:** Cloze, ô gõ kiểm tra (`type:cloze`), chia 20 từ/Unit, IPA và link Udemy. | Sinh bởi script |
 | `dist/anki_4000_format.tsv` | **Flashcard dạng TSV 11 cột** của model `4000Book1` để import vào deck Anki bất kỳ. | Sinh bởi script |
@@ -97,47 +103,53 @@ learn_aws/
 
 ## Lộ trình các chủ đề tiếp theo (Roadmap for Next Sessions)
 
-Đã hoàn thành: **Section 3** (Global Infrastructure), **Section 4** (IAM), **Section 5** (EC2), **Section 6** (EC2 Storage), **Section 7** (ELB & ASG), **Section 8 & 20** (Databases), **Section 9** (Route 53), **Section 11 & 13** (S3), **Section 14** (CloudFront & Global Accelerator). Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
+Đã hoàn thành 9 cheat sheet tương ứng các Section Udemy:
+- ✅ **Section 3:** Global Infrastructure (`topics/aws_global_infra.html`)
+- ✅ **Section 4:** IAM & AWS CLI (`topics/aws_iam.html`)
+- ✅ **Section 5 & 6:** EC2 Fundamentals & SAA Level (`topics/aws_ec2.html`)
+- ✅ **Section 7:** EC2 Instance Storage — EBS & EFS (`topics/aws_storage.html`)
+- ✅ **Section 8:** High Availability & Scalability — ELB & ASG (`topics/aws_elb_asg.html`)
+- ✅ **Section 9 & 20:** AWS Databases — RDS, Aurora, DynamoDB & ElastiCache (`topics/aws_databases.html`)
+- ✅ **Section 10:** Amazon Route 53 (`topics/aws_route53.html`)
+- ✅ **Section 11 & 13:** Amazon S3 & Advanced S3 (`topics/aws_s3.html`)
+- ✅ **Section 14:** CloudFront & Global Accelerator (`topics/aws_cloudfront.html`)
 
-1. **Section 6: EC2 Instance Storage (`topics/aws_storage.html`)**
-   - *Nguồn:* Udemy Section 6 (EC2 - Instance Storage: EBS & EFS)
-   - EBS volume types (gp3, gp2, io2 Block Express, st1, sc1), EBS Snapshots, Multi-Attach.
-   - EFS (Elastic File System): Multi-AZ, POSIX, EFS One Zone, Storage classes (Standard, IA).
-   - EC2 Instance Store: Ephemeral storage, IOPS siêu cao, mất dữ liệu khi stop/terminate.
-2. **Section 7: High Availability & Scalability (`topics/aws_elb_asg.html`)**
-   - *Nguồn:* Udemy Section 7 (High Availability and Scalability: ELB & ASG)
-   - Elastic Load Balancing: ALB (Layer 7), NLB (Layer 4 - Ultra performance), GWLB (Layer 3 - Firewalls).
-   - Target Groups, Health Checks, Cross-Zone Load Balancing, SNI (Server Name Indication).
-   - Auto Scaling Groups (ASG): Dynamic scaling, Predictive scaling, Lifecycle hooks, Target tracking.
-3. **Section 8 & 20: AWS Databases (`topics/aws_databases.html`)**
-   - *Nguồn:* Udemy Section 8 (RDS + Aurora + ElastiCache) & Section 20 (Databases in AWS)
-   - RDS: Multi-AZ (DR/Failover) vs Read Replicas (Scale Reads, async).
-   - Amazon Aurora: 6 bản sao trên 3 AZs, Aurora Serverless v2, Global Database.
-   - In-memory Caching: ElastiCache (Redis vs Memcached), MemoryDB.
-   - NoSQL & Special: DynamoDB (DAX, Global Tables), Redshift, OpenSearch, DocumentDB, Neptune.
-4. **Section 9: Amazon Route 53 (`topics/aws_route53.html`)**
-   - *Nguồn:* Udemy Section 9 (Route 53)
-   - Routing Policies: Simple, Weighted, Latency, Failover (Health checks), Geolocation, Geoproximity, Multi-Value Answer.
-5. **Section 11 & 13: Amazon S3 & Advanced S3 (`topics/aws_s3.html`)**
-   - *Nguồn:* Udemy Section 11 (S3 Intro) & Section 13 (Advanced S3)
-   - S3 Storage Classes: Standard, Standard-IA, One Zone-IA, Glacier Instant/Flexible/Deep Archive, Intelligent-Tiering.
-   - S3 Security: Bucket Policies, KMS encryption, Object Lock, Versioning, S3 Replication (CRR/SRR).
-6. **Section 14: CloudFront & Global Accelerator (`topics/aws_cloudfront.html`)**
-   - *Nguồn:* Udemy Section 14 (CloudFront & AWS Global Accelerator)
-   - CloudFront: Caching, TTL, Origin Shield, Signed URL/Cookies, OAC (Origin Access Control) cho S3.
-   - AWS Global Accelerator: Anycast IP, định tuyến qua mạng AWS Backbone (so sánh với CloudFront).
-7. **Section 16: Decoupling Applications (`topics/aws_decoupling.html`)**
+Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
+
+1. **Section 16: Decoupling Applications (`topics/aws_decoupling.html`)**
    - *Nguồn:* Udemy Section 16 (Decoupling Applications: SQS, SNS, Kinesis, Active MQ)
    - Amazon SQS: Standard (at-least-once) vs FIFO (exactly-once, order), DLQ (Dead Letter Queue), Visibility Timeout.
    - Amazon SNS: Pub/Sub Fan-out pattern, Topic Subscriptions.
    - Amazon Kinesis: Data Streams (shards, real-time), Firehose (near real-time S3/Redshift loader), Data Analytics.
-8. **Section 17: Containers on AWS (`topics/aws_containers.html`)**
+2. **Section 17: Containers on AWS (`topics/aws_containers.html`)**
    - *Nguồn:* Udemy Section 17 (Containers on AWS: ECS, Fargate, ECR, EKS)
    - ECS (Elastic Container Service): EC2 Launch Type vs Fargate (Serverless container).
    - ECR (Elastic Container Registry), EKS (Elastic Kubernetes Service).
-9. **Section 18 & 19: Serverless Architecture (`topics/aws_serverless.html`)**
+3. **Section 18 & 19: Serverless Architecture (`topics/aws_serverless.html`)**
    - *Nguồn:* Udemy Section 18 (Serverless Overviews) & Section 19 (Serverless Solutions)
    - AWS Lambda: Concurrency, Cold start, Destinations, Execution limits (15 phút, 10GB RAM).
+   - Amazon API Gateway: REST API, HTTP API, WebSocket, Throttling, API Keys, Caching.
+   - AWS Step Functions: State machines for workflow orchestration.
+4. **Section 23: Monitoring, Audit & Governance (`topics/aws_monitoring.html`)**
+   - *Nguồn:* Udemy Section 23 (AWS Monitoring & Audit)
+   - CloudWatch: Metrics, Alarms, Logs, Synthetics, Container Insights.
+   - CloudTrail: Ghi nhận mọi API calls, Trail bảo mật, phân tích sự cố.
+   - EventBridge: Phản ứng sự kiện thời gian thực (Rule & Target, cron scheduler).
+5. **Section 24: Security, Encryption & Compliance (`topics/aws_security.html`)**
+   - *Nguồn:* Udemy Section 24 (AWS Security & Encryption)
+   - AWS KMS: Customer Master Keys (CMK), Symmetric vs Asymmetric, Automatic Key Rotation.
+   - Secrets Manager (tự động rotate password RDS) vs SSM Parameter Store.
+   - AWS WAF, AWS Shield Standard/Advanced, AWS Network Firewall, AWS GuardDuty, AWS Inspector, AWS Macie.
+6. **Section 25: Networking — Virtual Private Cloud (`topics/aws_vpc.html`)**
+   - *Nguồn:* Udemy Section 25 (Networking - VPC)
+   - CIDR, Public Subnets, Private Subnets, Internet Gateway (IGW), Route Tables.
+   - NAT Gateway (quản lý bởi AWS, Multi-AZ) vs NAT Instance.
+   - Network ACL (NACL - Stateless, Subnet-level, có Deny rules) vs Security Group (SG - Stateful, Instance-level).
+   - VPC Peering, VPC Endpoints (Gateway vs Interface Endpoints / PrivateLink), Transit Gateway.
+7. **Section 26: Disaster Recovery & Data Migration (`topics/aws_disaster_recovery.html`)**
+   - *Nguồn:* Udemy Section 26 (Disaster Recovery & Migrations)
+   - 4 chiến lược DR: Backup & Restore, Pilot Light, Warm Standby, Multi-Region Active-Active.
+   - AWS DRS (Elastic Disaster Recovery), AWS DMS (Database Migration Service), AWS Snow Family, DataSync.
    - Amazon API Gateway: REST API, HTTP API, WebSocket, Throttling, API Keys, Caching.
    - AWS Step Functions: State machines for workflow orchestration.
 10. **Section 23: Monitoring, Audit & Governance (`topics/aws_monitoring.html`)**

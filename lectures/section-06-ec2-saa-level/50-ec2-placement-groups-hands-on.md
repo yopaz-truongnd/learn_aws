@@ -4,6 +4,7 @@
 - **Lecture ID:** `26118770`
 - **Video gốc:** `SAA - EC2 - Placement Groups Hands On v5.mp4`
 - **Thời lượng:** `01:42`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

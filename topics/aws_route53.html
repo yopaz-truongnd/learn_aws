@@ -38,8 +38,163 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>Zone Apex (Root Domain):</b> Tên miền gốc (<code>example.com</code>) BẮT BUỘC dùng <b>Alias Record</b> (CNAME bị cấm theo chuẩn DNS).<br>
+          • <b>Alias Record = $0:</b> Route 53 hoàn toàn miễn phí truy vấn DNS đối với các bản ghi Alias trỏ vào tài nguyên AWS.<br>
+          • <b>KHÔNG Alias vào EC2 DNS:</b> Bản ghi Alias không thể trỏ tới tên DNS của EC2 (phải dùng bản ghi A trỏ IP hoặc đặt EC2 sau ALB).<br>
+          • <b>5120 bytes:</b> Health Check của Route 53 chỉ kiểm tra chuỗi phản hồi trong 5120 bytes đầu tiên của trang web.<br>
+          • <b>Route 53 Resolver:</b> Inbound Endpoints cho On-Prem giải quyết DNS của AWS; Outbound Endpoints cho AWS giải quyết DNS On-Premises.
+        </span>
+        <span class="lang-en">
+          • <b>Zone Apex (Root Domain):</b> Top-level domain (<code>example.com</code>) strictly mandates <b>Alias Record</b> (CNAME forbidden by DNS RFC).<br>
+          • <b>Alias Record is Free:</b> Route 53 queries pointing to AWS resources via Alias are completely free of charge.<br>
+          • <b>NO Alias to EC2 DNS:</b> Alias records cannot target EC2 instance hostnames directly (use A record to IP or place EC2 behind ALB).<br>
+          • <b>5,120 bytes:</b> Route 53 string-matching health checks inspect only the first 5,120 bytes of response payload.<br>
+          • <b>Route 53 Resolver:</b> Inbound endpoints allow on-premises to resolve AWS DNS; Outbound endpoints allow AWS to resolve on-prem DNS.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Trỏ tên miền gốc (Zone Apex mydomain.com) trực tiếp tới Elastic Load Balancer</span>
+              <span class="lang-en">Map root domain (zone apex mydomain.com) directly to Elastic Load Balancer</span>
+            </td>
+            <td><span class="kw-target">Alias Record (Type A)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Trỏ hostname tới một hostname khác bất kỳ mà không hỗ trợ tên miền gốc</span>
+              <span class="lang-en">Point hostname to another hostname anywhere without supporting root domain</span>
+            </td>
+            <td><span class="kw-target">CNAME Record</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Gửi 10% lưu lượng truy cập sang phiên bản phần mềm mới để thử nghiệm (Canary)</span>
+              <span class="lang-en">Send 10% of traffic to new software version for canary testing</span>
+            </td>
+            <td><span class="kw-target">Weighted Routing Policy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Điều hướng người dùng tới AWS Region có độ trễ mạng thấp nhất</span>
+              <span class="lang-en">Direct users to the AWS Region that provides the lowest network latency</span>
+            </td>
+            <td><span class="kw-target">Latency Routing Policy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tự động chuyển đổi dự phòng Active-Passive sang trang dự phòng khi kiểm tra sức khỏe lỗi</span>
+              <span class="lang-en">Active-Passive automatic failover to backup site upon health check failure</span>
+            </td>
+            <td><span class="kw-target">Failover Routing Policy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Chặn hoặc phân luồng người dùng dựa trên quốc gia / châu lục xuất phát của họ</span>
+              <span class="lang-en">Restrict access or route users based on their country / continent location</span>
+            </td>
+            <td><span class="kw-target">Geolocation Routing Policy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Trả về ngẫu nhiên tối đa 8 bản ghi IP khỏe mạnh để client tự cân bằng tải</span>
+              <span class="lang-en">Return up to 8 healthy IP records randomly for client-side load balancing</span>
+            </td>
+            <td><span class="kw-target">Multi-Value Answer Policy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Phân giải tên miền lai kết nối giữa mạng nội bộ On-Premises và AWS VPC</span>
+              <span class="lang-en">Hybrid DNS resolution between On-Premises DNS servers and AWS VPC</span>
+            </td>
+            <td><span class="kw-target">Route 53 Resolver (Inbound/Outbound)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--grb)">🧭</div>
     <div>
@@ -65,7 +220,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ <b>Managed Authoritative DNS</b>, <b>Domain Registrar</b> và <b>Health Checks</b> toàn cầu duy nhất trên AWS cam kết <b>100% Availability SLA</b> (Port 53).<br>• <b>Dùng khi nào:</b> Phân giải tên miền ngoài Internet (<b>Public Hosted Zone</b>) hoặc nội bộ VPC (<b>Private Hosted Zone</b>), và điều hướng lưu lượng theo <b>8 Routing Policies</b> (<code>Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, IP-based, Multi-Value</code>).</span>
         <span class="lang-en">• <b>What is it:</b> Fully managed <b>Authoritative DNS</b>, <b>Domain Registrar</b>, and <b>Health Checking</b> service backed by a <b>100% Availability SLA</b> (Port 53).<br>• <b>When to use:</b> Route public Internet traffic (<b>Public Hosted Zone</b>) or internal VPC traffic (<b>Private Hosted Zone</b>) using <b>8 Routing Policies</b>.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
         <span class="lang-vi">• <b>Route 53 vs ELB / Global Accelerator:</b> Route 53 chỉ trả lời truy vấn DNS (chịu ảnh hưởng bởi <code>TTL</code> caching); ELB chuyển tiếp gói tin trực tiếp; Global Accelerator cấp 2 Anycast IP tĩnh đi qua mạng trục AWS.<br>• <b>Alias vs CNAME:</b> <code>Alias</code> (kiểu A/AAAA) trỏ tới tài nguyên AWS (<b>TRỪ EC2 DNS Name!</b>), <b>miễn phí</b>, dùng được ở <b>Zone Apex (<code>example.com</code>)</b>; <code>CNAME</code> tính phí và <b>chỉ dùng được cho Subdomain</b>.<br>• <b>Điểm hay hỏi:</b> Health Check cần <b>&gt; 18%</b> checkers toàn cầu trả về <code>2xx/3xx</code> (hoặc khớp chuỗi trong <b>5,120 bytes đầu tiên</b>). Tên miền bên thứ 3 (GoDaddy): Tạo Public Hosted Zone trên Route 53 rồi đổi <b>4 NS records</b> trên GoDaddy.</span>
         <span class="lang-en">• <b>Route 53 vs ELB / Global Accelerator:</b> Route 53 operates at the DNS layer (subject to client <code>TTL</code> caching); ELB proxies packets; Global Accelerator uses 2 static Anycast IPs.<br>• <b>Alias vs CNAME:</b> <code>Alias</code> targets AWS resources (<b>EXCEPT EC2 DNS names!</b>), is <b>free</b>, and works at the <b>Zone Apex (<code>example.com</code>)</b>; <code>CNAME</code> is billed and <b>Subdomain-only</b>.<br>• <b>Hotspots:</b> Health checks pass when <b>&gt; 18%</b> of checkers receive <code>2xx/3xx</code> (or match text in the <b>first 5,120 bytes</b>). For 3rd-party domains (GoDaddy), create a Public Hosted Zone and update the registrar's <b>NS records</b>.</span>
@@ -82,7 +237,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ phân giải DNS hai chiều giữa môi trường <b>AWS VPC (Private Hosted Zones)</b> và mạng <b>On-Premises Data Center</b> qua kết nối VPN hoặc AWS Direct Connect.<br>• <b>Dùng khi nào:</b> Kiến trúc Hybrid Cloud cần máy chủ On-Premises phân giải tên miền nội bộ trong AWS VPC và ngược lại máy chủ EC2 trong VPC phân giải tên miền nội bộ của công ty dưới On-Premises.</span>
         <span class="lang-en">• <b>What is it:</b> Bi-directional DNS resolution bridge between <b>AWS VPCs (Private Hosted Zones)</b> and <b>On-Premises Data Centers</b> over VPN or Direct Connect.<br>• <b>When to use:</b> Hybrid Cloud architectures requiring seamless private domain resolution across both AWS VPCs and corporate on-premises networks.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Khác gì giữa Inbound vs Outbound Endpoint &amp; Điểm hay bị hỏi</span><span class="lang-en">Inbound vs Outbound Endpoint &amp; Exam Hotspots</span></b>
         <span class="lang-vi">• <b>Inbound Resolver Endpoint:</b> Cho phép truy vấn DNS đi <b>TỪ On-Premises VÀO AWS VPC</b> (DNS Server ở On-Premises forward truy vấn tới IP của Inbound Endpoint để phân giải Private Hosted Zone).<br>• <b>Outbound Resolver Endpoint (+ Forwarding Rules):</b> Cho phép truy vấn DNS đi <b>TỪ AWS VPC RA On-Premises</b> (EC2 trong VPC dùng Resolver Rule đẩy truy vấn qua Outbound Endpoint về DNS Server dưới On-Premises).<br>• <b>Điểm hay hỏi:</b> Triển khai ENI của Resolver Endpoint trên tối thiểu <b>2 Subnets thuộc 2 AZs</b> để đảm bảo High Availability.</span>
         <span class="lang-en">• <b>Inbound Resolver Endpoint:</b> DNS queries flow <b>FROM On-Premises INTO AWS VPC</b> (On-Premises DNS forwards queries to Inbound Endpoint IPs to resolve Private Hosted Zones).<br>• <b>Outbound Resolver Endpoint (+ Forwarding Rules):</b> DNS queries flow <b>FROM AWS VPC OUT TO On-Premises</b> (VPC Resolver forwards queries via Outbound Endpoint to On-Premises DNS servers).<br>• <b>Hotspots:</b> Deploy Resolver Endpoint ENIs across at least <b>2 Subnets in 2 AZs</b> for High Availability.</span>
@@ -341,7 +496,7 @@ flowchart TD
         <span class="lang-vi">🌐 Endpoint Health Checks</span>
         <span class="lang-en">🌐 Endpoint Health Checks</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Mạng lưới Health Checkers phân tán toàn cầu</b>
         <span class="lang-vi">Khoảng 15 máy chủ kiểm tra của Route 53 trên toàn thế giới gửi yêu cầu HTTP/HTTPS/TCP định kỳ (mỗi 30s hoặc nhanh là 10s) tới IP công khai của bạn. Endpoint được coi là Khỏe mạnh nếu <b>trên 18% (&gt; 18%) Health Checkers</b> nhận phản hồi mã <b>2xx hoặc 3xx</b> (hoặc khớp chuỗi văn bản trong <b>5,120 bytes đầu tiên</b> của response body). Lưu ý: Phải mở <b>Security Group Inbound</b> cho dải IP của Route 53 Health Checkers!</span>
         <span class="lang-en">~15 global health checkers query your public endpoint via HTTP/HTTPS/TCP every 30s (or 10s fast interval). Marked Healthy if <b>&gt; 18% of health checkers</b> receive <b>2xx/3xx HTTP codes</b> (or match a string in the <b>first 5,120 bytes</b> of the response). Remember to allow Route 53 Health Checker IP ranges in your <b>Incoming Security Group</b>!</span>
@@ -353,7 +508,7 @@ flowchart TD
         <span class="lang-vi">🧮 Calculated &amp; Alarm Checks</span>
         <span class="lang-en">🧮 Calculated &amp; Alarm Checks</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Calculated Health Checks (Gộp nhiều chỉ số)</b>
         <span class="lang-vi">Kết hợp trạng thái của tối đa <b>256 Health Checks con</b> bằng các toán tử logic: <code>AND</code>, <code>OR</code>, <code>NOT</code>. Cho phép đánh dấu hệ thống chỉ sập khi ít nhất 3 dịch vụ phụ trợ quan trọng cùng chết đồng thời.</span>
         <span class="lang-en">Aggregates up to <b>256 child health checks</b> using boolean operators (<code>AND</code>, <code>OR</code>, <code>NOT</code>). Useful for complex composite availability rules.</span>
@@ -370,7 +525,7 @@ flowchart TD
         <span class="lang-vi">🔒 Giám sát tài nguyên trong Private VPC</span>
         <span class="lang-en">🔒 Private VPC Health Check Pattern</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b style="color:var(--or)">Bẫy thi kinh điển: Route 53 không vào được Private Subnet!</b>
         <span class="lang-vi">Các máy chủ Route 53 Health Checkers nằm ở môi trường Internet công cộng, do đó <b>hoàn toàn KHÔNG THỂ truy cập vào các Private IP bên trong VPC</b> của bạn!<br>
         <b>Giải pháp kiến trúc chuẩn:</b>
@@ -392,7 +547,7 @@ flowchart TD
 </div>
 
 <!-- 5. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🎯</div>
     <div>
@@ -473,7 +628,7 @@ flowchart TD
 </div>
 
 <!-- 6. NGUYÊN TẮC VÀNG SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⭐</div>
     <div>

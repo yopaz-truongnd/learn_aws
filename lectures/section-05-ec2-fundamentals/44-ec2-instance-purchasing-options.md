@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `26098170` (`CCP_-_EC2_-_Instance_Purchasing_Options_v4.mp4`)
 - **Thời lượng:** `09:48`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Lecture ID:** `28384312`
 - **Video:** `SAA_-_Route_53_-_First_Records_v2.mp4`
 - **Thời lượng:** `03:56`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

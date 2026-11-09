@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `26098134` (`CCP_-_EC2_-_Security_Groups_Overview_v4.mp4`)
 - **Thời lượng:** `07:18`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528196`
 - **Video:** `SAA_-_Route_53_-_Routing_Latency_v2.mp4`
 - **Thời lượng:** `04:39`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

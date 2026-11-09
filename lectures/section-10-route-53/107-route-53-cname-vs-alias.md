@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528190`
 - **Video:** `SAA_-_Route_53_-_CNAME_vs_Alias_v2.mp4`
 - **Thời lượng:** `07:00`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 
@@ -13,7 +14,7 @@
 
 | Tiêu chí | Bản ghi `CNAME` | Bản ghi `Alias` (Route 53 Specific) |
 |---|---|---|
-| **Đích trỏ tới (Target)** | Trỏ یک hostname tới **bất kỳ hostname nào khác** (trong hoặc ngoài AWS, ví dụ `blabla.anything.com`) | Trỏ یک hostname tới một **AWS Resource cụ thể** (`blabla.amazonaws.com`) |
+| **Đích trỏ tới (Target)** | Trỏ một hostname tới **bất kỳ hostname nào khác** (trong hoặc ngoài AWS, ví dụ `blabla.anything.com`) | Trỏ một hostname tới một **AWS Resource cụ thể** (`blabla.amazonaws.com`) |
 | **Hỗ trợ Root Domain (Zone Apex)** | **KHÔNG** — Chỉ hoạt động cho **Non-Root Domain** (ví dụ: `app.mydomain.com`) | **CÓ** — Hoạt động cho cả **Root Domain (`mydomain.com`)** và **Non-Root Domain (`app.mydomain.com`)** |
 | **Chi phí truy vấn** | **Tính phí** theo số lượng truy vấn DNS | **MIỄN PHÍ (Free of charge)** đối với các truy vấn trỏ tới tài nguyên AWS |
 | **Health Check tích hợp** | Không có sẵn native health check | Có khả năng **Native Health Check** (`Evaluate target health`) |
@@ -34,7 +35,7 @@ flowchart LR
 ```
 
 > [!WARNING]
-> **Cẫy bẫy đề thi SAA-C03:**
+> **Cái bẫy đề thi SAA-C03:**
 > **KHÔNG THỂ** tạo bản ghi Alias trỏ tới **EC2 DNS Name**! Nếu muốn trỏ tới EC2 instance, bạn phải dùng bản ghi `A` (trỏ tới Elastic IP / Public IPv4) hoặc đặt EC2 phía sau một **ALB** rồi dùng Alias trỏ tới ALB.
 
 ---

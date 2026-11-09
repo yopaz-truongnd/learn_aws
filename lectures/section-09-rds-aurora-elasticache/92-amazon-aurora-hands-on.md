@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #92 (`id: 13528162`)
 - **Video gốc:** `SAA - Aurora - Hands On v5.mp4`
 - **Thời lượng:** `08:22` (502 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

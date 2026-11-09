@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098276`
 - **Video gốc:** `SAA_-_EBS_-_Snapshots_v3.mp4`
 - **Thời lượng:** `02:08`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

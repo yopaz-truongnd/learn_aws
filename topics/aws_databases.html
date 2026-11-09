@@ -32,8 +32,163 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>6 copies across 3 AZs:</b> Amazon Aurora luôn tự động sao chép 6 bản sao dữ liệu trải đều trên 3 AZ.<br>
+          • <b>Max 15 Read Replicas:</b> Aurora hỗ trợ tối đa 15 bản sao đọc (so với chỉ 5 của RDS thông thường).<br>
+          • <b>Multi-AZ = HA / DR:</b> Multi-AZ là Standby thụ động, KHÔNG tăng tốc độ đọc; muốn tăng tốc đọc phải dùng <b>Read Replicas</b> hoặc <b>ElastiCache</b>.<br>
+          • <b>Database Ports:</b> MySQL/MariaDB (3306), PostgreSQL (5432), MSSQL (1433), Oracle (1521). Security Group của RDS tuyệt đối không mở port 80/443 hay 0.0.0.0/0.<br>
+          • <b>RDS Proxy:</b> Giải quyết triệt để sự cố cạn kiệt Connection Pool khi hàng nghìn hàm Lambda kết nối đồng thời.
+        </span>
+        <span class="lang-en">
+          • <b>6 copies across 3 AZs:</b> Amazon Aurora automatically replicates 6 storage copies across 3 availability zones.<br>
+          • <b>Max 15 Read Replicas:</b> Aurora scales up to 15 read replicas (compared to 5 for standard RDS).<br>
+          • <b>Multi-AZ is HA/DR:</b> Standby is passive and rejects reads; to scale reads use <b>Read Replicas</b> or <b>ElastiCache</b>.<br>
+          • <b>Database Ports:</b> MySQL/MariaDB (3306), PostgreSQL (5432), MSSQL (1433), Oracle (1521). Never open port 80/443 or 0.0.0.0/0 on RDS SGs.<br>
+          • <b>RDS Proxy:</b> Eliminates connection pool exhaustion from thousands of concurrent serverless Lambda invocations.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Cơ sở dữ liệu quan hệ cần tự động failover sang AZ khác khi gặp sự cố thảm họa</span>
+              <span class="lang-en">Relational DB with automatic failover across AZs for high availability (no read scale)</span>
+            </td>
+            <td><span class="kw-target">RDS Multi-AZ Deployment</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Giảm tải truy vấn đọc nặng cho báo cáo phân tích ban ngày ra khỏi Master DB</span>
+              <span class="lang-en">Offload read-heavy reporting / analytics queries from production master DB</span>
+            </td>
+            <td><span class="kw-target">RDS Read Replicas</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cơ sở dữ liệu quan hệ Cloud-native, hiệu năng gấp 5 lần MySQL, 6 bản sao trên 3 AZ</span>
+              <span class="lang-en">Cloud-native SQL, 5x MySQL performance, 6 copies across 3 AZs, up to 15 replicas</span>
+            </td>
+            <td><span class="kw-target">Amazon Aurora</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tải cơ sở dữ liệu không thường xuyên, khó đoán, tự động bật/tắt để tối ưu chi phí</span>
+              <span class="lang-en">Infrequent, unpredictable database workload that auto-starts and stops automatically</span>
+            </td>
+            <td><span class="kw-target">Aurora Serverless v2</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Hàng nghìn hàm Lambda Serverless gây cạn kiệt Connection Pool của RDS</span>
+              <span class="lang-en">Serverless Lambda functions exhausting database connection pool on RDS</span>
+            </td>
+            <td><span class="kw-target">Amazon RDS Proxy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Bộ nhớ đệm In-memory độ trễ dưới 1 mili-giây hỗ trợ cấu trúc dữ liệu phức tạp &amp; Pub/Sub</span>
+              <span class="lang-en">Sub-millisecond in-memory cache supporting complex data structures and pub/sub</span>
+            </td>
+            <td><span class="kw-target">Amazon ElastiCache for Redis</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cơ sở dữ liệu NoSQL Serverless độ trễ đọc/ghi dưới 10ms ở mọi quy mô</span>
+              <span class="lang-en">Serverless NoSQL key-value with single-digit millisecond latency at any scale</span>
+            </td>
+            <td><span class="kw-target">Amazon DynamoDB</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Bộ nhớ đệm đọc siêu tốc cấp độ micro-giây (&mu;s) cho bảng DynamoDB</span>
+              <span class="lang-en">Microsecond read latency cache for hot DynamoDB keys</span>
+            </td>
+            <td><span class="kw-target">DynamoDB Accelerator (DAX)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--grb)">🧭</div>
     <div>
@@ -54,12 +209,12 @@
         <span class="lang-vi">🗄️ 1. Amazon RDS &amp; RDS Custom</span>
         <span class="lang-en">🗄️ 1. Amazon RDS &amp; RDS Custom</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Amazon RDS (4 tiêu chí)</span><span class="lang-en">Amazon RDS (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ CSDL quan hệ (SQL) quản lý hoàn toàn cho 6 engines: <b>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, IBM Db2</b>.<br>• <b>Dùng khi nào:</b> Chạy RDBMS với chi phí vận hành tối thiểu (<code>least operational overhead</code>), tự động vá lỗi, sao lưu Point-in-Time và Multi-AZ.<br>• <b>Khác gì dịch vụ gần giống:</b> <b>Read Replicas</b> (tối đa 15, Async) dùng để <b>Scale Reads</b>; <b>Multi-AZ</b> (Sync) dùng cho <b>HA / DR</b> (Standby không đọc được).<br>• <b>Điểm hay hỏi:</b> <b>Automated Backups</b> tối đa <b>35 ngày</b>. Nhân bản Read Replica <b>cùng Region là MIỄN PHÍ</b> (Cross-Region tính phí).</span>
         <span class="lang-en">• <b>What is it:</b> Fully managed relational SQL database supporting <b>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, IBM Db2</b>.<br>• <b>When to use:</b> Managed RDBMS with <code>least operational overhead</code>, automated patching, PITR backups, and Multi-AZ HA.<br>• <b>Differences:</b> <b>Read Replicas</b> (up to 15, Async) for <b>Read Scaling</b>; <b>Multi-AZ</b> (Sync) for <b>HA / DR</b>.<br>• <b>Hotspots:</b> <b>Automated Backups</b> up to <b>35 days</b>. Same-Region Read Replica replication is <b>FREE</b>.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Amazon RDS Custom (4 tiêu chí)</span><span class="lang-en">Amazon RDS Custom (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Phiên bản RDS cho phép quyền <b>OS Admin / SSH / RDP</b> vào máy chủ bên dưới.<br>• <b>Dùng khi nào &amp; Giới hạn:</b> Chỉ hỗ trợ <b>2 engines duy nhất: Oracle và Microsoft SQL Server</b> khi ứng dụng đóng gói cần can thiệp OS/cài custom patches (nhớ bật <b>Pause Automation Mode</b> tối đa 24h).</span>
         <span class="lang-en">• <b>What is it:</b> Managed RDS variant granting full <b>underlying OS root/SSH/RDP access</b>.<br>• <b>When to use &amp; Limits:</b> Exclusively supports <b>Oracle and Microsoft SQL Server</b> for legacy apps requiring OS customization (pause automation up to 24h).</span>
@@ -71,12 +226,12 @@
         <span class="lang-vi">⚡ 2. Amazon Aurora &amp; RDS Proxy</span>
         <span class="lang-en">⚡ 2. Amazon Aurora &amp; RDS Proxy</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Amazon Aurora (4 tiêu chí)</span><span class="lang-en">Amazon Aurora (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> CSDL đám mây độc quyền của AWS tương thích <b>MySQL &amp; PostgreSQL</b>, nhanh gấp 5x MySQL và 3x Postgres.<br>• <b>Dùng khi nào:</b> CSDL quan hệ cấp doanh nghiệp cần tự mở rộng dung lượng (10 GB &rarr; <b>128 TB</b>), Failover &lt; 30s, hoặc <b>Aurora Global Database</b> (&lt; 1s lag).<br>• <b>Khác gì RDS thường:</b> Lưu <b>6 bản sao trên 3 AZs</b> (4/6 ghi, 3/6 đọc); tối đa <b>15 Replicas</b> dùng chung Shared Storage thông qua <b>Reader Endpoint</b>.<br>• <b>Điểm hay hỏi:</b> <b>Aurora Cloning</b> (<code>Copy-on-Write</code>) tạo bản sao DB staging cực nhanh không cần copy dữ liệu thật.</span>
         <span class="lang-en">• <b>What is it:</b> AWS cloud-native RDBMS compatible with <b>MySQL &amp; PostgreSQL</b> (5x/3x faster).<br>• <b>When to use:</b> Enterprise SQL needing auto-expanding storage (10 GB &rarr; <b>128 TB</b>), instant failover, or <b>Aurora Global DB</b> (&lt;1s lag).<br>• <b>vs RDS:</b> Stores <b>6 copies across 3 AZs</b>; up to <b>15 Replicas</b> sharing storage via a single <b>Reader Endpoint</b>.<br>• <b>Hotspots:</b> <b>Aurora Cloning</b> uses <code>Copy-on-Write</code> for instant staging clones.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Amazon RDS Proxy (4 tiêu chí)</span><span class="lang-en">Amazon RDS Proxy (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ quản lý và gom nhóm kết nối DB (<b>Managed Connection Pooling</b>) cho RDS/Aurora.<br>• <b>Dùng khi nào &amp; Điểm hay hỏi:</b> Ngăn <b>AWS Lambda</b> làm tràn kết nối DB (<code>Too many connections</code>), <b>giảm tới 66% thời gian Failover</b>, ép buộc <b>IAM Authentication + Secrets Manager</b>, chỉ truy cập nội bộ trong <b>VPC</b>.</span>
         <span class="lang-en">• <b>What is it:</b> Fully managed serverless <b>Database Connection Pooling</b> proxy for RDS/Aurora.<br>• <b>When to use &amp; Hotspots:</b> Prevents <b>AWS Lambda</b> connection exhaustion, <b>reduces failover time by up to 66%</b>, enforces <b>IAM Auth + Secrets Manager</b>, strictly <b>VPC-private</b>.</span>
@@ -93,7 +248,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ cơ sở dữ liệu bộ nhớ đệm trên RAM (<b>Managed In-Memory Cache</b>) với độ trễ <b>sub-millisecond</b>.<br>• <b>Dùng khi nào:</b> Giảm tải đọc lặp lại cho RDS/Aurora (<b>Cache-Aside / Lazy Loading</b>), lưu trữ phiên đăng nhập (<b>Stateless User Session Store</b>), hoặc làm bảng xếp hạng (<b>Gaming Leaderboards</b>).</span>
         <span class="lang-en">• <b>What is it:</b> Managed <b>In-Memory Data Store &amp; Cache</b> delivering <b>sub-millisecond</b> latency.<br>• <b>When to use:</b> Offload repetitive RDS reads (<b>Lazy Loading</b>), store <b>Stateless User Sessions</b>, or power real-time <b>Gaming Leaderboards</b>.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
         <span class="lang-vi">• <b>Redis vs Memcached:</b> <code>Redis</code> có <b>Multi-AZ Auto-Failover</b>, Read Replicas, Backup/Restore (AOF), và <b>Sorted Sets</b> (Leaderboards); <code>Memcached</code> là bộ đệm đa luồng phân mảnh (Sharding) đơn giản, <b>KHÔNG có HA, KHÔNG có Backup</b>.<br>• <b>ElastiCache vs DAX:</b> Dùng <code>DAX</code> nếu cache riêng cho <b>DynamoDB</b>; dùng <code>ElastiCache</code> cho <b>RDS/Aurora</b>, Session Store, hoặc Leaderboards.</span>
         <span class="lang-en">• <b>Redis vs Memcached:</b> <code>Redis</code> supports <b>Multi-AZ Auto-Failover</b>, Read Replicas, Backups, and <b>Sorted Sets</b> (Leaderboards); <code>Memcached</code> is multi-threaded sharded cache with <b>NO HA and NO persistence</b>.<br>• <b>ElastiCache vs DAX:</b> Use <code>DAX</code> exclusively for <b>DynamoDB</b>; use <code>ElastiCache</code> for <b>RDS/Aurora</b>, Sessions, or Leaderboards.</span>
@@ -274,7 +429,7 @@ flowchart TD
 </div>
 
 <!-- BẢNG TRA CỨU PORT MẠNG & SECURITY GROUP CHO RDS -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🔌</div>
     <div>
@@ -450,7 +605,7 @@ flowchart TD
         <span class="lang-vi">🔑 Thiết kế Primary Keys</span>
         <span class="lang-en">🔑 Primary Key Design</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Partition Key thuần (HASH)</b>
         <span class="lang-vi">Bảng chỉ gồm 1 thuộc tính khóa chính duy nhất. DynamoDB băm (hash) giá trị này để quyết định dữ liệu được lưu trên phân vùng vật lý (Physical Partition) nào. Phải có tính phân tán cao (High Cardinality).</span>
         <span class="lang-en">Table key consisting of a single attribute. DynamoDB hashes this value to determine the physical storage partition. Must have high cardinality to avoid hot partitions.</span>
@@ -460,7 +615,7 @@ flowchart TD
         <span class="lang-vi">Kết hợp <b>Partition Key (Băm)</b> và <b>Sort Key (Sắp xếp)</b>. Ví dụ: `UserID` (Partition Key) + `GameID` (Sort Key). Cho phép truy vấn tất cả các game của 1 người dùng theo thứ tự thời gian.</span>
         <span class="lang-en">Combination of <b>Partition Key (Hash)</b> and <b>Sort Key (Range)</b>. Allows 1:many groupings, querying all items for a given partition key sorted sequentially.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Chỉ mục phụ (LSI vs GSI)</b>
         <span class="lang-vi">• <b>Local Secondary Index (LSI):</b> Cùng Partition Key, đổi Sort Key khác. Chỉ tạo được lúc tạo bảng ban đầu.<br>• <b>Global Secondary Index (GSI):</b> Đổi cả Partition Key và Sort Key mới. Có thể tạo hoặc xóa bất kỳ lúc nào sau này.</span>
         <span class="lang-en">• <b>Local Secondary Index (LSI):</b> Same partition key, different sort key. Defined only at table creation.<br>• <b>Global Secondary Index (GSI):</b> Completely new partition and sort key. Can be added or deleted anytime.</span>
@@ -489,7 +644,7 @@ flowchart TD
         <span class="lang-vi">🌐 Tính năng nâng cao</span>
         <span class="lang-en">🌐 Advanced Capabilities</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>DynamoDB Global Tables</b>
         <span class="lang-vi">Nhân bản dữ liệu 2 chiều đa vùng <b>Multi-Region, Multi-Active (Active-Active)</b>. Cho phép ghi và đọc ở bất kỳ Region nào với độ trễ dưới 1 giây. Xử lý xung đột ghi theo nguyên tắc <i>Last Writer Wins</i>.</span>
         <span class="lang-en">Multi-Region, Multi-Active fully replicated tables. Enables local reads and writes across multiple regions with &lt;1 second replication. Resolves conflicts via <i>Last Writer Wins</i>.</span>
@@ -549,7 +704,7 @@ flowchart TD
         <span class="lang-vi">⚪ ElastiCache for Memcached</span>
         <span class="lang-en">⚪ ElastiCache for Memcached</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Bộ đệm đa luồng thuần túy (Pure In-Memory)</b>
         <span class="lang-vi">
           • Kiến trúc đa luồng (Multi-threaded), tối ưu hóa tận dụng tối đa tất cả các nhân CPU.<br>
@@ -575,12 +730,12 @@ flowchart TD
         <span class="lang-vi">📐 Chiến lược nạp dữ liệu vào Cache</span>
         <span class="lang-en">📐 Caching Architectural Patterns</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Lazy Loading (Cache-Aside)</b>
         <span class="lang-vi">Ứng dụng đọc từ Cache trước. Nếu không có (Cache Miss), đọc từ Database rồi mới ghi kết quả vào Cache. <i>Ưu điểm:</i> Chỉ nạp đúng dữ liệu cần. <i>Nhược điểm:</i> Dữ liệu trong Cache có nguy cơ bị cũ (Stale Data), cần kết hợp thời gian sống <b>TTL</b>.</span>
         <span class="lang-en">App checks cache first. On miss, reads from DB and populates cache. <i>Pros:</i> Only caches requested data. <i>Cons:</i> Stale data vulnerability, requires strict <b>TTL</b> expiration.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Write-Through (Ghi đồng thời)</b>
         <span class="lang-vi">Mỗi khi có thao tác ghi dữ liệu, ứng dụng ghi đồng thời vào cả Database và Cache. <i>Ưu điểm:</i> Dữ liệu trong Cache luôn tươi mới 100%. <i>Nhược điểm:</i> Tốn tài nguyên RAM vì lưu cả những dữ liệu có thể không bao giờ được đọc lại (Cache Churn).</span>
         <span class="lang-en">App updates cache and DB concurrently on every write. <i>Pros:</i> Zero stale data. <i>Cons:</i> Higher write latency and memory churn caching unrequested writes.</span>
@@ -590,7 +745,7 @@ flowchart TD
 </div>
 
 <!-- 6. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🎯</div>
     <div>
@@ -671,7 +826,7 @@ flowchart TD
 </div>
 
 <!-- 7. NGUYÊN TẮC VÀNG SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⭐</div>
     <div>

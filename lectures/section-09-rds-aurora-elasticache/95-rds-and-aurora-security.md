@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #95 (`id: 13528156`)
 - **Video gốc:** `SAA_-_RDS_-_Security_v1.mp4`
 - **Thời lượng:** `02:32` (152 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

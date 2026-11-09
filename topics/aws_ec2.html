@@ -42,6 +42,168 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>AZ-Scoped:</b> Mỗi EC2 Instance gắn chặt vào 1 AZ duy nhất; không thể span qua AZ khác.<br>
+          • <b>Max 7 instances / AZ:</b> Giới hạn cứng của <b>Spread Placement Group</b> để tránh rủi ro sập đồng thời.<br>
+          • <b>15 phút:</b> Thời gian chạy tối đa của AWS Lambda; tác vụ tính toán dài hơn bắt buộc dùng <b>Amazon EC2</b>.<br>
+          • <b>5 EIP / Region:</b> Giới hạn mặc định Elastic IP; chỉ miễn phí khi gắn vào 1 EC2 đang Running.<br>
+          • <b>User Data chỉ chạy 1 lần:</b> Tự động thực thi dưới quyền <code>root</code> khi instance khởi tạo lần đầu tiên.
+        </span>
+        <span class="lang-en">
+          • <b>AZ-Scoped:</b> Each EC2 instance is locked to a single AZ; cannot span across AZs.<br>
+          • <b>Max 7 instances / AZ:</b> Strict hard limit for <b>Spread Placement Groups</b> to isolate hardware racks.<br>
+          • <b>15 minutes:</b> AWS Lambda maximum execution timeout; longer compute tasks require <b>Amazon EC2</b>.<br>
+          • <b>5 EIPs / Region:</b> Default soft limit for Elastic IPs; free only when attached to a running instance.<br>
+          • <b>User Data runs once:</b> Bootstraps automatically under <code>root</code> exclusively on the very first boot.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Tác vụ xử lý dữ liệu chịu lỗi, chạy theo mẻ, tiết kiệm chi phí tối đa (giảm tới 90%)</span>
+              <span class="lang-en">Stateless, fault-tolerant batch jobs at maximum discount (up to 90% off)</span>
+            </td>
+            <td><span class="kw-target">Spot Instances</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tải ổn định liên tục với cam kết dài hạn 1 hoặc 3 năm</span>
+              <span class="lang-en">Long-term steady-state workload with 1 or 3 year commitment</span>
+            </td>
+            <td><span class="kw-target">Reserved Instances / Savings Plans</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Phần mềm yêu cầu bản quyền tính theo phần cứng vật lý Socket / Core (BYOL)</span>
+              <span class="lang-en">Server-bound software licenses per socket / core (BYOL compliance)</span>
+            </td>
+            <td><span class="kw-target">Dedicated Hosts</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tính toán hiệu năng cao (HPC), mạng 10 Gbps, độ trễ cực thấp trong 1 AZ</span>
+              <span class="lang-en">HPC, ultra-low network latency, 10 Gbps interconnect in single AZ</span>
+            </td>
+            <td><span class="kw-target">Cluster Placement Group</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cách ly tối đa máy chủ trọng yếu trên các tủ rack vật lý khác nhau (tối đa 7/AZ)</span>
+              <span class="lang-en">Critical instances isolated on separate hardware racks (max 7 per AZ)</span>
+            </td>
+            <td><span class="kw-target">Spread Placement Group</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Hệ thống phân tán lớn (Hadoop, Kafka, Cassandra) trải rộng hàng trăm máy</span>
+              <span class="lang-en">Hadoop, Kafka, Cassandra hundreds of instances rack-aware</span>
+            </td>
+            <td><span class="kw-target">Partition Placement Group</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Địa chỉ IPv4 công khai tĩnh cố định không đổi khi Stop/Start EC2</span>
+              <span class="lang-en">Fixed static public IPv4 retained across EC2 Stop/Start cycles</span>
+            </td>
+            <td><span class="kw-target">Elastic IP (EIP)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Đăng nhập terminal bảo mật không cần mở port 22, không cần Public IP</span>
+              <span class="lang-en">Secure terminal access with NO open port 22 and NO public IP</span>
+            </td>
+            <td><span class="kw-target">SSM Session Manager</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Bảo toàn trạng thái bộ nhớ RAM khi tạm dừng máy chủ để khởi động lại nhanh</span>
+              <span class="lang-en">Preserve in-memory RAM state during planned instance stop for fast boot</span>
+            </td>
+            <td><span class="kw-target">EC2 Hibernate</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 0. Khái quát dịch vụ Amazon EC2 -->
 <div class="card full">
   <div class="ch">
@@ -160,12 +322,12 @@
         <span class="lang-vi">💻 1. Amazon EC2 &amp; Purchasing Options</span>
         <span class="lang-en">💻 1. Amazon EC2 &amp; Purchasing Options</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Là gì &amp; Dùng khi nào</span><span class="lang-en">What is it &amp; When to use</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ máy chủ ảo (IaaS) cho phép toàn quyền kiểm soát OS và tùy chỉnh CPU, RAM, Storage, Networking.<br>• <b>Dùng khi nào:</b> Cần quyền quản trị cấp OS, chạy script tự động lần đầu qua <b>EC2 User Data</b>, hoặc tối ưu chi phí theo tải (On-Demand, Reserved/Savings Plans, Spot, Dedicated Hosts).</span>
         <span class="lang-en">• <b>What is it:</b> Virtual Machine IaaS offering full OS control and customizable CPU, RAM, Storage, and Networking.<br>• <b>When to use:</b> Require OS-level control, first-boot automation via <b>EC2 User Data</b>, or tailored billing models.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
         <span class="lang-vi">• <b>EC2 vs Lambda / Fargate:</b> EC2 quản lý cấp VM chạy liên tục; Lambda là Serverless FaaS (tối đa 15 phút); Fargate là Serverless Container.<br>• <b>Dedicated Hosts vs Dedicated Instances:</b> Chỉ <b>Dedicated Hosts</b> mới nhìn thấy Physical Sockets/Cores để dùng cho <b>BYOL (Bring Your Own License)</b>.<br>• <b>Mặc định &amp; Từ khóa:</b> <code>EC2 User Data</code> chỉ chạy <b>1 lần ở lần Launch đầu tiên</b> dưới quyền <code>root</code>. Mặc định <b>1 CPU Core = 2 Threads (2 vCPUs)</b>.</span>
         <span class="lang-en">• <b>EC2 vs Lambda / Fargate:</b> EC2 is VM-level IaaS; Lambda is Serverless FaaS (max 15m); Fargate is Serverless Container.<br>• <b>Dedicated Hosts vs Instances:</b> Only <b>Dedicated Hosts</b> expose physical sockets/cores for <b>server-bound BYOL</b>.<br>• <b>Defaults &amp; Keywords:</b> <code>EC2 User Data</code> runs <b>once at first launch</b> as <code>root</code>. Default <b>1 CPU Core = 2 Threads (2 vCPUs)</b>.</span>
@@ -177,12 +339,12 @@
         <span class="lang-vi">🛡️ 2. Security Groups, EIP &amp; ENI</span>
         <span class="lang-en">🛡️ 2. Security Groups, EIP &amp; ENI</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Security Groups (4 tiêu chí)</span><span class="lang-en">Security Groups (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Tường lửa ảo cấp độ Instance/ENI lọc lưu lượng theo Port, Protocol và IP/SG nguồn.<br>• <b>Dùng khi nào:</b> Cô lập các tầng Web &rarr; App &rarr; DB bằng <b>Security Group Referencing</b>.<br>• <b>Khác gì NACL:</b> SG là <b>Stateful</b>, chỉ có <b>Allow</b>; NACL ở cấp Subnet, <b>Stateless</b>, có cả Allow &amp; Deny.<br>• <b>Điểm hay hỏi:</b> Mặc định Inbound chặn hết, Outbound mở hết. Lỗi <code>Connection Timeout</code> = do <b>Security Group chặn</b>; lỗi <code>Connection Refused</code> = ứng dụng trong EC2 chưa chạy!</span>
         <span class="lang-en">• <b>What is it:</b> Instance/ENI-level virtual firewall filtering by Port, Protocol, and Source IP/SG.<br>• <b>When to use:</b> Isolate Web &rarr; App &rarr; DB tiers via <b>SG Referencing</b>.<br>• <b>vs NACL:</b> SG is <b>Stateful</b>, <b>Allow-only</b>; NACL is Subnet-level, <b>Stateless</b>, Allow &amp; Deny.<br>• <b>Hotspots:</b> Default Inbound Deny All, Outbound Allow All. <code>Connection Timeout</code> = <b>SG blocked</b>; <code>Connection Refused</code> = app down!</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Elastic IP (EIP) &amp; ENI (4 tiêu chí)</span><span class="lang-en">Elastic IP (EIP) &amp; ENI (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> <code>EIP</code> là Public IPv4 tĩnh cấp Region; <code>ENI</code> là card mạng ảo trong VPC gắn chặt với <b>1 AZ</b>.<br>• <b>Dùng khi nào:</b> Dùng <code>EIP</code> khi cần cố định Public IPv4 qua Stop/Start hoặc whitelist firewall; dùng <code>ENI</code> khi cần failover <b>Private IP cố định</b> hoặc license gắn theo <b>MAC address</b>.<br>• <b>Điểm hay hỏi:</b> Tối đa <b>5 EIPs / Region</b> mặc định; EIP bị tính phí nếu gắn vào máy Stopped hoặc để trống. Card chính <code>eth0</code> không tháo rời được.</span>
         <span class="lang-en">• <b>What is it:</b> <code>EIP</code> is a static regional Public IPv4; <code>ENI</code> is an <b>AZ-bound</b> virtual network card.<br>• <b>When to use:</b> <code>EIP</code> for fixed Public IPv4 across Stop/Start; <code>ENI</code> to failover a specific <b>Private IP</b> or <b>MAC-bound license</b>.<br>• <b>Hotspots:</b> Default limit <b>5 EIPs / Region</b>; billed if unattached or on Stopped EC2. Primary <code>eth0</code> cannot be detached.</span>
@@ -199,7 +361,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Kiểm soát cách AWS đặt vị trí vật lý của EC2 trên phần cứng Rack.<br>• <b>Khác nhau &amp; Dùng khi nào:</b><br>&nbsp;&nbsp;1. <b>Cluster:</b> Cùng 1 Rack / 1 AZ &rarr; mạng <b>10 Gbps+</b>, độ trễ cực thấp cho <b>HPC</b>.<br>&nbsp;&nbsp;2. <b>Spread:</b> Mỗi máy nằm trên 1 Rack riêng &rarr; tối đa <b>7 instances / AZ</b> cho các Critical instances.<br>&nbsp;&nbsp;3. <b>Partition:</b> Tối đa <b>7 partitions / AZ</b> (hàng trăm EC2) cho <b>HDFS, HBase, Cassandra, Kafka</b>.</span>
         <span class="lang-en">• <b>What is it:</b> Controls physical placement of EC2 across AWS hardware racks.<br>• <b>Differences &amp; Use Cases:</b><br>&nbsp;&nbsp;1. <b>Cluster:</b> Same rack / 1 AZ &rarr; <b>10 Gbps+</b> low-latency network for <b>HPC</b>.<br>&nbsp;&nbsp;2. <b>Spread:</b> Separate hardware per instance &rarr; max <b>7 instances / AZ</b> for critical VMs.<br>&nbsp;&nbsp;3. <b>Partition:</b> Up to <b>7 partitions / AZ</b> (100s of VMs) for <b>HDFS, HBase, Cassandra, Kafka</b>.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">EC2 Hibernate (4 tiêu chí)</span><span class="lang-en">EC2 Hibernate (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Bảo toàn trạng thái in-memory (<b>RAM</b>) bằng cách ghi RAM xuống ổ <b>Root EBS Volume</b> khi tắt máy.<br>• <b>Dùng khi nào:</b> Ứng dụng mất nhiều thời gian khởi tạo hoặc cần giữ nguyên cache lớn trong RAM.<br>• <b>Điểm hay hỏi:</b> Ổ <b>Root EBS bắt buộc phải mã hóa (Encrypted)</b>, RAM <b>&lt; 150 GB</b>, tối đa <b>60 ngày</b>.</span>
         <span class="lang-en">• <b>What is it:</b> Preserves in-memory (<b>RAM</b>) state by dumping RAM to the <b>Root EBS Volume</b> on stop.<br>• <b>When to use:</b> Long-running boot initialization or pre-warmed memory caches.<br>• <b>Hotspots:</b> <b>Root EBS MUST be Encrypted</b>, RAM <b>&lt; 150 GB</b>, max <b>60 days</b>.</span>
@@ -549,7 +711,7 @@ stateDiagram-v2
         <span class="lang-vi">Bộ điều hợp mạng ảo hóa SR-IOV đem lại băng thông lên tới <b>100 Gbps</b>, gói tin mỗi giây (PPS) cao và độ trễ cực thấp. Tiêu chuẩn mặc định cho hầu hết máy chủ EC2 hiện đại.</span>
         <span class="lang-en">SR-IOV virtualized network adapter supporting up to <b>100 Gbps</b>, high PPS, and low jitter. Baseline standard for modern EC2 instances.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Elastic Fabric Adapter (EFA) — Bẫy thi HPC!</b>
         <span class="lang-vi">Thiết bị mạng chuyên dụng cho tính toán hiệu năng cao (HPC), Machine Learning và mô phỏng tài chính. Sử dụng giao thức <b>Message Passing Interface (MPI)</b>, cho phép <b>bỏ qua tầng nhân hệ điều hành (OS Kernel Bypass)</b> để giao tiếp liên node với độ trễ thấp nhất có thể.</span>
         <span class="lang-en">Dedicated network device for High Performance Computing (HPC) and distributed ML. Uses <b>MPI protocol</b> with <b>OS Kernel Bypass</b> for ultra-low inter-node latency.</span>
@@ -557,7 +719,7 @@ stateDiagram-v2
     </div>
     <div class="col">
       <div class="colt">Hệ thống AWS Nitro System</div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Phần cứng chuyên dụng độc lập</b>
         <span class="lang-vi">AWS chuyển toàn bộ các tác vụ ảo hóa (Mạng VPC, Lưu trữ EBS, Bảo mật) sang các thẻ phần cứng rời chuyên biệt (Nitro Cards), giải phóng 100% tài nguyên CPU/RAM của máy chủ vật lý cho máy ảo EC2 của khách hàng.</span>
         <span class="lang-en">Offloads virtualization functions (VPC networking, EBS storage, security) to dedicated PCIe Nitro Cards, freeing 100% host CPU/RAM for guest EC2 workloads.</span>
@@ -645,7 +807,7 @@ stateDiagram-v2
 </div>
 
 <!-- 6. Bổ sung thi cử -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">➕</div>
     <div>
@@ -743,7 +905,7 @@ stateDiagram-v2
 </div>
 
 <!-- 7. Nguyên tắc vàng -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🏆</div>
     <div>
@@ -861,7 +1023,7 @@ stateDiagram-v2
         <span class="lang-vi">🎬 Video bài giảng Udemy cốt lõi</span>
         <span class="lang-en">🎬 Core Udemy Video Lectures</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Section 5 · Lectures 32 – 43 (26098112, 26098122, 26098128, 26098134, 26098164)</b>
         <span class="lang-vi">EC2 Basics, User Data Bootstrapping, Instance Types, Security Groups, SSH &amp; EC2 Instance Connect.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ EC2 Basics</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
         <span class="lang-en">EC2 Basics, User Data Bootstrapping, Instance Types, Security Groups, SSH &amp; EC2 Instance Connect.<br><a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098112" target="_blank" style="color:var(--bl)">▶ EC2 Basics</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098128" target="_blank" style="color:var(--bl)">Instance Types</a> · <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098134" target="_blank" style="color:var(--bl)">Security Groups</a></span>
@@ -908,7 +1070,7 @@ stateDiagram-v2
         <span class="lang-vi">Tìm hiểu kiến trúc hypervisor thế hệ mới và thẻ card phần cứng Nitro rời.<br><a href="https://aws.amazon.com/ec2/nitro/" target="_blank" style="color:var(--bl)">⚡ Khám phá AWS Nitro System</a></span>
         <span class="lang-en">Explore next-gen hardware hypervisors and dedicated Nitro cards.<br><a href="https://aws.amazon.com/ec2/nitro/" target="_blank" style="color:var(--bl)">⚡ Explore AWS Nitro System</a></span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Tutorials Dojo SAA-C03 EC2 Cheat Sheet</b>
         <span class="lang-vi">Bảng tổng kết Purchasing Options, so sánh Security Groups vs NACLs và mẹo thi.<br><a href="https://tutorialsdojo.com/amazon-elastic-compute-cloud-amazon-ec2/" target="_blank" style="color:var(--bl)">📝 Đọc Tutorials Dojo EC2 Cheat Sheet</a></span>
         <span class="lang-en">Purchasing options breakdown, SG vs NACL matrix, and exam tips.<br><a href="https://tutorialsdojo.com/amazon-elastic-compute-cloud-amazon-ec2/" target="_blank" style="color:var(--bl)">📝 Read Tutorials Dojo Cheat Sheet</a></span>

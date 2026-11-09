@@ -4,6 +4,7 @@
 - **Lecture ID:** `28384280`
 - **Video:** `SAA_-_Route_53_-_What_is_DNS_v3.mp4`
 - **Thời lượng:** `06:24`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

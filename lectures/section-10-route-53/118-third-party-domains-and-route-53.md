@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528212`
 - **Video:** `SAA_-_Route_53_-_3rd_party_registar_v2.mp4`
 - **Thời lượng:** `02:24`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

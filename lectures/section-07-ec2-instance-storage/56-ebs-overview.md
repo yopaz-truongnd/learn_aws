@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098272`
 - **Video gốc:** `CCP - EBS - Overview v3.mp4`
 - **Thời lượng:** `04:47`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

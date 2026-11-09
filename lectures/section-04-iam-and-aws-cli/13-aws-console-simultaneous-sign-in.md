@@ -3,6 +3,7 @@
 - **Phần:** Phần 4: IAM & AWS CLI
 - **Lecture ID:** `51960287` (`CCP - Console - Multi Session Support v1.mp4`)
 - **Thời lượng:** `01:48`
+- **Cheat sheet:** [topics/aws_iam.html](../../topics/aws_iam.html)
 
 ---
 

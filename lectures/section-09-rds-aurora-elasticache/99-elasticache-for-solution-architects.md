@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #99 (`id: 13528170`)
 - **Video gốc:** `SAA_-_ElastiCache_-_for_Solutions_Architects_v4.mp4`
 - **Thời lượng:** `03:00` (180 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

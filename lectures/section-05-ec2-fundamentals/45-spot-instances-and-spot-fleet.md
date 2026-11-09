@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `18756818` (`SAA - EC2 - Spot Deep Dive v4.mp4`)
 - **Thời lượng:** `08:52`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

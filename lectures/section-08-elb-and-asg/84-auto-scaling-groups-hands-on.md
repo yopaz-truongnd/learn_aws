@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `13528104`
 - **Tệp video:** `SAA - ASG - Hands On v5.mp4`
 - **Thời lượng:** `08:56`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

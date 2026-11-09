@@ -4,6 +4,7 @@
 - **Lecture ID:** `26118774`
 - **Video gốc:** `SAA_-_EC2_-_ENI_-_Hands_On_v3.mp4`
 - **Thời lượng:** `05:23`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

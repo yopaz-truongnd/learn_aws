@@ -4,6 +4,7 @@
 - **Lecture ID:** `26099214`
 - **Video:** `SAA_-_Route_53_-_GeoProximity_Routing_v1.mp4`
 - **Thời lượng:** `03:21`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528130`
 - **Video gốc:** `SAA_-_EFS_-_Hands_On_v6.mp4`
 - **Thời lượng:** `13:05`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

@@ -1,1054 +1,1076 @@
-/* ==========================================================================
-   AWS Certified Solutions Architect Associate (SAA-C03) — Study Hub Styles
-   Self-contained Design System for Dashboard & Topic Sheets
-   ========================================================================== */
-
-:root {
-  --bg: #F9F8F7;
-  --card: #ffffff;
-  --bd: #E6E5E3;
-  --sub: #F9F8F7;
-  --tx: #2C2C2B;
-  --mu: #7D7A75;
-  --bl: #2783DE;
-  --blb: #E5F2FC;
-  --gr: #46A171;
-  --grb: #E8F1EC;
-  --or: #D5803B;
-  --orb: #FBEBDE;
-  --rd: #E56458;
-  --rdb: #FCE9E7;
-  --gy: #F0EFED;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1c1b1a;
-    --card: #262524;
-    --bd: #3a3836;
-    --sub: #2d2b2a;
-    --tx: #ecebe8;
-    --mu: #a3a09a;
-    --bl: #6db3f2;
-    --blb: #1d3347;
-    --gr: #6fcb9b;
-    --grb: #1e3329;
-    --or: #e8a263;
-    --orb: #3a2b1c;
-    --rd: #f0897f;
-    --rdb: #3d2220;
-    --gy: #353331;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #1c1b1a;
-  --card: #262524;
-  --bd: #3a3836;
-  --sub: #2d2b2a;
-  --tx: #ecebe8;
-  --mu: #a3a09a;
-  --bl: #6db3f2;
-  --blb: #1d3347;
-  --gr: #6fcb9b;
-  --grb: #1e3329;
-  --or: #e8a263;
-  --orb: #3a2b1c;
-  --rd: #f0897f;
-  --rdb: #3d2220;
-  --gy: #353331;
-}
-
-html {
-  scroll-padding-top: env(safe-area-inset-top, 0px);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  font-size: 0.88em;
-  background: var(--gy);
-  color: var(--tx);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--bd);
-  word-break: break-word;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--tx);
-  padding: 32px 24px;
-  min-height: 100%;
-}
-
-.container {
-  max-width: 1320px;
-  margin: 0 auto;
-}
-
-/* --------------------------------------------------------------------------
-   Top Navigation & Language Switcher
-   -------------------------------------------------------------------------- */
-.top-nav {
-  max-width: 1320px;
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
-.nav-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--bl);
-  text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: var(--blb);
-  transition: opacity 0.15s ease;
-}
-
-.nav-back:hover {
-  opacity: 0.85;
-}
-
-.lang-switch {
-  display: inline-flex;
-  align-items: center;
-  background: var(--card);
-  border: 1px solid var(--bd);
-  border-radius: 20px;
-  padding: 3px;
-  gap: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-.lang-btn {
-  background: transparent;
-  border: none;
-  color: var(--mu);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 16px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.15s ease;
-}
-
-.lang-btn:hover {
-  color: var(--tx);
-}
-
-.lang-btn.active {
-  background: var(--blb);
-  color: var(--bl);
-  box-shadow: 0 1px 2px rgba(39, 131, 222, 0.15);
-}
-
-/* Multi-language Toggling Rules */
-[data-lang="en"] .lang-vi {
-  display: none !important;
-}
-
-:root:not([data-lang="en"]) .lang-en {
-  display: none !important;
-}
-
-/* --------------------------------------------------------------------------
-   Header & Badges
-   -------------------------------------------------------------------------- */
-.header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.badge {
-  display: inline-block;
-  background: var(--blb);
-  color: var(--bl);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 6px;
-  margin-bottom: 12px;
-}
-
-h1 {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-
-.header h1 {
-  font-size: 28px;
-  letter-spacing: -0.4px;
-}
-
-.header p {
-  font-size: 14px;
-  color: var(--mu);
-  margin-top: 8px;
-  max-width: 660px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
-}
-
-/* --------------------------------------------------------------------------
-   Grid & Cards Layout
-   -------------------------------------------------------------------------- */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  max-width: 1320px;
-  margin: 0 auto;
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--bd);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  min-width: 0;
-}
-
-.full {
-  grid-column: 1 / -1;
-}
-
-.ch {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.ci {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.ct {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.cs {
-  font-size: 12px;
-  color: var(--mu);
-  margin-top: 2px;
-}
-
-.lbl {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--mu);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin: 0 0 10px;
-}
-
-/* --------------------------------------------------------------------------
-   Stats (Dashboard)
-   -------------------------------------------------------------------------- */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.stat-box {
-  background: var(--card);
-  border: 1px solid var(--bd);
-  border-radius: 10px;
-  padding: 16px;
-  text-align: center;
-}
-
-.stat-val {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--bl);
-}
-
-.stat-lbl {
-  font-size: 11px;
-  color: var(--mu);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 4px;
-}
-
-/* --------------------------------------------------------------------------
-   Tags & Badges
-   -------------------------------------------------------------------------- */
-.tag {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 2px 7px;
-  border-radius: 4px;
-  margin: 2px 2px 2px 0;
-}
-
-.tb { background: var(--blb); color: var(--bl); }
-.tg { background: var(--grb); color: var(--gr); }
-.to { background: var(--orb); color: var(--or); }
-.tr { background: var(--rdb); color: var(--rd); }
-.ty { background: var(--gy); color: var(--mu); }
-
-/* --------------------------------------------------------------------------
-   Item Grids (.g2, .it)
-   -------------------------------------------------------------------------- */
-.g2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.it {
-  border: 1px solid var(--bd);
-  border-radius: 8px;
-  padding: 14px;
-  background: var(--sub);
-}
-
-.in {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.id {
-  font-size: 12px;
-  color: var(--mu);
-  line-height: 1.7;
-}
-
-/* --------------------------------------------------------------------------
-   Linear Evaluation Flows (.flow)
-   -------------------------------------------------------------------------- */
-.flow {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-
-.flow:last-child {
-  margin-bottom: 0;
-}
-
-.st {
-  text-align: center;
-  padding: 10px 12px;
-  border-radius: 8px;
-  flex: 1;
-  min-width: 96px;
-  border: 1.5px solid var(--bd);
-  background: var(--gy);
-}
-
-.st b {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.st span {
-  display: block;
-  font-size: 11px;
-  margin-top: 3px;
-  color: var(--mu);
-}
-
-.s-b { background: var(--blb); border-color: var(--bl); }
-.s-b b { color: var(--bl); }
-.s-g { background: var(--grb); border-color: var(--gr); }
-.s-g b { color: var(--gr); }
-.s-o { background: var(--orb); border-color: var(--or); }
-.s-o b { color: var(--or); }
-.s-r { background: var(--rdb); border-color: var(--rd); }
-.s-r b { color: var(--rd); }
-.ar { color: var(--mu); font-size: 18px; align-self: center; }
-
-/* --------------------------------------------------------------------------
-   Comparison Columns (.cols, .pi)
-   -------------------------------------------------------------------------- */
-.cols {
-  display: flex;
-  gap: 12px;
-}
-
-.col {
-  flex: 1;
-  min-width: 0;
-}
-
-.colt {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--mu);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--bd);
-}
-
-.cols {
-  display: flex;
-  gap: 16px;
-  align-items: stretch;
-}
-
-.col {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.colt {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--tx);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--bd);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pi {
-  font-size: 13px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  border: 1px solid var(--bd);
-  background: var(--card);
-  line-height: 1.6;
-  transition: all 0.15s ease;
-}
-
-.pi:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
-/* Fix text breaking bug: ONLY the direct first-child label is a block, all inner <b> are inline */
-.pi > b:first-child,
-.pi-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 8px;
-}
-
-.pi span b,
-.pi span code,
-.pi li b,
-.pi li code {
-  display: inline !important;
-}
-
-.pi span {
-  color: var(--tx);
-  font-size: 13px;
-  line-height: 1.6;
-  display: block;
-}
-
-/* 4 distinct visual tiers for Service Cheat Sheet */
-.pi.pi-def,
-.pi:nth-child(2) {
-  border-left: 4px solid var(--bl);
-}
-.pi.pi-def > b:first-child,
-.pi:nth-child(2) > b:first-child {
-  color: var(--bl);
-}
-
-.pi.pi-use,
-.pi:nth-child(3) {
-  border-left: 4px solid var(--gr);
-}
-.pi.pi-use > b:first-child,
-.pi:nth-child(3) > b:first-child {
-  color: var(--gr);
-}
-
-.pi.pi-diff,
-.pi:nth-child(4) {
-  border-left: 4px solid var(--or);
-}
-.pi.pi-diff > b:first-child,
-.pi:nth-child(4) > b:first-child {
-  color: var(--or);
-}
-
-.pi.pi-exam,
-.pi:nth-child(5) {
-  border-left: 4px solid var(--rd);
-  background: var(--rdb);
-  border-color: rgba(229, 100, 88, 0.3);
-}
-.pi.pi-exam > b:first-child,
-.pi:nth-child(5) > b:first-child {
-  color: var(--rd);
-}
-
-/* Structured point list (.pts) */
-.pts {
-  list-style: none;
-  padding: 0;
-  margin: 6px 0 0 0;
-}
-
-.pts li {
-  padding: 4px 0 4px 16px;
-  position: relative;
-  line-height: 1.6;
-  font-size: 13px;
-}
-
-.pts li::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 0.7em;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--mu);
-}
-
-/* Exam Keywords Chips & Focus styles */
-.kw-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--card);
-  border: 1px solid var(--bd);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  margin: 3px 4px 3px 0;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-}
-
-.kw-chip .kw-target {
-  color: var(--bl);
-  font-weight: 700;
-}
-
-/* Mini comparison table */
-.diff-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
-  font-size: 12.5px;
-}
-
-.diff-table th, .diff-table td {
-  padding: 7px 10px;
-  border: 1px solid var(--bd);
-  text-align: left;
-  vertical-align: top;
-}
-
-.diff-table th {
-  background: var(--sub);
-  font-weight: 700;
-  color: var(--tx);
-  font-size: 11.5px;
-  text-transform: uppercase;
-}
-
-.diff-table td {
-  background: var(--card);
-}
-
-/* Study mode interactive controls */
-.study-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 10px 0 16px;
-  flex-wrap: wrap;
-}
-
-.study-btn {
-  background: var(--card);
-  border: 1px solid var(--bd);
-  color: var(--tx);
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-}
-
-.study-btn:hover {
-  border-color: var(--bl);
-  color: var(--bl);
-}
-
-.study-btn.active {
-  background: var(--bl);
-  border-color: var(--bl);
-  color: #fff;
-}
-
-body.study-focus-exam .pi:not(.pi-exam) {
-  display: none !important;
-}
-
-body.study-hide-answers .kw-target,
-body.study-hide-answers .ans-blur {
-  filter: blur(5px);
-  user-select: none;
-  transition: filter 0.15s ease;
-  cursor: pointer;
-}
-
-body.study-hide-answers .kw-target:hover,
-body.study-hide-answers .ans-blur:hover {
-  filter: none;
-}
-
-/* --------------------------------------------------------------------------
-   Tools & Satellites (.tools)
-   -------------------------------------------------------------------------- */
-.tools {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.tool {
-  border: 1px solid var(--bd);
-  border-radius: 8px;
-  padding: 12px 14px;
-  background: var(--sub);
-}
-
-.tn {
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.td {
-  font-size: 11px;
-  color: var(--mu);
-  line-height: 1.5;
-}
-
-/* --------------------------------------------------------------------------
-   Lists with Icons (.sl)
-   -------------------------------------------------------------------------- */
-.sl {
-  list-style: none;
-}
-
-.sl li {
-  display: flex;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--gy);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.sl li:last-child {
-  border-bottom: none;
-}
-
-.si {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.sl b {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-
-.sl span {
-  color: var(--mu);
-  font-size: 12px;
-}
-
-/* --------------------------------------------------------------------------
-   Golden Rules (.bp, .bi, .bn)
-   -------------------------------------------------------------------------- */
-.bp {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bi {
-  display: flex;
-  gap: 12px;
-  background: var(--sub);
-  border: 1px solid var(--bd);
-  border-radius: 8px;
-  padding: 12px 14px;
-}
-
-.bn {
-  width: 24px;
-  height: 24px;
-  background: var(--bl);
-  color: var(--card);
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.bi b {
-  font-size: 13px;
-  display: block;
-  margin-bottom: 3px;
-}
-
-.bi span {
-  font-size: 12px;
-  color: var(--mu);
-  line-height: 1.5;
-}
-
-/* --------------------------------------------------------------------------
-   Code Syntax Highlighting (.json)
-   -------------------------------------------------------------------------- */
-.json {
-  background: #1E1E1E;
-  border-radius: 8px;
-  padding: 14px 18px;
-  font-family: Menlo, Consolas, Monaco, monospace;
-  font-size: 12px;
-  line-height: 1.7;
-  color: #D4D4D4;
-  margin-top: 14px;
-  overflow-x: auto;
-  white-space: pre;
-}
-
-.jk { color: #9CDCFE; }
-.jv { color: #CE9178; }
-.jc { color: #6A9955; }
-.jp { color: #4EC9B0; }
-
-/* --------------------------------------------------------------------------
-   Mermaid Diagrams & Comparison Matrix Tables
-   -------------------------------------------------------------------------- */
-.mermaid-diagram {
-  background: var(--sub);
-  border: 1px solid var(--bd);
-  border-radius: 10px;
-  padding: 16px;
-  margin: 12px 0 6px;
-  overflow-x: auto;
-  text-align: center;
-}
-
-.mermaid-output svg {
-  max-width: 100% !important;
-  height: auto !important;
-  display: inline-block;
-}
-
-.matrix-wrap {
-  overflow-x: auto;
-  margin-top: 12px;
-  border: 1px solid var(--bd);
-  border-radius: 8px;
-  background: var(--card);
-}
-
-.matrix-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  text-align: left;
-}
-
-.matrix-table th {
-  background: var(--sub);
-  color: var(--tx);
-  font-weight: 700;
-  padding: 12px 14px;
-  border-bottom: 2px solid var(--bd);
-  white-space: nowrap;
-}
-
-.matrix-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--bd);
-  line-height: 1.6;
-}
-
-.matrix-table tr:last-child td {
-  border-bottom: none;
-}
-
-.matrix-table tr:hover td {
-  background: var(--sub);
-}
-
-.matrix-table .col-crit {
-  font-weight: 700;
-  color: var(--bl);
-  background: var(--sub);
-  white-space: nowrap;
-  width: 18%;
-}
-
-/* --------------------------------------------------------------------------
-   Dashboard Specific Styles (Modules, Domains, Vocab)
-   -------------------------------------------------------------------------- */
-.module-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.module-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 18px;
-  background: var(--sub);
-  border: 1px solid var(--bd);
-  border-radius: 10px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.15s ease;
-}
-
-.module-item:hover {
-  border-color: var(--bl);
-  transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04);
-}
-
-.module-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
-}
-
-.module-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.module-title {
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.module-desc {
-  font-size: 12px;
-  color: var(--mu);
-  margin-top: 3px;
-  line-height: 1.5;
-}
-
-.module-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.btn-open {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: var(--bl);
-  color: #fff;
-  text-decoration: none;
-  display: inline-block;
-  transition: opacity 0.15s ease;
-}
-
-.btn-open:hover {
-  opacity: 0.9;
-}
-
-.btn-pending {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: var(--gy);
-  color: var(--mu);
-  display: inline-block;
-}
-
-.domains {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.domain-card {
-  padding: 14px;
-  border-radius: 8px;
-  border: 1px solid var(--bd);
-  background: var(--sub);
-}
-
-.domain-name {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.domain-pct {
-  font-weight: 800;
-  color: var(--bl);
-}
-
-.domain-desc {
-  font-size: 11px;
-  color: var(--mu);
-  line-height: 1.5;
-}
-
-.vocab-sample {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.vocab-card {
-  padding: 10px 12px;
-  border: 1px solid var(--bd);
-  border-radius: 6px;
-  background: var(--sub);
-  font-size: 12px;
-}
-
-.vocab-word {
-  font-weight: 700;
-  color: var(--bl);
-  margin-bottom: 2px;
-}
-
-.vocab-mean {
-  color: var(--tx);
-  font-size: 12px;
-}
-
-.vocab-example {
-  font-size: 11px;
-  color: var(--mu);
-  margin-top: 4px;
-  font-style: italic;
-}
-
-/* --------------------------------------------------------------------------
-   Responsive Breakpoints
-   -------------------------------------------------------------------------- */
-@media (max-width: 768px) {
-  .stats { grid-template-columns: 1fr 1fr; }
-  .grid { grid-template-columns: 1fr; }
-  .domains { grid-template-columns: 1fr; }
-  .vocab-sample { grid-template-columns: 1fr; }
-  .g2 { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 640px) {
-  .grid, .g2, .tools { grid-template-columns: 1fr; }
-  .full { grid-column: auto; }
-  .cols { flex-direction: column; }
-  .ar { display: none; }
-  .module-item { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .module-right { align-self: flex-end; }
-  .top-bar { justify-content: center; }
-}
+/* ==========================================================================
+   AWS Certified Solutions Architect Associate (SAA-C03) — Study Hub Styles
+   Self-contained Design System for Dashboard & Topic Sheets
+   ========================================================================== */
+
+:root {
+  --bg: #F9F8F7;
+  --card: #ffffff;
+  --bd: #E6E5E3;
+  --sub: #F9F8F7;
+  --tx: #2C2C2B;
+  --mu: #7D7A75;
+  --bl: #2783DE;
+  --blb: #E5F2FC;
+  --gr: #46A171;
+  --grb: #E8F1EC;
+  --or: #D5803B;
+  --orb: #FBEBDE;
+  --rd: #E56458;
+  --rdb: #FCE9E7;
+  --gy: #F0EFED;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1b1a;
+    --card: #262524;
+    --bd: #3a3836;
+    --sub: #2d2b2a;
+    --tx: #ecebe8;
+    --mu: #a3a09a;
+    --bl: #6db3f2;
+    --blb: #1d3347;
+    --gr: #6fcb9b;
+    --grb: #1e3329;
+    --or: #e8a263;
+    --orb: #3a2b1c;
+    --rd: #f0897f;
+    --rdb: #3d2220;
+    --gy: #353331;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1c1b1a;
+  --card: #262524;
+  --bd: #3a3836;
+  --sub: #2d2b2a;
+  --tx: #ecebe8;
+  --mu: #a3a09a;
+  --bl: #6db3f2;
+  --blb: #1d3347;
+  --gr: #6fcb9b;
+  --grb: #1e3329;
+  --or: #e8a263;
+  --orb: #3a2b1c;
+  --rd: #f0897f;
+  --rdb: #3d2220;
+  --gy: #353331;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.88em;
+  background: var(--gy);
+  color: var(--tx);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--bd);
+  word-break: break-word;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--tx);
+  padding: 32px 24px;
+  min-height: 100%;
+}
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Top Navigation & Language Switcher
+   -------------------------------------------------------------------------- */
+.top-nav {
+  max-width: 1320px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bl);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--blb);
+  transition: opacity 0.15s ease;
+}
+
+.nav-back:hover {
+  opacity: 0.85;
+}
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: var(--mu);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.lang-btn:hover {
+  color: var(--tx);
+}
+
+.lang-btn.active {
+  background: var(--blb);
+  color: var(--bl);
+  box-shadow: 0 1px 2px rgba(39, 131, 222, 0.15);
+}
+
+/* Multi-language Toggling Rules */
+[data-lang="en"] .lang-vi {
+  display: none !important;
+}
+
+:root:not([data-lang="en"]) .lang-en {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Header & Badges
+   -------------------------------------------------------------------------- */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--blb);
+  color: var(--bl);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.header h1 {
+  font-size: 28px;
+  letter-spacing: -0.4px;
+}
+
+.header p {
+  font-size: 14px;
+  color: var(--mu);
+  margin-top: 8px;
+  max-width: 660px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Grid & Cards Layout
+   -------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  min-width: 0;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.ch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.ci {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ct {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cs {
+  font-size: 12px;
+  color: var(--mu);
+  margin-top: 2px;
+}
+
+.lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mu);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Stats (Dashboard)
+   -------------------------------------------------------------------------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--bl);
+}
+
+.stat-lbl {
+  font-size: 11px;
+  color: var(--mu);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Tags & Badges
+   -------------------------------------------------------------------------- */
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin: 2px 2px 2px 0;
+}
+
+.tb { background: var(--blb); color: var(--bl); }
+.tg { background: var(--grb); color: var(--gr); }
+.to { background: var(--orb); color: var(--or); }
+.tr { background: var(--rdb); color: var(--rd); }
+.ty { background: var(--gy); color: var(--mu); }
+
+/* --------------------------------------------------------------------------
+   Item Grids (.g2, .it)
+   -------------------------------------------------------------------------- */
+.g2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.it {
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 14px;
+  background: var(--sub);
+}
+
+.in {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.id {
+  font-size: 12px;
+  color: var(--mu);
+  line-height: 1.7;
+}
+
+/* --------------------------------------------------------------------------
+   Linear Evaluation Flows (.flow)
+   -------------------------------------------------------------------------- */
+.flow {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.flow:last-child {
+  margin-bottom: 0;
+}
+
+.st {
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 96px;
+  border: 1.5px solid var(--bd);
+  background: var(--gy);
+}
+
+.st b {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.st span {
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+  color: var(--mu);
+}
+
+.s-b { background: var(--blb); border-color: var(--bl); }
+.s-b b { color: var(--bl); }
+.s-g { background: var(--grb); border-color: var(--gr); }
+.s-g b { color: var(--gr); }
+.s-o { background: var(--orb); border-color: var(--or); }
+.s-o b { color: var(--or); }
+.s-r { background: var(--rdb); border-color: var(--rd); }
+.s-r b { color: var(--rd); }
+.ar { color: var(--mu); font-size: 18px; align-self: center; }
+
+/* --------------------------------------------------------------------------
+   Comparison Columns (.cols, .pi)
+   -------------------------------------------------------------------------- */
+.cols {
+  display: flex;
+  gap: 12px;
+}
+
+.col {
+  flex: 1;
+  min-width: 0;
+}
+
+.colt {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mu);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--bd);
+}
+
+.cols {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.colt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tx);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--bd);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pi {
+  font-size: 13px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  line-height: 1.6;
+  transition: all 0.15s ease;
+}
+
+.pi:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* Fix text breaking bug: ONLY the direct first-child label is a block, all inner <b> are inline */
+.pi > b:first-child,
+.pi-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.pi span b,
+.pi span code,
+.pi li b,
+.pi li code {
+  display: inline !important;
+}
+
+.pi span {
+  color: var(--tx);
+  font-size: 13px;
+  line-height: 1.6;
+  display: block;
+}
+
+/* 4 distinct visual tiers for Service Cheat Sheet */
+.pi.pi-def,
+.pi:nth-child(2) {
+  border-left: 4px solid var(--bl);
+}
+.pi.pi-def > b:first-child,
+.pi:nth-child(2) > b:first-child {
+  color: var(--bl);
+}
+
+.pi.pi-use,
+.pi:nth-child(3) {
+  border-left: 4px solid var(--gr);
+}
+.pi.pi-use > b:first-child,
+.pi:nth-child(3) > b:first-child {
+  color: var(--gr);
+}
+
+.pi.pi-diff,
+.pi:nth-child(4) {
+  border-left: 4px solid var(--or);
+}
+.pi.pi-diff > b:first-child,
+.pi:nth-child(4) > b:first-child {
+  color: var(--or);
+}
+
+.pi.pi-exam,
+.pi:nth-child(5) {
+  border-left: 4px solid var(--rd);
+  background: var(--rdb);
+  border-color: rgba(229, 100, 88, 0.3);
+}
+.pi.pi-exam > b:first-child,
+.pi:nth-child(5) > b:first-child {
+  color: var(--rd);
+}
+
+/* Structured point list (.pts) */
+.pts {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0 0;
+}
+
+.pts li {
+  padding: 4px 0 4px 16px;
+  position: relative;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.pts li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.7em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mu);
+}
+
+/* Exam Keywords Chips & Focus styles */
+.kw-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 3px 4px 3px 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.kw-chip .kw-target {
+  color: var(--bl);
+  font-weight: 700;
+}
+
+/* Mini comparison table */
+.diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 12.5px;
+}
+
+.diff-table th, .diff-table td {
+  padding: 7px 10px;
+  border: 1px solid var(--bd);
+  text-align: left;
+  vertical-align: top;
+}
+
+.diff-table th {
+  background: var(--sub);
+  font-weight: 700;
+  color: var(--tx);
+  font-size: 11.5px;
+  text-transform: uppercase;
+}
+
+.diff-table td {
+  background: var(--card);
+}
+
+/* Study mode interactive controls */
+.study-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 16px;
+  flex-wrap: wrap;
+}
+
+.study-btn {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.study-btn:hover {
+  border-color: var(--bl);
+  color: var(--bl);
+}
+
+.study-btn.active {
+  background: var(--bl);
+  border-color: var(--bl);
+  color: #fff;
+}
+
+body.study-focus-exam .card:not(.card-exam) {
+  display: none !important;
+}
+
+body.study-focus-exam .pi:not(.pi-exam) {
+  display: none !important;
+}
+
+.study-focus-banner {
+  display: none;
+  background: var(--blb);
+  border: 1px solid var(--bl);
+  color: var(--tx);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 10px 0 16px 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body.study-focus-exam .study-focus-banner {
+  display: flex !important;
+}
+
+body.study-hide-answers .kw-target,
+body.study-hide-answers .ans-blur {
+  filter: blur(5px);
+  user-select: none;
+  transition: filter 0.15s ease;
+  cursor: pointer;
+}
+
+body.study-hide-answers .kw-target:hover,
+body.study-hide-answers .ans-blur:hover {
+  filter: none;
+}
+
+/* --------------------------------------------------------------------------
+   Tools & Satellites (.tools)
+   -------------------------------------------------------------------------- */
+.tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tool {
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--sub);
+}
+
+.tn {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.td {
+  font-size: 11px;
+  color: var(--mu);
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Lists with Icons (.sl)
+   -------------------------------------------------------------------------- */
+.sl {
+  list-style: none;
+}
+
+.sl li {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gy);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sl li:last-child {
+  border-bottom: none;
+}
+
+.si {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.sl b {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.sl span {
+  color: var(--mu);
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Golden Rules (.bp, .bi, .bn)
+   -------------------------------------------------------------------------- */
+.bp {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bi {
+  display: flex;
+  gap: 12px;
+  background: var(--sub);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.bn {
+  width: 24px;
+  height: 24px;
+  background: var(--bl);
+  color: var(--card);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bi b {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.bi span {
+  font-size: 12px;
+  color: var(--mu);
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Code Syntax Highlighting (.json)
+   -------------------------------------------------------------------------- */
+.json {
+  background: #1E1E1E;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: Menlo, Consolas, Monaco, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #D4D4D4;
+  margin-top: 14px;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.jk { color: #9CDCFE; }
+.jv { color: #CE9178; }
+.jc { color: #6A9955; }
+.jp { color: #4EC9B0; }
+
+/* --------------------------------------------------------------------------
+   Mermaid Diagrams & Comparison Matrix Tables
+   -------------------------------------------------------------------------- */
+.mermaid-diagram {
+  background: var(--sub);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 12px 0 6px;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.mermaid-output svg {
+  max-width: 100% !important;
+  height: auto !important;
+  display: inline-block;
+}
+
+.matrix-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.matrix-table th {
+  background: var(--sub);
+  color: var(--tx);
+  font-weight: 700;
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--bd);
+  white-space: nowrap;
+}
+
+.matrix-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--bd);
+  line-height: 1.6;
+}
+
+.matrix-table tr:last-child td {
+  border-bottom: none;
+}
+
+.matrix-table tr:hover td {
+  background: var(--sub);
+}
+
+.matrix-table .col-crit {
+  font-weight: 700;
+  color: var(--bl);
+  background: var(--sub);
+  white-space: nowrap;
+  width: 18%;
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard Specific Styles (Modules, Domains, Vocab)
+   -------------------------------------------------------------------------- */
+.module-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: var(--sub);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+}
+
+.module-item:hover {
+  border-color: var(--bl);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04);
+}
+
+.module-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.module-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.module-title {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.module-desc {
+  font-size: 12px;
+  color: var(--mu);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+.module-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-open {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: var(--bl);
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.15s ease;
+}
+
+.btn-open:hover {
+  opacity: 0.9;
+}
+
+.btn-pending {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: var(--gy);
+  color: var(--mu);
+  display: inline-block;
+}
+
+.domains {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.domain-card {
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--sub);
+}
+
+.domain-name {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.domain-pct {
+  font-weight: 800;
+  color: var(--bl);
+}
+
+.domain-desc {
+  font-size: 11px;
+  color: var(--mu);
+  line-height: 1.5;
+}
+
+.vocab-sample {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.vocab-card {
+  padding: 10px 12px;
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  background: var(--sub);
+  font-size: 12px;
+}
+
+.vocab-word {
+  font-weight: 700;
+  color: var(--bl);
+  margin-bottom: 2px;
+}
+
+.vocab-mean {
+  color: var(--tx);
+  font-size: 12px;
+}
+
+.vocab-example {
+  font-size: 11px;
+  color: var(--mu);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  .domains { grid-template-columns: 1fr; }
+  .vocab-sample { grid-template-columns: 1fr; }
+  .g2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .grid, .g2, .tools { grid-template-columns: 1fr; }
+  .full { grid-column: auto; }
+  .cols { flex-direction: column; }
+  .ar { display: none; }
+  .module-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .module-right { align-self: flex-end; }
+  .top-bar { justify-content: center; }
+}

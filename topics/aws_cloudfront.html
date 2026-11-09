@@ -32,6 +32,161 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>CloudFront vs Global Accelerator:</b> CloudFront cache nội dung web tĩnh/động tại Edge PoP (HTTP/HTTPS); Global Accelerator KHÔNG cache mà dùng 2 Anycast IP định tuyến TCP/UDP qua mạng cáp quang AWS Backbone.<br>
+          • <b>OAC (Origin Access Control):</b> Phương thức chuẩn hiện nay để bảo vệ S3 Origin, thay thế hoàn toàn OAI cũ.<br>
+          • <b>Dưới 1ms:</b> Thời gian thực thi của <b>CloudFront Functions</b> viết bằng JavaScript tại 450+ Edge Locations (chỉnh headers, URL rewrite).<br>
+          • <b>Signed URL vs Signed Cookies:</b> Signed URL dùng khi truy cập 1 tệp tin đơn lẻ; Signed Cookies dùng khi truy cập nhiều tệp tin hoặc toàn bộ nội dung thành viên trả phí.<br>
+          • <b>Origin Shield:</b> Tầng bộ nhớ đệm phụ tập trung nằm giữa Regional Edge Cache và Origin giúp giảm thiểu tối đa tải truy vấn về máy chủ gốc.
+        </span>
+        <span class="lang-en">
+          • <b>CloudFront vs Global Accelerator:</b> CloudFront caches web content at Edge PoPs (HTTP/HTTPS); Global Accelerator does NOT cache, routing TCP/UDP over AWS backbone via 2 Anycast IPs.<br>
+          • <b>OAC (Origin Access Control):</b> The modern security standard to lock down S3 origins, superseding legacy OAI.<br>
+          • <b>Sub-1ms:</b> Execution latency of lightweight <b>CloudFront Functions</b> written in JavaScript across 450+ Edge Locations.<br>
+          • <b>Signed URL vs Signed Cookies:</b> Signed URL for single file access; Signed Cookies for accessing multiple files or premium member areas.<br>
+          • <b>Origin Shield:</b> Centralized secondary caching layer between Regional Edge Caches and Origin to minimize origin database load.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Lưu bộ nhớ đệm nội dung web toàn cầu tại các Edge Locations để giảm độ trễ HTTP/HTTPS</span>
+              <span class="lang-en">Cache web content globally at edge locations to reduce latency for HTTP/HTTPS</span>
+            </td>
+            <td><span class="kw-target">Amazon CloudFront</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Hai địa chỉ Anycast IP tĩnh tăng tốc luồng giao thức mạng non-HTTP (TCP/UDP) qua mạng AWS</span>
+              <span class="lang-en">Two static Anycast IPs to accelerate non-HTTP TCP/UDP traffic via AWS backbone</span>
+            </td>
+            <td><span class="kw-target">AWS Global Accelerator</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Chặn truy cập trực tiếp từ Internet vào S3 bucket, chỉ cho phép đi qua CloudFront</span>
+              <span class="lang-en">Restrict S3 bucket access strictly to CloudFront and block direct internet access</span>
+            </td>
+            <td><span class="kw-target">Origin Access Control (OAC)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cung cấp quyền truy cập có thời hạn vào một tệp tải về hoặc video đơn lẻ</span>
+              <span class="lang-en">Provide time-limited access to a single video or file download</span>
+            </td>
+            <td><span class="kw-target">CloudFront Signed URL</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cấp quyền truy cập cho người dùng trả phí xem nhiều tệp nội dung số cao cấp</span>
+              <span class="lang-en">Provide authorized access to multiple premium media files or an entire website section</span>
+            </td>
+            <td><span class="kw-target">CloudFront Signed Cookies</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Chuyển hướng URL và chỉnh sửa HTTP headers siêu tốc độ trễ dưới 1 mili-giây tại Edge</span>
+              <span class="lang-en">Sub-millisecond lightweight URL rewrites and HTTP header manipulations at Edge PoPs</span>
+            </td>
+            <td><span class="kw-target">CloudFront Functions</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Xử lý tính toán phức tạp tại biên yêu cầu gọi API mạng bên thứ ba bằng Node.js / Python</span>
+              <span class="lang-en">Complex edge compute requiring network access or third-party API validation</span>
+            </td>
+            <td><span class="kw-target">Lambda@Edge</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Chặn người dùng ở các quốc gia địa lý cụ thể không được xem trang web của bạn</span>
+              <span class="lang-en">Prevent users in specific geographic countries from viewing your website</span>
+            </td>
+            <td><span class="kw-target">CloudFront Geographic Restriction</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 1. TỔNG QUAN CLOUDFRONT VS GLOBAL ACCELERATOR -->
 <div class="card full">
   <div class="ch">
@@ -210,7 +365,7 @@ flowchart TD
         <span class="lang-vi">🛡️ Origin Access Control (OAC)</span>
         <span class="lang-en">🛡️ Origin Access Control (OAC)</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Chặn truy cập trực tiếp vào S3 Bucket</b>
         <span class="lang-vi">Nguyên tắc bảo mật vàng: <b>Không bao giờ mở công khai S3 Bucket</b> khi dùng CloudFront. Kích hoạt tính năng <b>Origin Access Control (OAC)</b> và cấu hình S3 Bucket Policy chỉ cho phép duy nhất CloudFront Service Principal (<code>cloudfront.amazonaws.com</code>) đọc dữ liệu.<br><i>(Lưu ý: OAC là chuẩn mới thay thế hoàn toàn cho OAI - Origin Access Identity cũ)</i>.</span>
         <span class="lang-en">Golden security rule: <b>Never expose S3 buckets publicly</b> when using CloudFront. Enable <b>Origin Access Control (OAC)</b> and configure bucket policies to allow access exclusively to the CloudFront service principal (<code>cloudfront.amazonaws.com</code>).</span>
@@ -240,7 +395,7 @@ flowchart TD
         <span class="lang-vi">⚡ Caching Mechanics &amp; Invalidation</span>
         <span class="lang-en">⚡ Caching &amp; Invalidation</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Xóa đệm (Invalidation) vs Versioning</b>
         <span class="lang-vi">
           • Khi bạn cập nhật file trên máy chủ gốc nhưng CloudFront vẫn trả về file cũ trong bộ nhớ đệm, bạn cần chạy lệnh <b>CloudFront Invalidation</b> (ví dụ: xóa <code>/*</code> hoặc <code>/images/*</code>).<br>
@@ -324,7 +479,7 @@ flowchart TD
 </div>
 
 <!-- 5. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🎯</div>
     <div>
@@ -405,7 +560,7 @@ flowchart TD
 </div>
 
 <!-- 6. NGUYÊN TẮC VÀNG SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⭐</div>
     <div>
@@ -521,7 +676,7 @@ flowchart TD
         <span class="lang-vi">Cổng thông tin dịch vụ, bảng giá phân vùng Price Classes và hệ sinh thái bảo mật tích hợp.<br><a href="https://aws.amazon.com/cloudfront/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Amazon CloudFront</a></span>
         <span class="lang-en">Product homepage, Price Class tier options, and native security integrations for CloudFront.<br><a href="https://aws.amazon.com/cloudfront/" target="_blank" style="color:var(--bl)">🌐 Amazon CloudFront Homepage</a></span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>AWS Global Accelerator Portal</b>
         <span class="lang-vi">Thông tin chi tiết về 2 địa chỉ Anycast IP tĩnh và các bài toán tối ưu đường truyền cho Gaming/VoIP.<br><a href="https://aws.amazon.com/global-accelerator/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Global Accelerator</a></span>
         <span class="lang-en">Product details on Anycast static IPs and networking optimization for Gaming and VoIP.<br><a href="https://aws.amazon.com/global-accelerator/" target="_blank" style="color:var(--bl)">🌐 AWS Global Accelerator Homepage</a></span>

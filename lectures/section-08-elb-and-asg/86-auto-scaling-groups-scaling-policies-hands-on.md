@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `18078107`
 - **Tệp video:** `SAA_-_ASG_-_Scaling_Policies_Hands_On_v4.mp4`
 - **Thời lượng:** `09:15`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

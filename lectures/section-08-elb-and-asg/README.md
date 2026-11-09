@@ -1,4 +1,5 @@
 # Phần 8: High Availability and Scalability: ELB & ASG (Tính sẵn sàng cao và Khả năng mở rộng: ELB & ASG)
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

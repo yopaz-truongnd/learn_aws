@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528122`
 - **Video gốc:** `SAA - EBS - Encryption v3.mp4`
 - **Thời lượng:** `03:47`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

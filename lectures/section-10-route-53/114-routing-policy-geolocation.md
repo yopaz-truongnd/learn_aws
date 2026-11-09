@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528206`
 - **Video:** `SAA_-_Route_53_-_Routing_Geolocation_-_v2.mp4`
 - **Thời lượng:** `04:15`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

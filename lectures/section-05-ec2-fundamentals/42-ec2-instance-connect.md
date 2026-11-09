@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `26098164` (`CCP - EC2 - Instance Connect v2.mp4`)
 - **Thời lượng:** `03:15`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

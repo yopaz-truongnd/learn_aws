@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `13528046` (`CCP_-_EC2_-_SSH_Windows_7_v2.mp4`)
 - **Thời lượng:** `06:08`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

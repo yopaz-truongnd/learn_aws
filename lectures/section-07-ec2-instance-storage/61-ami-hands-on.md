@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098284`
 - **Video gốc:** `CCP_-_EC2_-_AMI_Hands_On_v3.mp4`
 - **Thời lượng:** `04:59`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

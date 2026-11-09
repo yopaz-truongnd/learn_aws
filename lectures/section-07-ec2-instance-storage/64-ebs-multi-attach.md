@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098298`
 - **Video gốc:** `SAA_-_EBS_-_Multi_Attach_v2.mp4`
 - **Thời lượng:** `01:45`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `26098142` (`CCP_-_EC2_-_SSH_Theory.mp4`)
 - **Thời lượng:** `02:47`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

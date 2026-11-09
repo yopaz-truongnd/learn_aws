@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `13528090`
 - **Tệp video:** `SAA - ELB - Overview v4.mp4`
 - **Thời lượng:** `06:15`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

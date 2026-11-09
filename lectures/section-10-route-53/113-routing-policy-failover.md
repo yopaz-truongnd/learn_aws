@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528204`
 - **Video:** `SAA_-_Route_53_-_Routing_Failover_v2.mp4`
 - **Thời lượng:** `04:12`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

@@ -38,8 +38,163 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>16.000 IOPS:</b> Ngưỡng chuyển giao hiệu năng giữa <code>gp3</code> và <code>io2</code> (Provisioned IOPS SSD).<br>
+          • <b>Max 16 instances:</b> Giới hạn gắn đồng thời của <b>EBS Multi-Attach</b> (chỉ <code>io1/io2</code> trong <b>CÙNG 1 AZ</b>).<br>
+          • <b>Delete on Termination:</b> Mặc định Root Volume bị xóa (<code>Yes</code>), Additional Volume được giữ lại (<code>No</code>).<br>
+          • <b>EBS là AZ-locked:</b> Không thể gắn trực tiếp ổ EBS sang AZ khác (phải tạo Snapshot rồi Restore sang AZ đích).<br>
+          • <b>Instance Store = Ephemeral:</b> Ổ đĩa vật lý gắn trực tiếp máy chủ, IOPS tối đa nhưng mất sạch dữ liệu khi Stop/Terminate.
+        </span>
+        <span class="lang-en">
+          • <b>16,000 IOPS:</b> Cut-off performance threshold transitioning from <code>gp3</code> to <code>io2</code> SSD.<br>
+          • <b>Max 16 instances:</b> Maximum attachment concurrency for <b>EBS Multi-Attach</b> (<code>io1/io2</code> in <b>SAME AZ</b> only).<br>
+          • <b>Delete on Termination:</b> Root volume deleted by default (<code>Yes</code>); secondary volumes preserved (<code>No</code>).<br>
+          • <b>EBS is AZ-locked:</b> Cannot attach an EBS volume directly to another AZ (must Snapshot &rarr; Restore to new AZ).<br>
+          • <b>Instance Store is Ephemeral:</b> Physical host-attached drive, maximum IOPS but loses all data upon Stop/Terminate.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Ổ đĩa hệ điều hành chuẩn, tùy chỉnh độc lập IOPS và Throughput với dung lượng</span>
+              <span class="lang-en">Standard OS root drive, independent IOPS and throughput scaling from volume size</span>
+            </td>
+            <td><span class="kw-target">EBS gp3</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cơ sở dữ liệu trọng yếu yêu cầu trên 16.000 IOPS hoặc tính năng Multi-Attach</span>
+              <span class="lang-en">Mission-critical DB requiring &gt;16,000 IOPS or EBS Multi-Attach</span>
+            </td>
+            <td><span class="kw-target">EBS io2 Block Express</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Dữ liệu lớn tuần tự (Big Data, Data Warehouse) không thể làm Boot Volume</span>
+              <span class="lang-en">Sequential throughput big data workload (cannot be an OS boot volume)</span>
+            </td>
+            <td><span class="kw-target">EBS st1 (Throughput Optimized)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Hệ thống tệp mạng POSIX chia sẻ đồng thời cho hàng trăm máy Linux qua nhiều AZ</span>
+              <span class="lang-en">Multi-AZ POSIX network filesystem shared concurrently by hundreds of Linux EC2s</span>
+            </td>
+            <td><span class="kw-target">Amazon EFS</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Bộ nhớ đệm tạm thời yêu cầu IOPS phần cứng cực đại, chấp nhận mất dữ liệu</span>
+              <span class="lang-en">Ultra-high IOPS buffer/cache where data loss on stop/terminate is acceptable</span>
+            </td>
+            <td><span class="kw-target">EC2 Instance Store (Ephemeral)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Di chuyển dữ liệu một ổ đĩa EBS từ Availability Zone này sang Availability Zone khác</span>
+              <span class="lang-en">Migrate an EBS volume from one Availability Zone to another</span>
+            </td>
+            <td><span class="kw-target">EBS Snapshot &rarr; Restore in new AZ</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Bảo vệ và khôi phục EBS Snapshots bị xóa nhầm trong khoảng từ 1 đến 365 ngày</span>
+              <span class="lang-en">Recover accidentally deleted EBS Snapshots within 1 to 365 days</span>
+            </td>
+            <td><span class="kw-target">AWS Recycle Bin</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Loại bỏ độ trễ khởi tạo lần đầu khi tạo ổ EBS dung lượng lớn từ Snapshot</span>
+              <span class="lang-en">Instantly restore full EBS snapshot IOPS performance without initial latency</span>
+            </td>
+            <td><span class="kw-target">Fast Snapshot Restore (FSR)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--grb)">🧭</div>
     <div>
@@ -65,7 +220,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Ổ đĩa mạng dạng khối (<b>Network Block Storage</b>) gắn vào EC2 tại <b>1 Availability Zone (AZ)</b> cụ thể.<br>• <b>Dùng khi nào:</b> Làm ổ đĩa Boot OS hoặc Database bền vững. Dùng <code>gp3</code> cho đa mục đích; <code>io1/io2</code> khi cần <b>&gt; 16,000 IOPS</b> hoặc <b>Multi-Attach</b>; <code>st1/sc1</code> cho Big Data tuần tự giá rẻ.</span>
         <span class="lang-en">• <b>What is it:</b> Persistent <b>Network Block Storage</b> attached to EC2 within a <b>single Availability Zone (AZ)</b>.<br>• <b>When to use:</b> OS Boot drives or persistent DB storage. <code>gp3</code> for general workloads; <code>io1/io2</code> for <b>&gt; 16,000 IOPS</b> or <b>Multi-Attach</b>; <code>st1/sc1</code> for sequential HDD workloads.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
         <span class="lang-vi">• <b>EBS vs Instance Store vs EFS:</b> EBS là ổ mạng bền vững trong <b>1 AZ</b>; Instance Store gắn cứng trên host vật lý (mất dữ liệu khi Stop); EFS chia sẻ file NFS qua <b>Multi-AZ</b>.<br>• <b>Điểm hay hỏi:</b> Khi Terminate EC2, <b>Root EBS mặc định bị xóa</b>, EBS phụ được giữ lại. Chuyển AZ phải qua <b>Snapshot</b>. Dùng <b>Recycle Bin</b> (1 ngày – 1 năm) chống xóa nhầm và <b>Fast Snapshot Restore (FSR)</b> xóa độ trễ khởi tạo.</span>
         <span class="lang-en">• <b>EBS vs Instance Store vs EFS:</b> EBS is persistent network block storage in <b>1 AZ</b>; Instance Store is ephemeral physical host storage; EFS is Multi-AZ shared NFS.<br>• <b>Hotspots:</b> Root EBS defaults to <code>DeleteOnTermination=true</code>. Cross-AZ migration requires a <b>Snapshot</b>. Use <b>Recycle Bin</b> for accidental deletion protection and <b>FSR</b> for instant full IOPS.</span>
@@ -82,7 +237,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Ổ cứng NVMe/SSD vật lý gắn trực tiếp trên máy chủ host (Ephemeral Block Storage).<br>• <b>Dùng khi nào:</b> Cần <b>IOPS cực đại (hàng triệu IOPS)</b> cho dữ liệu tạm: <code>buffer, cache, scratch data, temporary processing</code>.<br>• <b>Khác gì EBS:</b> Nhanh hơn EBS nhưng <b>mất sạch dữ liệu khi EC2 Stop, Hibernate hoặc Terminate</b> (vẫn giữ dữ liệu khi OS Reboot).</span>
         <span class="lang-en">• <b>What is it:</b> Physical host-attached NVMe/SSD ephemeral block storage.<br>• <b>When to use:</b> Require <b>extreme IOPS (millions)</b> for <code>buffers, caches, scratch data, temporary files</code>.<br>• <b>vs EBS:</b> Faster than EBS, but <b>loses all data on Stop, Hibernate, or Terminate</b> (survives OS Reboot).</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Amazon Machine Image — AMI (4 tiêu chí)</span><span class="lang-en">Amazon Machine Image — AMI (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Bản đóng gói mẫu (Image template) chứa OS, cấu hình và phần mềm cài sẵn để tạo nhanh EC2.<br>• <b>Dùng khi nào:</b> Tạo <b>Golden AMI</b> để <b>giảm thời gian khởi động (boot time)</b> khi Auto Scaling Group scale out.<br>• <b>Khác gì User Data &amp; Giới hạn:</b> <code>User Data</code> cài đặt lúc boot (chậm); <code>AMI</code> đóng gói sẵn (nhanh nhất). AMI có phạm vi <b>Regional</b> (muốn dùng ở Region khác phải <b>Copy AMI</b>).</span>
         <span class="lang-en">• <b>What is it:</b> Pre-packaged image template containing OS, configs, and software to launch EC2.<br>• <b>When to use:</b> Build a <b>Golden AMI</b> to <b>accelerate launch/boot time</b> in Auto Scaling Groups.<br>• <b>vs User Data &amp; Limits:</b> <code>User Data</code> installs on boot (slower); <code>AMI</code> pre-bakes software (fastest). AMIs are <b>Region-scoped</b> (must <b>Copy AMI</b> across Regions).</span>
@@ -99,7 +254,7 @@
         <span class="lang-vi">• <b>Là gì:</b> Hệ thống tệp mạng quản lý hoàn toàn (<b>Managed NFSv4.1</b>) mount đồng thời lên hàng trăm máy chủ <b>Linux EC2</b> qua <b>Multi-AZ</b>.<br>• <b>Dùng khi nào:</b> Chia sẻ thư mục code/media chung (WordPress, CMS, Web server farm) giữa nhiều máy chủ Linux ở nhiều AZs với chuẩn <b>POSIX</b>.</span>
         <span class="lang-en">• <b>What is it:</b> Fully managed <b>Multi-AZ NFSv4.1</b> network file system mountable across hundreds of <b>Linux EC2</b> instances.<br>• <b>When to use:</b> Shared content repositories (WordPress, CMS, web farms) across multiple Linux instances and AZs requiring <b>POSIX</b> compliance.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Khác gì dịch vụ gần giống &amp; Điểm hay bị hỏi</span><span class="lang-en">Differences &amp; Exam Hotspots</span></b>
         <span class="lang-vi">• <b>EFS vs EBS vs FSx for Windows:</b> EFS là Multi-AZ File System chỉ dành cho <b>Linux (POSIX)</b>; EBS là 1-AZ Block Storage; nếu chia sẻ file cho <b>Windows (SMB)</b> phải chọn <b>FSx for Windows File Server</b>.<br>• <b>Điểm hay hỏi:</b> Kiểm soát truy cập mạng tới EFS Mount Target bằng <b>Security Group (Port 2049)</b>. Tối ưu chi phí tới 92% bằng <b>EFS Lifecycle Management (chuyển sang EFS-IA)</b> hoặc <b>EFS One Zone</b>.</span>
         <span class="lang-en">• <b>EFS vs EBS vs FSx for Windows:</b> EFS is Multi-AZ <b>Linux (POSIX)</b> file storage; EBS is 1-AZ block storage; for <b>Windows SMB shares</b> choose <b>FSx for Windows File Server</b>.<br>• <b>Hotspots:</b> EFS Mount Targets are protected by <b>Security Groups (TCP Port 2049)</b>. Save up to 92% using <b>EFS Lifecycle Policies (EFS-IA)</b> or <b>EFS One Zone</b>.</span>
@@ -323,7 +478,7 @@ flowchart TD
         <span class="lang-vi">📸 Cơ chế EBS Snapshots</span>
         <span class="lang-en">📸 EBS Snapshot Architecture</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Sao lưu tăng trưởng (Incremental Backup)</b>
         <span class="lang-vi">Snapshot được lưu ngầm trên <b>Amazon S3</b> (dù bạn không nhìn thấy trực tiếp trong S3 bucket). Lần snapshot đầu tiên sao lưu toàn bộ block đã ghi. Các lần snapshot kế tiếp chỉ sao lưu những block thay đổi (Delta). Xóa snapshot trước không làm hỏng snapshot sau.</span>
         <span class="lang-en">Snapshots are stored under the hood in <b>Amazon S3</b>. The initial snapshot copies all written blocks; subsequent snapshots only capture modified blocks (deltas). Deleting an earlier snapshot does not corrupt subsequent ones.</span>
@@ -364,7 +519,7 @@ flowchart TD
           </ul>
         </span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Quy trình mã hóa một Root Volume chưa mã hóa</b>
         <span class="lang-vi">Đề thi SAA-C03 rất hay hỏi quy trình này:
           <ol>
@@ -390,12 +545,12 @@ flowchart TD
         <span class="lang-vi">🔗 EBS Multi-Attach (io1 / io2)</span>
         <span class="lang-en">🔗 EBS Multi-Attach Architecture</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Gắn 1 đĩa vào tối đa 16 EC2 cùng AZ</b>
         <span class="lang-vi">Chỉ hỗ trợ trên <b>io1 và io2</b> (Provisioned IOPS). Cho phép gắn 1 volume duy nhất vào tối đa <b>16 máy chủ EC2 Nitro</b> nằm trong <b>CÙNG 1 Availability Zone</b>.<br><span class="tag tr">io1 / io2 Only</span><span class="tag tb">Cùng 1 AZ duy nhất</span></span>
         <span class="lang-en">Supported exclusively on <b>io1 and io2</b>. Allows mounting a single volume to up to <b>16 Nitro EC2 instances</b> in the <b>SAME Availability Zone</b>.<br><span class="tag tr">io1 / io2 Only</span><span class="tag tb">Same AZ only</span></span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Yêu cầu Cluster-Aware File System</b>
         <span class="lang-vi">Hệ điều hành thông thường (ext4, xfs, NTFS) KHÔNG thể tự quản lý xung đột đồng thời khi ghi. Ứng dụng <b>bắt buộc phải dùng Cluster-aware Filesystem</b> (như GFS2, GlusterFS) để ngăn ngừa hỏng file (Data Corruption). Dùng cho clustered apps đòi hỏi High Availability failover (e.g., Teradata).</span>
         <span class="lang-en">Standard filesystems (ext4, xfs, NTFS) cannot coordinate simultaneous writes. Workloads <b>must employ a cluster-aware filesystem</b> (e.g. GFS2, GlusterFS) to avoid data corruption.</span>
@@ -653,7 +808,7 @@ flowchart TD
 </div>
 
 <!-- 7. BỔ SUNG HAY GẶP TRONG ĐỀ THI -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🎯</div>
     <div>
@@ -752,7 +907,7 @@ flowchart TD
 </div>
 
 <!-- 8. NGUYÊN TẮC VÀNG SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⭐</div>
     <div>

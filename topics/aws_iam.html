@@ -39,7 +39,7 @@
 <div class="grid">
 
 <!-- 0. Tóm tắt nhanh dịch vụ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--grb)">🧭</div>
     <div>
@@ -56,7 +56,7 @@
 
   <!-- Study Mode Toolbar -->
   <div class="study-toolbar">
-    <button class="study-btn" onclick="toggleExamFocus(this)">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
       <span>🎯</span>
       <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
       <span class="lang-en">Focus Exam Traps Only</span>
@@ -65,6 +65,30 @@
       <span>👁️</span>
       <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
       <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
     </button>
   </div>
 
@@ -638,7 +662,7 @@ flowchart TD
 </div>
 
 <!-- 3. Policy Conditions & Audit Tools -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🎯</div>
     <div>
@@ -704,7 +728,7 @@ flowchart TD
 </div>
 
 <!-- 4. Bổ sung thi cử -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">➕</div>
     <div>
@@ -768,7 +792,7 @@ flowchart TD
 </div>
 
 <!-- 5. Nguyên tắc vàng -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🏆</div>
     <div>

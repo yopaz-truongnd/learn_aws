@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528188`
 - **Video:** `SAA - Route 53 - TTL v2.mp4`
 - **Thời lượng:** `05:28`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

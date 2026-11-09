@@ -3,6 +3,7 @@
 - **Phần:** Phần 4: IAM & AWS CLI
 - **Lecture ID:** `26098034` (`CCP - IAM - Access Keys CLI SDK v2.mp4`)
 - **Thời lượng:** `04:03`
+- **Cheat sheet:** [topics/aws_iam.html](../../topics/aws_iam.html)
 
 ---
 

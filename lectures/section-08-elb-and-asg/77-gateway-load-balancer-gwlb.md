@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `28874688`
 - **Tệp video:** `SAA_-_ELB_-_Gateway_Load_Balancer_-_Overview_v1.mp4`
 - **Thời lượng:** `03:47`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

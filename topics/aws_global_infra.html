@@ -32,6 +32,161 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>&ge; 3 AZs:</b> Mỗi AWS Region chuẩn luôn có tối thiểu 3 Availability Zones độc lập.<br>
+          • <b>&lt; 10ms:</b> Độ trễ mạng cáp quang riêng siêu tốc kết nối giữa các AZs trong cùng Region.<br>
+          • <b>$0.00 / GB:</b> Miễn phí Inbound Data Transfer từ Internet vào AWS và truyền dữ liệu nội bộ qua Private IP trong cùng 1 AZ.<br>
+          • <b>$0.01 / GB:</b> Chi phí Data Transfer giữa 2 AZ khác nhau trong cùng Region (tính cả 2 chiều gửi và nhận).<br>
+          • <b>AZ ID vs AZ Name:</b> Tên AZ (<code>us-east-1a</code>) được ánh xạ ngẫu nhiên cho từng AWS Account; để đồng bộ đúng AZ vật lý giữa các tài khoản bắt buộc phải dùng <b>AZ ID</b> (ví dụ <code>use1-az1</code>).
+        </span>
+        <span class="lang-en">
+          • <b>&ge; 3 AZs:</b> Every standard AWS Region contains a minimum of 3 isolated Availability Zones.<br>
+          • <b>&lt; 10ms:</b> Ultra-low latency private fiber network interconnecting AZs within a Region.<br>
+          • <b>$0.00 / GB:</b> Free Inbound Data Transfer from Internet and free intra-AZ traffic using Private IPs.<br>
+          • <b>$0.01 / GB:</b> Inter-AZ data transfer cost per GB in each direction within the same Region.<br>
+          • <b>AZ ID vs AZ Name:</b> AZ Names (<code>us-east-1a</code>) are dynamically mapped per account; multi-account physical alignment strictly requires <b>AZ ID</b> (e.g. <code>use1-az1</code>).
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Chạy hạ tầng AWS trực tiếp tại On-premises Data Center của công ty</span>
+              <span class="lang-en">Run AWS infrastructure physically inside on-premises datacenter</span>
+            </td>
+            <td><span class="kw-target">AWS Outposts</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Độ trễ mili-giây cực thấp cho ứng dụng di động mạng 5G</span>
+              <span class="lang-en">Ultra-low single-digit ms latency for mobile 5G applications</span>
+            </td>
+            <td><span class="kw-target">AWS Wavelength</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Mở rộng tính toán gần các trung tâm dân cư lớn (đô thị lớn)</span>
+              <span class="lang-en">Low latency compute near large metropolitan population centers</span>
+            </td>
+            <td><span class="kw-target">AWS Local Zones</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Đường truyền cáp quang vật lý riêng biệt bỏ qua hoàn toàn Internet</span>
+              <span class="lang-en">Dedicated private physical fiber connection bypassing public Internet</span>
+            </td>
+            <td><span class="kw-target">AWS Direct Connect</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Đồng bộ vị trí AZ vật lý chuẩn xác giữa nhiều tài khoản AWS</span>
+              <span class="lang-en">Consistent physical AZ mapping across multiple AWS Accounts</span>
+            </td>
+            <td><span class="kw-target">AZ ID (not AZ Name)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Kiến trúc sẵn sàng cao chịu được sự cố sập cả một Data Center</span>
+              <span class="lang-en">High availability compute architecture resilient to datacenter loss</span>
+            </td>
+            <td><span class="kw-target">Multi-AZ Deployment</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Quy định luật pháp yêu cầu dữ liệu không được rời khỏi biên giới quốc gia</span>
+              <span class="lang-en">Compliance requirement stating data must remain within national borders</span>
+            </td>
+            <td><span class="kw-target">Data Sovereignty (Choose Region)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Truyền dữ liệu chi phí thấp nhất giữa 2 EC2 instances trong cùng 1 AZ</span>
+              <span class="lang-en">Least cost data transfer between two EC2 instances in same AZ</span>
+            </td>
+            <td><span class="kw-target">Private IPv4 Address ($0/GB)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 1. Core Hierarchy -->
 <div class="card full">
   <div class="ch">
@@ -210,7 +365,7 @@ flowchart TB
         <span class="lang-vi">Yếu tố pháp lý &amp; kinh doanh</span>
         <span class="lang-en">Legal &amp; Business Factors</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Compliance / Data Sovereignty</b>
         <span class="lang-vi">Luật cư trú dữ liệu: dữ liệu tài chính, y tế, chính phủ không được phép ra khỏi biên giới quốc gia (GDPR, HIPAA, luật an ninh mạng). <b>Đây là ưu tiên số 1!</b></span>
         <span class="lang-en">Data Residency laws: financial, healthcare, and government data must not leave national borders. <b>Top priority!</b></span>
@@ -280,7 +435,7 @@ flowchart TB
         <span class="lang-vi">Gắn chặt vào 1 AZ cụ thể (sập AZ = sập máy ảo)</span>
         <span class="lang-en">Tied to 1 specific AZ (AZ outage halts instance)</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>EBS Volumes</b>
         <span class="lang-vi">Chỉ gắn được vào EC2 trong cùng 1 AZ</span>
         <span class="lang-en">Attach only to EC2 within the exact same AZ</span>
@@ -457,7 +612,7 @@ flowchart TB
 </div>
 
 <!-- 6. Bổ sung thi cử -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">➕</div>
     <div>
@@ -514,7 +669,7 @@ flowchart TB
 </div>
 
 <!-- 7. Nguyên tắc vàng -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--blb)">🏆</div>
     <div>
@@ -638,7 +793,7 @@ flowchart TB
         <span class="lang-vi">Trang chủ sản phẩm Edge Computing và thông số kỹ thuật độ trễ 5G.<br><a href="https://aws.amazon.com/local-zones/" target="_blank" style="color:var(--bl)">🏢 Xem AWS Local Zones</a> · <a href="https://aws.amazon.com/wavelength/" target="_blank" style="color:var(--bl)">5G Wavelength</a></span>
         <span class="lang-en">Official edge computing portals and 5G latency specs.<br><a href="https://aws.amazon.com/local-zones/" target="_blank" style="color:var(--bl)">🏢 AWS Local Zones</a> · <a href="https://aws.amazon.com/wavelength/" target="_blank" style="color:var(--bl)">5G Wavelength</a></span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Tutorials Dojo SAA-C03 Cheat Sheet</b>
         <span class="lang-vi">Tóm tắt các điểm cần nhớ và câu hỏi mẫu về Global Infrastructure.<br><a href="https://tutorialsdojo.com/aws-global-infrastructure/" target="_blank" style="color:var(--bl)">📝 Đọc Tutorials Dojo Cheat Sheet</a></span>
         <span class="lang-en">High-yield summary and sample exam questions for Global Infrastructure.<br><a href="https://tutorialsdojo.com/aws-global-infrastructure/" target="_blank" style="color:var(--bl)">📝 Read Tutorials Dojo Cheat Sheet</a></span>

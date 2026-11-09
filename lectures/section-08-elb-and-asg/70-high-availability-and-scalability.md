@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `13531374`
 - **Tệp video:** `SAA - High Availability and Scalability.mp4`
 - **Thời lượng:** `05:05`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

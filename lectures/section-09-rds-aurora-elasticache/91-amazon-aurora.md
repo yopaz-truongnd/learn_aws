@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #91 (`id: 13528160`)
 - **Video gốc:** `SAA - Aurora - Overview v6.mp4`
 - **Thời lượng:** `06:27` (387 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

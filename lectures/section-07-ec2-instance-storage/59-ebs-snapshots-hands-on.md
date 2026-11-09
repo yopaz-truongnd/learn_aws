@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098278`
 - **Video gốc:** `CCP_-_EBS_-_Snapshots_Hands_On_v3.mp4`
 - **Thời lượng:** `03:38`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

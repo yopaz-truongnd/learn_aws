@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528054`
 - **Video gốc:** `SAA_-_EC2_-_Private_vs_Public_vs_Elastic_IP_Hands_On_v4.mp4`
 - **Thời lượng:** `06:06`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

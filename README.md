@@ -25,6 +25,8 @@ learn_aws/
 │   └── vendor/mermaid.min.js       #   Thư viện Mermaid.js nội bộ (không kéo CDN)
 ├── scripts/
 │   └── export_anki_4000.py         # CSV → .apkg + .tsv (Python 3 thuần, không cần thư viện ngoài)
+├── tools/                          # Công cụ kiểm tra & bảo trì chất lượng
+│   └── verify_all.py               #   Kiểm tra tính toàn vẹn HTML, song ngữ, link nội bộ, ký tự lạ
 ├── data/                           # Dữ liệu đầu vào (gitignored, tự đặt vào)
 │   └── lecturesub-tu-vung.csv      #   Từ vựng trích từ phụ đề bài giảng
 ├── dist/                           # Output sinh tự động (gitignored)
@@ -62,6 +64,7 @@ learn_aws/
 | [`scripts/csv_to_sub_json.py`](scripts/csv_to_sub_json.py) | Chuyển đổi CSV từ vựng sang JSON (`sub.json`) chuẩn cấu trúc extension phụ đề video. |
 | [`scripts/find_diff_vocab.py`](scripts/find_diff_vocab.py) | So sánh đối chiếu 2 file CSV từ vựng, lọc ra các từ không chung hoặc từ mới. |
 | [`scripts/clean.py`](scripts/clean.py) | Dọn dẹp các tệp sinh ra trong `dist/`, bộ nhớ đệm `__pycache__` và file tạm. |
+| [`tools/verify_all.py`](tools/verify_all.py) | Validator chất lượng toàn diện: kiểm tra cấu trúc thẻ HTML, song ngữ VI/EN, link nội bộ và quét ký tự ngoại ngữ bất thường. |
 | `data/lecturesub-tu-vung.csv` | UTF-8 with BOM, các cột: `Từ`, `Nghĩa`, `Nguồn`, `Đích`, `Câu gốc`, `Bài học`, `Giây`, `Liên kết`. |
 | `dist/*` | Kết quả build — không commit, sinh lại bất cứ lúc nào bằng script. |
 

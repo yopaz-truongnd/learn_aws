@@ -1,4 +1,5 @@
 # Section 7: EC2 Instance Storage
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 
@@ -10,7 +11,7 @@
   - Làm ổ đĩa hệ điều hành (Root volume) hoặc ổ đĩa dữ liệu có độ bền cao cho cơ sở dữ liệu tự cài trên EC2.
   - Chọn loại ổ đĩa theo yêu cầu hiệu năng:
     - **`gp2` / `gp3` (General Purpose SSD):** Cân bằng chi phí & hiệu năng (`gp3` cho phép chỉnh IOPS và Throughput độc lập với dung lượng).
-    - **`io1` / `io2` / `io2 Block Express` (Provisioned IOPS SSD):** Ứng dụng критическое cần **trên 16.000 IOPS** (lên tới 64.000 – 256.000 IOPS) hoặc cần tính năng **EBS Multi-Attach** (gắn 1 ổ đĩa vào tối đa 16 EC2 instances trong cùng 1 AZ).
+    - **`io1` / `io2` / `io2 Block Express` (Provisioned IOPS SSD):** Ứng dụng quan trọng (mission-critical) cần **trên 16.000 IOPS** (lên tới 64.000 – 256.000 IOPS) hoặc cần tính năng **EBS Multi-Attach** (gắn 1 ổ đĩa vào tối đa 16 EC2 instances trong cùng 1 AZ).
     - **`st1` (Throughput Optimized HDD) & `sc1` (Cold HDD):** Lưu trữ dữ liệu tuần tự lớn (Big Data, Data Warehouse) hoặc ít truy cập với chi phí thấp (**KHÔNG THỂ làm Boot/Root Volume**).
 - **Khác gì dịch vụ gần giống:**
   - **EBS vs. EC2 Instance Store:** `EBS` là ổ đĩa mạng (network drive) bền vững qua các lần Stop/Start; `Instance Store` là ổ cứng vật lý gắn trực tiếp vào máy chủ host, mang lại **IOPS cực đại** nhưng là bộ nhớ tạm (**Ephemeral** — mất sạch dữ liệu nếu EC2 bị `Stop` hoặc phần cứng lỗi).

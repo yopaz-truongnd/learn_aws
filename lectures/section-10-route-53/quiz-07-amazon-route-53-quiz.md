@@ -3,6 +3,7 @@
 - **Section:** Phần 10 - Route 53
 - **Quiz ID:** `5336917`
 - **Số lượng câu hỏi:** `7 câu`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 
@@ -15,11 +16,16 @@ You have purchased **mycoolcompany.com** on Amazon Route 53 Registrar and would 
 Bạn đã mua tên miền **mycoolcompany.com** trên Amazon Route 53 Registrar và muốn trỏ trực tiếp tên miền gốc này tới Elastic Load Balancer **my-elb-1234567890.us-west-2.elb.amazonaws.com**. Bạn bắt buộc phải sử dụng loại bản ghi Route 53 nào tại đây?
 
 - [ ] A. CNAME
-- [x] B. **Alias**
+- [ ] B. Alias
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: B. Alias**
 
 > [!NOTE]
 > **Giải thích:**
 > Bạn **không thể** tạo bản ghi `CNAME` cho nút đỉnh của không gian tên DNS (**Zone Apex / Root Domain**), trong trường hợp này là `mycoolcompany.com`. Để trỏ một Root Domain tới tài nguyên AWS như Elastic Load Balancer, bạn bắt buộc phải sử dụng bản ghi **Alias** (kiểu `A` hoặc `AAAA`).
+</details>
 
 ---
 
@@ -32,13 +38,18 @@ You have deployed a new Elastic Beanstalk environment and would like to direct 5
 Bạn vừa triển khai một môi trường Elastic Beanstalk mới và muốn điều hướng 5% lưu lượng production sang môi trường mới này để theo dõi các chỉ số CloudWatch và đảm bảo không có lỗi phát sinh. Chính sách định tuyến (Routing Policy) nào của Route 53 cho phép bạn thực hiện việc này?
 
 - [ ] A. Simple
-- [x] B. **Weighted**
+- [ ] B. Weighted
 - [ ] C. Latency
 - [ ] D. Failover
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: B. Weighted**
 
 > [!NOTE]
 > **Giải thích:**
 > **Weighted Routing Policy** (Chính sách định tuyến theo trọng số) cho phép bạn phân bổ một phần lưu lượng truy cập dựa trên trọng số (tỷ lệ phần trăm). Đây là use case rất phổ biến để gửi một phần nhỏ lưu lượng (như 5%) tới phiên bản ứng dụng mới nhằm kiểm thử (Canary testing).
+</details>
 
 ---
 
@@ -52,12 +63,17 @@ Bạn vừa cập nhật giá trị của bản ghi Route 53 **myapp.mydomain.co
 
 - [ ] A. Because of the Alias record
 - [ ] B. Because of the CNAME record
-- [x] C. **Because of the TTL**
+- [ ] C. Because of the TTL
 - [ ] D. Because of Route 53 Health Checks
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: C. Because of the TTL**
 
 > [!NOTE]
 > **Giải thích:**
 > Mỗi bản ghi DNS đều có một giá trị **TTL (Time To Live)** yêu cầu Client và DNS Resolver lưu kết quả phân giải vào bộ nhớ đệm (cache) trong khoảng thời gian đó để tránh làm quá tải DNS Resolver. Khi bạn đổi giá trị bản ghi, các Client vẫn sẽ kết nối tới địa chỉ cũ trong cache cho đến khi thời gian TTL hết hạn.
+</details>
 
 ---
 
@@ -71,12 +87,17 @@ Bạn có một ứng dụng được đặt tại hai AWS Regions khác nhau l�
 
 - [ ] A. Multi Value
 - [ ] B. Weighted
-- [x] C. **Latency**
+- [ ] C. Latency
 - [ ] D. Geolocation
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: C. Latency**
 
 > [!NOTE]
 > **Giải thích:**
 > **Latency Routing Policy** sẽ đánh giá độ trễ mạng giữa người dùng và các AWS Regions, từ đó trả về phản hồi DNS giúp giảm thiểu tối đa độ trễ (thời gian phản hồi) cho người dùng.
+</details>
 
 ---
 
@@ -91,11 +112,16 @@ Bạn có một yêu cầu pháp lý quy định rằng người dùng ở bất
 - [ ] A. Latency
 - [ ] B. Simple
 - [ ] C. Multi Value
-- [x] D. **Geolocation**
+- [ ] D. Geolocation
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: D. Geolocation**
 
 > [!NOTE]
 > **Giải thích:**
 > **Geolocation Routing Policy** định tuyến dựa trên vị trí địa lý thực tế (Châu lục, Quốc gia, Tiểu bang Mỹ) của người dùng. Nó rất phù hợp cho việc bản địa hóa nội dung hoặc giới hạn phân phối nội dung theo yêu cầu pháp lý của từng quốc gia.
+</details>
 
 ---
 
@@ -110,11 +136,16 @@ Bạn đã mua một tên miền trên **GoDaddy** và muốn sử dụng Route 
 - [ ] A. Request for a domain transfer
 - [ ] B. Create a Private Hosted Zone and update the 3rd party Registrar NS records
 - [ ] C. Create a Public Hosted Zone and update the Route 53 NS records
-- [x] D. **Create a Public Hosted Zone and update the 3rd party Registrar NS records**
+- [ ] D. Create a Public Hosted Zone and update the 3rd party Registrar NS records
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: D. Create a Public Hosted Zone and update the 3rd party Registrar NS records**
 
 > [!NOTE]
 > **Giải thích:**
 > **Public Hosted Zones** được dùng để trả lời các truy vấn từ người dùng truy cập website qua Internet công cộng. Để dùng tên miền mua ở bên thứ 3 với Route 53, bạn tạo một **Public Hosted Zone** trong Route 53 rồi lấy 4 địa chỉ Name Servers của nó đem cập nhật vào bản ghi **NS (Name Servers)** trên trang quản trị của nhà đăng ký bên thứ 3 (GoDaddy).
+</details>
 
 ---
 
@@ -126,10 +157,14 @@ Which of the following are **NOT** valid Route 53 Health Checks?
 **Dịch nghĩa (Tiếng Việt):**
 Loại nào sau đây **KHÔNG** phải là một Route 53 Health Check hợp lệ?
 
-- [x] A. **Health Check that monitors an SQS Queue**
+- [ ] A. Health Check that monitors an SQS Queue
 - [ ] B. Health Check that monitors an Endpoint
 - [ ] C. Health Check that monitors other Health Checks
 - [ ] D. Health Check that monitors CloudWatch Alarms
+
+<details><summary>👉 Xem đáp án</summary>
+
+**Đáp án: A. Health Check that monitors an SQS Queue**
 
 > [!NOTE]
 > **Giải thích:**
@@ -138,3 +173,4 @@ Loại nào sau đây **KHÔNG** phải là một Route 53 Health Check hợp l�
 > 2. Giám sát các **Health Checks khác** (`Calculated Health Check`).
 > 3. Giám sát trạng thái của **CloudWatch Alarms** (`Monitor a CloudWatch Alarm`).
 > Không có loại Health Check nào giám sát trực tiếp hàng đợi SQS Queue.
+</details>

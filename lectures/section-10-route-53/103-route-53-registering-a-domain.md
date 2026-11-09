@@ -4,6 +4,7 @@
 - **Lecture ID:** `28384290`
 - **Video:** `SAA_-_Route_53_-_Registering_Domains_v3.mp4`
 - **Thời lượng:** `03:24`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

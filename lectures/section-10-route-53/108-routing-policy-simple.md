@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528192`
 - **Video:** `SAA_-_Route_53_-_Routing_Simple_v2.mp4`
 - **Thời lượng:** `04:05`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

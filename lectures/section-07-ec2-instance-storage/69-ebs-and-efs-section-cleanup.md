@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528132`
 - **Video gốc:** `EFS and EBS cleanup.mp4`
 - **Thời lượng:** `01:31`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

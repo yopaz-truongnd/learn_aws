@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528200`
 - **Video:** `SAA - Route 53 - Health Checks v3.mp4`
 - **Thời lượng:** `04:54`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

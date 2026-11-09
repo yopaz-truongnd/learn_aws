@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #90 (`id: 33878670`)
 - **Video gốc:** `SAA_-_RDS_-_RDS_Custom_v1.mp4`
 - **Thời lượng:** `01:49` (109 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

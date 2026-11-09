@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #96 (`id: 33878690`)
 - **Video gốc:** `SAA_-_RDS_-_RDS_Proxy_v2.mp4`
 - **Thời lượng:** `04:32` (272 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

@@ -1,6 +1,7 @@
 # Section 09: AWS Fundamentals: RDS + Aurora + ElastiCache
 
 Thư mục này lưu trữ toàn bộ nội dung bài giảng, ghi chú trọng tâm kỳ thi SAA-C03 (Exam Notes), phụ đề song ngữ Anh - Việt chi tiết theo mốc thời gian (Full Transcript & Timestamps) và bộ câu hỏi trắc nghiệm của **Phần 9: AWS Fundamentals: RDS + Aurora + ElastiCache**.
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

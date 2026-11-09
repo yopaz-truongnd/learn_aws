@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `18611524`
 - **Tệp video:** `SAA_-_ELB_-_Connection_Draining_v3.mp4`
 - **Thời lượng:** `02:22`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

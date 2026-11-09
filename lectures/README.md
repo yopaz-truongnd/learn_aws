@@ -7,11 +7,11 @@
 
 | Phần | Tên phần (Section) | Số bài giảng | Trắc nghiệm | Trạng thái | Đường dẫn thư mục |
 | :---: | :--- | :---: | :---: | :---: | :--- |
-| **04** | **IAM & AWS CLI** | 20 bài (11 - 30) | Quiz 1 (6 câu) | **Đã hoàn thành (100%)** | [section-04-iam-and-aws-cli](./section-04-iam-and-aws-cli/README.md) |
-| **05** | **EC2 Fundamentals** | 16 bài (31 - 46) | Quiz 2 (13 câu) | **Đã hoàn thành (100%)** | [section-05-ec2-fundamentals](./section-05-ec2-fundamentals/README.md) |
-| **06** | **EC2 - Solutions Architect Associate Level** | 9 bài (47 - 55) | Quiz 3 (8 câu) | **Đã hoàn thành (100%)** | [section-06-ec2-saa-level](./section-06-ec2-saa-level/README.md) |
-| **07** | **EC2 Instance Storage** | 14 bài (56 - 69) | Quiz 4 (11 câu) | **Đã hoàn thành (100%)** | [section-07-ec2-instance-storage](./section-07-ec2-instance-storage/README.md) |
-| **08** | **High Availability and Scalability: ELB & ASG** | 17 bài (70 - 86) | Quiz 5 (14 câu) | **Đã hoàn thành (100%)** | [section-08-elb-and-asg](./section-08-elb-and-asg/README.md) |
+| **04** | **IAM & AWS CLI** | 20 bài (11 - 30) | Quiz 1 (9 câu) | **Đã hoàn thành (100%)** | [section-04-iam-and-aws-cli](./section-04-iam-and-aws-cli/README.md) |
+| **05** | **EC2 Fundamentals** | 16 bài (31 - 46) | Quiz 2 (12 câu) | **Đã hoàn thành (100%)** | [section-05-ec2-fundamentals](./section-05-ec2-fundamentals/README.md) |
+| **06** | **EC2 - Solutions Architect Associate Level** | 9 bài (47 - 55) | Quiz 3 (5 câu) | **Đã hoàn thành (100%)** | [section-06-ec2-saa-level](./section-06-ec2-saa-level/README.md) |
+| **07** | **EC2 Instance Storage** | 14 bài (56 - 69) | Quiz 4 (9 câu) | **Đã hoàn thành (100%)** | [section-07-ec2-instance-storage](./section-07-ec2-instance-storage/README.md) |
+| **08** | **High Availability and Scalability: ELB & ASG** | 17 bài (70 - 86) | Quiz 5 (21 câu) | **Đã hoàn thành (100%)** | [section-08-elb-and-asg](./section-08-elb-and-asg/README.md) |
 | **09** | **AWS Fundamentals: RDS + Aurora + ElastiCache** | 14 bài (87 - 100) | Quiz 6 (24 câu) | **Đã hoàn thành (100%)** | [section-09-rds-aurora-elasticache](./section-09-rds-aurora-elasticache/README.md) |
 | **10** | **Route 53** | 20 bài (101 - 120) | Quiz 7 (7 câu) | **Đã hoàn thành (100%)** | [section-10-route-53](./section-10-route-53/README.md) |
 

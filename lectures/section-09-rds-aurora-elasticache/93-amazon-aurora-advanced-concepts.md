@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #93 (`id: 26099176`)
 - **Video gốc:** `SAA - Aurora - Advanced Concepts v7.mp4`
 - **Thời lượng:** `07:31` (451 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528210`
 - **Video:** `SAA_-_Route_53_-_Routing_Multivalue_v2.mp4`
 - **Thời lượng:** `03:42`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

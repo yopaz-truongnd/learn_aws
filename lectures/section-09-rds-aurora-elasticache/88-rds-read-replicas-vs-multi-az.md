@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #88 (`id: 18078177`)
 - **Video gốc:** `SAA_-_RDS_-_Read_Replicas_and_Multi_AZ_v3.mp4`
 - **Thời lượng:** `07:22` (442 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

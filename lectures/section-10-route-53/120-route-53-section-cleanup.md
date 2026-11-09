@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528214`
 - **Video:** `SAA_-_Route_53_-_Cleanup_v2.mp4`
 - **Thời lượng:** `01:21`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

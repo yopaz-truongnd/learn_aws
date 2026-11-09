@@ -4,6 +4,7 @@
 - **Lecture ID:** `26098296`
 - **Video gốc:** `SAA - EBS Volume Types v5.mp4`
 - **Thời lượng:** `04:34`
+- **Cheat sheet:** [topics/aws_storage.html](../../topics/aws_storage.html)
 
 ---
 

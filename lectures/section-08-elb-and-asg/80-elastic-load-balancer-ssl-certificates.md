@@ -4,6 +4,7 @@
 - **Mã bài học (Lecture ID):** `18078099`
 - **Tệp video:** `SAA_-_ELB_-_SSL_Certificates_Overview_-_v3.mp4`
 - **Thời lượng:** `06:03`
+- **Cheat sheet:** [topics/aws_elb_asg.html](../../topics/aws_elb_asg.html)
 
 ---
 

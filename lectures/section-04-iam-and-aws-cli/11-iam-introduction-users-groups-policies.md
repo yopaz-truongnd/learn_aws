@@ -3,6 +3,7 @@
 - **Phần:** Phần 4: IAM & AWS CLI
 - **Lecture ID:** `26097996` (`CCP_-_IAM_-_Users_Groups_Policies.mp4`)
 - **Thời lượng:** `03:22`
+- **Cheat sheet:** [topics/aws_iam.html](../../topics/aws_iam.html)
 
 ---
 

@@ -1,4 +1,5 @@
 # Section 6: EC2 - Solutions Architect Associate Level
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

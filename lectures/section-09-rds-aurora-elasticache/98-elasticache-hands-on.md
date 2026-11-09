@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #98 (`id: 13528168`)
 - **Video gốc:** `SAA - ElastiCache - Hands On v5.mp4`
 - **Thời lượng:** `05:00` (300 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

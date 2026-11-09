@@ -3,6 +3,7 @@
 - **Phần:** Phần 5: EC2 Fundamentals
 - **Lecture ID:** `26098128` (`CCP - EC2 - Instance Types Basics v4.mp4`)
 - **Thời lượng:** `04:51`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 

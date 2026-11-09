@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #89 (`id: 13528154`)
 - **Video gốc:** `SAA - RDS - Hands On v6.mp4`
 - **Thời lượng:** `08:44` (524 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

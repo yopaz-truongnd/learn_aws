@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528194`
 - **Video:** `SAA_-_Route_53_-_Routing_Weighted_v2.mp4`
 - **Thời lượng:** `05:02`
+- **Cheat sheet:** [topics/aws_route53.html](../../topics/aws_route53.html)
 
 ---
 

@@ -32,6 +32,161 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>Layer 7 vs Layer 4:</b> ALB định tuyến thông minh theo HTTP path/host/headers; NLB định tuyến siêu tốc TCP/UDP với độ trễ micro-giây.<br>
+          • <b>Static IP:</b> Chỉ <b>NLB</b> cung cấp 1 Public Static IPv4 cố định cho mỗi AZ; ALB luôn sử dụng DNS Name động.<br>
+          • <b>Port 6081 GENEVE:</b> Cổng giao thức chuẩn mà Gateway Load Balancer (GWLB) sử dụng để đóng gói gói tin Layer 3.<br>
+          • <b>SNI:</b> Cho phép gắn nhiều chứng chỉ SSL/TLS trên cùng một Load Balancer cho nhiều hostname khác nhau.<br>
+          • <b>Deregistration Delay:</b> Cho phép các request đang xử lý hoàn thành trước khi terminate máy chủ (mặc định 300 giây).
+        </span>
+        <span class="lang-en">
+          • <b>Layer 7 vs Layer 4:</b> ALB routes intelligently on HTTP path/host/headers; NLB routes ultra-fast TCP/UDP with microsecond latency.<br>
+          • <b>Static IP:</b> Only <b>NLB</b> provides a single public static IPv4 per AZ; ALB always uses dynamic DNS names.<br>
+          • <b>Port 6081 GENEVE:</b> Standard encapsulation protocol port used by Gateway Load Balancer (GWLB) at Layer 3.<br>
+          • <b>SNI:</b> Allows hosting multiple SSL/TLS certificates on the same listener for different hostnames.<br>
+          • <b>Deregistration Delay:</b> Grace period allowing in-flight requests to complete before instance termination (default 300s).
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Định tuyến HTTP/HTTPS dựa theo đường dẫn URL path, host header, hoặc query string</span>
+              <span class="lang-en">HTTP/HTTPS routing based on URL path, host header, or query parameters</span>
+            </td>
+            <td><span class="kw-target">Application Load Balancer (ALB)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Hàng triệu request/giây, độ trễ micro-giây, yêu cầu địa chỉ IP tĩnh cố định</span>
+              <span class="lang-en">Ultra-high throughput, millions of requests/sec, microsecond latency, static IP</span>
+            </td>
+            <td><span class="kw-target">Network Load Balancer (NLB)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Mở rộng và điều hướng luồng qua dàn thiết bị ảo tường lửa bên thứ ba (Virtual Appliances)</span>
+              <span class="lang-en">Deploy and scale a fleet of 3rd party inline virtual firewalls / appliances</span>
+            </td>
+            <td><span class="kw-target">Gateway Load Balancer (GWLB)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tải nhiều chứng chỉ SSL/TLS trên cùng một Load Balancer cho nhiều tên miền</span>
+              <span class="lang-en">Serve multiple domains with different SSL certificates on same listener</span>
+            </td>
+            <td><span class="kw-target">Server Name Indication (SNI)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Ghim client luôn gửi request về đúng 1 instance backend bằng cookie</span>
+              <span class="lang-en">Send client to the exact same backend EC2 instance using a cookie</span>
+            </td>
+            <td><span class="kw-target">Sticky Sessions (Session Affinity)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Phân phối lưu lượng đều tới tất cả các instance trong mọi AZ đã đăng ký</span>
+              <span class="lang-en">Distribute incoming traffic evenly across all instances in all registered AZs</span>
+            </td>
+            <td><span class="kw-target">Cross-Zone Load Balancing</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Duy trì mức sử dụng CPU trung bình của toàn bộ ASG ở mức cố định 50%</span>
+              <span class="lang-en">Maintain average ASG aggregate CPU utilization at exactly 50%</span>
+            </td>
+            <td><span class="kw-target">Target Tracking Scaling Policy</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Chờ hoàn tất ghi dữ liệu hoặc backup trước khi máy chủ bị ASG tiêu hủy</span>
+              <span class="lang-en">Custom actions or pause instance termination before state cleanup completes</span>
+            </td>
+            <td><span class="kw-target">ASG Lifecycle Hooks</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 0. KHÁI QUÁT DỊCH VỤ ELB & ASG -->
 <div class="card full">
   <div class="ch">
@@ -59,7 +214,7 @@
         <span class="lang-vi">Là dịch vụ <b>cân bằng tải được AWS quản lý hoàn toàn (Fully Managed)</b>, đứng ở tuyến đầu nhận lưu lượng từ người dùng và phân phối đều xuống nhiều máy chủ backend (EC2, Containers, IP, Lambda) trải rộng trên nhiều Availability Zones.</span>
         <span class="lang-en">A <b>fully managed load balancing service</b> that sits at the front door, accepting incoming client traffic and distributing it across healthy backend targets (EC2, Containers, IPs, Lambda) across multiple Availability Zones.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">4 Thành phần cấu tạo của một ELB</span><span class="lang-en">4 Core Building Blocks of an ELB</span></b>
         <span class="lang-vi">
           1. <b>Listeners (Bộ lắng nghe):</b> Kiểm tra các kết nối đi vào theo Giao thức + Cổng (ví dụ <code>HTTP:80</code>, <code>HTTPS:443</code>, <code>TCP:8080</code>).<br>
@@ -138,12 +293,12 @@
         <span class="lang-vi">🧠 1. ALB (Layer 7) vs ⚡ 2. NLB (Layer 4)</span>
         <span class="lang-en">🧠 1. ALB (Layer 7) vs ⚡ 2. NLB (Layer 4)</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Application Load Balancer — ALB (4 tiêu chí)</span><span class="lang-en">Application Load Balancer — ALB (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Bộ cân bằng tải <b>Layer 7 (HTTP/HTTPS/gRPC/WebSocket)</b> định tuyến thông minh theo nội dung gói tin HTTP.<br>• <b>Dùng khi nào:</b> Kiến trúc <b>Microservices / Containers (ECS, EKS)</b> chia luồng theo URL Path (<code>/users</code>), Hostname, Query String, Header.<br>• <b>Khác gì NLB:</b> ALB có <b>DNS Name cố định</b> nhưng không có Static IP; tích hợp trực tiếp <b>AWS WAF</b>.<br>• <b>Điểm hay hỏi:</b> <b>Cross-Zone LB luôn BẬT mặc định (miễn phí)</b>. IP thật của Client nằm ở header <code>X-Forwarded-For</code>.</span>
         <span class="lang-en">• <b>What is it:</b> <b>Layer 7 (HTTP/HTTPS/gRPC/WebSocket)</b> load balancer with content-aware routing.<br>• <b>When to use:</b> <b>Microservices / Containers (ECS, EKS)</b> routing by URL Path, Hostname, Query String, Header.<br>• <b>vs NLB:</b> ALB has a fixed DNS name (no Static IP) and native <b>AWS WAF</b> integration.<br>• <b>Hotspots:</b> <b>Cross-Zone LB is ALWAYS ENABLED (free)</b>. True client IP is passed in <code>X-Forwarded-For</code>.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Network Load Balancer — NLB (4 tiêu chí)</span><span class="lang-en">Network Load Balancer — NLB (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Bộ cân bằng tải <b>Layer 4 (TCP/UDP/TLS)</b> xử lý hàng triệu requests/s với độ trễ siêu thấp (~100 ms).<br>• <b>Dùng khi nào:</b> Hiệu năng cực cao, giao thức TCP/UDP, hoặc khi đối tác yêu cầu <b>Static IP / Elastic IP cố định</b> để Whitelist Firewall.<br>• <b>Điểm hay hỏi:</b> Cung cấp <b>1 Static/Elastic IP mỗi AZ</b>. Có thể đặt <b>NLB đứng trước ALB</b> để vừa có IP tĩnh vừa có luật Layer 7. <b>Cross-Zone LB mặc định TẮT (bật sẽ tính phí liên AZ)</b>.</span>
         <span class="lang-en">• <b>What is it:</b> <b>Layer 4 (TCP/UDP/TLS)</b> load balancer handling millions of req/s at ultra-low latency (~100 ms).<br>• <b>When to use:</b> Extreme performance, TCP/UDP traffic, or <b>Static / Elastic IP whitelisting</b>.<br>• <b>Hotspots:</b> <b>1 Static/Elastic IP per AZ</b>. Can place <b>NLB in front of ALB</b>. <b>Cross-Zone LB is DISABLED by default (paid if enabled)</b>.</span>
@@ -155,12 +310,12 @@
         <span class="lang-vi">🛡️ 3. GWLB (Layer 3) &amp; 📈 4. Auto Scaling Group</span>
         <span class="lang-en">🛡️ 3. GWLB (Layer 3) &amp; 📈 4. Auto Scaling Group</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Gateway Load Balancer — GWLB (4 tiêu chí)</span><span class="lang-en">Gateway Load Balancer — GWLB (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Bộ cân bằng tải <b>Layer 3 (Network Layer — IP Packets)</b> dùng để triển khai, co giãn và quản lý đội thiết bị mạng ảo bên thứ 3.<br>• <b>Dùng khi nào:</b> Cho <b>toàn bộ lưu lượng mạng</b> đi qua cụm <b>3rd-party Virtual Appliances (Firewalls, IDS/IPS, Deep Packet Inspection)</b> trước khi vào ứng dụng.<br>• <b>Khác gì ALB/NLB &amp; Điểm hay hỏi:</b> Là Transparent Network Gateway + Load Balancer, đóng gói gói tin bằng giao thức <b>GENEVE trên cổng UDP 6081</b>.</span>
         <span class="lang-en">• <b>What is it:</b> <b>Layer 3 (IP Packet)</b> load balancer managing fleets of 3rd-party virtual network appliances.<br>• <b>When to use:</b> Route <b>all traffic</b> through inline <b>Firewalls, IDS/IPS, or Deep Packet Inspection (DPI)</b>.<br>• <b>vs ALB/NLB &amp; Hotspots:</b> Acts as a transparent bump-in-the-wire gateway + load balancer using the <b>GENEVE protocol on UDP Port 6081</b>.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Auto Scaling Group — ASG (4 tiêu chí)</span><span class="lang-en">Auto Scaling Group — ASG (4-Point Summary)</span></b>
         <span class="lang-vi">• <b>Là gì:</b> Dịch vụ tự động <code>Scale Out / Scale In</code> số lượng EC2 theo tải, tự thay thế máy lỗi và đăng ký vào ELB.<br>• <b>Dùng khi nào:</b> Đảm bảo số lượng máy <code>Min / Desired / Max</code> qua nhiều AZ và co giãn theo CloudWatch Alarms.<br>• <b>Khác gì Launch Configuration:</b> Luôn dùng <b>Launch Template</b> (phiên bản mới, hỗ trợ Versioning, Spot + On-Demand mix).<br>• <b>Điểm hay hỏi:</b> <b>Default Cooldown = 300s</b>. Khi Scale In, ưu tiên xóa ở <b>AZ có nhiều EC2 nhất</b> &rarr; máy có <b>Launch Template cũ nhất</b>.</span>
         <span class="lang-en">• <b>What is it:</b> Automatically <code>Scales Out / Scales In</code> EC2 fleets, replaces unhealthy nodes, and registers with ELB.<br>• <b>When to use:</b> Maintain <code>Min / Desired / Max</code> capacity across Multi-AZ and scale on CloudWatch metrics.<br>• <b>vs Launch Config:</b> Always use <b>Launch Templates</b>.<br>• <b>Hotspots:</b> <b>Default Cooldown = 300s</b>. Default Termination picks <b>AZ with most instances</b> &rarr; <b>oldest Launch Template</b>.</span>
@@ -324,7 +479,7 @@ flowchart TD
         <span class="lang-vi">🧠 Layer 7 — Application Layer (ALB)</span>
         <span class="lang-en">🧠 Layer 7 — Application Layer (ALB)</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Nhìn thấy gì trong gói tin?</span><span class="lang-en">What Does It Inspect?</span></b>
         <span class="lang-vi">Bóc tách và đọc hiểu toàn bộ <b>nội dung tầng Ứng dụng (HTTP / HTTPS / gRPC / WebSocket)</b>: đọc được <b>URL Path</b> (<code>/users</code>, <code>/orders</code>), <b>Hostname</b> (<code>api.example.com</code>), <b>HTTP Method</b> (<code>GET</code>/<code>POST</code>), <b>Query String</b> (<code>?lang=vi</code>), <b>HTTP Headers</b> và <b>Cookies</b>.</span>
         <span class="lang-en">Parses and understands full <b>Application Layer payloads (HTTP / HTTPS / gRPC / WebSocket)</b>: inspects <b>URL Path</b> (<code>/users</code>, <code>/orders</code>), <b>Hostname</b> (<code>api.example.com</code>), <b>HTTP Method</b>, <b>Query Strings</b>, <b>HTTP Headers</b>, and <b>Cookies</b>.</span>
@@ -341,7 +496,7 @@ flowchart TD
         <span class="lang-vi">⚡ Layer 4 — Transport Layer (NLB)</span>
         <span class="lang-en">⚡ Layer 4 — Transport Layer (NLB)</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Nhìn thấy gì trong gói tin?</span><span class="lang-en">What Does It Inspect?</span></b>
         <span class="lang-vi">Chỉ nhìn thấy thông tin tầng Giao vận <b>TCP / UDP / TLS</b>: gồm <b>Source IP</b>, <b>Source Port</b>, <b>Destination IP</b>, <b>Destination Port</b>. Hoàn toàn <b>KHÔNG đọc nội dung HTTP</b> bên trong (không biết URL <code>/login</code> hay Cookie là gì).</span>
         <span class="lang-en">Inspects ONLY <b>Transport Layer headers (TCP / UDP / TLS)</b>: <b>Source IP</b>, <b>Source Port</b>, <b>Destination IP</b>, and <b>Destination Port</b>. Completely <b>blind to HTTP payloads</b> (cannot read URLs or Cookies).</span>
@@ -358,7 +513,7 @@ flowchart TD
         <span class="lang-vi">🛡️ Layer 3 — Network Layer (GWLB)</span>
         <span class="lang-en">🛡️ Layer 3 — Network Layer (GWLB)</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b><span class="lang-vi">Nhìn thấy gì trong gói tin?</span><span class="lang-en">What Does It Inspect?</span></b>
         <span class="lang-vi">Hoạt động ở tầng <b>Gói tin IP thô (Raw IP Packets — Layer 3)</b>. Lắng nghe mọi loại giao thức mạng trên tất cả các cổng (All Ports / All IP Packets) đi vào hoặc đi ra khỏi VPC.</span>
         <span class="lang-en">Operates at the <b>Raw IP Packet level (Layer 3)</b>. Intercepts all IP traffic across all ports and protocols entering or leaving a VPC.</span>
@@ -472,7 +627,7 @@ flowchart TD
         <span class="lang-vi">Khi bật tính năng này, mỗi node của Load Balancer sẽ phân phối lưu lượng đồng đều tới <b>tất cả target trong tất cả AZ</b>, tránh tình trạng AZ có nhiều máy chủ thì nhàn rỗi còn AZ ít máy chủ thì quá tải.</span>
         <span class="lang-en">Distributes traffic evenly across all registered instances in all enabled AZs, preventing unbalanced loads when instance distribution is skewed across zones.</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Sự khác biệt về cấu hình &amp; chi phí</b>
         <span class="lang-vi">• <b>ALB:</b> Mặc định <b>BẬT (Enabled)</b>, miễn phí truyền dữ liệu giữa các AZ (No data transfer charges).<br>• <b>NLB:</b> Mặc định <b>TẮT (Disabled)</b>. Nếu bật, bạn phải trả phí Data Transfer liên AZ (Inter-AZ Data Transfer Cost).</span>
         <span class="lang-en">• <b>ALB:</b> Always <b>ENABLED by default</b> at no extra data transfer fee.<br>• <b>NLB:</b> <b>DISABLED by default</b>. If enabled, inter-AZ data transfer fees apply.</span>
@@ -484,12 +639,12 @@ flowchart TD
         <span class="lang-vi">🔒 SSL Certificates &amp; SNI</span>
         <span class="lang-en">🔒 SSL/TLS &amp; SNI</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Server Name Indication (SNI)</b>
         <span class="lang-vi">Cho phép client gửi tên miền mục tiêu (`Host: api.example.com`) ngay trong gói bắt tay TLS đầu tiên. Giúp Load Balancer có thể tải <b>nhiều chứng chỉ SSL khác nhau</b> trên cùng <b>1 Listener duy nhất</b>.<br><span class="tag tb">ALB &amp; NLB hỗ trợ</span><span class="tag ty">Multi-domain SSL</span></span>
         <span class="lang-en">Enables clients to indicate hostname during initial TLS handshake. Allows one single listener on ALB/NLB to host <b>multiple distinct SSL certificates</b> for different subdomains.<br><span class="tag tb">Supported on ALB &amp; NLB</span><span class="tag ty">Multi-domain SSL</span></span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>SSL Termination tại tầng ELB</b>
         <span class="lang-vi">Load Balancer giải mã SSL (Decrypt) bằng chứng chỉ quản lý bởi AWS Certificate Manager (ACM), sau đó chuyển tiếp traffic HTTP thuần vào target trong Private Subnet &rarr; Giảm tải CPU cho các máy chủ EC2 backend.</span>
         <span class="lang-en">ELB offloads SSL decryption using ACM certificates, passing unencrypted HTTP into private subnets &rarr; Frees backend EC2 CPU cycles.</span>
@@ -650,7 +805,7 @@ flowchart TD
 </div>
 
 <!-- 6. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🎯</div>
     <div>
@@ -721,7 +876,7 @@ flowchart TD
 </div>
 
 <!-- 7. NGUYÊN TẮC VÀNG SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⭐</div>
     <div>
@@ -847,7 +1002,7 @@ flowchart TD
         <span class="lang-vi">Trang chủ sản phẩm ELB, bảng tính giá theo Load Balancer Capacity Units (LCU / NLCU).<br><a href="https://aws.amazon.com/elasticloadbalancing/" target="_blank" style="color:var(--bl)">🌐 Trang chủ Elastic Load Balancing</a></span>
         <span class="lang-en">Official ELB portal detailing pricing per Load Balancer Capacity Unit (LCU/NLCU).<br><a href="https://aws.amazon.com/elasticloadbalancing/" target="_blank" style="color:var(--bl)">🌐 Elastic Load Balancing Homepage</a></span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Amazon EC2 Auto Scaling Portal</b>
         <span class="lang-vi">Tổng quan tính năng tối ưu chi phí và điều phối quy mô máy chủ tự động không phát sinh phí dịch vụ.<br><a href="https://aws.amazon.com/ec2/autoscaling/" target="_blank" style="color:var(--bl)">🌐 Trang chủ EC2 Auto Scaling</a></span>
         <span class="lang-en">Free managed orchestration service to optimize capacity and availability.<br><a href="https://aws.amazon.com/ec2/autoscaling/" target="_blank" style="color:var(--bl)">🌐 EC2 Auto Scaling Homepage</a></span>

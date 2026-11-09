@@ -4,6 +4,7 @@
 - **Bài học (Lecture):** #100 (`id: 18630414`)
 - **Loại bài học:** Bài viết (Article)
 - **Thời lượng ước tính:** `00:29` (29 giây)
+- **Cheat sheet:** [topics/aws_databases.html](../../topics/aws_databases.html)
 
 ---
 

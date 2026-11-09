@@ -125,7 +125,13 @@ if (window.matchMedia) {
 function toggleExamFocus(btn) {
   document.body.classList.toggle('study-focus-exam');
   var active = document.body.classList.contains('study-focus-exam');
-  if (btn) btn.classList.toggle('active', active);
+  var buttons = document.querySelectorAll('.study-btn-exam');
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.toggle('active', active);
+  }
+  if (btn && !btn.classList.contains('study-btn-exam')) {
+    btn.classList.toggle('active', active);
+  }
 }
 
 /**

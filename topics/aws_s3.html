@@ -38,6 +38,161 @@
 
 <div class="grid">
 
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>11 con số 9 (99.999999999%):</b> Độ bền dữ liệu (Durability) của mọi tầng lưu trữ S3 (kể cả S3 One Zone-IA).<br>
+          • <b>5 TB / Object:</b> Dung lượng tối đa của một Object đơn lẻ; tệp trên <b>5 GB</b> bắt buộc phải dùng <b>Multipart Upload</b>.<br>
+          • <b>100 MB+:</b> Ngưỡng khuyến nghị bắt đầu dùng Multipart Upload để tăng tốc độ truyền tải.<br>
+          • <b>Versioning không thể xóa:</b> Khi đã kích hoạt Versioning thì chỉ có thể Tạm dừng (Suspend), không thể tắt vĩnh viễn.<br>
+          • <b>Object Lock Compliance:</b> Chế độ WORM nghiêm ngặt nhất, ngăn chặn tuyệt đối việc xóa tệp kể cả với tài khoản root.
+        </span>
+        <span class="lang-en">
+          • <b>11 9s (99.999999999%):</b> Data durability across all S3 storage tiers (including S3 One Zone-IA).<br>
+          • <b>5 TB / Object:</b> Maximum size of a single S3 object; files over <b>5 GB</b> strictly mandate <b>Multipart Upload</b>.<br>
+          • <b>100 MB+:</b> Recommended threshold to adopt Multipart Upload for parallel transfer speed and reliability.<br>
+          • <b>Versioning cannot be disabled:</b> Once enabled on a bucket, versioning can only be Suspended, never disabled.<br>
+          • <b>Object Lock Compliance Mode:</b> Strict WORM compliance where nobody, including the AWS root account, can delete objects.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi</span>
+              <span class="lang-en">Exam Scenario / Keyword</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Dữ liệu truy cập thường xuyên yêu cầu sẵn sàng 99.99% và truy xuất tức thì</span>
+              <span class="lang-en">Frequently accessed data requiring 99.99% availability with instant retrieval</span>
+            </td>
+            <td><span class="kw-target">S3 Standard</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Dữ liệu ít truy cập, cần lấy ra ngay lập tức, tiết kiệm chi phí, Multi-AZ</span>
+              <span class="lang-en">Infrequently accessed data needing millisecond access, lower cost, multi-AZ</span>
+            </td>
+            <td><span class="kw-target">S3 Standard-IA</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Bản sao lưu thứ cấp có thể tạo lại được, lưu trong 1 AZ duy nhất để giảm 20% chi phí</span>
+              <span class="lang-en">Reproducible non-critical secondary backups stored in a single AZ to save 20%</span>
+            </td>
+            <td><span class="kw-target">S3 One Zone-IA</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Mô hình truy cập dữ liệu không thể dự đoán trước, tự động chuyển tầng không tính phí truy xuất</span>
+              <span class="lang-en">Unknown or unpredictable access patterns with automatic tier shifting and no fee</span>
+            </td>
+            <td><span class="kw-target">S3 Intelligent-Tiering</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Lưu trữ lưu trữ lâu năm (1-2 lần/năm), thời gian lấy dữ liệu từ vài phút đến vài giờ</span>
+              <span class="lang-en">Archive data accessed 1-2 times/year with retrieval time of minutes to hours</span>
+            </td>
+            <td><span class="kw-target">S3 Glacier Flexible Archive</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Lưu trữ tuân thủ pháp lý nhiều năm với chi phí thấp nhất, thời gian lấy dữ liệu 12-48 giờ</span>
+              <span class="lang-en">Long-term compliance data rarely accessed with lowest cost and 12-48 hour retrieval</span>
+            </td>
+            <td><span class="kw-target">S3 Glacier Deep Archive</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tuân thủ quy chuẩn WORM nghiêm ngặt cấm tuyệt đối việc xóa tệp kể cả tài khoản root</span>
+              <span class="lang-en">Enforce strict WORM compliance where even AWS root account cannot delete objects</span>
+            </td>
+            <td><span class="kw-target">S3 Object Lock (Compliance Mode)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cung cấp quyền tải về hoặc tải lên tạm thời có giới hạn thời gian cho một đối tượng riêng tư</span>
+              <span class="lang-en">Give temporary time-limited download or upload access to a private S3 object</span>
+            </td>
+            <td><span class="kw-target">S3 Pre-signed URLs</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- 1. TỔNG QUAN VỀ AMAZON S3 -->
 <div class="card full">
   <div class="ch">
@@ -311,7 +466,7 @@ flowchart TD
         <span class="lang-vi">🗑️ Expiration Actions (Xóa bỏ)</span>
         <span class="lang-en">🗑️ Expiration Actions</span>
       </div>
-      <div class="pi">
+      <div class="pi pi-exam">
         <b>Tự động dọn dẹp và tiêu hủy tệp cũ</b>
         <span class="lang-vi">
           • Tự động xóa vĩnh viễn các đối tượng sau số ngày quy định (ví dụ: xóa file log sau 365 ngày).<br>
@@ -509,7 +664,7 @@ flowchart TD
 </div>
 
 <!-- 6. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--orb)">🎯</div>
     <div>
@@ -580,7 +735,7 @@ flowchart TD
 </div>
 
 <!-- 7. NGUYÊN TẮC VÀNG SAA-C03 -->
-<div class="card full">
+<div class="card card-exam full">
   <div class="ch">
     <div class="ci" style="background:var(--rdb)">⭐</div>
     <div>

@@ -4,6 +4,7 @@
 - **Lecture ID:** `13528080`
 - **Video gốc:** `SAA - EC2 - Placement Groups v5.mp4`
 - **Thời lượng:** `06:55`
+- **Cheat sheet:** [topics/aws_ec2.html](../../topics/aws_ec2.html)
 
 ---
 
@@ -17,7 +18,7 @@
 >   - **Cluster vs Spread vs Partition:** **Cluster** gom chung 1 rack/1 AZ (mạng nhanh nhất, rủi ro sập cả cụm); **Spread** mỗi máy nằm trên 1 rack riêng biệt (tối đa 7 máy/AZ); **Partition** chia AZ thành tối đa 7 partitions độc lập, mỗi partition chứa hàng trăm EC2 (Hadoop/Kafka rack-aware).
 > - **Điểm hay bị hỏi:**
 >   - **Giới hạn & Mặc định:** **Spread** giới hạn cứng **7 running instances / AZ / group**. **Partition** tối đa **7 partitions / AZ**, hỗ trợ hàng trăm EC2. **Cluster** chỉ nằm trong **1 AZ duy nhất**.
->   - **Từ khóa gợi ý:** `"HPC / low latency / 10 Gbps network"` (Cluster), `"critical instances isolated on separate hardware / max 7 per AZ"` (Spread), `"HDFS / HBase / Cassandra / Kafka / сотни instances / rack-aware"` (Partition).
+>   - **Từ khóa gợi ý:** `"HPC / low latency / 10 Gbps network"` (Cluster), `"critical instances isolated on separate hardware / max 7 per AZ"` (Spread), `"HDFS / HBase / Cassandra / Kafka / hundreds of instances / rack-aware"` (Partition).
 
 ### 1.1. Tổng quan về EC2 Placement Groups
 - **Mục đích:** Cho phép bạn kiểm soát cách thức các **EC2 instances được bố trí (placed)** trên hạ tầng phần cứng vật lý của AWS. Bạn không tương tác trực tiếp với phần cứng AWS, nhưng bạn chỉ định **chiến lược bố trí (placement strategy)** để tối ưu hóa hiệu năng mạng hoặc giảm thiểu rủi ro lỗi phần cứng.

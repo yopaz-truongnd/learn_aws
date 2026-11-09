@@ -3,6 +3,7 @@
 - **Phần:** Phần 4: IAM & AWS CLI
 - **Lecture ID:** `26098056` (`CCP_-_IAM_-_CLI_Hands_On_v2.mp4`)
 - **Thời lượng:** `03:50`
+- **Cheat sheet:** [topics/aws_iam.html](../../topics/aws_iam.html)
 
 ---
 
