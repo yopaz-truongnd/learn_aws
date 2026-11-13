@@ -170,6 +170,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     subgraph Corporate["Doanh nghiệp / Corporate IdP"]
         IDP["Azure AD / Okta / On-Prem AD"]
@@ -211,6 +212,51 @@ flowchart TD
     class MASTER,IC mgmt;
     class PROD_OU,DEV_OU,SEC_OU ou;
     class IDP idp;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    subgraph Corporate["Doanh nghiệp / Corporate IdP"]
+        IDP["Azure AD / Okta / On-Prem AD"]
+    end
+
+    subgraph Org["AWS Organization"]
+        subgraph ManagementAccount["Management (Payer) Account"]
+            MASTER["Payer Root / Billing / Org Master<br/>(Miễn nhiễm với SCPs)"]
+            IC["AWS IAM Identity Center (SSO)<br/>Quản lý tập trung Permission Sets"]
+        end
+
+        ROOT_OU["Root OU (FullAWSAccess)"] --> PROD_OU["Production OU"]
+        ROOT_OU --> DEV_OU["Development OU"]
+        ROOT_OU --> SEC_OU["Security OU"]
+
+        subgraph PROD_OU["Production OU (SCP: Deny Region, Deny LeaveOrg)"]
+            ACC_PROD1["Prod App Account<br/>(Root & IAM tuân thủ SCP)"]
+            ACC_PROD2["Prod DB Account<br/>(Root & IAM tuân thủ SCP)"]
+        end
+
+        subgraph DEV_OU["Development OU (SCP: Deny High-Cost Instances)"]
+            ACC_DEV["Dev Sandbox Account<br/>(Permission Boundaries gán cho Devs)"]
+        end
+
+        subgraph SEC_OU["Security OU"]
+            ACC_LOG["Central Log Archive<br/>(S3 Bucket Policy + aws:PrincipalOrgID)"]
+            ACC_SEC["Security Audit Account"]
+        end
+    end
+
+    IDP -->|SAML 2.0 / SCIM| IC
+    IC -.->|Gán quyền truy cập tự động| ACC_PROD1
+    IC -.->|Gán quyền truy cập tự động| ACC_DEV
+    IC -.->|Gán quyền truy cập tự động| ACC_LOG
+
+    classDef mgmt fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef ou fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef idp fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    class MASTER,IC mgmt;
+    class PROD_OU,DEV_OU,SEC_OU ou;
+    class IDP idp;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
@@ -546,6 +592,7 @@ flowchart TD
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     START(["Bắt đầu đánh giá yêu cầu API / API Call Initiated"]) --> DENY_CHECK{"Có Explicit Deny<br/>ở bất kỳ chính sách nào không?"}
     
@@ -567,6 +614,31 @@ flowchart TD
     class FINAL_DENY,IMPLICIT_DENY deny;
     class FINAL_ALLOW allow;
     class DENY_CHECK,SCP_CHECK,PB_CHECK,ALLOW_CHECK decision;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    START(["Bắt đầu đánh giá yêu cầu API / API Call Initiated"]) --> DENY_CHECK{"Có Explicit Deny<br/>ở bất kỳ chính sách nào không?"}
+    
+    DENY_CHECK -- "Có (Yes)" --> FINAL_DENY["❌ BỊ TỪ CHỐI (DENIED)<br/>Explicit Deny chiến thắng tất cả"]
+    DENY_CHECK -- "Không (No)" --> SCP_CHECK{"Tổ chức có SCP không?<br/>SCP có cho phép không?"}
+    
+    SCP_CHECK -- "Bị chặn bởi SCP" --> FINAL_DENY
+    SCP_CHECK -- "Được SCP cho phép" --> PB_CHECK{"User/Role có gắn<br/>Permission Boundary không?"}
+    
+    PB_CHECK -- "Bị chặn bởi Boundary" --> FINAL_DENY
+    PB_CHECK -- "Được Boundary cho phép" --> ALLOW_CHECK{"Có Explicit Allow từ<br/>Identity Policy hoặc Resource Policy?"}
+    
+    ALLOW_CHECK -- "Không có Allow nào" --> IMPLICIT_DENY["❌ BỊ TỪ CHỐI (IMPLICIT DENY)<br/>Mặc định không cho phép"]
+    ALLOW_CHECK -- "Có ít nhất 1 Explicit Allow" --> FINAL_ALLOW["✅ ĐƯỢC CHẤP THUẬN (ALLOWED)<br/>Thực thi hành động thành công"]
+
+    classDef deny fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    classDef allow fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef decision fill:#fff8e1,stroke:#ffa000,stroke-width:1px;
+    class FINAL_DENY,IMPLICIT_DENY deny;
+    class FINAL_ALLOW allow;
+    class DENY_CHECK,SCP_CHECK,PB_CHECK,ALLOW_CHECK decision;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

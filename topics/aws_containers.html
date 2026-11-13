@@ -330,6 +330,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     START(["Nhu cầu triển khai ứng dụng Container"]) --> Q1{"Doanh nghiệp có yêu cầu sử dụng chuẩn Kubernetes không?"}
 
@@ -339,13 +340,13 @@ flowchart TD
     %% Nhánh 2: Không cần K8s
     Q1 -- "Không (Dùng chuẩn AWS Docker Native)" --> Q2{"Mức độ kiểm soát hạ tầng mong muốn?"}
 
-    Q2 -- "Ứng dụng web/API đơn giản, không muốn quản lý VPC/Cluster" --> APPRUNNER["<b>AWS App Runner</b><br>• Tự động build từ code hoặc container<br>• Tự động co giãn &amp; cấp phát URL HTTPS"]
+    Q2 -- "Ứng dụng web/API đơn giản, không muốn quản lý VPC/Cluster" --> APPRUNNER["<b>AWS App Runner</b><br>• Tự động build từ code hoặc container<br>• Tự động co giãn & cấp phát URL HTTPS"]
 
-    Q2 -- "Cần kiến trúc Microservices chuyên sâu trên Amazon ECS" --> Q3{"Chính sách quản lý máy chủ &amp; Chi phí?"}
+    Q2 -- "Cần kiến trúc Microservices chuyên sâu trên Amazon ECS" --> Q3{"Chính sách quản lý máy chủ & Chi phí?"}
 
     Q3 -- "Không muốn quản lý EC2 / Không vá OS / Trả theo task" --> ECS_FARGATE["<b>ECS với AWS Fargate Launch Type</b><br>• Serverless Container 100%<br>• Cách ly vi ảo hóa (MicroVM)<br>• Tự co giãn theo task"]
 
-    Q3 -- "Muốn kiểm soát máy chủ / Dùng RI, Spot / Tùy biến đĩa &amp; OS" --> ECS_EC2["<b>ECS với EC2 Launch Type</b><br>• Quản lý cụm máy chủ EC2<br>• Hỗ trợ GPU, ARM Graviton<br>• Dynamic Port Mapping với ALB"]
+    Q3 -- "Muốn kiểm soát máy chủ / Dùng RI, Spot / Tùy biến đĩa & OS" --> ECS_EC2["<b>ECS với EC2 Launch Type</b><br>• Quản lý cụm máy chủ EC2<br>• Hỗ trợ GPU, ARM Graviton<br>• Dynamic Port Mapping với ALB"]
 
     classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
     classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
@@ -354,6 +355,34 @@ flowchart TD
     class ECS_FARGATE,APPRUNNER awsBox;
     class ECS_EC2 optBox;
     class EKS warnBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    START(["Nhu cầu triển khai ứng dụng Container"]) --> Q1{"Doanh nghiệp có yêu cầu sử dụng chuẩn Kubernetes không?"}
+
+    %% Nhánh 1: Kubernetes
+    Q1 -- "Có (Cần tương thích Kubernetes / K8s tools)" --> EKS["<b>Amazon EKS</b><br>• Quản lý Control Plane tự động<br>• Worker Nodes: EC2 hoặc Fargate<br>• Chuẩn mã nguồn mở K8s"]
+
+    %% Nhánh 2: Không cần K8s
+    Q1 -- "Không (Dùng chuẩn AWS Docker Native)" --> Q2{"Mức độ kiểm soát hạ tầng mong muốn?"}
+
+    Q2 -- "Ứng dụng web/API đơn giản, không muốn quản lý VPC/Cluster" --> APPRUNNER["<b>AWS App Runner</b><br>• Tự động build từ code hoặc container<br>• Tự động co giãn & cấp phát URL HTTPS"]
+
+    Q2 -- "Cần kiến trúc Microservices chuyên sâu trên Amazon ECS" --> Q3{"Chính sách quản lý máy chủ & Chi phí?"}
+
+    Q3 -- "Không muốn quản lý EC2 / Không vá OS / Trả theo task" --> ECS_FARGATE["<b>ECS với AWS Fargate Launch Type</b><br>• Serverless Container 100%<br>• Cách ly vi ảo hóa (MicroVM)<br>• Tự co giãn theo task"]
+
+    Q3 -- "Muốn kiểm soát máy chủ / Dùng RI, Spot / Tùy biến đĩa & OS" --> ECS_EC2["<b>ECS với EC2 Launch Type</b><br>• Quản lý cụm máy chủ EC2<br>• Hỗ trợ GPU, ARM Graviton<br>• Dynamic Port Mapping với ALB"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class ECS_FARGATE,APPRUNNER awsBox;
+    class ECS_EC2 optBox;
+    class EKS warnBox;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

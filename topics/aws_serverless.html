@@ -319,28 +319,29 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     START(["Nhu cầu kiến trúc Serverless"]) --> Q1{"Loại bài toán cần giải quyết?"}
 
     %% Nhánh 1: API & Web Backend
     Q1 -- "Xây dựng REST/HTTP API Backend" --> Q2{"Tính năng API Gateway yêu cầu?"}
-    Q2 -- "Chi phí thấp nhất / Độ trễ thấp / JWT Auth" --> APIGW_HTTP["<b>API Gateway HTTP API</b><br>• Rẻ hơn 70% so với REST<br>• Tích hợp trực tiếp Lambda &amp; OIDC"]
-    Q2 -- "Cần API Keys / Usage Plans / AWS WAF / Caching" --> APIGW_REST["<b>API Gateway REST API</b><br>• Kiểm soát lưu lượng chi tiết<br>• Tích hợp tường lửa WAF &amp; Cache"]
+    Q2 -- "Chi phí thấp nhất / Độ trễ thấp / JWT Auth" --> APIGW_HTTP["<b>API Gateway HTTP API</b><br>• Rẻ hơn 70% so với REST<br>• Tích hợp trực tiếp Lambda & OIDC"]
+    Q2 -- "Cần API Keys / Usage Plans / AWS WAF / Caching" --> APIGW_REST["<b>API Gateway REST API</b><br>• Kiểm soát lưu lượng chi tiết<br>• Tích hợp tường lửa WAF & Cache"]
     Q2 -- "Giao tiếp 2 chiều thời gian thực (Chat/Live Data)" --> APIGW_WS["<b>API Gateway WebSocket API</b><br>• Kết nối liên tục hai chiều"]
 
     %% Nhánh 2: Xử lý sự kiện Compute
-    Q1 -- "Tính toán &amp; Xử lý nghiệp vụ" --> Q3{"Thời gian thực thi của tác vụ?"}
+    Q1 -- "Tính toán & Xử lý nghiệp vụ" --> Q3{"Thời gian thực thi của tác vụ?"}
     Q3 -- "&le; 15 phút (Ngắn hạn / Không máy chủ)" --> LAMBDA["<b>AWS Lambda</b><br>• Event-driven compute<br>• Scale-to-zero tự động<br>• Trả tiền theo mili-giây"]
-    Q3 -- "&gt; 15 phút (Dài hạn / Nặng)" --> ECS_FARGATE["<b>AWS Fargate / Batch</b><br>• Không bị giới hạn 15 phút<br>• Phù hợp tác vụ nặng kéo dài"]
+    Q3 -- "> 15 phút (Dài hạn / Nặng)" --> ECS_FARGATE["<b>AWS Fargate / Batch</b><br>• Không bị giới hạn 15 phút<br>• Phù hợp tác vụ nặng kéo dài"]
 
     %% Nhánh 3: Điều phối luồng
     Q1 -- "Điều phối chuỗi nghiệp vụ nhiều bước" --> Q4{"Thời gian của toàn bộ quy trình?"}
-    Q4 -- "Có bước chờ người duyệt / Kéo dài ngày/tháng" --> SF_STD["<b>Step Functions: Standard</b><br>• Thời gian chạy tới 1 năm<br>• Visual audit &amp; Exactly-once"]
-    Q4 -- "Xử lý luồng IoT/Clickstream nhanh (&lt; 5 phút)" --> SF_EXP["<b>Step Functions: Express</b><br>• Khối lượng cực lớn (&gt; 100k/s)<br>• Tối ưu chi phí tối đa"]
+    Q4 -- "Có bước chờ người duyệt / Kéo dài ngày/tháng" --> SF_STD["<b>Step Functions: Standard</b><br>• Thời gian chạy tới 1 năm<br>• Visual audit & Exactly-once"]
+    Q4 -- "Xử lý luồng IoT/Clickstream nhanh (< 5 phút)" --> SF_EXP["<b>Step Functions: Express</b><br>• Khối lượng cực lớn (> 100k/s)<br>• Tối ưu chi phí tối đa"]
 
     %% Nhánh 4: Xác thực người dùng
-    Q1 -- "Quản lý người dùng &amp; Đăng nhập" --> Q5{"Nhu cầu là Xác thực hay Cấp quyền AWS?"}
-    Q5 -- "Quản lý User/Password / Đăng ký / Google Login" --> COG_CUP["<b>Cognito User Pools (CUP)</b><br>• User Directory &amp; Sign-in<br>• Trả về JWT Token"]
+    Q1 -- "Quản lý người dùng & Đăng nhập" --> Q5{"Nhu cầu là Xác thực hay Cấp quyền AWS?"}
+    Q5 -- "Quản lý User/Password / Đăng ký / Google Login" --> COG_CUP["<b>Cognito User Pools (CUP)</b><br>• User Directory & Sign-in<br>• Trả về JWT Token"]
     Q5 -- "Cấp quyền truy cập trực tiếp tài nguyên AWS" --> COG_IDP["<b>Cognito Identity Pools</b><br>• Đổi JWT lấy Temporary IAM Credentials<br>• Truy cập trực tiếp S3/DynamoDB"]
 
     classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
@@ -350,6 +351,41 @@ flowchart TD
     class APIGW_HTTP,LAMBDA,COG_CUP awsBox;
     class APIGW_REST,SF_STD,COG_IDP optBox;
     class ECS_FARGATE,SF_EXP,APIGW_WS warnBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    START(["Nhu cầu kiến trúc Serverless"]) --> Q1{"Loại bài toán cần giải quyết?"}
+
+    %% Nhánh 1: API & Web Backend
+    Q1 -- "Xây dựng REST/HTTP API Backend" --> Q2{"Tính năng API Gateway yêu cầu?"}
+    Q2 -- "Chi phí thấp nhất / Độ trễ thấp / JWT Auth" --> APIGW_HTTP["<b>API Gateway HTTP API</b><br>• Rẻ hơn 70% so với REST<br>• Tích hợp trực tiếp Lambda & OIDC"]
+    Q2 -- "Cần API Keys / Usage Plans / AWS WAF / Caching" --> APIGW_REST["<b>API Gateway REST API</b><br>• Kiểm soát lưu lượng chi tiết<br>• Tích hợp tường lửa WAF & Cache"]
+    Q2 -- "Giao tiếp 2 chiều thời gian thực (Chat/Live Data)" --> APIGW_WS["<b>API Gateway WebSocket API</b><br>• Kết nối liên tục hai chiều"]
+
+    %% Nhánh 2: Xử lý sự kiện Compute
+    Q1 -- "Tính toán & Xử lý nghiệp vụ" --> Q3{"Thời gian thực thi của tác vụ?"}
+    Q3 -- "&le; 15 phút (Ngắn hạn / Không máy chủ)" --> LAMBDA["<b>AWS Lambda</b><br>• Event-driven compute<br>• Scale-to-zero tự động<br>• Trả tiền theo mili-giây"]
+    Q3 -- "> 15 phút (Dài hạn / Nặng)" --> ECS_FARGATE["<b>AWS Fargate / Batch</b><br>• Không bị giới hạn 15 phút<br>• Phù hợp tác vụ nặng kéo dài"]
+
+    %% Nhánh 3: Điều phối luồng
+    Q1 -- "Điều phối chuỗi nghiệp vụ nhiều bước" --> Q4{"Thời gian của toàn bộ quy trình?"}
+    Q4 -- "Có bước chờ người duyệt / Kéo dài ngày/tháng" --> SF_STD["<b>Step Functions: Standard</b><br>• Thời gian chạy tới 1 năm<br>• Visual audit & Exactly-once"]
+    Q4 -- "Xử lý luồng IoT/Clickstream nhanh (< 5 phút)" --> SF_EXP["<b>Step Functions: Express</b><br>• Khối lượng cực lớn (> 100k/s)<br>• Tối ưu chi phí tối đa"]
+
+    %% Nhánh 4: Xác thực người dùng
+    Q1 -- "Quản lý người dùng & Đăng nhập" --> Q5{"Nhu cầu là Xác thực hay Cấp quyền AWS?"}
+    Q5 -- "Quản lý User/Password / Đăng ký / Google Login" --> COG_CUP["<b>Cognito User Pools (CUP)</b><br>• User Directory & Sign-in<br>• Trả về JWT Token"]
+    Q5 -- "Cấp quyền truy cập trực tiếp tài nguyên AWS" --> COG_IDP["<b>Cognito Identity Pools</b><br>• Đổi JWT lấy Temporary IAM Credentials<br>• Truy cập trực tiếp S3/DynamoDB"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class APIGW_HTTP,LAMBDA,COG_CUP awsBox;
+    class APIGW_REST,SF_STD,COG_IDP optBox;
+    class ECS_FARGATE,SF_EXP,APIGW_WS warnBox;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

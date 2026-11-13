@@ -174,6 +174,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     subgraph EncryptFlow["QUY TRÌNH MÃ HÓA (ENCRYPTION WORKFLOW)"]
         CLIENT["Ứng dụng / Client"] -->|1. Gọi GenerateDataKey| KMS["AWS KMS<br/>Customer Master Key (CMK)"]
@@ -195,6 +196,31 @@ flowchart TD
     class KMS,KMS2 kms;
     class CLIENT,APP client;
     class STORAGE,PLAIN store;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    subgraph EncryptFlow["QUY TRÌNH MÃ HÓA (ENCRYPTION WORKFLOW)"]
+        CLIENT["Ứng dụng / Client"] -->|1. Gọi GenerateDataKey| KMS["AWS KMS<br/>Customer Master Key (CMK)"]
+        KMS -->|2. Trả về Plaintext Data Key + Encrypted Data Key| CLIENT
+        CLIENT -->|3. Dùng Plaintext Data Key mã hóa file > 4KB| CIPHER["Dữ liệu đã mã hóa<br/>(Ciphertext)"]
+        CLIENT -->|4. Xóa vĩnh viễn Plaintext Data Key khỏi RAM| MEMORY["Bộ nhớ (RAM)<br/>Đã làm sạch"]
+        CIPHER -.->|5. Lưu trữ chung| STORAGE["S3 / EBS / Database<br/>(Ciphertext + Encrypted Data Key đính kèm)"]
+    end
+
+    subgraph DecryptFlow["QUY TRÌNH GIẢI MÃ (DECRYPTION WORKFLOW)"]
+        APP["Ứng dụng cần đọc dữ liệu"] -->|1. Gửi Encrypted Data Key| KMS2["AWS KMS (CMK)"]
+        KMS2 -->|2. Gọi Decrypt API & trả về Plaintext Data Key| APP
+        APP -->|3. Dùng Plaintext Data Key giải mã Ciphertext| PLAIN["Dữ liệu gốc (Plaintext)"]
+    end
+
+    classDef kms fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef client fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef store fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    class KMS,KMS2 kms;
+    class CLIENT,APP client;
+    class STORAGE,PLAIN store;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

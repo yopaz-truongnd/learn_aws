@@ -313,17 +313,18 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     START(["Nhu cầu giám sát, kiểm toán hoặc quản trị"]) --> Q1{"Mục đích theo dõi chính là gì?"}
 
     %% Nhánh 1: Hiệu năng & Logs
     Q1 -- "Giám sát hiệu năng hệ thống / Metrics / Logs" --> Q2{"Loại dữ liệu đo đạc?"}
-    Q2 -- "CPU, Mạng, IOPS cơ bản / Báo động ngưỡng" --> CW_METRICS["<b>CloudWatch Metrics &amp; Alarms</b><br>• Đo đạc 5 phút (Basic) / 1 phút (Detailed)<br>• Kích hoạt Auto Scaling / Phục hồi EC2"]
-    Q2 -- "Bộ nhớ RAM / Dung lượng đĩa / File Log OS" --> CW_AGENT["<b>Unified CloudWatch Agent</b><br>• Cài trực tiếp vào OS máy chủ<br>• Đẩy Custom Metrics &amp; App Logs"]
+    Q2 -- "CPU, Mạng, IOPS cơ bản / Báo động ngưỡng" --> CW_METRICS["<b>CloudWatch Metrics & Alarms</b><br>• Đo đạc 5 phút (Basic) / 1 phút (Detailed)<br>• Kích hoạt Auto Scaling / Phục hồi EC2"]
+    Q2 -- "Bộ nhớ RAM / Dung lượng đĩa / File Log OS" --> CW_AGENT["<b>Unified CloudWatch Agent</b><br>• Cài trực tiếp vào OS máy chủ<br>• Đẩy Custom Metrics & App Logs"]
     Q2 -- "Kiểm tra tính sẵn sàng website 24/7 từ bên ngoài" --> CW_SYNTH["<b>CloudWatch Synthetics Canary</b><br>• Chạy script Node.js/Python định kỳ"]
 
     %% Nhánh 2: Lịch sử gọi lệnh & Kiểm toán
-    Q1 -- "Kiểm toán bảo mật / Lịch sử gọi lệnh API (Ai làm gì?)" --> Q3{"Nhu cầu lưu vết &amp; phân tích?"}
+    Q1 -- "Kiểm toán bảo mật / Lịch sử gọi lệnh API (Ai làm gì?)" --> Q3{"Nhu cầu lưu vết & phân tích?"}
     Q3 -- "Tra cứu nhanh trong 90 ngày miễn phí" --> CT_HIST["<b>CloudTrail Event History</b><br>• Mặc định bật trên mọi tài khoản<br>• Ghi nhận Management Events"]
     Q3 -- "Lưu trữ lâu dài / Phân tích bất thường" --> CT_TRAIL["<b>CloudTrail Multi-Region Trail</b><br>• Xuất file nén sang Amazon S3<br>• CloudTrail Insights phát hiện dị thường"]
 
@@ -340,6 +341,37 @@ flowchart TD
     class CW_METRICS,CW_AGENT,CW_SYNTH awsBox;
     class CT_HIST,CT_TRAIL optBox;
     class CONFIG,EVENTBRIDGE warnBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    START(["Nhu cầu giám sát, kiểm toán hoặc quản trị"]) --> Q1{"Mục đích theo dõi chính là gì?"}
+
+    %% Nhánh 1: Hiệu năng & Logs
+    Q1 -- "Giám sát hiệu năng hệ thống / Metrics / Logs" --> Q2{"Loại dữ liệu đo đạc?"}
+    Q2 -- "CPU, Mạng, IOPS cơ bản / Báo động ngưỡng" --> CW_METRICS["<b>CloudWatch Metrics & Alarms</b><br>• Đo đạc 5 phút (Basic) / 1 phút (Detailed)<br>• Kích hoạt Auto Scaling / Phục hồi EC2"]
+    Q2 -- "Bộ nhớ RAM / Dung lượng đĩa / File Log OS" --> CW_AGENT["<b>Unified CloudWatch Agent</b><br>• Cài trực tiếp vào OS máy chủ<br>• Đẩy Custom Metrics & App Logs"]
+    Q2 -- "Kiểm tra tính sẵn sàng website 24/7 từ bên ngoài" --> CW_SYNTH["<b>CloudWatch Synthetics Canary</b><br>• Chạy script Node.js/Python định kỳ"]
+
+    %% Nhánh 2: Lịch sử gọi lệnh & Kiểm toán
+    Q1 -- "Kiểm toán bảo mật / Lịch sử gọi lệnh API (Ai làm gì?)" --> Q3{"Nhu cầu lưu vết & phân tích?"}
+    Q3 -- "Tra cứu nhanh trong 90 ngày miễn phí" --> CT_HIST["<b>CloudTrail Event History</b><br>• Mặc định bật trên mọi tài khoản<br>• Ghi nhận Management Events"]
+    Q3 -- "Lưu trữ lâu dài / Phân tích bất thường" --> CT_TRAIL["<b>CloudTrail Multi-Region Trail</b><br>• Xuất file nén sang Amazon S3<br>• CloudTrail Insights phát hiện dị thường"]
+
+    %% Nhánh 3: Tuân thủ cấu hình
+    Q1 -- "Kiểm tra tuân thủ cấu hình bảo mật theo thời gian" --> CONFIG["<b>AWS Config</b><br>• Theo dõi dòng thời gian thay đổi<br>• Đánh giá COMPLIANT / NON_COMPLIANT<br>• Tự động sửa qua SSM Automation"]
+
+    %% Nhánh 4: Phản ứng sự kiện thời gian thực
+    Q1 -- "Phản ứng thời gian thực khi có sự kiện thay đổi" --> EVENTBRIDGE["<b>Amazon EventBridge (CloudWatch Events)</b><br>• Lọc sự kiện JSON Pattern<br>• Kích hoạt Lambda, SQS, SNS tức thì<br>• Thay thế cron scheduler"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class CW_METRICS,CW_AGENT,CW_SYNTH awsBox;
+    class CT_HIST,CT_TRAIL optBox;
+    class CONFIG,EVENTBRIDGE warnBox;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
@@ -424,6 +456,7 @@ flowchart TD
   <div class="g2">
     <div>
       <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     DEV["Kỹ sư cấu hình sai<br>(Mở S3 Public / Mở SSH port 22)"] -->|API Call| AWS_RES["<b>Tài nguyên AWS</b><br>(S3 Bucket / Security Group)"]
     
@@ -444,7 +477,31 @@ flowchart TD
     class DEV,NON_COMP redBox;
     class COMP,FIXED grBox;
     class AWS_RES,CONFIG,SSM blBox;
-      </div>
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    DEV["Kỹ sư cấu hình sai<br>(Mở S3 Public / Mở SSH port 22)"] -->|API Call| AWS_RES["<b>Tài nguyên AWS</b><br>(S3 Bucket / Security Group)"]
+    
+    AWS_RES -->|Thay đổi cấu hình| CONFIG["<b>AWS Config Rule</b><br>Đánh giá tuân thủ"]
+    
+    CONFIG -->|Phát hiện vi phạm| NON_COMP["Đánh dấu: <b>NON_COMPLIANT</b>"]
+    
+    NON_COMP -->|Kích hoạt tự động| SSM["<b>SSM Automation Document</b><br><i>AWS-DisablePublicAccessForS3Bucket</i>"]
+    
+    SSM -->|Thực thi khắc phục| FIXED["<b>Khắc phục thành công</b><br>Bật lại Block Public Access / Đóng Port 22"]
+    
+    FIXED -->|Cập nhật trạng thái| COMP["Đánh dấu lại: <b>COMPLIANT</b> ✅"]
+
+    classDef redBox fill:#FCE9E7,stroke:#E56458,stroke-width:2px;
+    classDef grBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px;
+    classDef blBox fill:#E5F2FC,stroke:#2783DE,stroke-width:1.5px;
+    
+    class DEV,NON_COMP redBox;
+    class COMP,FIXED grBox;
+    class AWS_RES,CONFIG,SSM blBox;
+    </div>
+    <div class="mermaid-output"></div>
+  </div>
     </div>
 
     <div>

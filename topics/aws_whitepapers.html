@@ -144,6 +144,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     ROOT["HỆ THỐNG ĐÁM MÂY CHUẨN AWS<br/>(AWS Well-Architected Cloud System)"]
 
@@ -173,6 +174,39 @@ flowchart TD
     class P4 c4;
     class P5 c5;
     class P6 c6;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    ROOT["HỆ THỐNG ĐÁM MÂY CHUẨN AWS<br/>(AWS Well-Architected Cloud System)"]
+
+    P1["1. Vận hành Xuất sắc<br/>(Operational Excellence)<br/>• Operations as Code<br/>• Anticipate failure"]
+    P2["2. An toàn Bảo mật<br/>(Security)<br/>• Defense in depth<br/>• Zero Trust · KMS"]
+    P3["3. Độ Tin cậy<br/>(Reliability)<br/>• Auto-recovery<br/>• Multi-AZ · Multi-Region"]
+    P4["4. Hiệu năng Cao<br/>(Performance Efficiency)<br/>• Serverless · Caching<br/>• Global low latency"]
+    P5["5. Tối ưu Chi phí<br/>(Cost Optimization)<br/>• Consumption model<br/>• Rightsizing · Savings Plans"]
+    P6["6. Bền vững Môi trường<br/>(Sustainability)<br/>• Maximize utilization<br/>• AWS Graviton ARM"]
+
+    ROOT --> P1
+    ROOT --> P2
+    ROOT --> P3
+    ROOT --> P4
+    ROOT --> P5
+    ROOT --> P6
+
+    classDef c1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef c2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef c3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef c4 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef c5 fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    classDef c6 fill:#e0f2f1,stroke:#00796b,stroke-width:2px;
+    class P1 c1;
+    class P2 c2;
+    class P3 c3;
+    class P4 c4;
+    class P5 c5;
+    class P6 c6;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

@@ -319,13 +319,14 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
-    START(["Nhu cầu phân tích dữ liệu &amp; Big Data"]) --> Q1{"Mục tiêu phân tích chính là gì?"}
+    START(["Nhu cầu phân tích dữ liệu & Big Data"]) --> Q1{"Mục tiêu phân tích chính là gì?"}
 
     %% Nhánh 1: Truy vấn SQL trên S3
-    Q1 -- "Truy vấn trực tiếp file trên S3 (Không dựng DB)" --> Q2{"Tần suất &amp; Nhu cầu?"}
+    Q1 -- "Truy vấn trực tiếp file trên S3 (Không dựng DB)" --> Q2{"Tần suất & Nhu cầu?"}
     Q2 -- "Truy vấn đột xuất (Ad-hoc) / Serverless hoàn toàn" --> ATHENA["<b>Amazon Athena</b><br>• $5/TB dữ liệu quét<br>• Dùng Glue Data Catalog<br>• Phân tích VPC Logs/CloudTrail"]
-    Q2 -- "Kho dữ liệu lớn kết hợp bảng nội bộ &amp; S3" --> RS_SPEC["<b>Redshift Spectrum</b><br>• Mở rộng truy vấn Redshift ra S3<br>• Xử lý song song MPP"]
+    Q2 -- "Kho dữ liệu lớn kết hợp bảng nội bộ & S3" --> RS_SPEC["<b>Redshift Spectrum</b><br>• Mở rộng truy vấn Redshift ra S3<br>• Xử lý song song MPP"]
 
     %% Nhánh 2: Data Warehouse
     Q1 -- "Kho dữ liệu phân tích doanh nghiệp OLAP (Petabyte)" --> REDSHIFT["<b>Amazon Redshift</b><br>• Columnar Storage<br>• Lệnh COPY từ S3<br>• Báo cáo BI chuyên sâu"]
@@ -334,7 +335,7 @@ flowchart TD
     Q1 -- "Hệ sinh thái Big Data nguồn mở (Spark, Hadoop, Flink)" --> EMR["<b>Amazon EMR</b><br>• Cụm phân tán linh hoạt<br>• Task Nodes dùng Spot Instance<br>• Xử lý Petabyte Machine Learning"]
 
     %% Nhánh 4: Tìm kiếm & Phân tích Log
-    Q1 -- "Phân tích Log thời gian thực &amp; Tìm kiếm toàn văn" --> OPENSEARCH["<b>Amazon OpenSearch Service</b><br>• Ingest log từ Kinesis/CloudWatch<br>• OpenSearch Dashboards (Kibana)"]
+    Q1 -- "Phân tích Log thời gian thực & Tìm kiếm toàn văn" --> OPENSEARCH["<b>Amazon OpenSearch Service</b><br>• Ingest log từ Kinesis/CloudWatch<br>• OpenSearch Dashboards (Kibana)"]
 
     %% Nhánh 5: Trực quan hóa Dashboard
     Q1 -- "Báo cáo biểu đồ tương tác cho người dùng cuối" --> QUICKSIGHT["<b>Amazon QuickSight</b><br>• In-memory SPICE Engine<br>• Row-Level Security (RLS)<br>• Tự động co giãn Serverless"]
@@ -346,6 +347,37 @@ flowchart TD
     class ATHENA,QUICKSIGHT awsBox;
     class REDSHIFT,RS_SPEC optBox;
     class EMR,OPENSEARCH warnBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    START(["Nhu cầu phân tích dữ liệu & Big Data"]) --> Q1{"Mục tiêu phân tích chính là gì?"}
+
+    %% Nhánh 1: Truy vấn SQL trên S3
+    Q1 -- "Truy vấn trực tiếp file trên S3 (Không dựng DB)" --> Q2{"Tần suất & Nhu cầu?"}
+    Q2 -- "Truy vấn đột xuất (Ad-hoc) / Serverless hoàn toàn" --> ATHENA["<b>Amazon Athena</b><br>• $5/TB dữ liệu quét<br>• Dùng Glue Data Catalog<br>• Phân tích VPC Logs/CloudTrail"]
+    Q2 -- "Kho dữ liệu lớn kết hợp bảng nội bộ & S3" --> RS_SPEC["<b>Redshift Spectrum</b><br>• Mở rộng truy vấn Redshift ra S3<br>• Xử lý song song MPP"]
+
+    %% Nhánh 2: Data Warehouse
+    Q1 -- "Kho dữ liệu phân tích doanh nghiệp OLAP (Petabyte)" --> REDSHIFT["<b>Amazon Redshift</b><br>• Columnar Storage<br>• Lệnh COPY từ S3<br>• Báo cáo BI chuyên sâu"]
+
+    %% Nhánh 3: Khung Big Data mở (Spark/Hadoop)
+    Q1 -- "Hệ sinh thái Big Data nguồn mở (Spark, Hadoop, Flink)" --> EMR["<b>Amazon EMR</b><br>• Cụm phân tán linh hoạt<br>• Task Nodes dùng Spot Instance<br>• Xử lý Petabyte Machine Learning"]
+
+    %% Nhánh 4: Tìm kiếm & Phân tích Log
+    Q1 -- "Phân tích Log thời gian thực & Tìm kiếm toàn văn" --> OPENSEARCH["<b>Amazon OpenSearch Service</b><br>• Ingest log từ Kinesis/CloudWatch<br>• OpenSearch Dashboards (Kibana)"]
+
+    %% Nhánh 5: Trực quan hóa Dashboard
+    Q1 -- "Báo cáo biểu đồ tương tác cho người dùng cuối" --> QUICKSIGHT["<b>Amazon QuickSight</b><br>• In-memory SPICE Engine<br>• Row-Level Security (RLS)<br>• Tự động co giãn Serverless"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class ATHENA,QUICKSIGHT awsBox;
+    class REDSHIFT,RS_SPEC optBox;
+    class EMR,OPENSEARCH warnBox;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

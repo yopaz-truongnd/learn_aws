@@ -102,8 +102,9 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart LR
-    D1["Domain 1: Design Secure Architectures<br/><b>30%</b> (~20 câu)<br/>• IAM, SCPs, Identity Center<br/>• KMS, Secrets Manager, WAF<br/>• VPC Security Groups &amp; NACLs"]
+    D1["Domain 1: Design Secure Architectures<br/><b>30%</b> (~20 câu)<br/>• IAM, SCPs, Identity Center<br/>• KMS, Secrets Manager, WAF<br/>• VPC Security Groups & NACLs"]
     D2["Domain 2: Design Resilient Architectures<br/><b>26%</b> (~17 câu)<br/>• Multi-AZ, ASG, ELB, Route 53<br/>• SQS Decoupling, SNS Fan-out<br/>• 4 DR Strategies, DRS, Backups"]
     D3["Domain 3: Design High-Performing Architectures<br/><b>24%</b> (~15 câu)<br/>• Compute: EC2, Lambda, ECS, EKS<br/>• Storage: S3, EBS, EFS, FSx<br/>• Database: Aurora, DynamoDB<br/>• Caching: CloudFront, ElastiCache"]
     D4["Domain 4: Design Cost-Optimized Architectures<br/><b>20%</b> (~13 câu)<br/>• Spot, Savings Plans, Graviton<br/>• S3 Intelligent-Tiering, Glacier<br/>• S3 Gateway Endpoints (Free)"]
@@ -116,6 +117,24 @@ flowchart LR
     class D2 d2;
     class D3 d3;
     class D4 d4;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart LR
+    D1["Domain 1: Design Secure Architectures<br/><b>30%</b> (~20 câu)<br/>• IAM, SCPs, Identity Center<br/>• KMS, Secrets Manager, WAF<br/>• VPC Security Groups & NACLs"]
+    D2["Domain 2: Design Resilient Architectures<br/><b>26%</b> (~17 câu)<br/>• Multi-AZ, ASG, ELB, Route 53<br/>• SQS Decoupling, SNS Fan-out<br/>• 4 DR Strategies, DRS, Backups"]
+    D3["Domain 3: Design High-Performing Architectures<br/><b>24%</b> (~15 câu)<br/>• Compute: EC2, Lambda, ECS, EKS<br/>• Storage: S3, EBS, EFS, FSx<br/>• Database: Aurora, DynamoDB<br/>• Caching: CloudFront, ElastiCache"]
+    D4["Domain 4: Design Cost-Optimized Architectures<br/><b>20%</b> (~13 câu)<br/>• Spot, Savings Plans, Graviton<br/>• S3 Intelligent-Tiering, Glacier<br/>• S3 Gateway Endpoints (Free)"]
+
+    classDef d1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef d2 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef d3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef d4 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    class D1 d1;
+    class D2 d2;
+    class D3 d3;
+    class D4 d4;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

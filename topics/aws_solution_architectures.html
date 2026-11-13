@@ -154,12 +154,13 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     subgraph S3_Store["Kho lưu trữ Dữ liệu Gốc / S3 Data Lake"]
         S3["Amazon S3 Data Lake<br/>(Lưu trữ hàng PB dữ liệu thô)"]
     end
 
-    subgraph HPC_VPC["VPC: Tính toán Khoa học &amp; Mô phỏng"]
+    subgraph HPC_VPC["VPC: Tính toán Khoa học & Mô phỏng"]
         LUSTRE["Amazon FSx for Lustre<br/>(Hàng triệu IOPS · Sub-ms latency)"]
 
         subgraph CLUSTER["Cluster Placement Group (Single Availability Zone)"]
@@ -185,6 +186,41 @@ flowchart TD
     class S3 s3;
     class LUSTRE,NODE1,NODE2,NODE3 hpc;
     class CLUSTER efa;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    subgraph S3_Store["Kho lưu trữ Dữ liệu Gốc / S3 Data Lake"]
+        S3["Amazon S3 Data Lake<br/>(Lưu trữ hàng PB dữ liệu thô)"]
+    end
+
+    subgraph HPC_VPC["VPC: Tính toán Khoa học & Mô phỏng"]
+        LUSTRE["Amazon FSx for Lustre<br/>(Hàng triệu IOPS · Sub-ms latency)"]
+
+        subgraph CLUSTER["Cluster Placement Group (Single Availability Zone)"]
+            NODE1["EC2 Compute Instance 1<br/>(Hỗ trợ EFA · Linux)"]
+            NODE2["EC2 Compute Instance 2<br/>(Hỗ trợ EFA · Linux)"]
+            NODE3["EC2 Compute Instance 3<br/>(Hỗ trợ EFA · Linux)"]
+        end
+
+        NODE1 <-->|EFA: Bypass OS Kernel<br/>MPI Node-to-Node| NODE2
+        NODE2 <-->|EFA: Bypass OS Kernel<br/>MPI Node-to-Node| NODE3
+        NODE1 <-->|EFA: Bypass OS Kernel<br/>MPI Node-to-Node| NODE3
+
+        LUSTRE <-->|POSIX Direct Mount| NODE1
+        LUSTRE <-->|POSIX Direct Mount| NODE2
+        LUSTRE <-->|POSIX Direct Mount| NODE3
+    end
+
+    S3 <-->|Tự động đồng bộ 2 chiều (Data Repository)| LUSTRE
+
+    classDef s3 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef hpc fill:#fff3e0,stroke:#f57c00,stroke-width:1px;
+    classDef efa fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    class S3 s3;
+    class LUSTRE,NODE1,NODE2,NODE3 hpc;
+    class CLUSTER efa;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

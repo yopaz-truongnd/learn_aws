@@ -102,6 +102,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     SAA["⭐ AWS Certified Solutions Architect - Associate<br/>(SAA-C03) — HOÀN THÀNH"]
 
@@ -114,7 +115,7 @@ flowchart TD
         ML["🤖 Machine Learning - Specialty<br/>(MLS-C01)"]
     end
 
-    subgraph DevOps["Lộ trình Vận hành &amp; Lập trình / DevOps Track"]
+    subgraph DevOps["Lộ trình Vận hành & Lập trình / DevOps Track"]
         DVA["💻 Developer - Associate<br/>(DVA-C02)"]
         SOA["⚙️ SysOps Administrator - Associate<br/>(SOA-C02)"]
         DOP["🛠️ DevOps Engineer - Professional<br/>(DOP-C02)"]
@@ -134,6 +135,42 @@ flowchart TD
     class SAP next;
     class SEC,NET,DATA,ML spec;
     class DVA,SOA,DOP devops;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    SAA["⭐ AWS Certified Solutions Architect - Associate<br/>(SAA-C03) — HOÀN THÀNH"]
+
+    SAP["🚀 AWS Certified Solutions Architect - Professional<br/>(SAP-C02) — BƯỚC TIẾP THEO KHUYẾN NGHỊ"]
+    
+    subgraph Specialty["Chuyên ngành Nâng cao / Specialty Certifications"]
+        SEC["🔐 Security - Specialty<br/>(SCS-C02)"]
+        NET["🌐 Advanced Networking - Specialty<br/>(ANS-C01)"]
+        DATA["📊 Data Engineer - Associate<br/>(DEA-C01)"]
+        ML["🤖 Machine Learning - Specialty<br/>(MLS-C01)"]
+    end
+
+    subgraph DevOps["Lộ trình Vận hành & Lập trình / DevOps Track"]
+        DVA["💻 Developer - Associate<br/>(DVA-C02)"]
+        SOA["⚙️ SysOps Administrator - Associate<br/>(SOA-C02)"]
+        DOP["🛠️ DevOps Engineer - Professional<br/>(DOP-C02)"]
+    end
+
+    SAA ==>|Lựa chọn số 1: Đi thẳng lên Pro| SAP
+    SAA -->|Mở rộng chuyên sâu| Specialty
+    SAA -->|Chuyển hướng CI/CD & Automation| DevOps
+    DVA --> DOP
+    SOA --> DOP
+
+    classDef curr fill:#e8f5e9,stroke:#388e3c,stroke-width:3px;
+    classDef next fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef spec fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef devops fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1px;
+    class SAA curr;
+    class SAP next;
+    class SEC,NET,DATA,ML spec;
+    class DVA,SOA,DOP devops;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

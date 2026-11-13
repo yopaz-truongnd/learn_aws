@@ -170,6 +170,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart LR
     subgraph S1["1. Backup & Restore"]
         B1["Chi phí: RẤT THẤP ($)<br/>RPO: Hàng giờ / ngày<br/>RTO: Hàng giờ / ngày<br/>Chỉ lưu Snapshots / S3 CRR"]
@@ -199,6 +200,39 @@ flowchart LR
     class S2 c2;
     class S3 c3;
     class S4 c4;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart LR
+    subgraph S1["1. Backup & Restore"]
+        B1["Chi phí: RẤT THẤP ($)<br/>RPO: Hàng giờ / ngày<br/>RTO: Hàng giờ / ngày<br/>Chỉ lưu Snapshots / S3 CRR"]
+    end
+
+    subgraph S2["2. Pilot Light"]
+        B2["Chi phí: THẤP ($$)<br/>RPO: Vài phút<br/>RTO: Hàng chục phút<br/>Core DB chạy sao chép<br/>EC2 tắt, chỉ có AMI"]
+    end
+
+    subgraph S3["3. Warm Standby"]
+        B3["Chi phí: TRUNG BÌNH ($$$)<br/>RPO: Vài giây / phút<br/>RTO: Vài phút<br/>Cả hệ thống chạy thu nhỏ<br/>ASG scale out khi sự cố"]
+    end
+
+    subgraph S4["4. Multi-Site Active-Active"]
+        B4["Chi phí: RẤT CAO ($$$$)<br/>RPO: Gần như bằng 0<br/>RTO: Gần như bằng 0<br/>Full-scale 2+ Regions<br/>Route 53 cân bằng tải"]
+    end
+
+    S1 ==>|Tăng chi phí · Giảm RPO/RTO| S2
+    S2 ==>|Tăng chi phí · Giảm RPO/RTO| S3
+    S3 ==>|Tăng chi phí · Giảm RPO/RTO| S4
+
+    classDef c1 fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    classDef c2 fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef c3 fill:#fff3e0,stroke:#f57c00,stroke-width:1px;
+    classDef c4 fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    class S1 c1;
+    class S2 c2;
+    class S3 c3;
+    class S4 c4;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

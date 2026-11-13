@@ -62,11 +62,28 @@ async function renderAllMermaid() {
     var srcEl =
       diag.querySelector('.mermaid-src.lang-' + currentLang) ||
       diag.querySelector('.mermaid-src');
-    if (!srcEl) continue;
 
-    var code = srcEl.textContent.trim();
+    var code = '';
     var outEl = diag.querySelector('.mermaid-output');
-    if (!outEl) continue;
+
+    if (srcEl) {
+      code = srcEl.textContent.trim();
+      if (!outEl) {
+        outEl = document.createElement('div');
+        outEl.className = 'mermaid-output';
+        diag.appendChild(outEl);
+      }
+    } else {
+      // Direct raw mermaid code inside .mermaid-diagram without .mermaid-src wrapper
+      if (!diag.hasAttribute('data-raw-mermaid')) {
+        diag.setAttribute('data-raw-mermaid', diag.textContent.trim());
+        diag.innerHTML = '<div class="mermaid-output"></div>';
+      }
+      code = diag.getAttribute('data-raw-mermaid') || '';
+      outEl = diag.querySelector('.mermaid-output');
+    }
+
+    if (!code || !outEl) continue;
 
     try {
       mermaidRenderCounter++;

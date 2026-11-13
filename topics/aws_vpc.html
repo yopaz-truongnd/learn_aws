@@ -170,6 +170,7 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     INTERNET(("Internet công cộng<br/>(Public Clients)")) <--> IGW["Internet Gateway (IGW)"]
 
@@ -217,6 +218,57 @@ flowchart TD
     class PrivateSubnet priv;
     class DBSubnet db;
     class IGW,NAT,S3_GW igw;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    INTERNET(("Internet công cộng<br/>(Public Clients)")) <--> IGW["Internet Gateway (IGW)"]
+
+    subgraph VPC["AWS VPC: 10.0.0.0/16"]
+        IGW <--> RT_PUB["Public Route Table<br/>(0.0.0.0/0 &rarr; IGW)"]
+
+        subgraph PublicSubnet["Public Subnet (10.0.1.0/24)"]
+            ALB["Application Load Balancer (ALB)"]
+            NAT["NAT Gateway (EIP: 54.x.x.x)"]
+            BASTION["Bastion Host (Optional)"]
+        end
+
+        RT_PUB --- PublicSubnet
+
+        subgraph PrivateSubnet["Private Subnet (10.0.2.0/24)"]
+            APP1["EC2 Backend Instance 1"]
+            APP2["EC2 Backend Instance 2"]
+            VPCE_INT["Interface Endpoint (ENI)<br/>SQS / SSM / Kinesis"]
+        end
+
+        subgraph DBSubnet["Isolated Database Subnet (10.0.3.0/24)"]
+            RDS_PRI["Amazon RDS (Primary)"]
+        end
+
+        RT_PRIV["Private Route Table<br/>(0.0.0.0/0 &rarr; NAT Gateway)"] --- PrivateSubnet
+        RT_DB["Database Route Table<br/>(Chỉ có local route 10.0.0.0/16)"] --- DBSubnet
+
+        NAT <-->|Outbound Traffic| RT_PRIV
+        ALB -->|Forward HTTP:8080| APP1
+        ALB -->|Forward HTTP:8080| APP2
+        APP1 -->|SQL:3306| RDS_PRI
+        APP2 -->|SQL:3306| RDS_PRI
+
+        S3_GW["Gateway Endpoint<br/>(com.amazonaws.region.s3)"]
+        RT_PRIV -.->|Traffic S3 nội bộ| S3_GW
+    end
+
+    S3_GW <--> S3["Amazon S3 Bucket"]
+
+    classDef pub fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef priv fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    classDef db fill:#fff3e0,stroke:#f57c00,stroke-width:1px;
+    classDef igw fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    class PublicSubnet pub;
+    class PrivateSubnet priv;
+    class DBSubnet db;
+    class IGW,NAT,S3_GW igw;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 

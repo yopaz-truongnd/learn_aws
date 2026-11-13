@@ -328,13 +328,14 @@
   </div>
 
   <div class="mermaid-diagram">
+    <div class="mermaid-src lang-vi" style="display:none">
 flowchart TD
     START(["Nhu cầu lưu trữ mở rộng / Lưu trữ lai"]) --> Q1{"Dữ liệu đang ở đâu?"}
 
     %% Nhánh 1: Dữ liệu trên AWS / Đang di chuyển lên AWS
     Q1 -- "Dữ liệu trên AWS (File System)" --> Q2{"Ứng dụng yêu cầu giao thức & OS gì?"}
     
-    Q2 -- "Windows / SMB / Active Directory" --> FSX_WIN["<b>Amazon FSx for Windows</b><br>• Giao thức SMB &amp; NTFS<br>• Tích hợp Microsoft AD &amp; DFS"]
+    Q2 -- "Windows / SMB / Active Directory" --> FSX_WIN["<b>Amazon FSx for Windows</b><br>• Giao thức SMB & NTFS<br>• Tích hợp Microsoft AD & DFS"]
     Q2 -- "Linux POSIX / Hàng triệu IOPS / HPC" --> FSX_LUS["<b>Amazon FSx for Lustre</b><br>• Sub-millisecond latency<br>• Đọc/Ghi trực tiếp S3"]
     Q2 -- "Enterprise NAS / Đa giao thức / Deduplication" --> FSX_ONTAP["<b>Amazon FSx for NetApp ONTAP</b><br>• NFS, SMB, iSCSI đa nền tảng"]
 
@@ -342,7 +343,7 @@ flowchart TD
     Q1 -- "Dữ liệu On-Premises (Hybrid / Migration)" --> Q3{"Nhu cầu là gì?"}
 
     %% Nhánh 2a: Hybrid Storage Gateway
-    Q3 -- "Tích hợp lưu trữ liên tục (Hybrid Access)" --> Q4{"Giao thức &amp; Loại dữ liệu on-prem?"}
+    Q3 -- "Tích hợp lưu trữ liên tục (Hybrid Access)" --> Q4{"Giao thức & Loại dữ liệu on-prem?"}
     Q4 -- "Tệp File (NFS/SMB) muốn lưu S3" --> SG_FILE["<b>S3 File Gateway</b><br>• Caching cục bộ<br>• Dữ liệu lưu thành S3 Object"]
     Q4 -- "Giao thức SMB cần Windows AD" --> SG_FSX["<b>FSx File Gateway</b><br>• Cache on-prem cho FSx Windows"]
     Q4 -- "Ổ đĩa Block (iSCSI)" --> Q5{"Khi mất mạng có cần toàn bộ data?"}
@@ -351,7 +352,7 @@ flowchart TD
     Q4 -- "Thay thế băng từ sao lưu vật lý" --> SG_TAPE["<b>Tape Gateway (VTL)</b><br>• Giao thức iSCSI VTL<br>• Lưu thẳng Glacier / Deep Archive"]
 
     %% Nhánh 2b: Migration lớn
-    Q3 -- "Di chuyển lượng lớn dữ liệu lên Cloud" --> Q6{"Băng thông mạng &amp; Thời gian?"}
+    Q3 -- "Di chuyển lượng lớn dữ liệu lên Cloud" --> Q6{"Băng thông mạng & Thời gian?"}
     Q6 -- "Mạng nhanh / Dưới 1 tuần" --> DATASYNC["<b>AWS DataSync</b><br>• Đồng bộ trực tuyến qua mạng<br>• Tối đa 10 Gbps qua Direct Connect"]
     Q6 -- "Mạng chậm / Không có mạng / > 1 tuần" --> Q7{"Quy mô dữ liệu?"}
     Q7 -- "Tới 14 TB (Nhỏ gọn, chạy pin)" --> SNOWCONE["<b>AWS Snowcone</b> (8-14 TB)"]
@@ -365,6 +366,47 @@ flowchart TD
     class FSX_WIN,FSX_LUS,FSX_ONTAP awsBox;
     class SG_FILE,SG_FSX,SG_CACHED,SG_STORED,SG_TAPE optBox;
     class SNOWCONE,SNOWBALL,SNOWMOBILE,DATASYNC warnBox;
+    </div>
+    <div class="mermaid-src lang-en" style="display:none">
+flowchart TD
+    START(["Nhu cầu lưu trữ mở rộng / Lưu trữ lai"]) --> Q1{"Dữ liệu đang ở đâu?"}
+
+    %% Nhánh 1: Dữ liệu trên AWS / Đang di chuyển lên AWS
+    Q1 -- "Dữ liệu trên AWS (File System)" --> Q2{"Ứng dụng yêu cầu giao thức & OS gì?"}
+    
+    Q2 -- "Windows / SMB / Active Directory" --> FSX_WIN["<b>Amazon FSx for Windows</b><br>• Giao thức SMB & NTFS<br>• Tích hợp Microsoft AD & DFS"]
+    Q2 -- "Linux POSIX / Hàng triệu IOPS / HPC" --> FSX_LUS["<b>Amazon FSx for Lustre</b><br>• Sub-millisecond latency<br>• Đọc/Ghi trực tiếp S3"]
+    Q2 -- "Enterprise NAS / Đa giao thức / Deduplication" --> FSX_ONTAP["<b>Amazon FSx for NetApp ONTAP</b><br>• NFS, SMB, iSCSI đa nền tảng"]
+
+    %% Nhánh 2: Dữ liệu On-Premises
+    Q1 -- "Dữ liệu On-Premises (Hybrid / Migration)" --> Q3{"Nhu cầu là gì?"}
+
+    %% Nhánh 2a: Hybrid Storage Gateway
+    Q3 -- "Tích hợp lưu trữ liên tục (Hybrid Access)" --> Q4{"Giao thức & Loại dữ liệu on-prem?"}
+    Q4 -- "Tệp File (NFS/SMB) muốn lưu S3" --> SG_FILE["<b>S3 File Gateway</b><br>• Caching cục bộ<br>• Dữ liệu lưu thành S3 Object"]
+    Q4 -- "Giao thức SMB cần Windows AD" --> SG_FSX["<b>FSx File Gateway</b><br>• Cache on-prem cho FSx Windows"]
+    Q4 -- "Ổ đĩa Block (iSCSI)" --> Q5{"Khi mất mạng có cần toàn bộ data?"}
+    Q5 -- "Cần toàn bộ dataset cục bộ" --> SG_STORED["<b>Volume Gateway (Stored)</b><br>• 100% data ở on-prem<br>• Snapshot backup sang S3"]
+    Q5 -- "Chỉ cần cache tệp hay dùng" --> SG_CACHED["<b>Volume Gateway (Cached)</b><br>• Primary data trên S3<br>• Tiết kiệm đĩa on-prem"]
+    Q4 -- "Thay thế băng từ sao lưu vật lý" --> SG_TAPE["<b>Tape Gateway (VTL)</b><br>• Giao thức iSCSI VTL<br>• Lưu thẳng Glacier / Deep Archive"]
+
+    %% Nhánh 2b: Migration lớn
+    Q3 -- "Di chuyển lượng lớn dữ liệu lên Cloud" --> Q6{"Băng thông mạng & Thời gian?"}
+    Q6 -- "Mạng nhanh / Dưới 1 tuần" --> DATASYNC["<b>AWS DataSync</b><br>• Đồng bộ trực tuyến qua mạng<br>• Tối đa 10 Gbps qua Direct Connect"]
+    Q6 -- "Mạng chậm / Không có mạng / > 1 tuần" --> Q7{"Quy mô dữ liệu?"}
+    Q7 -- "Tới 14 TB (Nhỏ gọn, chạy pin)" --> SNOWCONE["<b>AWS Snowcone</b> (8-14 TB)"]
+    Q7 -- "Hàng chục đến hàng trăm TB" --> SNOWBALL["<b>AWS Snowball Edge</b> (80-210 TB)<br>• Storage/Compute Optimized"]
+    Q7 -- "Cực lớn (> 10 PB)" --> SNOWMOBILE["<b>AWS Snowmobile</b> (100 PB/xe)"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class FSX_WIN,FSX_LUS,FSX_ONTAP awsBox;
+    class SG_FILE,SG_FSX,SG_CACHED,SG_STORED,SG_TAPE optBox;
+    class SNOWCONE,SNOWBALL,SNOWMOBILE,DATASYNC warnBox;
+    </div>
+    <div class="mermaid-output"></div>
   </div>
 </div>
 
