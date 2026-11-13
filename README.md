@@ -63,6 +63,7 @@ learn_aws/
 | [topics/aws_other_services.html](topics/aws_other_services.html) | Dịch vụ chuyên biệt: GraphQL AWS AppSync, Máy tính ảo WorkSpaces, AppStream 2.0, Amazon AppFlow &amp; Amazon SES. |
 | [topics/aws_whitepapers.html](topics/aws_whitepapers.html) | Khung kiến trúc chuẩn: AWS Well-Architected Framework 6 Trụ cột, Well-Architected Tool &amp; Whitepapers. |
 | [topics/aws_practice_exam.html](topics/aws_practice_exam.html) | Chiến thuật thi cử &amp; Luyện đề: Phân bổ thời gian 130 phút, ESL +30, phương pháp loại trừ POE &amp; 10 câu hỏi mẫu. |
+| [topics/aws_congratulations.html](topics/aws_congratulations.html) | Tổng kết &amp; Lộ trình: Hướng dẫn nhận huy hiệu Credly, quyền lợi voucher 50% &amp; lộ trình SAP-C02. |
 | [`topics/lab_ec2.html`](topics/lab_ec2.html) | **Hands-on Lab 1:** EC2 User Data (`ec2-user-data.sh`) &amp; Instance Metadata CLI (`ec2-metadata.sh`, IMDSv1/v2). |
 | [`topics/lab_storage.html`](topics/lab_storage.html) | **Hands-on Lab 2:** EBS Volume Benchmark (`commands.txt`, `fio`/`ioping`) &amp; EFS Multi-AZ Shared Mount (`efs.sh`). |
 | [`topics/lab_route53.html`](topics/lab_route53.html) | **Hands-on Lab 3:** Route 53 Multi-AZ/Region Routing Demo với IMDSv1/IMDSv2 User Data (`route53/user-data.sh`). |
@@ -198,7 +199,7 @@ python scripts/clean.py -y
 - [x] **Section 30:** Other Services — AppSync, WorkSpaces, AppFlow, SES, Pinpoint, Batch ([topics/aws_other_services.html](topics/aws_other_services.html))
 - [x] **Section 31:** Whitepapers and Architectures — AWS Well-Architected Framework 6 Trụ cột ([topics/aws_whitepapers.html](topics/aws_whitepapers.html))
 - [x] **Section 32:** Preparing for the Exam + Practice Exam — Chiến thuật thi, ESL +30, phương pháp loại trừ ([topics/aws_practice_exam.html](topics/aws_practice_exam.html))
-- [x] **Section 33:** Congratulations & Next Steps — Tổng kết chứng chỉ AWS SAA-C03, huy hiệu Credly &amp; lộ trình SAP-C02
+- [x] **Section 33:** Congratulations & Next Steps — Tổng kết chứng chỉ AWS SAA-C03, huy hiệu Credly &amp; lộ trình SAP-C02 ([topics/aws_congratulations.html](topics/aws_congratulations.html))
 
 Chi tiết nội dung cần có của từng Section xem trong [`CLAUDE.md`](CLAUDE.md#lộ-trình-các-chủ-đề-tiếp-theo-roadmap-for-next-sessions).
 

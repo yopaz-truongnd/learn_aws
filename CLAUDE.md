@@ -141,7 +141,7 @@ Giáo trình khóa học Stephane Maarek gồm 33 Phần. Hiện trạng các ch
 10. **Section 30: Other Services** (topics/aws_other_services.html) — AppSync, SES, Batch, WorkSpaces, AppFlow.
 11. **Section 31: Whitepapers and Architectures** (topics/aws_whitepapers.html) — Well-Architected Framework 6 Trụ cột.
 12. **Section 32: Preparing for the Exam + Practice Exam** (topics/aws_practice_exam.html) — Luyện đề thi thử 65 câu tính giờ chuẩn SAA-C03.
-13. **Section 33: Congratulations & Next Steps** — Định hướng SAP-C02 / Specialty.
+13. **Section 33: Congratulations & Next Steps** (topics/aws_congratulations.html) — Định hướng SAP-C02 / Specialty.
 
 ## Quy ước thiết kế & Thành phần HTML (Design System)
 
