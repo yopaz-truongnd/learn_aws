@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Serverless — Lambda, API Gateway, Step Functions &amp; Cognito — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_serverless.html" class="nav-back" style="background:var(--grb);color:var(--gr)">
+      <span class="lang-vi">🧪 Thực hành Lab: Lambda &amp; API Gateway Proxy →</span>
+      <span class="lang-en">🧪 Hands-On Lab: Lambda &amp; API Gateway Proxy →</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 20 &amp; 21 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Serverless &amp; Event-Driven</div>
+  <h1>AWS Serverless Architecture — Lambda, API Gateway, Step Functions &amp; Cognito</h1>
+  <p class="lang-vi">Điện toán hướng sự kiện không máy chủ (Event-driven compute), Cổng API Gateway, Điều phối luồng công việc Step Functions và Xác thực người dùng Cognito cho AWS SAA-C03</p>
+  <p class="lang-en">Event-driven serverless compute, API Gateway routing, Step Functions orchestration, and Cognito identity management for AWS SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 6 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · 6 Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 6 Con số vàng &amp; Bẫy đề cốt lõi Serverless</span>
+          <span class="lang-en">🔴 6 Golden Numbers &amp; Core Serverless Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>15 phút:</b> Thời gian thực thi tối đa (Timeout) của AWS Lambda. Tác vụ dài hơn 15 phút &rarr; <b>Không dùng Lambda</b>, phải dùng ECS Fargate, AWS Batch hoặc EC2.<br>
+          • <b>128 MB &rarr; 10.240 MB (10 GB):</b> Bộ nhớ RAM Lambda. Dung lượng CPU co giãn tỷ lệ thuận với RAM (tại mốc 1.769 MB RAM &rarr; hàm nhận tương đương 1 vCPU đầy đủ).<br>
+          • <b>Provisioned Concurrency = Loại bỏ Cold Start 100%:</b> Chuẩn bị sẵn môi trường thực thi ấm (warm execution environment) cho các ứng dụng ngân hàng, thanh toán yêu cầu độ trễ p99 cực thấp.<br>
+          • <b>HTTP API vs REST API:</b> Cần chi phí rẻ nhất (giảm 70%), độ trễ thấp &amp; xác thực JWT &rarr; <b>HTTP API</b>. Cần API Keys, Usage Plans, WAF hoặc API Caching &rarr; Bắt buộc <b>REST API</b>.<br>
+          • <b>Cognito User Pools (CUP) vs Identity Pools:</b> CUP = <i>Authentication</i> (Đăng nhập, Sign-up, nhận JWT); Identity Pools = <i>Authorization</i> (Đổi token lấy AWS IAM temporary credentials để gọi thẳng S3/DynamoDB).<br>
+          • <b>Step Functions: Standard vs Express:</b> Standard chạy tối đa <b>1 năm</b>, đảm bảo Exactly-once execution; Express chạy tối đa <b>5 phút</b>, khối lượng lớn &gt; 100.000 msg/s.
+        </span>
+        <span class="lang-en">
+          • <b>15 minutes:</b> Maximum execution timeout for AWS Lambda. Jobs exceeding 15 minutes &rarr; <b>Never choose Lambda</b>; use ECS Fargate, AWS Batch, or EC2.<br>
+          • <b>128 MB &rarr; 10,240 MB (10 GB):</b> Lambda RAM limits. CPU scales proportionally (at 1,769 MB RAM &rarr; allocated 1 full vCPU).<br>
+          • <b>Provisioned Concurrency = Eliminates Cold Starts 100%:</b> Pre-warms runtime containers for financial/e-commerce workloads demanding strict low p99 latencies.<br>
+          • <b>HTTP API vs REST API:</b> Lowest cost (70% savings), low latency &amp; native JWT &rarr; <b>HTTP API</b>. API Keys, Usage Plans, WAF, or Edge Caching &rarr; Strictly <b>REST API</b>.<br>
+          • <b>Cognito User Pools vs Identity Pools:</b> User Pools = <i>Authentication</i> (Sign-up, sign-in, JWTs); Identity Pools = <i>Authorization</i> (Exchange token for temporary AWS IAM credentials to access S3/DynamoDB directly).<br>
+          • <b>Step Functions: Standard vs Express:</b> Standard runs up to <b>1 year</b> with Exactly-once execution; Express runs up to <b>5 minutes</b> for high-volume streaming &gt; 100,000/s.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi SAA-C03</span>
+              <span class="lang-en">Exam Scenario / Keyword Pattern</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Core Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Xử lý ảnh tự động ngay khi tệp được upload lên S3 bucket, không tốn chi phí khi không có sự kiện</span>
+              <span class="lang-en">Process image thumbnails immediately upon S3 upload, zero idle costs when traffic is zero</span>
+            </td>
+            <td><span class="kw-target">AWS Lambda + S3 Event Notifications</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Ứng dụng tài chính yêu cầu độ trễ gọi hàm Lambda phải đồng nhất, tuyệt đối không bị trễ do Cold Start</span>
+              <span class="lang-en">Financial app requiring uniform sub-second Lambda invocation latencies, strictly zero cold starts</span>
+            </td>
+            <td><span class="kw-target">Lambda Provisioned Concurrency</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Cung cấp REST API cho bên thứ 3, yêu cầu giới hạn số lượng request (Throttling) và bán gói API Keys theo tháng</span>
+              <span class="lang-en">Public API for third parties requiring request rate throttling and monthly monetization via API Keys</span>
+            </td>
+            <td><span class="kw-target">API Gateway REST API + Usage Plans</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Điều phối quy trình xử lý đơn hàng phức tạp gồm nhiều bước (kiểm tra kho &rarr; trừ tiền &rarr; giao hàng &rarr; hoàn tiền nếu lỗi)</span>
+              <span class="lang-en">Orchestrating complex multi-step order processing workflows with branching, retries, and compensation logic</span>
+            </td>
+            <td><span class="kw-target">AWS Step Functions (State Machine)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Người dùng ứng dụng di động đăng nhập bằng Google/Facebook, sau đó upload ảnh trực tiếp lên S3 bucket an toàn</span>
+              <span class="lang-en">Mobile app users login via Google/Facebook, then upload photos directly to user-specific S3 folders</span>
+            </td>
+            <td><span class="kw-target">Cognito User Pools + Identity Pools</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 0. TÓM TẮT NHANH DỊCH VỤ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 20 &amp; 21 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 20 &amp; 21 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi: Là gì (Xanh dương) · Dùng khi nào (Xanh lá) · Khác gì (Cam) · Bẫy thi (Đỏ)</span>
+        <span class="lang-en">4 core exam criteria: Definition (Blue) · When to use (Green) · Differences (Amber) · Traps &amp; Keywords (Red)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- COL 1: AWS Lambda -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ 1. AWS Lambda</span>
+        <span class="lang-en">⚡ 1. AWS Lambda</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ điện toán không máy chủ (Serverless Compute) hướng sự kiện. Cho phép bạn chạy mã nguồn (Python, Node.js, Java, Go, C#) mà không cần cấp phát hay quản lý máy chủ.</p>
+        <p class="lang-en">Event-driven serverless compute service. Executes application code (Python, Node.js, Java, Go, C#) in response to triggers with zero server provisioning or administration.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Xử lý các tác vụ ngắn hạn (&le; 15 phút): Cron job tự động, xử lý ảnh khi upload lên S3, backend API không máy chủ kết hợp với API Gateway, xử lý bản ghi luồng Kinesis/DynamoDB.</p>
+        <p class="lang-en">Short-lived tasks (&le; 15 mins): Scheduled cron jobs, S3 object transformation triggers, serverless REST backends with API Gateway, and streaming event processors.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Tự động co giãn theo từng yêu cầu (scale-to-zero khi không có traffic &rarr; 0 đồng). Thanh toán theo số lượng invocation và thời gian thực thi làm tròn tới mili-giây (ms).</p>
+        <p class="lang-en">Scales automatically per individual request down to zero (zero idle cost). Billed strictly by execution duration measured in milliseconds and memory consumed.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Lambda truy cập cơ sở dữ liệu RDS trong VPC riêng tư &rarr; Hàm cần gán Subnet &amp; Security Group (dùng Hyperplane ENI). Tránh mở quá nhiều connection trực tiếp &rarr; Kết hợp với <b>Amazon RDS Proxy</b>!</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Lambda accessing private RDS databases needs VPC Subnets &amp; Security Groups. To prevent exhausting database connection pools &rarr; Place <b>Amazon RDS Proxy</b> in between!</p>
+      </div>
+    </div>
+
+    <!-- COL 2: Amazon API Gateway -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🚪 2. Amazon API Gateway</span>
+        <span class="lang-en">🚪 2. Amazon API Gateway</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ quản lý API không máy chủ hoàn toàn, đóng vai trò "cửa ngõ" đón tiếp toàn bộ lưu lượng HTTP/HTTPS/WebSocket từ người dùng và định tuyến an toàn tới các dịch vụ backend.</p>
+        <p class="lang-en">Fully managed serverless API gateway serving as a front door accepting HTTP/HTTPS/WebSocket traffic at scale, securely routing requests to backend services.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Tạo các điểm cuối (endpoints) RESTful công khai hoặc nội bộ cho ứng dụng Web/Mobile; bảo vệ backend bằng Rate Limiting, Throttling, API Caching và tường lửa AWS WAF.</p>
+        <p class="lang-en">Creating public or internal RESTful endpoints for web/mobile apps; protecting downstream backends via Rate Limiting, Throttling, API Caching, and AWS WAF integration.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Hỗ trợ 3 loại API:<br>• <b>HTTP API:</b> Chi phí rẻ hơn 70%, độ trễ cực thấp, chuẩn JWT.<br>• <b>REST API:</b> Đầy đủ tính năng doanh nghiệp (WAF, Usage Plans, API Keys).<br>• <b>WebSocket API:</b> Giao tiếp 2 chiều thời gian thực.</p>
+        <p class="lang-en">Offers 3 API flavors:<br>• <b>HTTP API:</b> 70% cheaper, ultra-low latency, native JWT.<br>• <b>REST API:</b> Full enterprise features (WAF, Usage Plans, API Keys).<br>• <b>WebSocket API:</b> Full-duplex persistent connections.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Khách hàng nhận mã lỗi <code>HTTP 429 Too Many Requests</code> &rarr; Do chạm trần Throttling Limits của API Gateway (mặc định 10.000 req/s)! Khắc phục: Bật <b>API Gateway Caching</b> hoặc yêu cầu tăng quota.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Clients receiving <code>HTTP 429 Too Many Requests</code> &rarr; Breaching API Gateway Throttling Limits (default 10,000 req/s)! Fix: Enable <b>API Gateway Caching</b> or request a quota increase.</p>
+      </div>
+    </div>
+
+    <!-- COL 3: AWS Step Functions -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🪜 3. AWS Step Functions</span>
+        <span class="lang-en">🪜 3. AWS Step Functions</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ điều phối luồng công việc trực quan (Visual Workflow Orchestrator) dựa trên mô hình Máy trạng thái (State Machine) viết bằng ngôn ngữ Amazon States Language (JSON).</p>
+        <p class="lang-en">Low-code visual workflow orchestrator built on State Machines defined in Amazon States Language (JSON), stitching serverless functions and AWS services together.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Kết nối nhiều hàm Lambda thành chuỗi xử lý tuần tự/song song, xử lý lỗi (Try/Catch/Retry), chờ phê duyệt của con người (Human Approval task) hoặc chạy pipeline thanh toán nhiều bước.</p>
+        <p class="lang-en">Sequencing multiple Lambda functions into sequential/parallel branches, handling automated retries and compensations, and human-in-the-loop approval workflows.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">• <b>Standard Workflows:</b> Thời gian tối đa <b>1 năm</b>, lưu vết đầy đủ từng bước, Exactly-once execution.<br>• <b>Express Workflows:</b> Tối đa <b>5 phút</b>, khối lượng sự kiện cực lớn (&gt; 100.000/s), chi phí siêu rẻ.</p>
+        <p class="lang-en">• <b>Standard:</b> Up to <b>1 year</b> duration, full state execution history, exactly-once execution.<br>• <b>Express:</b> Up to <b>5 minutes</b> duration, high-volume streaming (&gt; 100,000/s), cost-optimized.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Đừng bao giờ để một hàm Lambda gọi trực tiếp một hàm Lambda khác và chờ kết quả (Anti-pattern tốn tiền vô ích)! Phải dùng <b>Step Functions</b> để điều phối chuỗi gọi hàm.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Never chain Lambda functions by having one Lambda invoke and wait for another (costly anti-pattern)! Always use <b>Step Functions</b> to orchestrate distributed workflows.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. SƠ ĐỒ QUYẾT ĐỊNH MERMAID: SERVERLESS INTEGRATION -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Cây quyết định kiến trúc: Chọn mô hình Serverless chuẩn xác (Decision Tree)</span>
+        <span class="lang-en">1. Architectural Decision Tree: Choosing the Right Serverless Pattern</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Luồng phân loại giữa các phương thức kích hoạt Lambda, loại API Gateway và cơ chế xác thực Cognito</span>
+        <span class="lang-en">Inference logic navigating Lambda invocation modes, API Gateway flavors, and Cognito authentication</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Nhu cầu kiến trúc Serverless"]) --> Q1{"Loại bài toán cần giải quyết?"}
+
+    %% Nhánh 1: API & Web Backend
+    Q1 -- "Xây dựng REST/HTTP API Backend" --> Q2{"Tính năng API Gateway yêu cầu?"}
+    Q2 -- "Chi phí thấp nhất / Độ trễ thấp / JWT Auth" --> APIGW_HTTP["<b>API Gateway HTTP API</b><br>• Rẻ hơn 70% so với REST<br>• Tích hợp trực tiếp Lambda &amp; OIDC"]
+    Q2 -- "Cần API Keys / Usage Plans / AWS WAF / Caching" --> APIGW_REST["<b>API Gateway REST API</b><br>• Kiểm soát lưu lượng chi tiết<br>• Tích hợp tường lửa WAF &amp; Cache"]
+    Q2 -- "Giao tiếp 2 chiều thời gian thực (Chat/Live Data)" --> APIGW_WS["<b>API Gateway WebSocket API</b><br>• Kết nối liên tục hai chiều"]
+
+    %% Nhánh 2: Xử lý sự kiện Compute
+    Q1 -- "Tính toán &amp; Xử lý nghiệp vụ" --> Q3{"Thời gian thực thi của tác vụ?"}
+    Q3 -- "&le; 15 phút (Ngắn hạn / Không máy chủ)" --> LAMBDA["<b>AWS Lambda</b><br>• Event-driven compute<br>• Scale-to-zero tự động<br>• Trả tiền theo mili-giây"]
+    Q3 -- "&gt; 15 phút (Dài hạn / Nặng)" --> ECS_FARGATE["<b>AWS Fargate / Batch</b><br>• Không bị giới hạn 15 phút<br>• Phù hợp tác vụ nặng kéo dài"]
+
+    %% Nhánh 3: Điều phối luồng
+    Q1 -- "Điều phối chuỗi nghiệp vụ nhiều bước" --> Q4{"Thời gian của toàn bộ quy trình?"}
+    Q4 -- "Có bước chờ người duyệt / Kéo dài ngày/tháng" --> SF_STD["<b>Step Functions: Standard</b><br>• Thời gian chạy tới 1 năm<br>• Visual audit &amp; Exactly-once"]
+    Q4 -- "Xử lý luồng IoT/Clickstream nhanh (&lt; 5 phút)" --> SF_EXP["<b>Step Functions: Express</b><br>• Khối lượng cực lớn (&gt; 100k/s)<br>• Tối ưu chi phí tối đa"]
+
+    %% Nhánh 4: Xác thực người dùng
+    Q1 -- "Quản lý người dùng &amp; Đăng nhập" --> Q5{"Nhu cầu là Xác thực hay Cấp quyền AWS?"}
+    Q5 -- "Quản lý User/Password / Đăng ký / Google Login" --> COG_CUP["<b>Cognito User Pools (CUP)</b><br>• User Directory &amp; Sign-in<br>• Trả về JWT Token"]
+    Q5 -- "Cấp quyền truy cập trực tiếp tài nguyên AWS" --> COG_IDP["<b>Cognito Identity Pools</b><br>• Đổi JWT lấy Temporary IAM Credentials<br>• Truy cập trực tiếp S3/DynamoDB"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class APIGW_HTTP,LAMBDA,COG_CUP awsBox;
+    class APIGW_REST,SF_STD,COG_IDP optBox;
+    class ECS_FARGATE,SF_EXP,APIGW_WS warnBox;
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH: 3 LOẠI API GATEWAY -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🚪</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bảng so sánh 3 dòng Amazon API Gateway: HTTP API vs REST API vs WebSocket API</span>
+        <span class="lang-en">2. Comparison Matrix: API Gateway HTTP API vs REST API vs WebSocket API</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân biệt rõ ràng theo tính năng, bảo mật, bộ nhớ đệm và chi phí</span>
+        <span class="lang-en">Clear feature distinctions across security, caching, pricing, and exam scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Tính năng / Tiêu chí</span><span class="lang-en">Feature / Criteria</span></th>
+          <th>HTTP API (Khuyên dùng cho REST cơ bản)</th>
+          <th>REST API (Doanh nghiệp đầy đủ tính năng)</th>
+          <th>WebSocket API (Giao tiếp thời gian thực)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b><span class="lang-vi">Chi phí &amp; Hiệu năng</span><span class="lang-en">Cost &amp; Performance</span></b></td>
+          <td><b>Rẻ hơn tới 70%</b>, độ trễ xử lý cực thấp</td>
+          <td>Chi phí tiêu chuẩn, hỗ trợ nhiều bước xử lý trung gian</td>
+          <td>Tính tiền theo phút kết nối và số lượng bản tin truyền</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Cơ chế xác thực</span><span class="lang-en">Authentication</span></b></td>
+          <td>OIDC, OAuth 2.0, JWT Authorizer nguyên bản, Lambda</td>
+          <td>Cognito User Pools, Lambda Authorizer, IAM Roles &amp; Policies</td>
+          <td>IAM, Lambda Authorizer</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Bảo mật tường lửa AWS WAF</span><span class="lang-en">AWS WAF Integration</span></b></td>
+          <td>Không hỗ trợ WAF trực tiếp (phải đặt CloudFront phía trước)</td>
+          <td><b>Hỗ trợ tích hợp trực tiếp AWS WAF</b></td>
+          <td><b>Hỗ trợ tích hợp trực tiếp AWS WAF</b></td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Bộ nhớ đệm (API Caching)</span><span class="lang-en">API Caching</span></b></td>
+          <td>Không hỗ trợ bộ nhớ đệm nội bộ</td>
+          <td><b>Hỗ trợ API Caching</b> để giảm tải cho backend</td>
+          <td>Không hỗ trợ</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">API Keys &amp; Usage Plans</span><span class="lang-en">API Keys &amp; Monetization</span></b></td>
+          <td>Không hỗ trợ</td>
+          <td><b>Hỗ trợ đầy đủ</b> API Keys, Throttling &amp; Quota Plans theo khách hàng</td>
+          <td>Không hỗ trợ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. PHÂN BIỆT: COGNITO USER POOLS VS IDENTITY POOLS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">👤</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Phân biệt then chốt: Cognito User Pools vs Cognito Identity Pools</span>
+        <span class="lang-en">3. Critical Distinction: Cognito User Pools vs Cognito Identity Pools</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hiểu rõ ranh giới giữa Xác thực danh tính (Authentication) và Cấp quyền truy cập AWS (Authorization)</span>
+        <span class="lang-en">Grasping the boundary between Authentication (Who you are) and Authorization (What you can access)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔑 1. Cognito User Pools (CUP) — Authentication (Xác thực)</span>
+          <span class="lang-en">🔑 1. Cognito User Pools (CUP) — Authentication</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Mục đích:</b> Là một <b>danh bạ người dùng (User Directory)</b> hoàn chỉnh trên đám mây.<br>
+          • <b>Tính năng:</b> Xử lý đăng ký tài khoản (Sign-up), đăng nhập (Sign-in), quên mật khẩu, xác thực đa yếu tố (MFA), đăng nhập bằng mạng xã hội (Google, Facebook, Apple) hoặc SAML/OIDC của công ty.<br>
+          • <b>Kết quả trả về:</b> Trả về các chuỗi mã thông báo <b>JSON Web Tokens (JWT)</b> gồm: ID Token, Access Token và Refresh Token.<br>
+          👉 <i>Người dùng có JWT nhưng <b>chưa có quyền gọi trực tiếp bất kỳ API nào của AWS</b>!</i>
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Purpose:</b> A managed, serverless <b>User Directory</b>.<br>
+          • <b>Features:</b> Handles sign-up, sign-in, self-service password recovery, Multi-Factor Authentication (MFA), and social/enterprise federated logins (Google, Apple, SAML/OIDC).<br>
+          • <b>Output:</b> Issues standard <b>JSON Web Tokens (JWT)</b>: ID Token, Access Token, and Refresh Token.<br>
+          👉 <i>Holding a JWT grants <b>zero direct permissions to AWS APIs</b>!</i>
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🛡️ 2. Cognito Identity Pools — Authorization (Cấp quyền AWS)</span>
+          <span class="lang-en">🛡️ 2. Cognito Identity Pools — Authorization</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Mục đích:</b> Đổi các token xác thực (từ Cognito User Pools hoặc Google/Facebook) lấy <b>thông tin xác thực AWS IAM tạm thời (Temporary AWS Credentials)</b>.<br>
+          • <b>Cách hoạt động:</b> Gắn với các IAM Role (Authenticated Role và Unauthenticated/Guest Role).<br>
+          • <b>Tình huống kinh điển đề thi:</b> Cho phép ứng dụng di động cho khách hàng upload ảnh trực tiếp lên <code>s3://my-bucket/users/{cognito-identity-id}/*</code> mà không cần đi qua máy chủ trung gian &rarr; <b>Bắt buộc dùng Cognito Identity Pools</b>.
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Purpose:</b> Exchanges authentication tokens (from User Pools or Social IdPs) for <b>temporary AWS IAM credentials</b> (via AWS STS).<br>
+          • <b>Mechanics:</b> Associates users with dedicated IAM Roles (Authenticated vs Unauthenticated/Guest).<br>
+          • <b>Classic Exam Scenario:</b> Enabling mobile users to upload files directly to their personal folder <code>s3://my-bucket/users/{cognito-identity-id}/*</code> without backend proxying &rarr; <b>Must choose Cognito Identity Pools</b>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. BA CHẾ ĐỘ GỌI HÀM LAMBDA -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Phân loại 3 phương thức kích hoạt hàm AWS Lambda</span>
+        <span class="lang-en">4. The 3 Lambda Invocation Models &amp; Error Handling Mechanics</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đồng bộ (Synchronous), Bất đồng bộ (Asynchronous) và Thăm dò nguồn sự kiện (Event Source Mapping)</span>
+        <span class="lang-en">Synchronous, Asynchronous, and Event Source Mapping execution patterns</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">🔄</div>
+          <div>
+            <b>Đồng bộ (Synchronous Invocation)</b><br>
+            <span class="lang-vi">• Dịch vụ kích hoạt: <b>API Gateway, ALB, CloudFront (Lambda@Edge), AWS CLI</b>.<br>• Phía gọi hàm sẽ chờ đợi Lambda xử lý xong và nhận lại kết quả phản hồi.<br>• Xử lý lỗi: Bên gọi nhận mã lỗi ngay lập tức (ví dụ: HTTP 429 hoặc 500) và bên gọi tự quyết định việc có thử lại hay không.</span>
+            <span class="lang-en">• Triggers: <b>API Gateway, ALB, CloudFront (Lambda@Edge), AWS CLI</b>.<br>• The caller waits for the function execution to finish and return a response.<br>• Error handling: Caller immediately receives status code (HTTP 429/500) and manages its own retry logic.</span>
+          </div>
+        </div>
+
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📬</div>
+          <div>
+            <b>Bất đồng bộ (Asynchronous Invocation)</b><br>
+            <span class="lang-vi">• Dịch vụ kích hoạt: <b>Amazon S3, Amazon SNS, Amazon EventBridge, AWS CodeCommit</b>.<br>• Phía gọi hàm nhận ngay mã <code>HTTP 202 Accepted</code> và không chờ kết quả.<br>• Xử lý lỗi: Lambda tự động thử lại <b>tối đa 2 lần</b>. Nếu vẫn thất bại &rarr; Tự động đẩy sự kiện vào <b>Dead Letter Queue (SQS/SNS)</b> hoặc <b>Lambda Destinations</b>.</span>
+            <span class="lang-en">• Triggers: <b>Amazon S3, Amazon SNS, Amazon EventBridge, AWS CodeCommit</b>.<br>• The caller receives an immediate <code>HTTP 202 Accepted</code> without waiting.<br>• Error handling: Lambda automatically retries <b>up to 2 times</b>. Failed payloads route to a <b>DLQ (SQS/SNS)</b> or <b>Lambda Destinations</b>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📊</div>
+          <div>
+            <b>Thăm dò nguồn sự kiện (Event Source Mapping)</b><br>
+            <span class="lang-vi">• Dịch vụ kích hoạt: <b>Amazon Kinesis Data Streams, Amazon DynamoDB Streams, Amazon SQS</b>.<br>• Dịch vụ Lambda chủ động thăm dò (poll) dữ liệu theo mẻ (batches) từ nguồn rồi mới gọi hàm.<br>• Với Kinesis/DynamoDB: Xử lý theo từng Shard. Nếu 1 bản ghi bị lỗi &rarr; Toàn bộ Shard bị nghẽn trừ khi cấu hình <i>BisectBatchOnFunctionError</i> hoặc <i>Maximum Record Age</i>!</span>
+            <span class="lang-en">• Triggers: <b>Amazon Kinesis Data Streams, Amazon DynamoDB Streams, Amazon SQS</b>.<br>• Lambda service itself polls records in batches from the stream/queue.<br>• With Kinesis/DynamoDB: Processed per shard. A failing record blocks the shard unless mitigated via <i>BisectBatchOnFunctionError</i> or <i>Maximum Record Age</i>!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. NGUYÊN TẮC VÀNG — SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Nguyên tắc vàng ra quyết định kiến trúc Serverless — SAA-C03</span>
+        <span class="lang-en">5. Golden Architectural Decision Rules: Serverless — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc bất biến giúp chọn đúng giải pháp không máy chủ trong 30 giây</span>
+        <span class="lang-en">Inviolable rules to identify the correct serverless solution in 30 seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="bp">
+      <div class="bn">1</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Tác vụ chạy &gt; 15 phút = Không bao giờ chọn Lambda</span>
+          <span class="lang-en">Workloads Exceeding 15 Minutes = Never Choose Lambda</span>
+        </b>
+        <div class="lang-vi">AWS Lambda có giới hạn cứng tuyệt đối là 15 phút (900 giây). Mọi câu hỏi mô tả việc xử lý video hàng giờ, huấn luyện Machine Learning hay batch job lớn &rarr; Loại bỏ ngay các đáp án dùng Lambda! Chọn <b>ECS Fargate, AWS Batch hoặc EC2</b>.</div>
+        <div class="lang-en">AWS Lambda enforces a strict hard ceiling of 15 minutes. Scenarios describing multi-hour video rendering, ML training, or long ETL batch jobs &rarr; Instantly eliminate Lambda options! Choose <b>ECS Fargate, AWS Batch, or EC2</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">2</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Bán gói API Keys / Giới hạn số lượng request = API Gateway REST API</span>
+          <span class="lang-en">Monetizing API Keys / Custom Quota Plans = API Gateway REST API</span>
+        </b>
+        <div class="lang-vi">HTTP API rẻ hơn nhưng không có tính năng Usage Plans và API Keys. Nếu đề bài yêu cầu tạo các gói giới hạn theo khách hàng (ví dụ: gói Basic 100 req/ngày, gói Pro 10.000 req/ngày) &rarr; Bắt buộc phải chọn <b>API Gateway REST API</b>.</div>
+        <div class="lang-en">HTTP API is cheaper but lacks Usage Plans and API Keys. If scenario demands tiered customer limits (e.g. Basic 100 req/day vs Pro 10,000 req/day) &rarr; Strictly choose <b>API Gateway REST API</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">3</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Upload trực tiếp lên S3 từ Client = Cognito Identity Pools</span>
+          <span class="lang-en">Direct Client S3 Uploads = Cognito Identity Pools</span>
+        </b>
+        <div class="lang-vi">Để người dùng đăng nhập bằng mạng xã hội rồi upload file trực tiếp lên S3 mà không cần máy chủ trung gian gánh băng thông &rarr; Kết hợp <b>Cognito Identity Pools</b> để cấp quyền IAM tạm thời gắn biến <code>${cognito-identity.amazonaws.com:sub}</code>.</div>
+        <div class="lang-en">To let mobile/web users authenticate via social logins and upload directly to private S3 prefixes &rarr; Use <b>Cognito Identity Pools</b> granting temporary IAM roles with the <code>${cognito-identity.amazonaws.com:sub}</code> variable.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">4</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Điều phối chuỗi nghiệp vụ có xử lý lỗi = AWS Step Functions</span>
+          <span class="lang-en">Multi-Step Business Logic with Retries = AWS Step Functions</span>
+        </b>
+        <div class="lang-vi">Không viết code phức tạp lồng nhau giữa các microservices. Khi cần luồng xử lý phân nhánh, tự động retry, bồi hoàn giao dịch (Saga pattern) hoặc chờ duyệt &rarr; Luôn dùng <b>AWS Step Functions State Machine</b>.</div>
+        <div class="lang-en">Never hand-code brittle cross-service invocations. When orchestrating branching logic, automated exponential backoff, compensation flows (Saga pattern), or human approval &rarr; Always use <b>AWS Step Functions</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">6. Lecture Sources &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu trực tiếp video bài giảng Udemy của Stephane Maarek, bài lab thực hành và tài liệu AWS</span>
+        <span class="lang-en">Direct mapping to Stephane Maarek's Udemy lectures, project hands-on labs, and official AWS docs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Video bài giảng Udemy</span>
+        <span class="lang-en">🎓 Udemy Lecture Sources</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 20 · Serverless Overviews</b><br>
+            <span class="lang-vi">Kiến trúc Lambda, giới hạn tài nguyên, Cold Start và mô hình co giãn.</span>
+            <span class="lang-en">Lambda architecture, execution limits, Cold Starts, and concurrency scaling.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">▶️</div>
+          <div>
+            <b>Section 20 · API Gateway &amp; Cognito</b><br>
+            <span class="lang-vi">HTTP API vs REST API, Lambda Proxy Integration, Cognito User Pools &amp; Identity Pools.</span>
+            <span class="lang-en">HTTP API vs REST API, Lambda Proxy Integration, Cognito User Pools &amp; Identity Pools.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">▶️</div>
+          <div>
+            <b>Section 21 · Serverless Solutions</b><br>
+            <span class="lang-vi">Thảo luận thiết kế kiến trúc Serverless, AWS Step Functions State Machine.</span>
+            <span class="lang-en">Serverless architectural patterns and AWS Step Functions state orchestration.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 Tài liệu chính thức AWS</span>
+        <span class="lang-en">📖 Official AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS Lambda Operator Guide</b><br>
+            <span class="lang-vi">Tối ưu hiệu năng Cold Start, cấu hình mạng VPC và xử lý lỗi bất đồng bộ.</span>
+            <span class="lang-en">Optimizing Cold Starts, VPC networking patterns, and async error handling.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>Amazon API Gateway Developer Guide</b><br>
+            <span class="lang-vi">Thiết lập Usage Plans, API Keys, Lambda Authorizers và cơ chế Caching.</span>
+            <span class="lang-en">Configuring Usage Plans, API Keys, Lambda Authorizers, and API Caching.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS Step Functions Best Practices</b><br>
+            <span class="lang-vi">So sánh Standard vs Express Workflows, xử lý timeout và Saga pattern.</span>
+            <span class="lang-en">Standard vs Express Workflows comparison, timeout handling, and Saga patterns.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧪 Bài Lab Thực Hành Trong Dự Án</span>
+        <span class="lang-en">🧪 Project Hands-On Lab</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">🧪</div>
+          <div>
+            <b><a href="lab_serverless.html" style="color:var(--gr);text-decoration:none">Hands-on Lab 6: Lambda &amp; API Gateway Proxy →</a></b><br>
+            <span class="lang-vi">Thực hành viết Lambda Python (<code>aws_document/api-gateway/lambda-code.py</code>) và cấu hình Lambda Proxy Integration trên API Gateway REST API.</span>
+            <span class="lang-en">Hands-on Python Lambda function (<code>aws_document/api-gateway/lambda-code.py</code>) and Lambda Proxy Integration on API Gateway.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

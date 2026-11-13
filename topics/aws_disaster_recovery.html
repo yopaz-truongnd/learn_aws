@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Disaster Recovery &amp; Migrations — DRS, DMS, DataSync — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 28 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Resilience, DR &amp; Migration</div>
+  <h1>Disaster Recovery &amp; Migrations — DRS, DMS &amp; DataSync</h1>
+  <p class="lang-vi">Khắc phục thảm họa &amp; Di chuyển dữ liệu lên đám mây: 4 chiến lược DR (Backup &amp; Restore, Pilot Light, Warm Standby, Multi-Site), RPO vs RTO, AWS DRS, AWS DMS &amp; Schema Conversion Tool (SCT) cho kỳ thi SAA-C03</p>
+  <p class="lang-en">Cloud disaster recovery and data migration: 4 DR strategies (Backup &amp; Restore, Pilot Light, Warm Standby, Multi-Site Active-Active), RPO vs RTO, AWS DRS, AWS DMS &amp; Schema Conversion Tool (SCT) for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · RPO vs RTO &amp; 4 Chiến lược Thảm họa</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Answer Mapping · RPO vs RTO &amp; 4 DR Strategies</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — Phân biệt RPO vs RTO:</b> <b>RPO (Recovery Point Objective)</b> là khoảng thời gian mất mát dữ liệu chấp nhận được tính từ bản sao lưu gần nhất đến khi thảm họa xảy ra (Ví dụ: backup mỗi 1 giờ &rarr; RPO tối đa 1 giờ). <b>RTO (Recovery Time Objective)</b> là khoảng thời gian gián đoạn dịch vụ chấp nhận được để khôi phục hệ thống hoạt động trở lại (Thời gian chết / Downtime).</span>
+          <span class="lang-en"><b>Trap 1 — Distinguish RPO vs RTO:</b> <b>RPO (Recovery Point Objective)</b> is the acceptable time window of potential data loss between the last backup and the disaster (e.g., hourly backups &rarr; max 1 hour RPO). <b>RTO (Recovery Time Objective)</b> is the acceptable downtime duration required to bring the system back online.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — Pilot Light vs Warm Standby:</b> Trong <b>Pilot Light</b>, chỉ có hệ thống lưu trữ/dữ liệu cốt lõi (Database) là liên tục sao chép dữ liệu; các máy chủ ứng dụng/web <b>hoàn toàn KHÔNG CHẠY</b> (chỉ lưu cấu hình AMI). Trong <b>Warm Standby</b>, một phiên bản thu nhỏ (scaled-down version) với <b>cả Web, App và DB LUÔN CHẠY 24/7</b> với công suất tối thiểu; khi có thảm họa chỉ cần scale out dung lượng.</span>
+          <span class="lang-en"><b>Trap 2 — Pilot Light vs Warm Standby:</b> In <b>Pilot Light</b>, only core data systems (Databases) continuously replicate; compute instances (EC2/ASG) are <b>NOT running</b> (only AMIs saved). In <b>Warm Standby</b>, a scaled-down version of the <b>entire stack (Web, App, DB) is ALREADY RUNNING 24/7</b> at minimal capacity; it simply scales out when disaster strikes.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — AWS DMS kết hợp AWS SCT:</b> Khi di chuyển cơ sở dữ liệu cùng loại (Homogeneous, ví dụ Oracle sang Oracle), chỉ cần <b>AWS DMS</b>. Khi di chuyển khác loại (Heterogeneous, ví dụ Oracle sang Amazon Aurora PostgreSQL), <b>BẮT BUỘC phải dùng AWS Schema Conversion Tool (SCT) trước</b> để chuyển đổi cấu trúc schema và views, sau đó mới dùng <b>AWS DMS</b> để replicate dữ liệu liên tục với CDC (Change Data Capture)!</span>
+          <span class="lang-en"><b>Trap 3 — AWS DMS with AWS SCT:</b> For homogeneous migrations (e.g. Oracle to Oracle), only <b>AWS DMS</b> is needed. For heterogeneous migrations (e.g. Oracle to Amazon Aurora PostgreSQL), you <b>MUST use AWS Schema Conversion Tool (SCT) first</b> to convert schema, views, and procedures, followed by <b>AWS DMS</b> for continuous data replication with CDC!</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — Quy tắc 1 tuần chọn Snowball Edge vs DataSync:</b> Nếu tính toán thời gian truyền dữ liệu qua đường truyền mạng Internet / Direct Connect hiện tại mất <b>hơn 1 tuần (over 1 week)</b> &rarr; <b>Chọn ngay AWS Snowball Edge</b> để vận chuyển vật lý ngoại tuyến. Nếu đường truyền mạng đủ băng thông và cần đồng bộ định kỳ/tự động &rarr; Chọn <b>AWS DataSync</b>.</span>
+          <span class="lang-en"><b>Trap 4 — 1-Week Rule for Snowball Edge vs DataSync:</b> If calculating network transfer time over existing Internet or Direct Connect takes <b>more than 1 week</b> &rarr; <b>Choose AWS Snowball Edge</b> for physical offline shipping. If bandwidth is sufficient and regular/automated sync is required &rarr; Choose <b>AWS DataSync</b>.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Giải pháp kiến trúc AWS</span><span class="lang-en">AWS Architectural Solution</span></th>
+        <th style="width:35%"><span class="lang-vi">Lý do chọn &amp; Lưu ý kỹ thuật</span><span class="lang-en">Selection Reason &amp; Exam Trap</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Migrate on-premise Oracle to Aurora PostgreSQL with near-zero downtime"</b></td>
+        <td><b>AWS SCT + AWS DMS (Full Load + CDC)</b></td>
+        <td>
+          <span class="lang-vi">SCT chuyển đổi schema khác hệ; DMS đồng bộ thay đổi liên tục cho đến khi cutover.</span>
+          <span class="lang-en">SCT converts heterogeneous schema; DMS replicates ongoing changes with CDC until cutover.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Continuous block-level replication of physical/VMware servers to low-cost staging area"</b></td>
+        <td><b>AWS Elastic Disaster Recovery (AWS DRS)</b></td>
+        <td>
+          <span class="lang-vi">Tự động khởi tạo máy chủ đầy đủ trên AWS trong vài phút khi xảy ra sự cố; hỗ trợ failback.</span>
+          <span class="lang-en">Automatically spins up full-capacity instances on AWS within minutes during failover; supports failback.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Scaled-down version of full environment running 24/7 in secondary region"</b></td>
+        <td><b>Warm Standby DR Strategy</b></td>
+        <td>
+          <span class="lang-vi">Chạy hệ thống thu nhỏ liên tục; khi có sự cố Route 53 chuyển hướng và ASG scale out.</span>
+          <span class="lang-en">Runs scaled-down stack 24/7; Route 53 fails over and ASG scales out instantly.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Only critical database is replicating; compute servers spun up from AMI during disaster"</b></td>
+        <td><b>Pilot Light DR Strategy</b></td>
+        <td>
+          <span class="lang-vi">Tiết kiệm chi phí hơn Warm Standby vì không chạy máy chủ ứng dụng ở trạng thái bình thường.</span>
+          <span class="lang-en">More cost-effective than Warm Standby because compute servers are idle until disaster.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Transfer 200 TB of on-premises data to Amazon S3 over limited 100 Mbps connection"</b></td>
+        <td><b>AWS Snowball Edge Storage Optimized</b></td>
+        <td>
+          <span class="lang-vi">Truyền qua mạng 100 Mbps sẽ mất hơn 6 tháng; thiết bị vật lý Snowball Edge hoàn tất trong vài ngày.</span>
+          <span class="lang-en">Transferring 200 TB over 100 Mbps takes over 6 months; physical Snowball finishes in days.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Automated, scheduled online data transfer from on-premises NFS/SMB to Amazon EFS"</b></td>
+        <td><b>AWS DataSync</b></td>
+        <td>
+          <span class="lang-vi">Tối ưu tốc độ gấp 10 lần công cụ mã nguồn mở; tự động nén, mã hóa và kiểm tra checksum.</span>
+          <span class="lang-en">10x faster than open-source tools; automated compression, encryption, and data integrity checks.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Lift-and-shift server migration with minimal business interruption"</b></td>
+        <td><b>AWS Application Migration Service (AWS MGN)</b></td>
+        <td>
+          <span class="lang-vi">Dịch vụ chuẩn hóa thay thế SMS; liên tục replicate máy chủ vật lý và máy ảo lên AWS.</span>
+          <span class="lang-en">Recommended replacement for SMS; continuous block-level server replication into AWS.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE: 4 DR STRATEGIES SPECTRUM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Quang phổ 4 Chiến lược Khắc phục Thảm họa (4 DR Strategies Spectrum)</span>
+        <span class="lang-en">Disaster Recovery Spectrum: Trade-offs between Cost vs RPO/RTO</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Mối quan hệ đánh đổi trực tiếp giữa Chi phí duy trì (Cost) và Thời gian/Dữ liệu mất mát (RTO/RPO)</span>
+        <span class="lang-en">Direct trade-off relationship between maintenance cost and recovery speed (RTO/RPO)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart LR
+    subgraph S1["1. Backup & Restore"]
+        B1["Chi phí: RẤT THẤP ($)<br/>RPO: Hàng giờ / ngày<br/>RTO: Hàng giờ / ngày<br/>Chỉ lưu Snapshots / S3 CRR"]
+    end
+
+    subgraph S2["2. Pilot Light"]
+        B2["Chi phí: THẤP ($$)<br/>RPO: Vài phút<br/>RTO: Hàng chục phút<br/>Core DB chạy sao chép<br/>EC2 tắt, chỉ có AMI"]
+    end
+
+    subgraph S3["3. Warm Standby"]
+        B3["Chi phí: TRUNG BÌNH ($$$)<br/>RPO: Vài giây / phút<br/>RTO: Vài phút<br/>Cả hệ thống chạy thu nhỏ<br/>ASG scale out khi sự cố"]
+    end
+
+    subgraph S4["4. Multi-Site Active-Active"]
+        B4["Chi phí: RẤT CAO ($$$$)<br/>RPO: Gần như bằng 0<br/>RTO: Gần như bằng 0<br/>Full-scale 2+ Regions<br/>Route 53 cân bằng tải"]
+    end
+
+    S1 ==>|Tăng chi phí · Giảm RPO/RTO| S2
+    S2 ==>|Tăng chi phí · Giảm RPO/RTO| S3
+    S3 ==>|Tăng chi phí · Giảm RPO/RTO| S4
+
+    classDef c1 fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    classDef c2 fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef c3 fill:#fff3e0,stroke:#f57c00,stroke-width:1px;
+    classDef c4 fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    class S1 c1;
+    class S2 c2;
+    class S3 c3;
+    class S4 c4;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: 4 DR STRATEGIES -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🏛️</div>
+    <div>
+      <div class="ct">1. 4 Chiến lược Disaster Recovery (DR)</div>
+      <div class="cs">
+        <span class="lang-vi">Lựa chọn chiến lược cân bằng giữa ngân sách và yêu cầu nghiệp vụ</span>
+        <span class="lang-en">Balancing business SLA requirements against operational costs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Bản chất:</b><br>
+    <span class="lang-vi">Chiến lược phục hồi hệ thống khi cả một AWS Region gặp sự cố nghiêm trọng. Đi từ giải pháp đơn giản nhất (Backup &amp; Restore) đến kiến trúc đa vùng hoạt động song song (Multi-Site Active-Active).</span>
+    <span class="lang-en">Architectural framework for system restoration when an entire AWS Region suffers a catastrophic outage. Ranges from cold storage recovery to multi-region active-active deployments.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Chi tiết 4 Cấp độ triển khai:</b><br>
+    <span class="lang-vi">1. <b>Backup &amp; Restore:</b> Sao lưu định kỳ sang Region khác (S3 Cross-Region Replication, EBS Snapshot Copy, RDS Snapshot Sharing). Rẻ nhất, khôi phục chậm nhất.<br>2. <b>Pilot Light:</b> Cơ sở dữ liệu cốt lõi (Core Data) luôn được replicate liên tục (RDS Read Replica xuyên vùng hoặc DynamoDB Global Tables). Máy chủ ứng dụng không chạy, chỉ dựng lại từ AMI khi thảm họa xảy ra.<br>3. <b>Warm Standby:</b> Toàn bộ các thành phần (Web, App, DB) đều chạy 24/7 ở Region dự phòng nhưng ở công suất tối thiểu (ví dụ 1 instance nhỏ t3.medium). Khi sự cố xảy ra, Route 53 chuyển hướng traffic và Auto Scaling Group tăng tốc scale out.<br>4. <b>Multi-Site Active-Active:</b> Cả 2 Region đều hoạt động với 100% tải thực tế. Route 53 chia tải dựa trên độ trễ (Latency) hoặc vị trí địa lý (Geolocation). RPO/RTO = 0.</span>
+    <span class="lang-en">1. <b>Backup &amp; Restore:</b> Periodic backups to secondary region (S3 CRR, EBS Snapshot copy, RDS snapshots). Lowest cost, slowest recovery.<br>2. <b>Pilot Light:</b> Core database replicates continuously (Cross-Region Read Replica or DynamoDB Global Tables). App servers are offline; AMIs are provisioned upon disaster.<br>3. <b>Warm Standby:</b> Full stack runs 24/7 in DR region at minimal capacity (e.g. single t3.medium). On failover, Route 53 shifts traffic and ASG scales out instantly.<br>4. <b>Multi-Site Active-Active:</b> Both regions actively serve live production traffic at full scale. Route 53 balances traffic via Latency or Geolocation. Near-zero RPO/RTO.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Điểm khác biệt nhận dạng trong đề thi:</b><br>
+    <span class="lang-vi">Nếu đề bài nhắc đến: "hệ thống thu nhỏ chạy liên tục" (scaled-down version running) &rarr; <b>Warm Standby</b>. Nếu đề bài nhắc đến: "chỉ có database chạy, server ứng dụng chỉ khởi tạo khi failover" &rarr; <b>Pilot Light</b>.</span>
+    <span class="lang-en">If question mentions: "scaled-down version continuously running" &rarr; <b>Warm Standby</b>. If question mentions: "only database replicates, servers spun up on failover" &rarr; <b>Pilot Light</b>.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đừng chọn Multi-Site nếu đề thi yêu cầu: <b>"Cost-effective solution"</b>! Multi-Site tăng gấp đôi chi phí hạ tầng và phí truyền dữ liệu.<br>⚠️ Đề bài yêu cầu RTO tính bằng phút với chi phí tối ưu &rarr; Ưu tiên xem xét <b>Pilot Light hoặc Warm Standby</b>.</span>
+    <span class="lang-en">⚠️ Never pick Multi-Site if question asks for: <b>"Cost-effective solution"</b>! Multi-Site doubles infrastructure and replication costs.<br>⚠️ If question requires RTO in minutes with optimal cost &rarr; Prioritize <b>Pilot Light or Warm Standby</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS DRS & AWS MGN -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">2. AWS Elastic Disaster Recovery (DRS) &amp; MGN</div>
+      <div class="cs">
+        <span class="lang-vi">Tự động hóa sao chép cấp độ khối (Block-level replication) cho máy chủ</span>
+        <span class="lang-en">Automated block-level continuous replication for servers</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Vai trò:</b><br>
+    <span class="lang-vi">1. <b>AWS Elastic Disaster Recovery (DRS):</b> Dịch vụ tiêu chuẩn của AWS cho Disaster Recovery (thay thế CloudEndure DR). Liên tục sao chép máy chủ vật lý, máy ảo (VMware, Hyper-V) hoặc máy chủ từ cloud khác vào AWS.<br>2. <b>AWS Application Migration Service (MGN):</b> Dịch vụ di chuyển máy chủ (Lift-and-Shift) chính thức được AWS khuyến nghị (thay thế Server Migration Service - SMS).</span>
+    <span class="lang-en">1. <b>AWS Elastic Disaster Recovery (DRS):</b> Primary AWS service for Disaster Recovery (successor to CloudEndure). Continuously replicates physical servers, VMs (VMware, Hyper-V), or other cloud VMs to AWS.<br>2. <b>AWS Application Migration Service (MGN):</b> Primary recommended lift-and-shift server migration service (replaces Server Migration Service - SMS).</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Cơ chế Staging Area chi phí thấp:</b><br>
+    <span class="lang-vi">Cài đặt <b>AWS Replication Agent</b> trên máy chủ nguồn. Dữ liệu thay đổi được gửi liên tục theo cấp độ khối (Block-level) vào một <b>Staging Area Subnet</b> trên AWS. Staging Area chỉ dùng các EC2 instance nhỏ và EBS volume giá rẻ, giúp tiết kiệm hơn 80% chi phí so với việc duy trì máy chủ thật 24/7!</span>
+    <span class="lang-en">Installs <b>AWS Replication Agent</b> on source servers. Block-level changes continuously sync into a low-cost <b>Staging Area Subnet</b> on AWS using lightweight EC2s and inexpensive EBS volumes, saving over 80% cost compared to running idle full-size servers!</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Quy trình Failover và Failback:</b><br>
+    <span class="lang-vi">Khi xảy ra thảm họa, DRS tự động kích hoạt chuyển đổi (Failover), khởi tạo các máy chủ EC2 với cấu hình phần cứng đầy đủ trong vài phút. Sau khi On-Premises được sửa chữa xong, DRS hỗ trợ <b>Failback</b> (đồng bộ dữ liệu ngược trở lại on-premise an toàn).</span>
+    <span class="lang-en">During a disaster, DRS triggers automated failover, spinning up full-size EC2 target instances in minutes. Once on-premises infrastructure is restored, DRS supports non-disruptive <b>Failback</b> reverse replication.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ DRS dành cho phục hồi thảm họa liên tục và định kỳ (DR ongoing). MGN dành cho việc di chuyển vĩnh viễn (one-time permanent migration) lên AWS.</span>
+    <span class="lang-en">⚠️ DRS is tailored for continuous, ongoing Disaster Recovery. MGN is tailored for one-time permanent Lift-and-Shift migration into AWS.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS DMS & SCT -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">🗄️</div>
+    <div>
+      <div class="ct">3. AWS Database Migration Service (DMS) &amp; SCT</div>
+      <div class="cs">
+        <span class="lang-vi">Di chuyển cơ sở dữ liệu thời gian gián đoạn tối thiểu (Near-Zero Downtime)</span>
+        <span class="lang-en">Near-zero downtime database migration and schema conversion</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Bản chất:</b><br>
+    <span class="lang-vi">Dịch vụ quản lý di chuyển cơ sở dữ liệu lên AWS một cách nhanh chóng và an toàn. Trong suốt quá trình di chuyển, database nguồn vẫn hoạt động bình thường, giảm thiểu tối đa thời gian gián đoạn cho ứng dụng.</span>
+    <span class="lang-en">Managed service to migrate relational and NoSQL databases into AWS securely. Source database remains fully operational during migration, minimizing application downtime.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Hai kịch bản di chuyển cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>Homogeneous Migrations (Cùng loại):</b> Oracle &rarr; Oracle, Microsoft SQL Server &rarr; SQL Server, MySQL &rarr; Aurora MySQL. Chỉ cần <b>AWS DMS</b> xử lý trực tiếp.<br>2. <b>Heterogeneous Migrations (Khác loại):</b> Oracle &rarr; Aurora PostgreSQL, SQL Server &rarr; MySQL. Cần <b>AWS SCT (Schema Conversion Tool)</b> chuyển đổi bảng/stored procedures trước, sau đó dùng <b>AWS DMS</b> nạp dữ liệu.</span>
+    <span class="lang-en">1. <b>Homogeneous Migrations (Same engine):</b> Oracle &rarr; Oracle, SQL Server &rarr; SQL Server, MySQL &rarr; Aurora MySQL. Handled directly by <b>AWS DMS</b> alone.<br>2. <b>Heterogeneous Migrations (Different engines):</b> Oracle &rarr; Aurora PostgreSQL, SQL Server &rarr; MySQL. Requires <b>AWS SCT (Schema Conversion Tool)</b> for schema/procedure conversion, then <b>AWS DMS</b> for data loading.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Change Data Capture (CDC):</b><br>
+    <span class="lang-vi">DMS hỗ trợ 3 chế độ tải: 1. Full Load (Nạp toàn bộ dữ liệu hiện có); 2. Full Load + CDC (Nạp toàn bộ rồi liên tục replicate các giao dịch thêm/sửa/xóa mới); 3. CDC Only. Để đạt <b>Near-Zero Downtime</b>, luôn chọn <b>Full Load + CDC</b>!</span>
+    <span class="lang-en">DMS offers 3 task modes: 1. Full Load; 2. Full Load + CDC (Continuous replication of inserts/updates/deletes); 3. CDC Only. For <b>Near-Zero Downtime</b>, always choose <b>Full Load + CDC</b>!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ AWS DMS cần một <b>EC2 Replication Instance</b> trung gian để đọc dữ liệu từ nguồn và ghi vào đích. Cần định cỡ CPU/RAM cho instance này phù hợp với khối lượng CDC.<br>⚠️ Nguồn hoặc đích của DMS bắt buộc phải có ít nhất 1 bên nằm trên AWS (không dùng DMS để di chuyển On-premise sang On-premise).</span>
+    <span class="lang-en">⚠️ AWS DMS requires an <b>EC2 Replication Instance</b> to extract from source and apply to target. Size replication instance memory appropriately for CDC volume.<br>⚠️ Either the source or target of DMS must reside on AWS (cannot migrate on-premise to on-premise).</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS DATASYNC & SNOW FAMILY -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📦</div>
+    <div>
+      <div class="ct">4. AWS DataSync vs Snow Family Migration</div>
+      <div class="cs">
+        <span class="lang-vi">Lựa chọn truyền tải dữ liệu trực tuyến qua mạng vs thiết bị vật lý ngoại tuyến</span>
+        <span class="lang-en">Online high-speed network transfer vs offline physical appliance shipping</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Đối tượng sử dụng:</b><br>
+    <span class="lang-vi">1. <b>AWS DataSync:</b> Dịch vụ truyền dữ liệu trực tuyến tốc độ cao (nhanh gấp 10 lần các công cụ open-source) giữa on-premises storage (NFS, SMB/CIFS, HDFS, Object) và AWS (S3, EFS, FSx).<br>2. <b>AWS Snow Family:</b> Bộ thiết bị phần cứng vận chuyển dữ liệu an toàn ngoại tuyến (Offline physical migration) bằng xe vận chuyển khi băng thông mạng không đáp ứng được.</span>
+    <span class="lang-en">1. <b>AWS DataSync:</b> High-speed online data transfer service (10x faster than open-source tools) between on-premises storage (NFS, SMB, HDFS) and AWS (S3, EFS, FSx).<br>2. <b>AWS Snow Family:</b> Hardware appliances for secure offline physical data transfer via shipping carriers when network bandwidth is inadequate.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Công thức Tính toán Thời gian truyền mạng (Exam Formula):</b><br>
+    <span class="lang-vi">Thời gian truyền = Tổng dung lượng dữ liệu / Băng thông mạng thực tế khả dụng.<br>Ví dụ: Cần chuyển <b>100 TB dữ liệu</b> qua đường truyền <b>100 Mbps</b>:<br>100 TB = 100,000,000 MB = 800,000,000 Mb.<br>Thời gian = 800,000,000 / 100 = 8,000,000 giây &asymp; <b>92 ngày (hơn 3 tháng!)</b>.<br>&rarr; <b>Bắt buộc dùng AWS Snowball Edge</b> (vận chuyển thiết bị chỉ mất 5-7 ngày)!</span>
+    <span class="lang-en">Transfer Time = Total Data Size / Available Network Bandwidth.<br>E.g., Transferring <b>100 TB</b> over a <b>100 Mbps connection</b>:<br>100 TB = 800,000,000 Mb.<br>Time = 800,000,000 / 100 = 8,000,000 sec &asymp; <b>92 days (over 3 months!)</b>.<br>&rarr; <b>Must choose AWS Snowball Edge</b> (physical delivery in 5-7 days)!</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Tính năng tự động của AWS DataSync:</b><br>
+    <span class="lang-vi">Tự động nén dữ liệu, mã hóa TLS trong quá trình truyền tải, kiểm tra tính toàn vẹn (Checksum verification khi truyền và khi lưu), và tự động đặt lịch đồng bộ định kỳ theo giờ/ngày mà không cần viết script phức tạp.</span>
+    <span class="lang-en">Built-in data compression, in-flight TLS encryption, end-to-end checksum verification, and scheduled recurring transfers hourly/daily without custom scripting.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề bài yêu cầu: "Đồng bộ liên tục theo lịch định kỳ giữa On-premise NFS và Amazon EFS" &rarr; Chọn <b>AWS DataSync</b>.<br>⚠️ Đề bài yêu cầu: "Di chuyển 1 lần 500 TB dữ liệu trong vòng 1 tuần với mạng chậm" &rarr; Chọn <b>AWS Snowball Edge</b>.</span>
+    <span class="lang-en">⚠️ Question asks: "Ongoing scheduled synchronization between on-premise NFS and Amazon EFS" &rarr; Choose <b>AWS DataSync</b>.<br>⚠️ Question asks: "One-time migration of 500 TB within 1 week over limited bandwidth" &rarr; Choose <b>AWS Snowball Edge</b>.</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: 4 DR STRATEGIES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh: 4 Chiến lược Disaster Recovery (DR Matrix)</span>
+        <span class="lang-en">Comparison Matrix: 4 Disaster Recovery Strategies</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh toàn diện chỉ số RPO, RTO, trạng thái máy chủ ứng dụng và chi phí duy trì</span>
+        <span class="lang-en">Comprehensive comparison of RPO, RTO, compute operational state, and running costs</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:20%"><span class="lang-vi">Chiến lược DR</span><span class="lang-en">DR Strategy</span></th>
+        <th style="width:15%"><b>RPO</b></th>
+        <th style="width:15%"><b>RTO</b></th>
+        <th style="width:25%"><span class="lang-vi">Trạng thái tại DR Region</span><span class="lang-en">State in DR Region</span></th>
+        <th style="width:25%"><span class="lang-vi">Chi phí &amp; Trường hợp dùng</span><span class="lang-en">Cost &amp; Typical Use Case</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Backup &amp; Restore</b></td>
+        <td>Giờ &rarr; Ngày</td>
+        <td>Giờ &rarr; Ngày</td>
+        <td>Không có gì chạy; chỉ có bản sao lưu snapshots trên S3.</td>
+        <td><b>Rất thấp ($)</b>. Ứng dụng nội bộ không quan trọng, chấp nhận downtime dài.</td>
+      </tr>
+      <tr>
+        <td><b>Pilot Light</b></td>
+        <td>Vài phút</td>
+        <td>Hàng chục phút</td>
+        <td>Chỉ Database cốt lõi chạy replicate; EC2 tắt, tạo từ AMI khi failover.</td>
+        <td><b>Thấp ($$)</b>. Hệ thống quan trọng cần tiết kiệm chi phí máy chủ điện toán.</td>
+      </tr>
+      <tr>
+        <td><b>Warm Standby</b></td>
+        <td>Giây &rarr; Phút</td>
+        <td>Vài phút</td>
+        <td>Toàn bộ hệ thống chạy thu nhỏ 24/7 (1 instance nhỏ); scale out khi sự cố.</td>
+        <td><b>Trung bình ($$$)</b>. Ứng dụng kinh doanh chính yếu cần khôi phục cực nhanh.</td>
+      </tr>
+      <tr>
+        <td><b>Multi-Site Active-Active</b></td>
+        <td>Gần như bằng 0</td>
+        <td>Gần như bằng 0</td>
+        <td>Hệ thống đầy đủ 100% chạy đồng thời ở cả 2 Region nhận traffic thực tế.</td>
+        <td><b>Rất cao ($$$$)</b>. Ứng dụng ngân hàng, thanh toán, sinh mệnh không thể chịu downtime.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các nguyên tắc cốt lõi về Phục hồi Thảm họa và Di chuyển Dữ liệu</span>
+        <span class="lang-en">Core principles for Disaster Recovery and Migration exam scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 BẪY DI CHUYỂN DỮ LIỆU (MIGRATION TRAPS)</span>
+          <span class="lang-en">📌 DATA MIGRATION TRAPS</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Di chuyển DB khác hệ:</b> Luôn là combo <b>AWS SCT + AWS DMS</b>. SCT chuyển đổi schema, DMS chuyển đổi dữ liệu. Không bao giờ chọn DMS một mình khi đổi engine cơ sở dữ liệu!</li>
+            <li><b>Không làm gián đoạn hệ thống:</b> Chọn <b>DMS với tính năng CDC (Change Data Capture)</b>. Ứng dụng nguồn tiếp tục ghi vào DB cũ cho tới khi đồng bộ xong hoàn toàn.</li>
+            <li><b>Di chuyển máy chủ vật lý / máy ảo:</b> Chọn <b>AWS Application Migration Service (MGN)</b>. Block-level replication giúp giữ nguyên cấu hình OS, phần mềm và licenses.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 QUY TẮC VÀNG THẢM HỌA (DR RULES)</span>
+          <span class="lang-en">💡 DISASTER RECOVERY RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Route 53 Failover Routing:</b> Cơ chế chuẩn để chuyển hướng lưu lượng người dùng sang Region dự phòng thông qua DNS Health Checks.</li>
+            <li><b>RDS Multi-AZ vs Multi-Region:</b> Multi-AZ chỉ bảo vệ chống sự cố trong 1 Region (Synchronous replication, HA). Muốn chống thảm họa sập cả Region &rarr; <b>Bắt buộc dùng RDS Cross-Region Read Replica (Asynchronous)</b>!</li>
+            <li><b>S3 Cross-Region Replication (CRR):</b> Yêu cầu bắt buộc phải bật <b>Versioning</b> ở cả bucket nguồn và bucket đích.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài giảng Udemy liên quan</span>
+        <span class="lang-en">Official AWS references and relevant Udemy lectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Giáo trình Udemy SAA-C03</span>
+        <span class="lang-en">🎓 Udemy SAA-C03 Syllabus</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 28: Disaster Recovery &amp; Migrations</b><br>
+            <span class="lang-vi">Toàn bộ 12 bài giảng về 4 chiến lược DR, AWS DRS, AWS DMS, SCT và DataSync.</span>
+            <span class="lang-en">All 12 lectures covering 4 DR strategies, AWS DRS, AWS DMS, SCT, and DataSync.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS Disaster Recovery Whitepaper</b><br>
+            <span class="lang-vi">Tài liệu kiến trúc chính thức về RPO, RTO và hướng dẫn triển khai 4 chiến lược DR.</span>
+            <span class="lang-en">Official architectural whitepaper on RPO, RTO, and 4 DR implementation patterns.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS DMS &amp; SCT User Guide</b><br>
+            <span class="lang-vi">Hướng dẫn thiết lập replication task, Change Data Capture (CDC) và chuyển đổi schema.</span>
+            <span class="lang-en">Guide on replication tasks, Change Data Capture (CDC), and schema conversions.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS Elastic Disaster Recovery (DRS) Guide</b><br>
+            <span class="lang-vi">Cấu hình Staging Area Subnet, replication agent và quy trình drill failover/failback.</span>
+            <span class="lang-en">Configuring Staging Area subnets, replication agents, and failover/failback drills.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>Disaster Recovery (DR) Strategies Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng so sánh chi tiết Pilot Light vs Warm Standby và các câu hỏi tình huống thực tế.</span>
+            <span class="lang-en">Detailed Pilot Light vs Warm Standby comparison and scenario decision trees.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>AWS Migration Services Comparison</b><br>
+            <span class="lang-vi">Phân biệt khi nào chọn DMS, DataSync, Snowball Edge và Application Migration Service.</span>
+            <span class="lang-en">Decision framework for DMS, DataSync, Snowball Edge, and MGN migrations.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

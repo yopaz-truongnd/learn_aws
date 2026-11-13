@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Security &amp; Encryption — KMS, Secrets Manager, WAF &amp; Shield — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_security_ssm_kms.html" class="nav-back" style="background:var(--grb);color:var(--gr);border-color:var(--gr)">
+      <span class="lang-vi">🧪 Lab Thực hành KMS &amp; SSM</span>
+      <span class="lang-en">🧪 KMS &amp; SSM Hands-on Lab</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 26 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Security, Identity &amp; Compliance</div>
+  <h1>AWS Security &amp; Encryption — KMS, Secrets Manager, WAF &amp; Shield</h1>
+  <p class="lang-vi">Bảo vệ toàn diện hệ thống đám mây: Mã hóa phong bì KMS, Quản lý cấu hình SSM &amp; Secrets Manager, Phòng chống tấn công tầng 7 WAF, chống DDoS Shield và Bộ ba AI GuardDuty/Inspector/Macie</p>
+  <p class="lang-en">Comprehensive cloud protection: KMS Envelope Encryption, SSM &amp; Secrets Manager, Layer 7 WAF defenses, Shield DDoS mitigation, and the AI security triad GuardDuty/Inspector/Macie</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · Quy tắc mã hóa và bảo vệ ứng dụng</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Answer Mapping · Encryption &amp; Threat Defense Rules</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — Giới hạn dữ liệu KMS Encrypt API là 4 KB:</b> Hàm <code>kms:Encrypt</code> chỉ nhận payload tối đa <b>4 KB</b>. Bất kỳ dữ liệu nào lớn hơn 4 KB (file, database, EBS volume, S3 object) <b>BẮT BUỘC phải dùng Envelope Encryption (Mã hóa phong bì)</b> thông qua API <code>GenerateDataKey</code>.</span>
+          <span class="lang-en"><b>Trap 1 — KMS Encrypt API payload limit is 4 KB:</b> The <code>kms:Encrypt</code> API only accepts up to <b>4 KB</b>. Any payload larger than 4 KB (files, databases, EBS volumes, S3 objects) <b>MUST use Envelope Encryption</b> via the <code>GenerateDataKey</code> API.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — Secrets Manager vs SSM Parameter Store:</b> Cần tự động xoay vòng mật khẩu (Automatic Rotation) cho cơ sở dữ liệu (RDS, Aurora, Redshift, DocumentDB) mà không cần cấu hình phức tạp &rarr; <b>Chọn Secrets Manager</b>. SSM Parameter Store rẻ hơn nhưng không có built-in rotation (phải tự viết Lambda).</span>
+          <span class="lang-en"><b>Trap 2 — Secrets Manager vs SSM Parameter Store:</b> Need built-in automatic rotation for database credentials (RDS, Aurora, Redshift, DocumentDB) &rarr; <b>Choose Secrets Manager</b>. SSM Parameter Store is cheaper but has no native automated rotation out-of-the-box (requires custom Lambda).</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — Tầng bảo vệ WAF vs Shield:</b> AWS WAF bảo vệ ở <b>Tầng 7 (Application Layer - HTTP/HTTPS)</b> chống SQL Injection, XSS, rate-limiting, IP blocking. AWS Shield bảo vệ ở <b>Tầng 3 và 4 (Network &amp; Transport Layer)</b> chống DDoS (SYN Flood, UDP Reflection). Shield Standard miễn phí cho mọi khách hàng; Shield Advanced có đội phản ứng 24/7 SRT và bảo hiểm chi phí.</span>
+          <span class="lang-en"><b>Trap 3 — WAF vs Shield Protection Layers:</b> AWS WAF operates at <b>Layer 7 (Application - HTTP/HTTPS)</b> against SQLi, XSS, rate-limiting, IP blocking. AWS Shield operates at <b>Layer 3/4 (Network/Transport)</b> against DDoS (SYN floods, UDP reflection). Shield Standard is free; Shield Advanced includes 24/7 SRT and DDoS cost protection.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — Phân biệt GuardDuty vs Inspector vs Macie:</b> GuardDuty phát hiện mối đe dọa thông minh bằng AI từ log (VPC Flow Logs, CloudTrail, DNS). Inspector quét lỗ hổng bảo mật phần mềm (CVEs) trên EC2 và container ECR. Macie dùng AI quét dữ liệu nhạy cảm (PII, số thẻ tín dụng) lưu trên Amazon S3.</span>
+          <span class="lang-en"><b>Trap 4 — Distinguish GuardDuty vs Inspector vs Macie:</b> GuardDuty is intelligent threat detection using AI on logs (VPC Flow, CloudTrail, DNS). Inspector scans software vulnerabilities (CVEs) on EC2 and ECR container images. Macie uses AI to discover sensitive data (PII, credit cards) stored in Amazon S3.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Giải pháp kiến trúc AWS</span><span class="lang-en">AWS Architectural Solution</span></th>
+        <th style="width:35%"><span class="lang-vi">Lý do chọn &amp; Lưu ý kỹ thuật</span><span class="lang-en">Selection Reason &amp; Exam Trap</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Automatically rotate database credentials every 30 days"</b></td>
+        <td><b>AWS Secrets Manager</b></td>
+        <td>
+          <span class="lang-vi">Hỗ trợ sẵn cơ chế xoay vòng mật khẩu tự động cho Amazon RDS/Aurora.</span>
+          <span class="lang-en">Native automated credential rotation integration for Amazon RDS/Aurora.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Store hierarchical configuration strings and license keys at lowest cost"</b></td>
+        <td><b>SSM Parameter Store (Standard Tier)</b></td>
+        <td>
+          <span class="lang-vi">Miễn phí cho Standard tier (tối đa 10,000 parameters, hỗ trợ KMS SecureString).</span>
+          <span class="lang-en">Free standard tier (up to 10,000 parameters, supports KMS SecureString).</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Block SQL Injection and Cross-Site Scripting (XSS) attacks on ALB"</b></td>
+        <td><b>AWS WAF with AWS Managed Rules</b></td>
+        <td>
+          <span class="lang-vi">Gắn Web ACL trực tiếp vào ALB hoặc CloudFront ở Tầng 7.</span>
+          <span class="lang-en">Attach Web ACL directly to ALB or CloudFront at Layer 7.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"24/7 dedicated DDoS response team and cost protection against bill spikes"</b></td>
+        <td><b>AWS Shield Advanced</b></td>
+        <td>
+          <span class="lang-vi">Đi kèm quyền truy cập trực tiếp AWS SRT và bồi hoàn chi phí phát sinh do scaling khi bị tấn công.</span>
+          <span class="lang-en">Includes direct 24/7 AWS SRT support and financial cost spike reimbursement during attacks.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Detect compromised EC2 instances or unauthorized crypto mining activity"</b></td>
+        <td><b>Amazon GuardDuty</b></td>
+        <td>
+          <span class="lang-vi">Phân tích VPC Flow Logs và DNS Logs bằng Machine Learning không cần cài agent.</span>
+          <span class="lang-en">Analyzes VPC Flow Logs and DNS Logs via ML without installing an agent.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Discover Personally Identifiable Information (PII) stored in S3 buckets"</b></td>
+        <td><b>Amazon Macie</b></td>
+        <td>
+          <span class="lang-vi">Dịch vụ bảo mật dữ liệu chuyên dụng dùng ML để nhận diện PII, GDPR, số thẻ.</span>
+          <span class="lang-en">Dedicated data security service using ML to classify PII, GDPR, and credit card numbers.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Vulnerability scan for CVEs and unpatched packages in ECR container images"</b></td>
+        <td><b>Amazon Inspector</b></td>
+        <td>
+          <span class="lang-vi">Tự động quét container images khi push lên ECR và quét liên tục.</span>
+          <span class="lang-en">Automated vulnerability scanning for container images on push and continuously in ECR.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE: ENVELOPE ENCRYPTION WORKFLOW -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Cơ chế Mã hóa Phong bì (KMS Envelope Encryption)</span>
+        <span class="lang-en">KMS Envelope Encryption Architectural Workflow</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Quy trình mã hóa và giải mã dữ liệu lớn hơn 4 KB an toàn trên AWS</span>
+        <span class="lang-en">Secure encryption and decryption workflow for payloads exceeding 4 KB</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    subgraph EncryptFlow["QUY TRÌNH MÃ HÓA (ENCRYPTION WORKFLOW)"]
+        CLIENT["Ứng dụng / Client"] -->|1. Gọi GenerateDataKey| KMS["AWS KMS<br/>Customer Master Key (CMK)"]
+        KMS -->|2. Trả về Plaintext Data Key + Encrypted Data Key| CLIENT
+        CLIENT -->|3. Dùng Plaintext Data Key mã hóa file > 4KB| CIPHER["Dữ liệu đã mã hóa<br/>(Ciphertext)"]
+        CLIENT -->|4. Xóa vĩnh viễn Plaintext Data Key khỏi RAM| MEMORY["Bộ nhớ (RAM)<br/>Đã làm sạch"]
+        CIPHER -.->|5. Lưu trữ chung| STORAGE["S3 / EBS / Database<br/>(Ciphertext + Encrypted Data Key đính kèm)"]
+    end
+
+    subgraph DecryptFlow["QUY TRÌNH GIẢI MÃ (DECRYPTION WORKFLOW)"]
+        APP["Ứng dụng cần đọc dữ liệu"] -->|1. Gửi Encrypted Data Key| KMS2["AWS KMS (CMK)"]
+        KMS2 -->|2. Gọi Decrypt API & trả về Plaintext Data Key| APP
+        APP -->|3. Dùng Plaintext Data Key giải mã Ciphertext| PLAIN["Dữ liệu gốc (Plaintext)"]
+    end
+
+    classDef kms fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef client fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef store fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    class KMS,KMS2 kms;
+    class CLIENT,APP client;
+    class STORAGE,PLAIN store;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS KMS -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🔑</div>
+    <div>
+      <div class="ct">1. AWS Key Management Service (KMS)</div>
+      <div class="cs">
+        <span class="lang-vi">Quản lý vòng đời khóa mã hóa tập trung và bảo mật FIPS 140-2</span>
+        <span class="lang-en">Centralized encryption key management &amp; FIPS 140-2 compliance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Phân loại Khóa:</b><br>
+    <span class="lang-vi">Dịch vụ quản lý khóa mã hóa tập trung. Khóa (KMS Keys) không bao giờ rời khỏi phần cứng bảo mật (HSM) của AWS ở dạng bản rõ. Có 3 loại khóa chính:<br>1. <b>AWS Owned Keys:</b> Khóa do AWS sở hữu và quản lý ngầm, miễn phí hoàn toàn (ví dụ: SSE-S3).<br>2. <b>AWS Managed Keys:</b> Khóa mặc định của dịch vụ (tiền tố <code>aws/s3</code>, <code>aws/ebs</code>), miễn phí sử dụng, tự động xoay vòng mỗi 1 năm.<br>3. <b>Customer Managed Keys (CMK):</b> Khóa do khách hàng tạo ($1/khóa/tháng), toàn quyền kiểm soát Key Policy, audit qua CloudTrail, tùy chọn xoay vòng tự động mỗi 1 năm.</span>
+    <span class="lang-en">Centralized key management service. Key material never leaves AWS HSMs unencrypted. 3 main key types:<br>1. <b>AWS Owned Keys:</b> Owned by AWS, completely free (e.g. SSE-S3).<br>2. <b>AWS Managed Keys:</b> Service defaults (prefix <code>aws/s3</code>, <code>aws/ebs</code>), free monthly fee, rotated every 1 year.<br>3. <b>Customer Managed Keys (CMK):</b> Created by customer ($1/key/month), full control over Key Policy, CloudTrail audit, optional 1-year auto rotation.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Symmetric vs Asymmetric CMK:</b><br>
+    <span class="lang-vi">1. <b>Symmetric (Đối xứng - AES-256):</b> Khóa mã hóa và giải mã là một; hỗ trợ tích hợp sẵn với toàn bộ dịch vụ AWS; bắt buộc dùng cho Envelope Encryption.<br>2. <b>Asymmetric (Bất đối xứng - RSA/ECC):</b> Có Public Key (mã hóa hoặc verify signature) và Private Key (giải mã hoặc sign); dùng khi cần chia sẻ Public Key cho đối tác bên ngoài AWS không có tài khoản AWS.</span>
+    <span class="lang-en">1. <b>Symmetric (AES-256):</b> Same key encrypts and decrypts; seamlessly integrated across all AWS services; mandatory for Envelope Encryption.<br>2. <b>Asymmetric (RSA/ECC):</b> Public Key (encrypt/verify signature) and Private Key (decrypt/sign); ideal for sharing public key with outside partners without AWS accounts.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Multi-Region Keys &amp; Key Rotation:</b><br>
+    <span class="lang-vi">1. <b>Multi-Region Keys:</b> Cho phép nhân bản khóa KMS từ Primary Region sang Replica Region với <b>cùng Key ID và cùng key material</b>. Cho phép mã hóa ở us-east-1 và giải mã tại eu-west-1 mà không cần gọi API xuyên vùng.<br>2. <b>Automatic Rotation:</b> Khi bật xoay vòng khóa, AWS tạo phiên bản key material mới; key material cũ vẫn được lưu giữ an toàn để giải mã dữ liệu lịch sử.</span>
+    <span class="lang-en">1. <b>Multi-Region Keys:</b> Replicates KMS keys from Primary Region to Replica Regions with the <b>identical Key ID and key material</b>. Encrypt in us-east-1 and decrypt in eu-west-1 without cross-region API calls.<br>2. <b>Automatic Rotation:</b> Backing key material changes annually; previous key material is preserved to decrypt older ciphertexts.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ IAM Policy một mình là <b>KHÔNG ĐỦ</b> để cấp quyền KMS! Bắt buộc phải có <b>KMS Key Policy</b> cho phép IAM entity đó truy cập.<br>⚠️ Để cross-account dùng KMS, phải cấp quyền trong KMS Key Policy ở Account A VÀ cấp IAM Policy ở Account B.</span>
+    <span class="lang-en">⚠️ An IAM Policy alone is <b>INSUFFICIENT</b> for KMS access! The <b>KMS Key Policy</b> must explicitly permit the IAM principal.<br>⚠️ For cross-account KMS usage, grant permissions in Account A's Key Policy AND Account B's IAM Policy.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: SECRETS MANAGER VS SSM -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🗄️</div>
+    <div>
+      <div class="ct">2. SSM Parameter Store vs Secrets Manager</div>
+      <div class="cs">
+        <span class="lang-vi">Lựa chọn kho lưu trữ cấu hình và thông tin xác thực tối ưu</span>
+        <span class="lang-en">Choosing optimal config and credential storage</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Bản chất:</b><br>
+    <span class="lang-vi">1. <b>AWS Systems Manager Parameter Store:</b> Kho lưu trữ cấu hình dạng phân cấp (hierarchical key-value). Hỗ trợ String, StringList, và <code>SecureString</code> (mã hóa bằng KMS).<br>2. <b>AWS Secrets Manager:</b> Dịch vụ chuyên dụng quản lý thông tin mật (database passwords, API keys, OAuth tokens) với khả năng tự động xoay vòng mật khẩu thông qua AWS Lambda.</span>
+    <span class="lang-en">1. <b>AWS Systems Manager Parameter Store:</b> Hierarchical key-value configuration storage. Supports String, StringList, and <code>SecureString</code> (KMS encrypted).<br>2. <b>AWS Secrets Manager:</b> Dedicated secrets management service (database credentials, API keys) with built-in automated rotation via AWS Lambda.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>So sánh tính năng xoay vòng (Rotation):</b><br>
+    <span class="lang-vi">1. <b>Secrets Manager:</b> Tích hợp sẵn cơ chế Automatic Rotation theo lịch định kỳ (ví dụ mỗi 30 ngày) cho Amazon RDS, Aurora, DocumentDB, Redshift mà không làm gián đoạn ứng dụng.<br>2. <b>SSM Parameter Store:</b> KHÔNG có cơ chế xoay vòng tự động tích hợp sẵn (muốn xoay vòng phải tự tích hợp EventBridge + Lambda viết tay).</span>
+    <span class="lang-en">1. <b>Secrets Manager:</b> Built-in scheduled automated rotation (e.g. every 30 days) natively supporting Amazon RDS, Aurora, DocumentDB, Redshift without app downtime.<br>2. <b>SSM Parameter Store:</b> NO native automated rotation (requires custom EventBridge + Lambda scripting).</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Mô hình Chi phí (Cost Model):</b><br>
+    <span class="lang-vi">1. <b>SSM Parameter Store:</b> Standard Tier hoàn toàn <b>Miễn phí</b> (tối đa 10,000 parameters, kích thước 4 KB). Advanced Tier ($0.05/10,000 params, 8 KB).<br>2. <b>Secrets Manager:</b> Có phí <b>$0.40 / secret / tháng</b> + $0.05 / 10,000 API calls.</span>
+    <span class="lang-en">1. <b>SSM Parameter Store:</b> Standard Tier is completely <b>Free</b> (up to 10,000 parameters, 4 KB size limit). Advanced Tier is $0.05/10,000 params (8 KB size).<br>2. <b>Secrets Manager:</b> Costs <b>$0.40 per secret per month</b> + $0.05 per 10,000 API calls.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề bài yêu cầu: "Chi phí thấp nhất để lưu trữ cấu hình và license keys" &rarr; Chọn <b>SSM Parameter Store Standard</b>.<br>⚠️ Đề bài yêu cầu: "Tự động đổi mật khẩu cơ sở dữ liệu RDS định kỳ" &rarr; Chọn <b>AWS Secrets Manager</b>.</span>
+    <span class="lang-en">⚠️ Question asks: "Lowest cost solution for config strings and license keys" &rarr; Choose <b>SSM Parameter Store Standard</b>.<br>⚠️ Question asks: "Automatically rotate RDS database credentials on a schedule" &rarr; Choose <b>AWS Secrets Manager</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS WAF & AWS SHIELD -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🛡️</div>
+    <div>
+      <div class="ct">3. AWS WAF &amp; AWS Shield</div>
+      <div class="cs">
+        <span class="lang-vi">Lá chắn bảo vệ ứng dụng Web và hạ tầng mạng chống tấn công DDoS</span>
+        <span class="lang-en">Web application firewall &amp; DDoS infrastructure protection</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Phạm vi bảo vệ:</b><br>
+    <span class="lang-vi">1. <b>AWS WAF (Web Application Firewall):</b> Bảo vệ ở Tầng ứng dụng (Layer 7 HTTP/HTTPS) chống lại các lỗ hổng web phổ biến (OWASP Top 10).<br>2. <b>AWS Shield:</b> Dịch vụ bảo vệ chống tấn công từ chối dịch vụ phân tán (DDoS) bảo vệ hạ tầng mạng và giao vận (Layer 3 &amp; Layer 4).</span>
+    <span class="lang-en">1. <b>AWS WAF:</b> Operates at the Application Layer (Layer 7 HTTP/HTTPS) filtering malicious web traffic against OWASP Top 10 vulnerabilities.<br>2. <b>AWS Shield:</b> Managed DDoS protection safeguarding network and transport layers (Layer 3 &amp; Layer 4).</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Dịch vụ tích hợp (Integration Points):</b><br>
+    <span class="lang-vi">1. <b>AWS WAF gắn vào:</b> Application Load Balancer (ALB), Amazon CloudFront, Amazon API Gateway, AWS AppSync, Amazon Cognito User Pools.<br>2. <b>AWS Shield Standard:</b> Tự động kích hoạt mặc định trên toàn bộ CloudFront, Route 53, ALB, EC2 miễn phí.<br>3. <b>AWS Shield Advanced:</b> Bảo vệ nâng cao cho CloudFront, Route 53, Global Accelerator, ALB, Elastic IPs.</span>
+    <span class="lang-en">1. <b>AWS WAF integrates with:</b> Application Load Balancers (ALBs), Amazon CloudFront, Amazon API Gateway, AWS AppSync, Amazon Cognito User Pools.<br>2. <b>AWS Shield Standard:</b> Automatically enabled by default across all CloudFront, Route 53, ALBs, and EC2 for free.<br>3. <b>AWS Shield Advanced:</b> Advanced mitigation for CloudFront, Route 53, Global Accelerator, ALBs, and Elastic IPs.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Quy tắc WAF (Web ACL Rules):</b><br>
+    <span class="lang-vi">Hỗ trợ lọc traffic theo: Địa chỉ IP (IP sets), Quốc gia (Geo-match), Chuỗi độc hại (SQLi, XSS), Rate-based rules (giới hạn tần suất request từ 1 IP để chống brute force/DDoS L7), và AWS Managed Rules (bộ quy tắc được cập nhật liên tục bởi AWS).</span>
+    <span class="lang-en">Web ACL rules filter traffic by: IP address sets, Geo-matching (country blocking), String/Regex match (SQLi, XSS), Rate-based rules (throttle IPs exceeding threshold), and AWS Managed Rulesets.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Muốn chặn tấn công Layer 7 HTTP flood (như 10,000 requests/giây từ botnet) &rarr; Dùng <b>AWS WAF Rate-based Rule</b> kết hợp CloudFront.<br>⚠️ Cần bảo hiểm chi phí khi bị DDoS quy mô lớn &rarr; Chọn <b>AWS Shield Advanced</b> (DDoS Cost Protection).</span>
+    <span class="lang-en">⚠️ To mitigate Layer 7 HTTP flood attacks (e.g. 10,000 req/sec botnet) &rarr; Use <b>AWS WAF Rate-based Rules</b> with CloudFront.<br>⚠️ Need financial reimbursement for auto-scaling cost spikes during DDoS &rarr; Choose <b>AWS Shield Advanced</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: GUARDDUTY, INSPECTOR & MACIE -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">🤖</div>
+    <div>
+      <div class="ct">4. AI Security Triad: GuardDuty, Inspector &amp; Macie</div>
+      <div class="cs">
+        <span class="lang-vi">Bộ ba an ninh thông minh tự động hóa phân tích mối đe dọa bằng Machine Learning</span>
+        <span class="lang-en">Automated ML-powered threat detection, vulnerability scan &amp; data privacy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Phân định chức năng cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>Amazon GuardDuty:</b> Dịch vụ phát hiện mối đe dọa thông minh (Threat Detection) theo thời gian thực.<br>2. <b>Amazon Inspector:</b> Dịch vụ quét lỗ hổng phần mềm tự động (Vulnerability Management) theo mã CVE.<br>3. <b>Amazon Macie:</b> Dịch vụ bảo mật dữ liệu nhạy cảm (Data Security &amp; Privacy) trên Amazon S3.</span>
+    <span class="lang-en">1. <b>Amazon GuardDuty:</b> Real-time intelligent Threat Detection service.<br>2. <b>Amazon Inspector:</b> Automated software Vulnerability Management service based on CVEs.<br>3. <b>Amazon Macie:</b> Sensitive Data Security &amp; Privacy discovery service on Amazon S3.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Nguồn dữ liệu &amp; Đối tượng quét:</b><br>
+    <span class="lang-vi">1. <b>GuardDuty:</b> Phân tích VPC Flow Logs, DNS Query Logs, CloudTrail Management Events, CloudTrail S3 Data Events, EKS Audit Logs (hoàn toàn không cần cài agent).<br>2. <b>Inspector:</b> Quét hệ điều hành EC2 (thông qua SSM Agent), quét container images trên Amazon ECR, và quét mã nguồn Lambda Functions.<br>3. <b>Macie:</b> Quét các bucket S3 để tìm thông tin PII (Personally Identifiable Information), số an sinh xã hội, số hộ chiếu, thẻ ngân hàng.</span>
+    <span class="lang-en">1. <b>GuardDuty:</b> Analyzes VPC Flow Logs, DNS Logs, CloudTrail Management/S3 Data Events, EKS Logs (agentless).<br>2. <b>Inspector:</b> Scans EC2 OS packages (via SSM Agent), Amazon ECR container images, and Lambda function code.<br>3. <b>Macie:</b> Scans S3 buckets for PII (Personally Identifiable Information), SSNs, passport numbers, and credit cards.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Cơ chế Tự động hóa Phản ứng (Automated Remediation):</b><br>
+    <span class="lang-vi">Cả 3 dịch vụ đều gửi kết quả cảnh báo (Findings) sang <b>Amazon EventBridge</b>. Từ EventBridge, có thể kích hoạt AWS Lambda để tự động cách ly EC2 nhiễm mã độc, cập nhật Security Group, hoặc gửi cảnh báo SNS cho Security Team.</span>
+    <span class="lang-en">All 3 services emit event findings to <b>Amazon EventBridge</b>, which can trigger AWS Lambda for automated remediation (e.g. isolating compromised EC2, patching SG, or sending SNS alerts).</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ GuardDuty <b>KHÔNG ngăn chặn</b> cuộc tấn công; nó chỉ phát hiện và cảnh báo! Muốn tự động chặn, phải kết hợp GuardDuty &rarr; EventBridge &rarr; Lambda/WAF.<br>⚠️ Inspector chỉ quét lỗ hổng ứng dụng và cấu hình mạng của EC2/ECR; không phân tích hành vi mạng bất thường (đó là việc của GuardDuty).</span>
+    <span class="lang-en">⚠️ GuardDuty <b>DOES NOT block</b> attacks natively; it only detects and alerts! Automated blocking requires GuardDuty &rarr; EventBridge &rarr; Lambda/WAF.<br>⚠️ Inspector only scans package CVEs and network reachability; it does not analyze network anomalies (that is GuardDuty).</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: SECURITY SERVICES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh Tổng hợp: Dịch vụ An ninh AWS (Security Matrix)</span>
+        <span class="lang-en">Comprehensive AWS Security Services Comparison Matrix</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tóm tắt đối tượng bảo vệ, tầng mạng và cách kích hoạt phản ứng tự động</span>
+        <span class="lang-en">Summary of protected targets, network layers, and automated remediation</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:20%"><span class="lang-vi">Dịch vụ AWS</span><span class="lang-en">AWS Service</span></th>
+        <th style="width:20%"><span class="lang-vi">Tầng / Phạm vi bảo vệ</span><span class="lang-en">Layer / Scope</span></th>
+        <th style="width:30%"><span class="lang-vi">Mục tiêu phát hiện / Ngăn chặn</span><span class="lang-en">Detection / Mitigation Target</span></th>
+        <th style="width:30%"><span class="lang-vi">Mẫu câu hỏi thi SAA-C03</span><span class="lang-en">SAA-C03 Question Pattern</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>AWS WAF</b></td>
+        <td>Tầng 7 (HTTP/HTTPS)</td>
+        <td>SQLi, XSS, Bad Bots, HTTP Flood, Geo-blocking</td>
+        <td>"Block malicious web requests with SQL injection on ALB"</td>
+      </tr>
+      <tr>
+        <td><b>AWS Shield</b></td>
+        <td>Tầng 3 &amp; 4 (Network/Transport)</td>
+        <td>SYN flood, UDP reflection, DDoS quy mô lớn</td>
+        <td>"Protect against large-scale DDoS attacks with 24/7 support"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon GuardDuty</b></td>
+        <td>Log-based ML Detection</td>
+        <td>Tài khoản bị xâm nhập, đào tiền ảo, DNS exfiltration</td>
+        <td>"Intelligent threat detection analyzing VPC Flow Logs"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon Inspector</b></td>
+        <td>Hạ tầng Compute (EC2, ECR, Lambda)</td>
+        <td>Lỗ hổng phần mềm CVEs, ports mở không an toàn</td>
+        <td>"Scan container images in ECR for CVE vulnerabilities"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon Macie</b></td>
+        <td>Dữ liệu S3 Storage</td>
+        <td>Rò rỉ dữ liệu nhạy cảm PII, vi phạm GDPR / HIPAA</td>
+        <td>"Identify sensitive personal identifiable data in S3 buckets"</td>
+      </tr>
+      <tr>
+        <td><b>AWS Secrets Manager</b></td>
+        <td>Credentials &amp; Secrets</td>
+        <td>Bảo vệ và tự động xoay vòng mật khẩu DB theo chu kỳ</td>
+        <td>"Automatically rotate Aurora DB passwords every 30 days"</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các nguyên tắc bất biến khi xử lý câu hỏi về Bảo mật &amp; Mã hóa</span>
+        <span class="lang-en">Immutable principles for Security &amp; Encryption exam questions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 QUY TẮC MÃ HÓA KMS</span>
+          <span class="lang-en">📌 KMS ENCRYPTION RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Không bao giờ gửi file lớn qua KMS:</b> API <code>kms:Encrypt</code> giới hạn 4 KB. File lớn luôn dùng Envelope Encryption (Data Keys).</li>
+            <li><b>Xoay vòng khóa không làm hỏng dữ liệu cũ:</b> Khi KMS Key xoay vòng, dữ liệu đã mã hóa không cần giải mã và mã hóa lại ngay. AWS lưu trữ backing key cũ để giải mã.</li>
+            <li><b>Cross-account KMS:</b> Cần cả 2 điều kiện: Key Policy ở tài khoản sở hữu cho phép + IAM Policy ở tài khoản sử dụng cho phép.</li>
+            <li><b>Xóa khóa KMS có độ trễ an toàn:</b> KMS Key không thể xóa ngay lập tức; thời gian chờ bắt buộc (Waiting Period) từ <b>7 đến 30 ngày</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 QUY TẮC PHÒNG THỦ MẠNG &amp; DỮ LIỆU</span>
+          <span class="lang-en">💡 NETWORK &amp; DATA DEFENSE RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Defense in Depth:</b> Kiến trúc chuẩn AWS luôn đặt WAF tại CloudFront/ALB &rarr; Security Groups tại EC2/Fargate &rarr; KMS tại Storage &rarr; GuardDuty giám sát tổng thể.</li>
+            <li><b>Tự động phản ứng sự cố:</b> Mô hình chuẩn là <code>Dịch vụ phát hiện (GuardDuty/Inspector/Config) &rarr; EventBridge Rule &rarr; AWS Lambda tự động cô lập/sửa chữa</code>.</li>
+            <li><b>Phân biệt Secrets:</b> Mật khẩu Database &rarr; Secrets Manager. Cấu hình ứng dụng, string URLs, API endpoints không cần tự xoay vòng &rarr; SSM Parameter Store.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài thực hành kèm theo</span>
+        <span class="lang-en">Official AWS references and accompanying hands-on lab</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧪 Bài thực hành liên quan (Hands-on Lab)</span>
+        <span class="lang-en">🧪 Accompanying Hands-on Lab</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">🧪</div>
+          <div>
+            <b><a href="lab_security_ssm_kms.html">Hands-on Lab: AWS Security with KMS &amp; SSM</a></b><br>
+            <span class="lang-vi">Thực hành mã hóa file qua CLI, tạo Customer Managed Key và lưu trữ SecureString trong SSM.</span>
+            <span class="lang-en">Hands-on CLI encryption, Customer Managed Key provisioning, and SecureString storage in SSM.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS KMS Developer Guide</b><br>
+            <span class="lang-vi">Chi tiết kiến trúc Envelope Encryption, Key Policies và Multi-Region Keys.</span>
+            <span class="lang-en">Envelope Encryption architecture, Key Policies, and Multi-Region Keys deep dive.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS WAF &amp; Shield Developer Guide</b><br>
+            <span class="lang-vi">Thiết lập Web ACL, Managed Rule Groups và cấu hình Shield Advanced DDoS response.</span>
+            <span class="lang-en">Web ACL configuration, Managed Rule Groups, and Shield Advanced DDoS mitigation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>AWS KMS vs Secrets Manager vs Parameter Store</b><br>
+            <span class="lang-vi">Bảng so sánh chi tiết tính năng, chi phí và cách chọn dịch vụ trong đề thi.</span>
+            <span class="lang-en">Detailed comparison matrix for features, pricing, and exam decision trees.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>GuardDuty vs Inspector vs Macie Cheat Sheet</b><br>
+            <span class="lang-vi">Cách phân biệt nhanh 3 dịch vụ an ninh AI trong các câu hỏi tình huống SAA-C03.</span>
+            <span class="lang-en">Quick distinction guide for the 3 AI security services in SAA-C03 scenario questions.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

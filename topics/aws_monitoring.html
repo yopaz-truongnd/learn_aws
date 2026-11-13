@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Monitoring &amp; Audit — CloudWatch, CloudTrail &amp; Config — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 24 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Management, Monitoring &amp; Governance</div>
+  <h1>AWS Monitoring &amp; Audit — CloudWatch, CloudTrail &amp; Config</h1>
+  <p class="lang-vi">Bộ ba quản trị toàn diện: Giám sát hiệu năng hệ thống CloudWatch, Kiểm toán dấu vết hành động CloudTrail và Đánh giá tuân thủ cấu hình AWS Config cho kỳ thi SAA-C03</p>
+  <p class="lang-en">The comprehensive governance triad: CloudWatch system metrics, CloudTrail API audit logging, and AWS Config compliance tracking for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · Bộ 3 thần thánh phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · The Core Triad to Master</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 Phân biệt nhanh bộ 3: CloudWatch vs CloudTrail vs AWS Config</span>
+          <span class="lang-en">🔴 The Governance Triad: CloudWatch vs CloudTrail vs AWS Config</span>
+        </b>
+        <span class="lang-vi">
+          • <b>CloudWatch = Hiệu năng &amp; Giám sát (Metrics, Logs, Alarms):</b> Trả lời câu hỏi <i>"Hệ thống đang hoạt động như thế nào?"</i> (CPU, Ram, Disk, Network, Error rate).<br>
+          • <b>CloudTrail = Kiểm toán &amp; Lịch sử gọi API (Auditing):</b> Trả lời câu hỏi <i>"AI đã làm GÌ, VÀO LÚC NÀO, và TỪ ĐÂU?"</i> (Ghi nhận user, IP, API call như `TerminateInstances`, `DeleteBucket`).<br>
+          • <b>AWS Config = Tuân thủ cấu hình &amp; Dòng thời gian tài nguyên (Compliance):</b> Trả lời câu hỏi <i>"Tài nguyên có ĐÚNG TIÊU CHUẨN bảo mật không và đã THAY ĐỔI CẤU HÌNH như thế nào qua thời gian?"</i> (Ví dụ: SG có bị mở port 22 cho 0.0.0.0/0 không).<br>
+          • <b>RAM &amp; Dung lượng đĩa EC2 không có mặc định:</b> CloudWatch mặc định chỉ đo CPU, Network, Disk I/O. Muốn đo % Memory và Free Disk Space &rarr; <b>Bắt buộc cài Unified CloudWatch Agent</b>.<br>
+          • <b>Tự động khắc phục vi phạm bảo mật (Remediation):</b> AWS Config phát hiện non-compliant &rarr; Kích hoạt <b>SSM Automation Document</b> để tự động sửa lỗi (như đóng public S3 bucket, thu hồi IAM key).
+        </span>
+        <span class="lang-en">
+          • <b>CloudWatch = Performance &amp; Observability (Metrics, Logs, Alarms):</b> Answers <i>"How is my system operating right now?"</i> (CPU, RAM, latency, logs, error rates).<br>
+          • <b>CloudTrail = API Auditing &amp; Accountability:</b> Answers <i>"WHO did WHAT, WHEN, and from WHERE?"</i> (Records caller identity, IP, and API actions like `TerminateInstances`, `DeleteBucket`).<br>
+          • <b>AWS Config = Configuration Compliance &amp; History:</b> Answers <i>"Are my resources compliant with security baselines, and HOW has configuration changed over time?"</i> (e.g. was port 22 exposed to 0.0.0.0/0).<br>
+          • <b>EC2 Memory &amp; Disk Usage are NOT Default Metrics:</b> CloudWatch hypervisor only sees CPU/Network/Disk I/O. Measuring OS-level Memory/Disk &rarr; <b>Must install Unified CloudWatch Agent</b>.<br>
+          • <b>Automated Security Remediation:</b> AWS Config detects non-compliance &rarr; Triggers <b>SSM Automation Documents</b> to auto-remediate (e.g. revoke public S3 access, disable stale keys).
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi SAA-C03</span>
+              <span class="lang-en">Exam Scenario / Keyword Pattern</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Core Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Máy chủ EC2 bị ai đó xóa mất, cần điều tra danh tính người dùng IAM và địa chỉ IP đã thực hiện lệnh</span>
+              <span class="lang-en">An EC2 instance was terminated unexpectedly; need to identify the IAM user and source IP responsible</span>
+            </td>
+            <td><span class="kw-target">AWS CloudTrail Event History</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Theo dõi tỷ lệ sử dụng bộ nhớ RAM và dung lượng đĩa trống trên hệ điều hành máy chủ EC2</span>
+              <span class="lang-en">Monitor OS-level RAM memory utilization and free disk space on EC2 instances</span>
+            </td>
+            <td><span class="kw-target">Unified CloudWatch Agent (Custom Metrics)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Kiểm tra liên tục xem các S3 bucket có bật mã hóa SSE không, tự động đổi về trạng thái hợp chuẩn</span>
+              <span class="lang-en">Continuously evaluate S3 buckets for SSE encryption compliance, auto-remediating violations</span>
+            </td>
+            <td><span class="kw-target">AWS Config Rules + SSM Automation</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Phản ứng theo thời gian thực khi có một tệp mới được upload hoặc trạng thái EC2 chuyển sang Stopped</span>
+              <span class="lang-en">React in real-time when a new S3 object is created or an EC2 instance transitions to Stopped</span>
+            </td>
+            <td><span class="kw-target">Amazon EventBridge (Event Pattern Rule)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Giám sát tính sẵn sàng của website công khai 24/7 từ nhiều vị trí toàn cầu, phát hiện đường link hỏng</span>
+              <span class="lang-en">Monitor public web application availability 24/7 globally, alerting on broken links and latency</span>
+            </td>
+            <td><span class="kw-target">CloudWatch Synthetics Canary</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 0. TÓM TẮT NHANH DỊCH VỤ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 24 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 24 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi: Là gì (Xanh dương) · Dùng khi nào (Xanh lá) · Khác gì (Cam) · Bẫy thi (Đỏ)</span>
+        <span class="lang-en">4 core exam criteria: Definition (Blue) · When to use (Green) · Differences (Amber) · Traps &amp; Keywords (Red)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- COL 1: Amazon CloudWatch -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📊 1. Amazon CloudWatch</span>
+        <span class="lang-en">📊 1. Amazon CloudWatch</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ giám sát hiệu năng và quan sát hệ thống (Observability). Thu thập số liệu thống kê (Metrics), tập trung hóa nhật ký ứng dụng (Logs) và kích hoạt cảnh báo (Alarms).</p>
+        <p class="lang-en">Monitoring and observability service collecting performance metrics, centralizing log data, and triggering automated alarms across AWS resources and on-premise applications.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Theo dõi mức sử dụng CPU/Network/RAM, kích hoạt co giãn Auto Scaling (Scale-out khi CPU &gt; 70%), khởi động lại máy chủ EC2 lỗi tự động (EC2 Status Check recovery), tìm kiếm lỗi trong log.</p>
+        <p class="lang-en">Tracking CPU/Network/RAM loads, triggering Auto Scaling events, automating EC2 instance recovery upon system check failures, and running log analytics queries.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Mặc định đo đạc mỗi <b>5 phút</b> (Basic Monitoring). Có thể bật <b>Detailed Monitoring</b> (1 phút - có phí). Dữ liệu metric lưu trữ tối đa <b>15 tháng</b>.</p>
+        <p class="lang-en">Default frequency is <b>5 minutes</b> (Basic Monitoring). Optional <b>Detailed Monitoring</b> measures every 1 minute. Metric data points are retained for <b>15 months</b>.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Đề thi hỏi về đo đạc <i>Memory Utilization</i> hoặc <i>Disk Space</i> trên EC2 mà không nhắc đến <b>CloudWatch Agent</b> là bẫy! EC2 Hypervisor không thể nhìn vào bên trong RAM của OS.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Scenarios asking for <i>Memory Utilization</i> or <i>Disk Space</i> on EC2 without mentioning the <b>CloudWatch Agent</b> are traps! The EC2 hypervisor cannot inspect guest OS RAM.</p>
+      </div>
+    </div>
+
+    <!-- COL 2: AWS CloudTrail -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📜 2. AWS CloudTrail</span>
+        <span class="lang-en">📜 2. AWS CloudTrail</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ kiểm toán và ghi vết mọi thao tác gọi hàm API trên tài khoản AWS (từ AWS Console, CLI, SDK và các dịch vụ tự động gọi nhau).</p>
+        <p class="lang-en">Governance, compliance, and auditing service logging every API call executed across your AWS account (from Console, CLI, SDKs, and automated service interactions).</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Điều tra sự cố bảo mật (ai đã mở Security Group, ai đã xóa database), đối soát kiểm toán tuân thủ pháp lý, phát hiện hành vi bất thường (CloudTrail Insights) và lưu vết lâu dài vào S3.</p>
+        <p class="lang-en">Security investigations (who modified security groups, who deleted resources), compliance audits, anomaly detection (CloudTrail Insights), and immutable audit storage in S3.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Lịch sử sự kiện (Event History) lưu miễn phí <b>90 ngày</b>. Muốn lưu trữ lâu dài bắt buộc tạo một <b>Trail</b> để xuất file log nén nạp vào Amazon S3 bucket và CloudWatch Logs.</p>
+        <p class="lang-en">Event History is retained free for <b>90 days</b>. Long-term archival requires configuring a <b>Trail</b> delivering compressed audit logs into an Amazon S3 bucket and CloudWatch Logs.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Để đảm bảo tệp log của CloudTrail trong S3 không bị chỉnh sửa hay xóa trộm bởi kẻ xấu &rarr; Bật <b>CloudTrail Log File Integrity Validation</b> (dùng mã băm SHA-256) và S3 Object Lock.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> To prove to auditors that CloudTrail log files in S3 have not been tampered with or deleted &rarr; Enable <b>CloudTrail Log File Integrity Validation</b> (SHA-256) and S3 Object Lock.</p>
+      </div>
+    </div>
+
+    <!-- COL 3: AWS Config -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚙️ 3. AWS Config</span>
+        <span class="lang-en">⚙️ 3. AWS Config</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ kiểm tra và theo dõi liên tục trạng thái cấu hình của tài nguyên AWS, đánh giá sự tuân thủ (Compliance) dựa trên các bộ quy tắc bảo mật được thiết lập trước.</p>
+        <p class="lang-en">Continuous configuration audit and governance service tracking configuration changes over time, evaluating compliance against desired security baselines.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Đảm bảo các tiêu chuẩn bảo mật doanh nghiệp (ví dụ: mọi ổ EBS phải được mã hóa, mọi S3 bucket phải chặn public access, cổng SSH 22 không được mở ra 0.0.0.0/0), xem lịch sử thay đổi cấu hình.</p>
+        <p class="lang-en">Enforcing organizational security guardrails (e.g. all EBS volumes must be encrypted, no public S3 buckets, no port 22 open to 0.0.0.0/0) and reviewing configuration timeline history.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Không kiểm tra "ai gọi lệnh" (việc của CloudTrail), mà kiểm tra <b>"kết quả cấu hình của tài nguyên có hợp chuẩn không"</b>. Có khả năng tự động sửa lỗi (Remediation) qua SSM Automation.</p>
+        <p class="lang-en">Does not track API caller identity (that's CloudTrail's job); inspects <b>"the resulting resource configuration state"</b>. Features automated remediation via SSM Automation.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> AWS Config <b>không ngăn chặn hành động</b> (Config chỉ phát hiện vi phạm và báo NON_COMPLIANT). Muốn ngăn chặn triệt để hành động không xảy ra &rarr; Phải dùng <b>SCP (AWS Organizations)</b> hoặc IAM Policy!</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> AWS Config <b>does not prevent actions</b> (it evaluates post-facto and marks NON_COMPLIANT). To actively prevent non-compliant actions &rarr; Must use <b>SCPs in AWS Organizations</b>!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. SƠ ĐỒ QUYẾT ĐỊNH MERMAID: BỘ BA QUẢN TRỊ -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Cây quyết định kiến trúc: Chọn đúng công cụ giám sát &amp; kiểm toán (Decision Tree)</span>
+        <span class="lang-en">1. Architectural Decision Tree: Choosing the Right Monitoring &amp; Audit Tool</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân định rõ ranh giới trách nhiệm giữa CloudWatch, CloudTrail, AWS Config và Amazon EventBridge</span>
+        <span class="lang-en">Demarcating responsibilities across CloudWatch, CloudTrail, AWS Config, and Amazon EventBridge</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Nhu cầu giám sát, kiểm toán hoặc quản trị"]) --> Q1{"Mục đích theo dõi chính là gì?"}
+
+    %% Nhánh 1: Hiệu năng & Logs
+    Q1 -- "Giám sát hiệu năng hệ thống / Metrics / Logs" --> Q2{"Loại dữ liệu đo đạc?"}
+    Q2 -- "CPU, Mạng, IOPS cơ bản / Báo động ngưỡng" --> CW_METRICS["<b>CloudWatch Metrics &amp; Alarms</b><br>• Đo đạc 5 phút (Basic) / 1 phút (Detailed)<br>• Kích hoạt Auto Scaling / Phục hồi EC2"]
+    Q2 -- "Bộ nhớ RAM / Dung lượng đĩa / File Log OS" --> CW_AGENT["<b>Unified CloudWatch Agent</b><br>• Cài trực tiếp vào OS máy chủ<br>• Đẩy Custom Metrics &amp; App Logs"]
+    Q2 -- "Kiểm tra tính sẵn sàng website 24/7 từ bên ngoài" --> CW_SYNTH["<b>CloudWatch Synthetics Canary</b><br>• Chạy script Node.js/Python định kỳ"]
+
+    %% Nhánh 2: Lịch sử gọi lệnh & Kiểm toán
+    Q1 -- "Kiểm toán bảo mật / Lịch sử gọi lệnh API (Ai làm gì?)" --> Q3{"Nhu cầu lưu vết &amp; phân tích?"}
+    Q3 -- "Tra cứu nhanh trong 90 ngày miễn phí" --> CT_HIST["<b>CloudTrail Event History</b><br>• Mặc định bật trên mọi tài khoản<br>• Ghi nhận Management Events"]
+    Q3 -- "Lưu trữ lâu dài / Phân tích bất thường" --> CT_TRAIL["<b>CloudTrail Multi-Region Trail</b><br>• Xuất file nén sang Amazon S3<br>• CloudTrail Insights phát hiện dị thường"]
+
+    %% Nhánh 3: Tuân thủ cấu hình
+    Q1 -- "Kiểm tra tuân thủ cấu hình bảo mật theo thời gian" --> CONFIG["<b>AWS Config</b><br>• Theo dõi dòng thời gian thay đổi<br>• Đánh giá COMPLIANT / NON_COMPLIANT<br>• Tự động sửa qua SSM Automation"]
+
+    %% Nhánh 4: Phản ứng sự kiện thời gian thực
+    Q1 -- "Phản ứng thời gian thực khi có sự kiện thay đổi" --> EVENTBRIDGE["<b>Amazon EventBridge (CloudWatch Events)</b><br>• Lọc sự kiện JSON Pattern<br>• Kích hoạt Lambda, SQS, SNS tức thì<br>• Thay thế cron scheduler"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class CW_METRICS,CW_AGENT,CW_SYNTH awsBox;
+    class CT_HIST,CT_TRAIL optBox;
+    class CONFIG,EVENTBRIDGE warnBox;
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH CHUYÊN SÂU: CLOUDWATCH VS CLOUDTRAIL VS AWS CONFIG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bảng so sánh bộ ba quản trị: CloudWatch vs CloudTrail vs AWS Config</span>
+        <span class="lang-en">2. Comparison Matrix: The Governance Triad (CloudWatch vs CloudTrail vs AWS Config)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đặt lên bàn cân 3 dịch vụ nền tảng thường xuyên xuất hiện đan xen trong các phương án trắc nghiệm</span>
+        <span class="lang-en">Side-by-side analysis of the 3 foundational governance services dominating multiple-choice options</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Tiêu chí so sánh</span><span class="lang-en">Criteria</span></th>
+          <th>Amazon CloudWatch</th>
+          <th>AWS CloudTrail</th>
+          <th>AWS Config</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b><span class="lang-vi">Câu hỏi cốt lõi</span><span class="lang-en">Core Question</span></b></td>
+          <td><i>"Hệ thống chạy thế nào?"</i> (Hiệu năng, số đo, lỗi)</td>
+          <td><i>"Ai đã làm gì, vào lúc nào?"</i> (Lịch sử API)</td>
+          <td><i>"Tài nguyên có đúng chuẩn bảo mật không?"</i></td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Đối tượng theo dõi</span><span class="lang-en">Target Focus</span></b></td>
+          <td>Metrics (CPU, RAM, Net), Logs, Tracing (X-Ray)</td>
+          <td>API Calls (Console, CLI, SDK, Service-to-Service)</td>
+          <td>Cấu hình tài nguyên (Resource Configurations &amp; Relationships)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Hành động tự động</span><span class="lang-en">Automated Actions</span></b></td>
+          <td>Kích hoạt Alarms &rarr; Auto Scaling, Phục hồi EC2, gửi SNS</td>
+          <td>Gửi sự kiện sang EventBridge hoặc kích hoạt CloudTrail Insights</td>
+          <td>Đánh giá Config Rules &rarr; Tự động Remediation bằng <b>SSM Automation</b></td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Thời gian lưu mặc định</span><span class="lang-en">Retention Period</span></b></td>
+          <td>Metrics lưu 15 tháng; Logs tùy chọn từ 1 ngày &rarr; vĩnh viễn</td>
+          <td>Event History miễn phí 90 ngày; Trail lưu vĩnh viễn trong S3</td>
+          <td>Lịch sử thay đổi cấu hình lưu trữ trong S3 bucket tùy chỉnh</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Bẫy đề thi kinh điển</span><span class="lang-en">High-Yield Exam Trap</span></b></td>
+          <td>Muốn đo Memory và Disk Free &rarr; Phải cài CloudWatch Agent</td>
+          <td>Đảm bảo log không bị sửa trộm &rarr; Bật Log File Integrity</td>
+          <td>Config chỉ phát hiện vi phạm, không chặn được lệnh gọi API</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. QUY TRÌNH TỰ ĐỘNG KHẮC PHỤC VI PHẠM (REMEDIATION) -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Quy trình tự động khắc phục vi phạm bảo mật (AWS Config Remediation)</span>
+        <span class="lang-en">3. Automated Security Compliance &amp; Remediation Workflow</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Mô hình tự động đóng cổng bảo mật và thu hồi quyền vi phạm không cần con người can thiệp</span>
+        <span class="lang-en">Hands-off automated compliance remediation pattern using AWS Config and SSM Automation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="mermaid-diagram">
+flowchart TD
+    DEV["Kỹ sư cấu hình sai<br>(Mở S3 Public / Mở SSH port 22)"] -->|API Call| AWS_RES["<b>Tài nguyên AWS</b><br>(S3 Bucket / Security Group)"]
+    
+    AWS_RES -->|Thay đổi cấu hình| CONFIG["<b>AWS Config Rule</b><br>Đánh giá tuân thủ"]
+    
+    CONFIG -->|Phát hiện vi phạm| NON_COMP["Đánh dấu: <b>NON_COMPLIANT</b>"]
+    
+    NON_COMP -->|Kích hoạt tự động| SSM["<b>SSM Automation Document</b><br><i>AWS-DisablePublicAccessForS3Bucket</i>"]
+    
+    SSM -->|Thực thi khắc phục| FIXED["<b>Khắc phục thành công</b><br>Bật lại Block Public Access / Đóng Port 22"]
+    
+    FIXED -->|Cập nhật trạng thái| COMP["Đánh dấu lại: <b>COMPLIANT</b> ✅"]
+
+    classDef redBox fill:#FCE9E7,stroke:#E56458,stroke-width:2px;
+    classDef grBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px;
+    classDef blBox fill:#E5F2FC,stroke:#2783DE,stroke-width:1.5px;
+    
+    class DEV,NON_COMP redBox;
+    class COMP,FIXED grBox;
+    class AWS_RES,CONFIG,SSM blBox;
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">💡 Vì sao mô hình này xuất hiện trong đề thi SAA-C03?</span>
+          <span class="lang-en">💡 Why is this pattern featured in SAA-C03?</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Bảo vệ chủ động (Continuous Governance):</b> Con người có thể vô tình mở một Security Group ra <code>0.0.0.0/0</code> hoặc gỡ mã hóa ổ đĩa. AWS Config phát hiện vi phạm trong vòng vài phút.<br>
+          • <b>Tự động sửa lỗi không cần con người (Automated Remediation):</b> Tích hợp với <b>AWS Systems Manager (SSM) Automation Documents</b> cho phép thực thi kịch bản khắc phục sự cố ngay lập tức.<br>
+          • <b>Ví dụ đề thi:</b> <i>"Làm thế nào để đảm bảo rằng bất cứ khi nào một bucket S3 mới được tạo mà không bật mã hóa mặc định, nó sẽ tự động được kích hoạt mã hóa SSE-KMS ngay lập tức?"</i> &rarr; Cấu hình <b>AWS Config Rule</b> kết hợp <b>SSM Automation Remediation</b>!
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Continuous Governance:</b> Developers can accidentally expose port 22 or remove bucket encryption. AWS Config detects violations within minutes.<br>
+          • <b>Automated Hands-Off Remediation:</b> Paired with <b>AWS Systems Manager (SSM) Automation Runbooks</b>, security teams can remediate violations without manual tickets.<br>
+          • <b>Exam Scenario:</b> <i>"How to automatically ensure that whenever an unencrypted S3 bucket is created, it is immediately converted to use default SSE-KMS encryption?"</i> &rarr; Configure an <b>AWS Config Rule</b> with <b>SSM Automation Remediation</b>!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. NGUYÊN TẮC VÀNG — SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Nguyên tắc vàng ra quyết định kiến trúc Giám sát &amp; Kiểm toán — SAA-C03</span>
+        <span class="lang-en">4. Golden Architectural Decision Rules: Monitoring &amp; Auditing — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc bất biến giúp chọn đúng giải pháp kiểm toán trong 30 giây</span>
+        <span class="lang-en">Inviolable rules to identify the correct monitoring solution in 30 seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="bp">
+      <div class="bn">1</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Điều tra "Ai gọi lệnh gì" = Luôn là AWS CloudTrail</span>
+          <span class="lang-en">Investigating "Who executed which API call" = Always AWS CloudTrail</span>
+        </b>
+        <div class="lang-vi">Bất kể câu hỏi nào nhắc đến: "ai đã sửa đổi IAM role", "ai đã dừng máy chủ", "truy vết nguồn gốc xâm nhập từ địa chỉ IP nào" &rarr; Chọn ngay <b>AWS CloudTrail Event History hoặc CloudTrail Trail</b>.</div>
+        <div class="lang-en">Whenever a scenario investigates: "who modified IAM policies", "who terminated an instance", or "tracing unauthorized IP access" &rarr; Immediately select <b>AWS CloudTrail</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">2</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Đo RAM / Disk Space trên EC2 = Cài Unified CloudWatch Agent</span>
+          <span class="lang-en">Measuring RAM / Free Disk Space on EC2 = Install Unified CloudWatch Agent</span>
+        </b>
+        <div class="lang-vi">CloudWatch cơ bản không thể đọc RAM hay Disk Space bên trong OS. Mọi câu hỏi yêu cầu tạo Alarm dựa trên mức sử dụng RAM &rarr; Phải cài đặt <b>Unified CloudWatch Agent</b> trên instance.</div>
+        <div class="lang-en">Standard CloudWatch metrics cannot inspect guest OS memory. Any scenario requiring an alarm on RAM utilization &rarr; Must install the <b>Unified CloudWatch Agent</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">3</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Bảo vệ tệp log kiểm toán không bị sửa xóa = Log File Integrity + Object Lock</span>
+          <span class="lang-en">Audit Log Tamper-Proofing = Log File Integrity + Object Lock</span>
+        </b>
+        <div class="lang-vi">Để ngăn chặn hacker hoặc quản trị viên biến chất sửa đổi file log CloudTrail trong S3 &rarr; Luôn bật <b>CloudTrail Log File Integrity Validation</b> (SHA-256) và thiết lập <b>S3 Object Lock (WORM)</b>.</div>
+        <div class="lang-en">To prevent rogue admins or attackers from doctoring CloudTrail audit logs in S3 &rarr; Always enable <b>CloudTrail Log File Integrity Validation</b> (SHA-256) and <b>S3 Object Lock</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">4</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Đánh giá cấu hình hợp chuẩn &amp; Tự sửa lỗi = AWS Config</span>
+          <span class="lang-en">Configuration Compliance &amp; Auto-Remediation = AWS Config</span>
+        </b>
+        <div class="lang-vi">Khi cần duy trì tiêu chuẩn bảo mật cho toàn bộ tài nguyên theo thời gian (EBS encryption, S3 Block Public Access, IAM password rules) &rarr; Luôn chọn <b>AWS Config Rules + SSM Automation</b>.</div>
+        <div class="lang-en">When maintaining ongoing security baselines across resources (EBS encryption, S3 Block Public Access, IAM password rules) &rarr; Always choose <b>AWS Config Rules + SSM Automation</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">5. Lecture Sources &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu trực tiếp video bài giảng Udemy của Stephane Maarek và tài liệu kỹ thuật chính thức AWS</span>
+        <span class="lang-en">Direct mapping to Stephane Maarek's Udemy lectures and official AWS architectural documentation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Video bài giảng Udemy</span>
+        <span class="lang-en">🎓 Udemy Lecture Sources</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 24 · CloudWatch Metrics, Alarms &amp; Logs</b><br>
+            <span class="lang-vi">Thu thập chỉ số, cấu hình CloudWatch Alarms và cài đặt Unified CloudWatch Agent.</span>
+            <span class="lang-en">Collecting metrics, configuring Alarms, and installing the Unified CloudWatch Agent.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">▶️</div>
+          <div>
+            <b>Section 24 · AWS CloudTrail Auditing</b><br>
+            <span class="lang-vi">Quản lý Management Events, Data Events, Multi-Region Trail và CloudTrail Insights.</span>
+            <span class="lang-en">Managing Management Events, Data Events, Multi-Region Trails, and Insights.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">▶️</div>
+          <div>
+            <b>Section 24 · AWS Config &amp; Remediation</b><br>
+            <span class="lang-vi">Đánh giá Config Rules, theo dõi dòng thời gian tài nguyên và tự động khắc phục.</span>
+            <span class="lang-en">Config Rules evaluation, configuration timelines, and automated remediation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 Tài liệu chính thức AWS</span>
+        <span class="lang-en">📖 Official AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>Amazon CloudWatch User Guide</b><br>
+            <span class="lang-vi">Cấu hình Custom Metrics, CloudWatch Logs Insights và Synthetics Canaries.</span>
+            <span class="lang-en">Custom Metrics configuration, Logs Insights queries, and Synthetics Canaries.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS CloudTrail User Guide</b><br>
+            <span class="lang-vi">Kích hoạt Log File Integrity Validation và cấu hình Organization Trails.</span>
+            <span class="lang-en">Enabling Log File Integrity Validation and configuring Organization Trails.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS Config Developer Guide</b><br>
+            <span class="lang-vi">Tạo Conformance Packs và thiết lập tự động sửa lỗi bằng SSM Automation.</span>
+            <span class="lang-en">Deploying Conformance Packs and configuring SSM Automation Remediation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>CloudWatch vs CloudTrail vs Config Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng ma trận so sánh chi tiết và cách nhớ nhanh cho kỳ thi SAA-C03.</span>
+            <span class="lang-en">Comparison matrix and mnemonic guide for SAA-C03 exam prep.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>AWS Auditing &amp; Monitoring Architecture</b><br>
+            <span class="lang-vi">Kiến trúc mẫu giám sát đa tài khoản với EventBridge và S3 central log archive.</span>
+            <span class="lang-en">Multi-account auditing architecture with EventBridge and S3 central log archive.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Data &amp; Analytics — Athena, Glue, EMR, Redshift &amp; QuickSight — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_databases.html" class="nav-back" style="background:var(--blb);color:var(--bl)">
+      <span class="lang-vi">🗄️ Section 9 &amp; 22: AWS Databases →</span>
+      <span class="lang-en">🗄️ Section 9 &amp; 22: AWS Databases →</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 23 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Analytics &amp; Big Data</div>
+  <h1>AWS Data &amp; Analytics — Athena, Glue, EMR, Redshift &amp; QuickSight</h1>
+  <p class="lang-vi">Kiến trúc phân tích dữ liệu lớn, Truy vấn SQL phi máy chủ trên S3, Đường ống trích xuất dữ liệu ETL và Kho dữ liệu doanh nghiệp cho AWS SAA-C03</p>
+  <p class="lang-en">Big data analytics architectures, serverless SQL queries on S3, ETL data pipelines, and enterprise data warehousing for AWS SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 6 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · 6 Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 6 Điểm vàng cốt lõi về Data &amp; Analytics</span>
+          <span class="lang-en">🔴 6 Core Data &amp; Analytics Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>Amazon Athena = Truy vấn SQL trực tiếp trên S3 không cần server:</b> Chi phí tính theo <b>$5 cho mỗi TB dữ liệu quét (scanned)</b>. Tối ưu chi phí bằng cách đổi sang định dạng cột (<b>Parquet / ORC</b>) và phân vùng dữ liệu (Partitioning).<br>
+          • <b>AWS Glue = Serverless ETL &amp; Data Catalog:</b> <i>Glue Crawler</i> tự động quét S3/RDS, suy diễn cấu trúc bảng và cập nhật vào <i>Glue Data Catalog</i> để Athena và Redshift đọc.<br>
+          • <b>EMR Task Nodes = Luôn chọn EC2 Spot Instances:</b> Cụm EMR gồm Master (quản lý), Core (chạy task + lưu HDFS - không dùng Spot), Task Nodes (chỉ tính toán, không lưu HDFS &rarr; dùng Spot tiết kiệm 90%).<br>
+          • <b>Amazon Redshift = Kho dữ liệu OLAP quy mô Petabyte:</b> Lưu trữ dạng cột (Columnar), xử lý song song MPP. Dùng <b>Redshift Spectrum</b> để truy vấn dữ liệu trực tiếp trong S3 mà không cần nạp vào bảng.<br>
+          • <b>Amazon QuickSight = BI Dashboard &amp; Trực quan hóa:</b> Tích hợp sẵn bộ nhớ đệm tính toán siêu tốc <b>SPICE Engine</b>, hỗ trợ truy vấn ngôn ngữ tự nhiên (QuickSight Q).<br>
+          • <b>Amazon OpenSearch = Phân tích log &amp; Tìm kiếm toàn văn:</b> Thay thế Elasticsearch, chuyên gia phân tích log hệ thống từ CloudWatch, VPC Flow Logs và tạo Dashboard trên OpenSearch Dashboards (Kibana).
+        </span>
+        <span class="lang-en">
+          • <b>Amazon Athena = Serverless SQL directly on S3:</b> Billed at <b>$5 per TB scanned</b>. Drastically cut costs by converting files to columnar formats (<b>Parquet / ORC</b>) and partitioning data.<br>
+          • <b>AWS Glue = Serverless ETL &amp; Data Catalog:</b> <i>Glue Crawlers</i> scan S3/RDS, automatically infer schemas, and store metadata in the <i>Glue Data Catalog</i> for Athena/Redshift.<br>
+          • <b>EMR Task Nodes = Always leverage EC2 Spot Instances:</b> EMR comprises Master (orchestrator), Core (tasks + HDFS data - avoid Spot), and Task Nodes (pure compute, zero HDFS &rarr; ideal for Spot saving 90%).<br>
+          • <b>Amazon Redshift = Petabyte OLAP Data Warehouse:</b> Columnar storage, Massively Parallel Processing (MPP). Use <b>Redshift Spectrum</b> to query exabytes of S3 data without loading.<br>
+          • <b>Amazon QuickSight = Serverless BI &amp; Visualizations:</b> Powered by the in-memory <b>SPICE Engine</b>, featuring natural language queries (QuickSight Q).<br>
+          • <b>Amazon OpenSearch = Log Analytics &amp; Full-Text Search:</b> Managed Elasticsearch replacement for real-time log analysis and OpenSearch Dashboards (Kibana).
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi SAA-C03</span>
+              <span class="lang-en">Exam Scenario / Keyword Pattern</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Core Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Phân tích VPC Flow Logs hoặc CloudTrail lưu trên S3 bằng truy vấn SQL chuẩn mà không cần dựng máy chủ</span>
+              <span class="lang-en">Analyze VPC Flow Logs or CloudTrail logs stored in S3 using standard SQL without provisioning servers</span>
+            </td>
+            <td><span class="kw-target">Amazon Athena</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tự động phát hiện schema dữ liệu trong S3 bucket, chuyển đổi định dạng từ CSV sang Parquet theo lịch trình</span>
+              <span class="lang-en">Automatically discover schemas in S3, transform CSV/JSON to Parquet on a scheduled pipeline</span>
+            </td>
+            <td><span class="kw-target">AWS Glue (Crawler + ETL Job)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Chạy khối lượng công việc Big Data khổng lồ sử dụng Apache Spark / Hadoop với chi phí thấp nhất</span>
+              <span class="lang-en">Execute massive big data processing using Apache Spark / Hadoop at the absolute lowest cost</span>
+            </td>
+            <td><span class="kw-target">Amazon EMR (với Spot Task Nodes)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Báo cáo phân tích kinh doanh phức tạp (OLAP) quy mô Petabyte, kết hợp bảng nội bộ và dữ liệu thô trên S3</span>
+              <span class="lang-en">Complex business analytical reporting (OLAP) at Petabyte scale, joining local tables with raw S3 data</span>
+            </td>
+            <td><span class="kw-target">Amazon Redshift + Redshift Spectrum</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Xây dựng dashboard biểu đồ trực quan hóa dữ liệu kinh doanh không máy chủ, cấp quyền truy cập theo từng hàng</span>
+              <span class="lang-en">Build interactive business visual dashboards serverlessly with Row-Level Security (RLS)</span>
+            </td>
+            <td><span class="kw-target">Amazon QuickSight (SPICE)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 0. TÓM TẮT NHANH DỊCH VỤ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 23 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 23 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi: Là gì (Xanh dương) · Dùng khi nào (Xanh lá) · Khác gì (Cam) · Bẫy thi (Đỏ)</span>
+        <span class="lang-en">4 core exam criteria: Definition (Blue) · When to use (Green) · Differences (Amber) · Traps &amp; Keywords (Red)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- COL 1: Amazon Athena -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🔍 1. Amazon Athena</span>
+        <span class="lang-en">🔍 1. Amazon Athena</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ truy vấn tương tác không máy chủ (Serverless Interactive Query Service) sử dụng ngôn ngữ SQL chuẩn (Presto/Trino) để phân tích dữ liệu trực tiếp trong Amazon S3.</p>
+        <p class="lang-en">Serverless interactive query service analyzing data directly in Amazon S3 using standard SQL (built on Presto/Trino) with zero database infrastructure.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Truy vấn khám phá dữ liệu đột xuất (Ad-hoc queries), phân tích nhật ký mạng VPC Flow Logs, CloudTrail, ALB Access Logs hoặc dữ liệu phân tích kinh doanh lưu trữ trong hồ dữ liệu S3 Data Lake.</p>
+        <p class="lang-en">Ad-hoc analytical queries, security investigations into VPC Flow Logs, CloudTrail, and ALB logs, or querying raw data in an S3 Data Lake.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Không cần nạp (load) dữ liệu vào database trước! Chi phí tính theo <b>$5 / TB dữ liệu quét</b>. Không tốn bất kỳ chi phí duy trì cụm máy chủ nào khi không chạy câu truy vấn.</p>
+        <p class="lang-en">Zero data loading required! Pay-per-query model at <b>$5 per TB scanned</b>. Completely cost-free when queries are idle.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Để tối ưu chi phí và tăng tốc độ Athena &rarr; Chuyển đổi file sang dạng cột <b>Apache Parquet hoặc ORC</b> và phân vùng (Partitioning) theo thư mục <code>/year/month/day/</code>.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> To optimize Athena query costs and speed &rarr; Convert datasets to columnar <b>Apache Parquet / ORC</b> and partition S3 paths by <code>/year/month/day/</code>.</p>
+      </div>
+    </div>
+
+    <!-- COL 2: AWS Glue -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧩 2. AWS Glue</span>
+        <span class="lang-en">🧩 2. AWS Glue</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ trích xuất, biến đổi và nạp dữ liệu (ETL) không máy chủ, tích hợp kho siêu dữ liệu tập trung <b>Glue Data Catalog</b>.</p>
+        <p class="lang-en">Fully managed serverless Extract, Transform, and Load (ETL) service featuring a centralized metadata repository called the <b>Glue Data Catalog</b>.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Tự động phát hiện cấu trúc dữ liệu (Schema Discovery) qua Glue Crawlers, chuẩn hóa/làm sạch dữ liệu và chuyển đổi định dạng (JSON/CSV &rarr; Parquet) trong đường ống dữ liệu tự động.</p>
+        <p class="lang-en">Automated schema discovery via Glue Crawlers, data sanitization/enrichment, and batch format conversions (CSV &rarr; Parquet) across data pipelines.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Serverless chạy trên nền tảng Apache Spark mà bạn không cần quản lý máy chủ. <b>Glue Data Catalog</b> được chia sẻ chung cho Athena, EMR và Redshift Spectrum để đọc cùng một schema.</p>
+        <p class="lang-en">Serverless Apache Spark execution without cluster administration. The <b>Glue Data Catalog</b> acts as a unified central schema registry shared across Athena, EMR, and Redshift.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Đề bài nhắc đến: "tự động quét S3 để cập nhật schema bảng" &rarr; Chọn <b>Glue Crawler</b>. "Chuẩn bị dữ liệu trực quan không cần viết code" &rarr; Chọn <b>Glue DataBrew</b>.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Scenarios citing "automatically scan S3 to update table schemas" &rarr; Choose <b>Glue Crawler</b>. "Visual data preparation without code" &rarr; Choose <b>Glue DataBrew</b>.</p>
+      </div>
+    </div>
+
+    <!-- COL 3: Amazon Redshift -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🏛️ 3. Amazon Redshift</span>
+        <span class="lang-en">🏛️ 3. Amazon Redshift</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Kho dữ liệu đám mây quy mô Petabyte (OLAP Data Warehouse) xử lý song song khối lượng lớn (MPP) và tối ưu hóa lưu trữ theo cột (Columnar Storage).</p>
+        <p class="lang-en">Petabyte-scale cloud data warehouse optimized for Online Analytical Processing (OLAP) leveraging Massively Parallel Processing (MPP) and columnar data layout.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Báo cáo kinh doanh doanh nghiệp định kỳ, kết hợp dữ liệu từ nhiều nguồn khác nhau vào một kho duy nhất để chạy các câu truy vấn tổng hợp phức tạp (SUM, AVG, GROUP BY trên hàng tỷ dòng).</p>
+        <p class="lang-en">Enterprise-wide analytical reporting consolidating multi-source transactional data into a single source of truth executing complex multi-billion-row aggregations.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Khác với RDS (chuyên xử lý giao dịch OLTP theo từng dòng), Redshift chuyên đọc các cột cụ thể. Tính năng <b>Redshift Spectrum</b> cho phép mở rộng truy vấn trực tiếp vào S3 mà không cần nạp dữ liệu.</p>
+        <p class="lang-en">Unlike transactional row-based RDS (OLTP), Redshift compresses and reads specific columns. <b>Redshift Spectrum</b> extends SQL queries directly into S3 without ingestion.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Redshift <b>không phù hợp cho OLTP</b> (thêm/sửa từng bản ghi lẻ tẻ). Nếu cần nạp dữ liệu lớn vào Redshift với tốc độ cao nhất &rarr; Luôn dùng lệnh <code>COPY</code> từ Amazon S3.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Redshift is <b>ill-suited for OLTP</b> (single-row inserts/updates). To bulk load massive data into Redshift with maximum throughput &rarr; Always use the S3 <code>COPY</code> command.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. SƠ ĐỒ QUYẾT ĐỊNH MERMAID: BIG DATA & ANALYTICS PIPELINE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Cây quyết định kiến trúc: Chọn giải pháp phân tích dữ liệu AWS (Decision Tree)</span>
+        <span class="lang-en">1. Architectural Decision Tree: Choosing the Right AWS Analytics Service</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Luồng phân loại giữa Athena, Redshift, EMR, OpenSearch và QuickSight</span>
+        <span class="lang-en">Decision flow navigating Athena, Redshift, EMR, OpenSearch, and QuickSight</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Nhu cầu phân tích dữ liệu &amp; Big Data"]) --> Q1{"Mục tiêu phân tích chính là gì?"}
+
+    %% Nhánh 1: Truy vấn SQL trên S3
+    Q1 -- "Truy vấn trực tiếp file trên S3 (Không dựng DB)" --> Q2{"Tần suất &amp; Nhu cầu?"}
+    Q2 -- "Truy vấn đột xuất (Ad-hoc) / Serverless hoàn toàn" --> ATHENA["<b>Amazon Athena</b><br>• $5/TB dữ liệu quét<br>• Dùng Glue Data Catalog<br>• Phân tích VPC Logs/CloudTrail"]
+    Q2 -- "Kho dữ liệu lớn kết hợp bảng nội bộ &amp; S3" --> RS_SPEC["<b>Redshift Spectrum</b><br>• Mở rộng truy vấn Redshift ra S3<br>• Xử lý song song MPP"]
+
+    %% Nhánh 2: Data Warehouse
+    Q1 -- "Kho dữ liệu phân tích doanh nghiệp OLAP (Petabyte)" --> REDSHIFT["<b>Amazon Redshift</b><br>• Columnar Storage<br>• Lệnh COPY từ S3<br>• Báo cáo BI chuyên sâu"]
+
+    %% Nhánh 3: Khung Big Data mở (Spark/Hadoop)
+    Q1 -- "Hệ sinh thái Big Data nguồn mở (Spark, Hadoop, Flink)" --> EMR["<b>Amazon EMR</b><br>• Cụm phân tán linh hoạt<br>• Task Nodes dùng Spot Instance<br>• Xử lý Petabyte Machine Learning"]
+
+    %% Nhánh 4: Tìm kiếm & Phân tích Log
+    Q1 -- "Phân tích Log thời gian thực &amp; Tìm kiếm toàn văn" --> OPENSEARCH["<b>Amazon OpenSearch Service</b><br>• Ingest log từ Kinesis/CloudWatch<br>• OpenSearch Dashboards (Kibana)"]
+
+    %% Nhánh 5: Trực quan hóa Dashboard
+    Q1 -- "Báo cáo biểu đồ tương tác cho người dùng cuối" --> QUICKSIGHT["<b>Amazon QuickSight</b><br>• In-memory SPICE Engine<br>• Row-Level Security (RLS)<br>• Tự động co giãn Serverless"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class ATHENA,QUICKSIGHT awsBox;
+    class REDSHIFT,RS_SPEC optBox;
+    class EMR,OPENSEARCH warnBox;
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH: ATHENA VS REDSHIFT VS EMR -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bảng so sánh 3 nền tảng phân tích: Amazon Athena vs Amazon Redshift vs Amazon EMR</span>
+        <span class="lang-en">2. Comparison Matrix: Amazon Athena vs Amazon Redshift vs Amazon EMR</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân biệt theo mô hình hạ tầng, ngôn ngữ xử lý, cơ chế chi phí và kịch bản thi</span>
+        <span class="lang-en">Distinguishing infrastructure management, processing frameworks, cost models, and exam gotchas</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Tiêu chí so sánh</span><span class="lang-en">Comparison Criteria</span></th>
+          <th>Amazon Athena</th>
+          <th>Amazon Redshift</th>
+          <th>Amazon EMR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b><span class="lang-vi">Mô hình hạ tầng</span><span class="lang-en">Infrastructure</span></b></td>
+          <td><b>100% Serverless</b> (Không có cụm máy chủ, không cần cấu hình dung lượng)</td>
+          <td>Provisioned Cluster (Leader + Compute Nodes) hoặc <b>Redshift Serverless</b></td>
+          <td>Cụm máy chủ EC2 quản lý (Master, Core, Task Nodes) hoặc EMR Serverless</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Vị trí dữ liệu</span><span class="lang-en">Data Location</span></b></td>
+          <td>Dữ liệu nằm nguyên trong <b>Amazon S3</b> (Hồ dữ liệu Data Lake)</td>
+          <td>Dữ liệu nạp vào <b>ổ đĩa cục bộ Redshift</b> (hoặc truy vấn S3 qua Spectrum)</td>
+          <td>Lưu trên HDFS nội bộ hoặc trực tiếp trên Amazon S3 (<b>EMRFS</b>)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Mô hình tính phí</span><span class="lang-en">Pricing Model</span></b></td>
+          <td>Tính theo số <b>TB dữ liệu quét</b> ($5/TB scan)</td>
+          <td>Theo giờ hoạt động của Node tính toán + dung lượng ổ đĩa Redshift Managed Storage</td>
+          <td>Phí EC2 cơ bản + phí phần mềm EMR tính theo từng giây chạy cụm</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Ngôn ngữ / Framework</span><span class="lang-en">Frameworks</span></b></td>
+          <td>SQL chuẩn (ANSI SQL) dựa trên Presto / Trino</td>
+          <td>PostgreSQL-compatible SQL hỗ trợ MPP và các hàm phân tích nâng cao</td>
+          <td>Apache Spark, Hadoop, Hive, HBase, Presto, Flink</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Use-case thi SAA-C03</span><span class="lang-en">Exam Scenario</span></b></td>
+          <td>Truy vấn log định kỳ, ad-hoc S3 SQL với chi phí vận hành bằng 0</td>
+          <td>Kho dữ liệu kinh doanh hợp nhất, báo cáo BI hiệu năng cao trên bảng tỷ dòng</td>
+          <td>Xử lý Big Data phức tạp, học máy quy mô lớn với Spark, xử lý đồ thị</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. CƠ CHẾ CỤM EMR: MASTER, CORE & TASK NODES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🐘</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Kiến trúc 3 loại Node trong cụm Amazon EMR</span>
+        <span class="lang-en">3. Node Roles in an Amazon EMR Cluster: Master, Core, and Task Nodes</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Chiến thuật kết hợp On-Demand và Spot Instances để giảm tới 90% chi phí xử lý Big Data</span>
+        <span class="lang-en">Combining On-Demand and Spot Instances to optimize big data processing costs up to 90%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">👑</div>
+          <div>
+            <b>1. Master Node (Nút điều phối trung tâm)</b><br>
+            <span class="lang-vi">• Quản lý toàn bộ cụm, phân phối tác vụ YARN và theo dõi trạng thái các node khác.<br>• <b>Khuyến nghị:</b> Luôn dùng <b>On-Demand hoặc Reserved Instance</b>. Tuyệt đối không dùng Spot Instance cho Master Node vì nếu Master bị thu hồi, toàn bộ cụm sẽ chết!<br>• Hỗ trợ cấu hình Multi-Master (3 node) để đạt High Availability (HA).</span>
+            <span class="lang-en">• Manages the cluster, coordinates YARN tasks, tracks health.<br>• <b>Recommendation:</b> Always run on <b>On-Demand or Reserved Instances</b>. Never use Spot for Master Node because termination kills the cluster!<br>• Multi-Master (3 nodes) supported for HA.</span>
+          </div>
+        </div>
+
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">💾</div>
+          <div>
+            <b>2. Core Node (Nút chạy tác vụ &amp; Lưu dữ liệu HDFS)</b><br>
+            <span class="lang-vi">• Vừa thực thi tác vụ tính toán, vừa lưu trữ dữ liệu trên hệ thống tệp phân tán Hadoop (HDFS).<br>• <b>Khuyến nghị:</b> Dùng <b>On-Demand</b>. Nếu dùng Spot, khi bị thu hồi đột ngột có thể làm mất dữ liệu HDFS phân tán chưa kịp sao lưu.</span>
+            <span class="lang-en">• Executes tasks and stores persistent data on Hadoop Distributed File System (HDFS).<br>• <b>Recommendation:</b> Standard <b>On-Demand Instances</b>. Spot instances risk HDFS data loss upon reclamation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">⚡</div>
+          <div>
+            <b>3. Task Node (Nút thuần tính toán — Pure Compute)</b><br>
+            <span class="lang-vi">• Chỉ chạy các tác vụ tính toán Spark/Hadoop, <b>hoàn toàn không lưu dữ liệu HDFS</b>.<br>• Nếu một Task Node bị ngắt kết nối đột ngột &rarr; Không bị mất dữ liệu, tác vụ chỉ cần chạy lại trên node khác.<br>• 👉 <b>Bẫy đề thi kinh điển:</b> Luôn sử dụng <b>EC2 Spot Instances cho Task Nodes</b> để tối đa hóa hiệu năng với chi phí rẻ nhất!</span>
+            <span class="lang-en">• Executes computation tasks only, storing <b>zero HDFS data</b>.<br>• If a Task Node terminates abruptly &rarr; Zero data loss; task simply reschedules.<br>• 👉 <b>Classic Exam Rule:</b> Always deploy <b>EC2 Spot Instances for Task Nodes</b> to slash processing costs!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. NGUYÊN TẮC VÀNG — SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Nguyên tắc vàng ra quyết định kiến trúc Analytics — SAA-C03</span>
+        <span class="lang-en">4. Golden Architectural Decision Rules: Analytics — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc bất biến giúp loại trừ ngay phương án sai trong 30 giây</span>
+        <span class="lang-en">Inviolable rules to identify the correct analytics architecture in 30 seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="bp">
+      <div class="bn">1</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Truy vấn SQL trực tiếp file S3 không dựng DB = Amazon Athena</span>
+          <span class="lang-en">Direct Serverless SQL on S3 Files = Amazon Athena</span>
+        </b>
+        <div class="lang-vi">Bất cứ khi nào đề thi nhắc đến: "phân tích log VPC Flow Logs / CloudTrail / ALB Access Logs lưu trong S3 bằng SQL mà không muốn quản lý máy chủ" &rarr; Đáp án luôn là <b>Amazon Athena</b>.</div>
+        <div class="lang-en">Whenever a scenario mentions: "query VPC Flow Logs / CloudTrail / ALB access logs in S3 using SQL without provisioning databases or servers" &rarr; The answer is always <b>Amazon Athena</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">2</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Tối ưu chi phí Athena = Apache Parquet + Phân vùng (Partitioning)</span>
+          <span class="lang-en">Athena Cost Optimization = Columnar Parquet + Partitioning</span>
+        </b>
+        <div class="lang-vi">Athena tính phí trên dung lượng dữ liệu quét. Chuyển đổi định dạng tệp từ CSV/JSON sang <b>Parquet / ORC</b> và phân vùng theo đường dẫn thư mục S3 giúp giảm tới <b>90% dữ liệu quét</b> và giảm 90% hóa đơn.</div>
+        <div class="lang-en">Athena bills per byte scanned. Converting CSV/JSON to columnar <b>Parquet / ORC</b> and partitioning S3 prefixes reduces scanned data and costs by up to <b>90%</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">3</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Truy vấn dữ liệu S3 từ Redshift = Redshift Spectrum</span>
+          <span class="lang-en">Querying External S3 Data from Redshift = Redshift Spectrum</span>
+        </b>
+        <div class="lang-vi">Nếu công ty đã có sẵn kho dữ liệu Amazon Redshift và muốn truy vấn hàng Petabyte dữ liệu lịch sử lưu trong S3 mà không cần nạp vào ổ đĩa của cụm &rarr; Chọn <b>Redshift Spectrum</b>.</div>
+        <div class="lang-en">When an existing Amazon Redshift warehouse must query petabytes of cold historical data sitting in S3 without loading it into Redshift storage &rarr; Choose <b>Redshift Spectrum</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">4</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Dashboard BI &amp; Trực quan hóa Serverless = Amazon QuickSight</span>
+          <span class="lang-en">Serverless Business Intelligence Dashboards = Amazon QuickSight</span>
+        </b>
+        <div class="lang-vi">Khi cần xây dựng dashboard trực quan cho người dùng doanh nghiệp, tự co giãn không máy chủ và tích hợp bộ nhớ đệm <b>SPICE</b> &rarr; Chọn ngay <b>Amazon QuickSight</b>.</div>
+        <div class="lang-en">When delivering visual interactive business dashboards serverlessly with high-speed in-memory <b>SPICE caching</b> &rarr; Always select <b>Amazon QuickSight</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">5. Lecture Sources &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu trực tiếp video bài giảng Udemy của Stephane Maarek và tài liệu kỹ thuật chính thức AWS</span>
+        <span class="lang-en">Direct mapping to Stephane Maarek's Udemy lectures and official AWS architectural documentation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Video bài giảng Udemy</span>
+        <span class="lang-en">🎓 Udemy Lecture Sources</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 23 · Amazon Athena &amp; AWS Glue</b><br>
+            <span class="lang-vi">Truy vấn SQL phi máy chủ trên S3, Glue Data Catalog, Crawler và ETL Jobs.</span>
+            <span class="lang-en">Serverless S3 SQL queries, Glue Data Catalog, Crawlers, and ETL Jobs.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">▶️</div>
+          <div>
+            <b>Section 23 · Amazon Redshift &amp; EMR</b><br>
+            <span class="lang-vi">Kho dữ liệu Redshift, Redshift Spectrum, cụm EMR (Master, Core, Task Nodes).</span>
+            <span class="lang-en">Redshift data warehouse, Redshift Spectrum, EMR cluster architecture.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">▶️</div>
+          <div>
+            <b>Section 23 · QuickSight &amp; OpenSearch</b><br>
+            <span class="lang-vi">Trực quan hóa QuickSight SPICE và phân tích log với Amazon OpenSearch.</span>
+            <span class="lang-en">QuickSight SPICE dashboards and log analytics with Amazon OpenSearch.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 Tài liệu chính thức AWS</span>
+        <span class="lang-en">📖 Official AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>Amazon Athena Performance Tuning</b><br>
+            <span class="lang-vi">Thực hành tốt nhất về chuyển đổi Parquet, nén dữ liệu và phân vùng.</span>
+            <span class="lang-en">Top 10 performance tuning tips for Amazon Athena (Parquet &amp; Partitioning).</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>Amazon Redshift Database Developer Guide</b><br>
+            <span class="lang-vi">Tối ưu hóa bảng dạng cột, Sort Keys, Distribution Keys và lệnh COPY.</span>
+            <span class="lang-en">Columnar optimizations, Sort Keys, Distribution Keys, and S3 COPY command.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS Glue Developer Guide</b><br>
+            <span class="lang-vi">Định nghĩa Glue Crawlers, xử lý schema tiến hóa và điều phối ETL.</span>
+            <span class="lang-en">Configuring Glue Crawlers, schema evolution, and ETL orchestration.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>Athena vs Redshift vs EMR Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng ma trận so sánh chi tiết các công cụ xử lý dữ liệu lớn trên AWS.</span>
+            <span class="lang-en">Comparison matrix across AWS big data and analytical engines.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>AWS Data Lake Reference Architecture</b><br>
+            <span class="lang-vi">Kiến trúc mẫu xây dựng hồ dữ liệu với S3, Glue, Athena và QuickSight.</span>
+            <span class="lang-en">Building modern data lakes with S3, Glue, Athena, and QuickSight.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

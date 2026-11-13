@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Storage Extras — FSx, Storage Gateway &amp; Snow Family — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_storage.html" class="nav-back" style="background:var(--blb);color:var(--bl)">
+      <span class="lang-vi">💾 Section 7: EBS &amp; EFS →</span>
+      <span class="lang-en">💾 Section 7: EBS &amp; EFS →</span>
+    </a>
+    <a href="aws_s3.html" class="nav-back" style="background:var(--blb);color:var(--bl)">
+      <span class="lang-vi">🪣 Section 12–15: Amazon S3 →</span>
+      <span class="lang-en">🪣 Section 12–15: Amazon S3 →</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 17 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Storage &amp; Hybrid Cloud</div>
+  <h1>AWS Storage Extras — FSx, Storage Gateway &amp; Snow Family</h1>
+  <p class="lang-vi">Hệ thống tệp chuyên dụng của bên thứ 3, Cầu nối lưu trữ lai Hybrid Cloud và Thiết bị di chuyển dữ liệu ngoại tuyến quy mô Petabyte cho AWS SAA-C03</p>
+  <p class="lang-en">Third-party specialized file systems, Hybrid Cloud storage bridging, and Petabyte-scale offline data migration devices for AWS SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 5 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 5 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>FSx for Windows = SMB + Active Directory:</b> Giải pháp duy nhất hỗ trợ native NTFS permissions, DFS Namespaces và Microsoft Active Directory.<br>
+          • <b>FSx for Lustre = HPC + Đọc trực tiếp S3:</b> Hệ thống tệp POSIX cho Linux với hàng triệu IOPS, có thể mount trực tiếp S3 bucket như một thư mục cục bộ.<br>
+          • <b>Tape Gateway (VTL) = Thay thế băng từ vật lý:</b> Tích hợp vào phần mềm sao lưu có sẵn (Veeam, Commvault) lưu thẳng vào S3 Glacier / Glacier Deep Archive.<br>
+          • <b>Volume Gateway: Cached vs Stored:</b> <i>Cached</i> = dữ liệu gốc ở S3, chỉ cache data hay dùng ở local; <i>Stored</i> = toàn bộ dữ liệu ở on-premise, backup không đồng bộ sang S3.<br>
+          • <b>Quy tắc 1 tuần di chuyển dữ liệu:</b> Nếu thời gian truyền mạng lớn hơn <b>1 tuần</b> &rarr; Luôn chọn thiết bị vật lý <b>AWS Snowball Edge</b> thay vì DataSync qua internet.
+        </span>
+        <span class="lang-en">
+          • <b>FSx for Windows = SMB + Active Directory:</b> The only file storage supporting native NTFS permissions, DFS Namespaces, and Microsoft Active Directory.<br>
+          • <b>FSx for Lustre = HPC + Direct S3 Integration:</b> POSIX Linux file system delivering millions of IOPS, seamlessly mounting S3 buckets as local file folders.<br>
+          • <b>Tape Gateway (VTL) = Replaces Physical Tape:</b> Integrates with existing backup software (Veeam, Commvault) archiving directly to S3 Glacier / Deep Archive.<br>
+          • <b>Volume Gateway: Cached vs Stored:</b> <i>Cached</i> = primary data on S3, frequently accessed data cached locally; <i>Stored</i> = entire dataset on-premise, async snapshots to S3.<br>
+          • <b>1-Week Network Rule:</b> If network transfer time exceeds <b>1 week</b> &rarr; Always select physical <b>AWS Snowball Edge</b> over online DataSync.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi SAA-C03</span>
+              <span class="lang-en">Exam Scenario / Keyword Pattern</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Core Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Chia sẻ file cho máy chủ Windows, tích hợp Microsoft Active Directory, giao thức SMB</span>
+              <span class="lang-en">File sharing for Windows servers, integrated with Microsoft Active Directory, SMB protocol</span>
+            </td>
+            <td><span class="kw-target">FSx for Windows File Server</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Tác vụ tính toán hiệu năng cao (HPC), Machine Learning, render video đọc/ghi nhanh từ Amazon S3</span>
+              <span class="lang-en">High-performance computing (HPC), Machine Learning, video rendering reading/writing directly to S3</span>
+            </td>
+            <td><span class="kw-target">FSx for Lustre</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Di chuyển 80 TB dữ liệu từ chi nhánh mạng yếu lên AWS, không có kết nối internet ổn định</span>
+              <span class="lang-en">Migrate 80 TB of on-prem data to AWS with limited bandwidth, no reliable internet</span>
+            </td>
+            <td><span class="kw-target">AWS Snowball Edge Storage Optimized</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Sao lưu máy chủ on-premise thay thế băng từ iSCSI vật lý, chi phí thấp nhất, lưu trữ lâu dài</span>
+              <span class="lang-en">On-premises backup replacing physical iSCSI tape drives, lowest cost, long-term archival</span>
+            </td>
+            <td><span class="kw-target">Storage Gateway: Tape Gateway (VTL)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Ứng dụng on-premise cần truy cập tệp qua giao thức NFS/SMB với độ trễ thấp, dữ liệu gốc lưu trên S3</span>
+              <span class="lang-en">On-premises app needs low-latency file access via NFS/SMB, primary files backed by S3</span>
+            </td>
+            <td><span class="kw-target">Amazon S3 File Gateway</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Ứng dụng on-premise cần ổ đĩa iSCSI cục bộ, mất mạng vẫn truy cập được 100% dữ liệu, sao lưu định kỳ lên AWS</span>
+              <span class="lang-en">On-premises app requires local iSCSI block disk, 100% data access if offline, periodic AWS backups</span>
+            </td>
+            <td><span class="kw-target">Volume Gateway (Stored Volumes)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 0. TÓM TẮT NHANH DỊCH VỤ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 17 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 17 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi: Là gì (Xanh dương) · Dùng khi nào (Xanh lá) · Khác gì (Cam) · Bẫy thi (Đỏ)</span>
+        <span class="lang-en">4 core exam criteria: Definition (Blue) · When to use (Green) · Differences (Amber) · Traps &amp; Keywords (Red)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- COL 1: Amazon FSx -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📁 1. Amazon FSx Series</span>
+        <span class="lang-en">📁 1. Amazon FSx Series</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ hệ thống tệp được quản lý hoàn toàn (Fully Managed) dành cho các giải pháp lưu trữ của bên thứ ba: <b>FSx for Windows</b>, <b>FSx for Lustre</b>, <b>FSx for NetApp ONTAP</b> và <b>FSx for OpenZFS</b>.</p>
+        <p class="lang-en">Fully managed third-party file system service offering <b>FSx for Windows</b>, <b>FSx for Lustre</b>, <b>FSx for NetApp ONTAP</b>, and <b>FSx for OpenZFS</b> with native feature parity.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi doanh nghiệp chuyển dịch (Lift &amp; Shift) các ứng dụng phụ thuộc chặt chẽ vào Microsoft Windows (SMB/AD), hoặc khi chạy tác vụ tính toán hiệu năng cao HPC, Machine Learning, EDA, phân tích gen sinh học cần throughput hàng trăm GB/s.</p>
+        <p class="lang-en">When migrating workloads tightly coupled with Windows ecosystem (SMB/NTFS/AD), or running HPC, Machine Learning, EDA, and genomic analysis requiring hundreds of GB/s throughput.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Khác với <b>EFS</b> (chỉ hỗ trợ giao thức NFSv4 trên Linux), <b>FSx for Windows</b> hỗ trợ native SMB, DFS Namespaces và Microsoft Active Directory. <b>FSx for Lustre</b> có thể đọc và đồng bộ hóa trực tiếp với Amazon S3 hai chiều.</p>
+        <p class="lang-en">Unlike <b>EFS</b> (Linux-only POSIX NFSv4), <b>FSx for Windows</b> supports native SMB, DFS Namespaces, and Active Directory. <b>FSx for Lustre</b> bridges seamlessly with Amazon S3 bidirectionally.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Đề bài nhắc tới "Windows File Share" + "SMB" mà chọn EFS là sai ngay &rarr; Phải chọn <b>FSx for Windows</b>. Với Lustre, phân biệt <b>Scratch</b> (tạm thời, không HA, rẻ) vs <b>Persistent</b> (lưu trữ lâu dài, tự sao chép trong cùng AZ).</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Choosing EFS for "Windows File Share" + "SMB" is an instant failure &rarr; Must choose <b>FSx for Windows</b>. For Lustre, know <b>Scratch</b> (burst, temporary, no HA) vs <b>Persistent</b> (long-term, replicated in same AZ).</p>
+      </div>
+    </div>
+
+    <!-- COL 2: AWS Storage Gateway -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🌉 2. AWS Storage Gateway</span>
+        <span class="lang-en">🌉 2. AWS Storage Gateway</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ cầu nối lưu trữ lai (Hybrid Cloud Storage) kết nối hạ tầng on-premises với dịch vụ lưu trữ đám mây AWS thông qua máy ảo ảo hóa (VMware ESXi, Hyper-V, KVM) hoặc phần cứng chuyên dụng (Hardware Appliance).</p>
+        <p class="lang-en">Hybrid cloud storage service connecting on-premises IT environments seamlessly with AWS storage infrastructure via virtual machines (VMware ESXi, Hyper-V, KVM) or hardware appliances.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi doanh nghiệp muốn tận dụng lưu trữ vô hạn, giá rẻ của AWS (S3, EBS Snapshots, Glacier) nhưng hệ thống on-premises <b>không được phép thay đổi mã nguồn</b> và bắt buộc phải giao tiếp qua giao thức chuẩn (NFS, SMB, iSCSI).</p>
+        <p class="lang-en">When on-prem applications need unlimited, low-cost AWS storage (S3, EBS Snapshots, Glacier) <b>without modifying existing code</b>, communicating strictly via standard protocols (NFS, SMB, iSCSI).</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Gồm 3 họ chính:<br>• <b>S3 File Gateway:</b> Tệp on-prem &rarr; S3 Object (NFS/SMB).<br>• <b>Volume Gateway:</b> Khối đĩa iSCSI. <i>Cached</i> (data chính trên S3) vs <i>Stored</i> (data chính ở on-prem).<br>• <b>Tape Gateway:</b> Giả lập thư viện băng từ (VTL) lưu vào Glacier.</p>
+        <p class="lang-en">3 distinct architectures:<br>• <b>S3 File Gateway:</b> Files &rarr; S3 Objects (NFS/SMB).<br>• <b>Volume Gateway:</b> Block storage (iSCSI). <i>Cached</i> (primary in S3) vs <i>Stored</i> (primary on-prem).<br>• <b>Tape Gateway:</b> Virtual Tape Library (VTL) to Glacier.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Nếu đề bài nhấn mạnh <i>"ngay cả khi đứt kết nối internet, máy chủ on-premise vẫn phải đọc/ghi được toàn bộ dữ liệu"</i> &rarr; Bắt buộc là <b>Volume Gateway (Stored Volumes)</b>, không được chọn Cached Volumes.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> If the prompt emphasizes <i>"on-premise servers must maintain full read/write access to the entire dataset even during internet outages"</i> &rarr; Must choose <b>Volume Gateway (Stored Volumes)</b>.</p>
+      </div>
+    </div>
+
+    <!-- COL 3: AWS Snow Family -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">❄️ 3. AWS Snow Family</span>
+        <span class="lang-en">❄️ 3. AWS Snow Family</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Bộ thiết bị phần cứng vật lý chống va đập, bảo mật cao được AWS vận chuyển trực tiếp đến khách hàng nhằm di chuyển dữ liệu ngoại tuyến (Offline Data Migration) và xử lý tính toán tại biên (Edge Computing).</p>
+        <p class="lang-en">Collection of physical, ruggedized, secure hardware devices shipped by AWS for offline data migration and edge computing where network connectivity is impossible or cost-prohibitive.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi dung lượng dữ liệu quá lớn (hàng chục TB đến hàng trăm PB) mà băng thông mạng mất hàng tháng để truyền tải, hoặc triển khai tính toán di động trên tàu biển, giàn khoan dầu khí, vùng sâu vùng xa không có internet.</p>
+        <p class="lang-en">When data scale is huge (tens of TBs to hundreds of PBs) taking months over public internet, or deploying mobile compute on ships, oil rigs, and remote edge sites lacking internet access.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">• <b>Snowcone:</b> Siêu nhỏ gọn (2.1 kg), 8 TB – 14 TB, chạy pin.<br>• <b>Snowball Edge:</b> 80 TB – 210 TB, có bản Storage Optimized và Compute Optimized (kèm GPU).<br>• <b>Snowmobile:</b> Xe container 45-foot, di chuyển dữ liệu tới 100 PB/xe.</p>
+        <p class="lang-en">• <b>Snowcone:</b> Ultra-portable (2.1 kg), 8 TB – 14 TB, battery option.<br>• <b>Snowball Edge:</b> 80 TB – 210 TB, Storage Optimized &amp; Compute Optimized (with GPU).<br>• <b>Snowmobile:</b> 45-foot container truck moving up to 100 PB per unit.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Snowball <b>không import trực tiếp vào Glacier</b>! Snowball chỉ nạp dữ liệu vào Amazon S3, sau đó bạn phải thiết lập <b>S3 Lifecycle Policy</b> để chuyển dữ liệu vào Glacier.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Snowball <b>cannot import directly into S3 Glacier</b>! It only imports data into Amazon S3 buckets; you must use an <b>S3 Lifecycle Policy</b> to transition objects to Glacier.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. SƠ ĐỒ QUYẾT ĐỊNH MERMAID: CHỌN GIẢI PHÁP LƯU TRỮ MỞ RỘNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Cây quyết định kiến trúc: Chọn giải pháp lưu trữ mở rộng (Decision Tree)</span>
+        <span class="lang-en">1. Architectural Decision Tree: Choosing the Right Extended Storage Solution</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Luồng suy luận phân loại giữa Amazon FSx, Storage Gateway, Snow Family và AWS DataSync</span>
+        <span class="lang-en">Inference flow distinguishing between Amazon FSx, Storage Gateway, Snow Family, and AWS DataSync</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Nhu cầu lưu trữ mở rộng / Lưu trữ lai"]) --> Q1{"Dữ liệu đang ở đâu?"}
+
+    %% Nhánh 1: Dữ liệu trên AWS / Đang di chuyển lên AWS
+    Q1 -- "Dữ liệu trên AWS (File System)" --> Q2{"Ứng dụng yêu cầu giao thức & OS gì?"}
+    
+    Q2 -- "Windows / SMB / Active Directory" --> FSX_WIN["<b>Amazon FSx for Windows</b><br>• Giao thức SMB &amp; NTFS<br>• Tích hợp Microsoft AD &amp; DFS"]
+    Q2 -- "Linux POSIX / Hàng triệu IOPS / HPC" --> FSX_LUS["<b>Amazon FSx for Lustre</b><br>• Sub-millisecond latency<br>• Đọc/Ghi trực tiếp S3"]
+    Q2 -- "Enterprise NAS / Đa giao thức / Deduplication" --> FSX_ONTAP["<b>Amazon FSx for NetApp ONTAP</b><br>• NFS, SMB, iSCSI đa nền tảng"]
+
+    %% Nhánh 2: Dữ liệu On-Premises
+    Q1 -- "Dữ liệu On-Premises (Hybrid / Migration)" --> Q3{"Nhu cầu là gì?"}
+
+    %% Nhánh 2a: Hybrid Storage Gateway
+    Q3 -- "Tích hợp lưu trữ liên tục (Hybrid Access)" --> Q4{"Giao thức &amp; Loại dữ liệu on-prem?"}
+    Q4 -- "Tệp File (NFS/SMB) muốn lưu S3" --> SG_FILE["<b>S3 File Gateway</b><br>• Caching cục bộ<br>• Dữ liệu lưu thành S3 Object"]
+    Q4 -- "Giao thức SMB cần Windows AD" --> SG_FSX["<b>FSx File Gateway</b><br>• Cache on-prem cho FSx Windows"]
+    Q4 -- "Ổ đĩa Block (iSCSI)" --> Q5{"Khi mất mạng có cần toàn bộ data?"}
+    Q5 -- "Cần toàn bộ dataset cục bộ" --> SG_STORED["<b>Volume Gateway (Stored)</b><br>• 100% data ở on-prem<br>• Snapshot backup sang S3"]
+    Q5 -- "Chỉ cần cache tệp hay dùng" --> SG_CACHED["<b>Volume Gateway (Cached)</b><br>• Primary data trên S3<br>• Tiết kiệm đĩa on-prem"]
+    Q4 -- "Thay thế băng từ sao lưu vật lý" --> SG_TAPE["<b>Tape Gateway (VTL)</b><br>• Giao thức iSCSI VTL<br>• Lưu thẳng Glacier / Deep Archive"]
+
+    %% Nhánh 2b: Migration lớn
+    Q3 -- "Di chuyển lượng lớn dữ liệu lên Cloud" --> Q6{"Băng thông mạng &amp; Thời gian?"}
+    Q6 -- "Mạng nhanh / Dưới 1 tuần" --> DATASYNC["<b>AWS DataSync</b><br>• Đồng bộ trực tuyến qua mạng<br>• Tối đa 10 Gbps qua Direct Connect"]
+    Q6 -- "Mạng chậm / Không có mạng / > 1 tuần" --> Q7{"Quy mô dữ liệu?"}
+    Q7 -- "Tới 14 TB (Nhỏ gọn, chạy pin)" --> SNOWCONE["<b>AWS Snowcone</b> (8-14 TB)"]
+    Q7 -- "Hàng chục đến hàng trăm TB" --> SNOWBALL["<b>AWS Snowball Edge</b> (80-210 TB)<br>• Storage/Compute Optimized"]
+    Q7 -- "Cực lớn (> 10 PB)" --> SNOWMOBILE["<b>AWS Snowmobile</b> (100 PB/xe)"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class FSX_WIN,FSX_LUS,FSX_ONTAP awsBox;
+    class SG_FILE,SG_FSX,SG_CACHED,SG_STORED,SG_TAPE optBox;
+    class SNOWCONE,SNOWBALL,SNOWMOBILE,DATASYNC warnBox;
+  </div>
+</div>
+
+<!-- 2. CHI TIẾT 4 DÒNG AMAZON FSX -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📁</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bảng so sánh 4 dòng hệ thống tệp Amazon FSx</span>
+        <span class="lang-en">2. Comprehensive Matrix: 4 Amazon FSx File System Offerings</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đặc tả giao thức, hệ điều hành hỗ trợ, hiệu năng và trường hợp sử dụng chuẩn thi SAA-C03</span>
+        <span class="lang-en">Protocols, operating systems, performance metrics, and SAA-C03 exam scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Dòng sản phẩm FSx</span><span class="lang-en">FSx Variant</span></th>
+          <th><span class="lang-vi">Giao thức &amp; OS</span><span class="lang-en">Protocols &amp; OS</span></th>
+          <th><span class="lang-vi">Đặc tính nổi bật</span><span class="lang-en">Key Architecture Features</span></th>
+          <th><span class="lang-vi">Tích hợp &amp; Sao lưu</span><span class="lang-en">Integration &amp; Backup</span></th>
+          <th><span class="lang-vi">Từ khóa nhận diện đề thi</span><span class="lang-en">Exam Clues &amp; Keywords</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>FSx for Windows File Server</b></td>
+          <td>SMB (v2.0 – v3.1.1)<br>Windows, Linux, macOS</td>
+          <td>Native NTFS, DFS Namespaces, DFS Replication, Multi-AZ &amp; Single-AZ, ổ SSD hoặc HDD</td>
+          <td>Tích hợp Microsoft Active Directory (AWS Managed AD hoặc Self-managed AD on-prem)</td>
+          <td><span class="tag tb">SMB</span> <span class="tag tb">Active Directory</span> <span class="tag tb">DFS Namespaces</span> <span class="tag tg">Lift &amp; Shift Windows</span></td>
+        </tr>
+        <tr>
+          <td><b>FSx for Lustre</b></td>
+          <td>POSIX-compliant<br>Linux only</td>
+          <td>Hàng triệu IOPS, độ trễ dưới 1 mili-giây (sub-ms), throughput hàng trăm GB/s. 2 tùy chọn: <b>Scratch</b> (tạm thời) vs <b>Persistent</b> (lưu trữ lâu dài)</td>
+          <td><b>Đọc/Ghi trực tiếp S3 bucket</b>: Khởi tạo từ S3, tính toán xong xuất ngược kết quả về S3</td>
+          <td><span class="tag tr">HPC</span> <span class="tag tr">Machine Learning</span> <span class="tag tb">Direct S3 Access</span> <span class="tag to">Scratch vs Persistent</span></td>
+        </tr>
+        <tr>
+          <td><b>FSx for NetApp ONTAP</b></td>
+          <td>Đa giao thức đồng thời:<br>NFS, SMB, iSCSI, NVMe-oF</td>
+          <td>Snapshots, Instant Cloning, Thin Provisioning, Data Deduplication &amp; Compression, tự động Tiering dữ liệu lạnh</td>
+          <td>Cross-Region Replication, tương thích hoàn toàn với các script quản trị NetApp ONTAP có sẵn</td>
+          <td><span class="tag tb">NetApp ONTAP</span> <span class="tag tb">Multi-protocol</span> <span class="tag tg">Deduplication</span> <span class="tag to">Enterprise SAN/NAS</span></td>
+        </tr>
+        <tr>
+          <td><b>FSx for OpenZFS</b></td>
+          <td>NFS (v3, v4.0, v4.1, v4.2)<br>Linux, Unix, Windows, macOS</td>
+          <td>Hệ thống file ZFS nguồn mở, sub-ms latency, 1 triệu IOPS, 12.5 GB/s throughput, Copy-on-Write snapshots, phục hồi point-in-time tức thì</td>
+          <td>Di chuyển các máy chủ lưu trữ Linux ZFS on-premise lên AWS mà không cần cấu trúc lại dữ liệu</td>
+          <td><span class="tag tb">OpenZFS</span> <span class="tag tb">Linux ZFS Migration</span> <span class="tag tg">Point-in-time Snapshots</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. BẢNG PHÂN BIỆT 4 LOẠI AWS STORAGE GATEWAY -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🌉</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Ma trận phân biệt 4 dòng AWS Storage Gateway</span>
+        <span class="lang-en">3. Comparison Matrix: 4 Types of AWS Storage Gateway</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Điểm mấu chốt: Giao thức, Nơi lưu trữ dữ liệu gốc, Cơ chế Cache và Ứng dụng đề thi</span>
+        <span class="lang-en">Key distinctions: Protocols, primary data location, caching mechanics, and exam scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Loại Gateway</span><span class="lang-en">Gateway Type</span></th>
+          <th><span class="lang-vi">Giao thức mạng</span><span class="lang-en">Interface Protocol</span></th>
+          <th><span class="lang-vi">Nơi lưu dữ liệu gốc</span><span class="lang-en">Primary Data Target</span></th>
+          <th><span class="lang-vi">Cơ chế lưu trữ đệm (Cache)</span><span class="lang-en">Caching Mechanism</span></th>
+          <th><span class="lang-vi">Ứng dụng tiêu biểu đề thi SAA-C03</span><span class="lang-en">Typical Exam Scenario</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Amazon S3 File Gateway</b></td>
+          <td>NFS &amp; SMB</td>
+          <td>Amazon S3 (Standard, S3-IA, One Zone-IA)</td>
+          <td>Lưu đệm các tệp tin mới đọc/ghi gần đây nhất (read-through &amp; write-through)</td>
+          <td>Ứng dụng on-premise cần ghi file vào ổ mạng chia sẻ nhưng muốn file đó xuất hiện ngay lập tức thành <b>S3 Objects</b> để xử lý đám mây.</td>
+        </tr>
+        <tr>
+          <td><b>Amazon FSx File Gateway</b></td>
+          <td>SMB</td>
+          <td>Amazon FSx for Windows File Server</td>
+          <td>Lưu đệm dữ liệu của FSx for Windows cục bộ tại văn phòng chi nhánh</td>
+          <td>Văn phòng chi nhánh (Branch Offices) cần truy cập file server Windows tập trung trên AWS với độ trễ thấp và tiết kiệm băng thông.</td>
+        </tr>
+        <tr>
+          <td><b>Volume Gateway: Cached Volumes</b></td>
+          <td>iSCSI (Block Storage)</td>
+          <td><b>Amazon S3</b> (lưu trữ chính)</td>
+          <td>Chỉ lưu đệm các khối dữ liệu hay đọc nhất tại đĩa on-premise (tiết kiệm dung lượng đĩa local)</td>
+          <td>Cần mở rộng dung lượng ổ đĩa iSCSI cho máy chủ on-premise với chi phí thấp mà không phải mua thêm SAN/NAS vật lý đắt đỏ.</td>
+        </tr>
+        <tr>
+          <td><b>Volume Gateway: Stored Volumes</b></td>
+          <td>iSCSI (Block Storage)</td>
+          <td><b>On-Premises Disk</b> (lưu 100% dữ liệu chính)</td>
+          <td>Toàn bộ dữ liệu nằm tại chỗ, định kỳ sao lưu không đồng bộ sang S3 dưới dạng <b>EBS Snapshots</b></td>
+          <td>Ứng dụng đòi hỏi độ trễ cực thấp và <b>phải hoạt động độc lập ngay cả khi mất kết nối mạng internet</b>, chỉ cần backup lên cloud.</td>
+        </tr>
+        <tr>
+          <td><b>Tape Gateway (VTL)</b></td>
+          <td>iSCSI-VTL (Virtual Tape)</td>
+          <td>Amazon S3 (Virtual Tapes) &rarr; S3 Glacier / Deep Archive (Archived Tapes)</td>
+          <td>Lưu trữ đệm băng từ ảo đang ghi trên ổ đĩa cục bộ trước khi upload lên AWS</td>
+          <td>Thay thế hệ thống sao lưu băng từ vật lý tốn kém bằng băng từ ảo trên cloud, <b>giữ nguyên 100% phần mềm backup có sẵn</b> (Veeam, Veritas, Commvault).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 4. AWS SNOW FAMILY & BÀI TOÁN BĂNG THÔNG MẠNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">❄️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. AWS Snow Family: Thiết bị di chuyển dữ liệu &amp; Tính toán biên (Edge Computing)</span>
+        <span class="lang-en">4. AWS Snow Family: Data Migration Devices &amp; Edge Computing</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh thông số Snowcone vs Snowball Edge vs Snowmobile và Công thức tính thời gian truyền mạng</span>
+        <span class="lang-en">Specs comparison for Snowcone vs Snowball Edge vs Snowmobile and Network Transfer Formula</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📦</div>
+          <div>
+            <b>AWS Snowcone (Siêu di động)</b><br>
+            <span class="lang-vi">• Trọng lượng chỉ 2.1 kg (4.5 lbs), chống bụi, chống sốc, có tùy chọn pin.<br>• Dung lượng: <b>8 TB HDD</b> hoặc <b>14 TB SSD</b>.<br>• Tính toán biên: 2 vCPUs, 4 GB RAM. Hỗ trợ chạy AWS DataSync cài sẵn để đồng bộ dữ liệu qua internet khi có mạng.</span>
+            <span class="lang-en">• Weighs only 2.1 kg (4.5 lbs), ruggedized, battery-operated option.<br>• Capacity: <b>8 TB HDD</b> or <b>14 TB SSD</b>.<br>• Edge compute: 2 vCPUs, 4 GB RAM. Pre-installed AWS DataSync to transfer over internet when connected.</span>
+          </div>
+        </div>
+
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">🛡️</div>
+          <div>
+            <b>AWS Snowball Edge (Lưu trữ &amp; Tính toán công nghiệp)</b><br>
+            <span class="lang-vi">• <b>Storage Optimized:</b> 80 TB HDD (raw) hoặc 210 TB NVMe SSD; 40 vCPUs, 80 GB RAM. Chuyên di chuyển dữ liệu lớn.<br>• <b>Compute Optimized:</b> 104 vCPUs, 416 GB RAM, 28 TB NVMe; tùy chọn <b>NVIDIA Tesla V100 GPU</b> để chạy AI/ML, phân tích video tại biên không có mạng.</span>
+            <span class="lang-en">• <b>Storage Optimized:</b> 80 TB HDD (raw) or 210 TB NVMe SSD; 40 vCPUs, 80 GB RAM. Optimized for large-scale migrations.<br>• <b>Compute Optimized:</b> 104 vCPUs, 416 GB RAM, 28 TB NVMe; optional <b>NVIDIA Tesla V100 GPU</b> for AI/ML inference at the edge.</span>
+          </div>
+        </div>
+
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">🚛</div>
+          <div>
+            <b>AWS Snowmobile (Quy mô Exabyte)</b><br>
+            <span class="lang-vi">• Xe đầu kéo container 45-foot vận chuyển trực tiếp đến trung tâm dữ liệu khách hàng.<br>• Dung lượng lên tới <b>100 PB (Petabytes)</b> mỗi container.<br>• Giám sát an ninh 24/7, định vị GPS, camera an ninh và nhân viên bảo vệ hộ tống chuyên nghiệp.</span>
+            <span class="lang-en">• 45-foot ruggedized shipping container pulled by a semi-trailer truck.<br>• Capacity up to <b>100 PB (Petabytes)</b> per truckload.<br>• 24/7 dedicated security personnel, GPS tracking, and video surveillance.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">📐 Công thức vàng: Khi nào chọn Snowball thay vì truyền mạng?</span>
+          <span class="lang-en">📐 Golden Formula: When to choose Snowball over Network?</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          Thời gian truyền tải dữ liệu lý thuyết qua đường truyền mạng:
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          Theoretical data transfer time over network connection:
+        </p>
+        <div style="background:var(--card);border:1px solid var(--bd);padding:8px 12px;border-radius:6px;font-family:monospace;font-size:13px;margin:8px 0;text-align:center">
+          Thời gian (giây) = [Dung lượng (Bytes) &times; 8] / Băng thông (bps)
+        </div>
+        <span class="lang-vi" style="font-size:12px;line-height:1.6">
+          <b>Ví dụ kinh điển trong đề thi:</b> Cần di chuyển <b>100 TB</b> qua đường truyền <b>100 Mbps</b> (sử dụng 80% hiệu dụng):<br>
+          • $T \approx (100 \times 10^{12} \times 8) / (80 \times 10^6) \approx 10.000.000\text{ giây} \approx \mathbf{115\text{ ngày}}$ (&gt; 3.8 tháng!).<br>
+          • Thời gian vận chuyển Snowball Edge: Yêu cầu &rarr; Giao nhận &rarr; Copy &rarr; Trả về &rarr; Nạp vào S3 chỉ mất khoảng <b>5 – 7 ngày</b>.<br>
+          👉 <b>Nguyên tắc đề thi:</b> Nếu thời gian truyền mạng lớn hơn <b>1 tuần</b> &rarr; Đáp án đúng luôn là <b>AWS Snowball Edge</b>.
+        </span>
+        <span class="lang-en" style="font-size:12px;line-height:1.6">
+          <b>Classic Exam Example:</b> Transferring <b>100 TB</b> over a <b>100 Mbps</b> link (at 80% utilization):<br>
+          • $T \approx (100 \times 10^{12} \times 8) / (80 \times 10^6) \approx 10,000,000\text{ sec} \approx \mathbf{115\text{ days}}$ (&gt; 3.8 months!).<br>
+          • Snowball shipping cycle: Request &rarr; Delivery &rarr; Ingest &rarr; Return &rarr; S3 Load takes roughly <b>5 – 7 days</b>.<br>
+          👉 <b>Exam Rule:</b> If network transfer time exceeds <b>1 week</b> &rarr; The correct answer is always <b>AWS Snowball Edge</b>.
+        </span>
+      </div>
+
+      <div style="margin-top:12px;padding:12px;background:var(--sub);border:1px solid var(--bd);border-radius:8px">
+        <b style="font-size:13px">
+          <span class="lang-vi">🔄 AWS DataSync vs AWS Snow Family</span>
+          <span class="lang-en">🔄 AWS DataSync vs AWS Snow Family</span>
+        </b>
+        <p class="lang-vi" style="font-size:12px;color:var(--mu);margin-top:4px;line-height:1.5">
+          • <b>AWS DataSync:</b> Chuyển dữ liệu <b>trực tuyến qua mạng</b> (Online via Internet hoặc AWS Direct Connect). Hỗ trợ lập lịch tự động, kiểm tra tính toàn vẹn (TLS + Checksum), băng thông tối đa 10 Gbps.<br>
+          • <b>Snow Family:</b> Chuyển dữ liệu <b>ngoại tuyến (Offline)</b> bằng phần cứng vật lý khi không có mạng hoặc mạng quá chậm.
+        </p>
+        <p class="lang-en" style="font-size:12px;color:var(--mu);margin-top:4px;line-height:1.5">
+          • <b>AWS DataSync:</b> <b>Online network transfer</b> (via Internet or AWS Direct Connect). Supports automated scheduling, TLS encryption + checksum integrity, up to 10 Gbps.<br>
+          • <b>Snow Family:</b> <b>Offline physical transfer</b> via secure ruggedized appliances when network is absent or too slow.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. BỔ SUNG HAY GẶP TRONG ĐỀ THI SAA-C03 -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">⚠️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Bổ sung hay gặp trong đề thi SAA-C03 (Exam Traps &amp; Edge Cases)</span>
+        <span class="lang-en">5. SAA-C03 High-Yield Exam Traps &amp; Architectural Edge Cases</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Những điểm bẫy câu chữ, thông số kỹ thuật và tình huống thiết kế thực tế hay xuất hiện trong kỳ thi</span>
+        <span class="lang-en">Subtle scenario distinctions, technical parameters, and practical architecture gotchas</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 1. FSx for Lustre: Scratch vs Persistent File Systems</span>
+          <span class="lang-en">🔴 1. FSx for Lustre: Scratch vs Persistent File Systems</span>
+        </b>
+        <p class="lang-vi">
+          • <b>Scratch:</b> Thiết kế cho xử lý dữ liệu tạm thời, ngắn hạn. Dữ liệu <b>không được sao chép dự phòng</b> (không có HA). Nếu máy chủ file bị lỗi, dữ liệu chưa kịp xuất về S3 sẽ bị mất vĩnh viễn. Đổi lại chi phí cực thấp, throughput cực cao.<br>
+          • <b>Persistent:</b> Thiết kế cho dữ liệu dài hạn. Tự động sao chép dự phòng các tệp tin trong <b>cùng một Availability Zone</b>. Nếu một máy chủ file gặp sự cố, hệ thống tự động thay thế và không làm gián đoạn dữ liệu.
+        </p>
+        <p class="lang-en">
+          • <b>Scratch:</b> Designed for temporary, burst processing. Data is <b>not replicated</b> (no HA). If a storage server fails, uncommitted data to S3 is permanently lost. Trade-off: lowest cost, maximum throughput.<br>
+          • <b>Persistent:</b> Designed for long-term workloads. Automatically replicates data within the <b>same Availability Zone</b>. Highly available with automatic failover if a storage server fails.
+        </p>
+      </div>
+
+      <div class="pi pi-exam" style="margin-top:12px">
+        <b>
+          <span class="lang-vi">🔴 2. Storage Gateway Hardware Appliance</span>
+          <span class="lang-en">🔴 2. Storage Gateway Hardware Appliance</span>
+        </b>
+        <p class="lang-vi">
+          Thông thường Storage Gateway được cài đặt dưới dạng file ảnh ảo hóa (VM) trên VMware ESXi, Microsoft Hyper-V hoặc Linux KVM. Tuy nhiên, nếu doanh nghiệp <b>hoàn toàn không có hạ tầng ảo hóa</b> (chỉ có máy chủ vật lý bare-metal), AWS cung cấp <b>Storage Gateway Hardware Appliance</b> (máy chủ vật lý đóng sẵn đặt trong tủ rack).
+        </p>
+        <p class="lang-en">
+          Storage Gateway is typically deployed as a software VM image on VMware ESXi, Microsoft Hyper-V, or Linux KVM. However, if an organization <b>lacks any virtualization infrastructure</b> (bare-metal servers only), AWS provides a pre-configured rack-mountable <b>Storage Gateway Hardware Appliance</b>.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 3. Bảo mật Snowball &amp; Tiêu chuẩn xóa dữ liệu NIST 800-88</span>
+          <span class="lang-en">🔴 3. Snowball Security &amp; NIST 800-88 Cryptographic Erasure</span>
+        </b>
+        <p class="lang-vi">
+          Toàn bộ thiết bị Snow Family được mã hóa tự động bằng khóa <b>KMS 256-bit</b> do khách hàng quản lý. Thiết bị sử dụng nhãn vận chuyển bằng màn hình mực điện tử (E-ink) tự động đổi địa chỉ về AWS khi hoàn tất copy. Khi về đến trung tâm dữ liệu AWS, sau khi nạp xong dữ liệu vào S3, thiết bị sẽ được <b>tẩy xóa bảo mật chuẩn NIST 800-88</b> trước khi chuyển cho khách hàng khác.
+        </p>
+        <p class="lang-en">
+          All Snow Family devices are automatically encrypted with customer-managed <b>256-bit KMS keys</b>. Devices feature an E-ink shipping label that auto-updates upon copy completion. Once returned and ingested into S3, AWS sanitizes the hardware following strict <b>NIST 800-88 cryptographic erasure standards</b>.
+        </p>
+      </div>
+
+      <div class="pi pi-exam" style="margin-top:12px">
+        <b>
+          <span class="lang-vi">🔴 4. AWS Transfer Family: SFTP/FTPS không máy chủ</span>
+          <span class="lang-en">🔴 4. AWS Transfer Family: Serverless SFTP/FTPS Endpoints</span>
+        </b>
+        <p class="lang-vi">
+          Khi đối tác bên ngoài yêu cầu truyền tệp qua giao thức <b>SFTP, FTPS hoặc FTP</b> mà dữ liệu cần nằm an toàn trong <b>Amazon S3 hoặc Amazon EFS</b> &rarr; Không tự dựng EC2 chạy OpenSSH/ProFTPD! Sử dụng ngay <b>AWS Transfer Family</b> (hoàn toàn Serverless, tự co giãn, không cần vá lỗi OS).
+        </p>
+        <p class="lang-en">
+          When external business partners require file exchanges via <b>SFTP, FTPS, or FTP</b> and files must reside securely in <b>Amazon S3 or Amazon EFS</b> &rarr; Never manage EC2 with OpenSSH/ProFTPD! Leverage <b>AWS Transfer Family</b> (fully managed, serverless, auto-scaling, zero OS patching).
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. NGUYÊN TẮC VÀNG — SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Nguyên tắc vàng ra quyết định kiến trúc — SAA-C03</span>
+        <span class="lang-en">6. Golden Architectural Decision Rules — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc bất biến giúp loại trừ ngay phương án sai trong 30 giây</span>
+        <span class="lang-en">Inviolable rules to eliminate incorrect multiple-choice options in 30 seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="bp">
+      <div class="bn">1</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Windows Native File Sharing = Luôn là FSx for Windows</span>
+          <span class="lang-en">Windows Native File Sharing = Always FSx for Windows</span>
+        </b>
+        <div class="lang-vi">EFS không hỗ trợ giao thức SMB hay tích hợp Microsoft Active Directory. Mọi câu hỏi có cụm từ "SMB", "Active Directory", "NTFS Permissions", "DFS Namespaces" &rarr; Chọn ngay <b>FSx for Windows File Server</b>.</div>
+        <div class="lang-en">EFS does not support SMB or Active Directory integration. Any question featuring "SMB", "Active Directory", "NTFS Permissions", or "DFS Namespaces" &rarr; Immediately select <b>FSx for Windows</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">2</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">HPC / Machine Learning kết hợp Amazon S3 = Luôn là FSx for Lustre</span>
+          <span class="lang-en">HPC / Machine Learning with Amazon S3 = Always FSx for Lustre</span>
+        </b>
+        <div class="lang-vi">Khi cần hệ thống file POSIX Linux có thể đọc trực tiếp các đối tượng trong S3 bucket với throughput hàng trăm GB/s và xuất kết quả ngược lại S3 &rarr; Chọn ngay <b>FSx for Lustre</b>.</div>
+        <div class="lang-en">When requiring a POSIX Linux file system that directly reads objects from an S3 bucket with hundreds of GB/s throughput and writes results back &rarr; Always choose <b>FSx for Lustre</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">3</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Di chuyển vật lý không vào thẳng Glacier</span>
+          <span class="lang-en">Physical Offline Ingestion Never Directly Targets Glacier</span>
+        </b>
+        <div class="lang-vi">AWS Snowball Edge chỉ có thể nạp dữ liệu vào các bucket <b>Amazon S3 Standard</b>. Để lưu vào Glacier, kiến trúc sư bắt buộc phải cấu hình thêm <b>S3 Lifecycle Rule</b> sau khi dữ liệu đã lên cloud.</div>
+        <div class="lang-en">AWS Snowball Edge can only import data into <b>Amazon S3 Standard</b> buckets. Archiving to Glacier strictly requires configuring an <b>S3 Lifecycle Rule</b> post-ingestion.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">4</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Thay thế băng từ cũ không đổi code = Tape Gateway (VTL)</span>
+          <span class="lang-en">Legacy Tape Replacement Without Code Change = Tape Gateway (VTL)</span>
+        </b>
+        <div class="lang-vi">Khi doanh nghiệp muốn ngừng mua băng từ vật lý LTO đắt đỏ nhưng không muốn thay đổi quy trình sao lưu hay phần mềm backup hiện tại &rarr; Chọn <b>Storage Gateway: Tape Gateway</b>.</div>
+        <div class="lang-en">When replacing expensive physical LTO magnetic tapes without disrupting current backup software pipelines &rarr; Choose <b>Storage Gateway: Tape Gateway</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">7. Lecture Sources &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu trực tiếp video bài giảng Udemy của Stephane Maarek và tài liệu kỹ thuật chính thức AWS</span>
+        <span class="lang-en">Direct mapping to Stephane Maarek's Udemy lectures and official AWS architectural documentation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Video bài giảng Udemy</span>
+        <span class="lang-en">🎓 Udemy Lecture Sources</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 17 · Amazon FSx Overview</b><br>
+            <span class="lang-vi">FSx for Windows, FSx for Lustre, Scratch vs Persistent storage architectures.</span>
+            <span class="lang-en">FSx for Windows, FSx for Lustre, Scratch vs Persistent storage architectures.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">▶️</div>
+          <div>
+            <b>Section 17 · Storage Gateway Overview</b><br>
+            <span class="lang-vi">S3 File Gateway, FSx File Gateway, Volume Gateway (Cached vs Stored), Tape Gateway.</span>
+            <span class="lang-en">S3 File Gateway, FSx File Gateway, Volume Gateway (Cached vs Stored), Tape Gateway.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">▶️</div>
+          <div>
+            <b>Section 17 · AWS Snow Family &amp; DataSync</b><br>
+            <span class="lang-vi">Snowcone, Snowball Edge (Storage vs Compute Optimized), Snowmobile, AWS DataSync.</span>
+            <span class="lang-en">Snowcone, Snowball Edge (Storage vs Compute Optimized), Snowmobile, AWS DataSync.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 Tài liệu chính thức AWS</span>
+        <span class="lang-en">📖 Official AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>Amazon FSx User Guide</b><br>
+            <span class="lang-vi">Cấu hình Multi-AZ, tích hợp Active Directory, cấu hình mount Lustre với S3 bucket.</span>
+            <span class="lang-en">Multi-AZ deployments, Active Directory integration, and mounting Lustre with S3 buckets.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS Storage Gateway Guide</b><br>
+            <span class="lang-vi">Triển khai máy ảo Gateway trên VMware/Hyper-V và thiết lập iSCSI target.</span>
+            <span class="lang-en">Deploying Gateway VMs on VMware/Hyper-V and configuring iSCSI local targets.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS Snowball Edge Developer Guide</b><br>
+            <span class="lang-vi">Quy trình yêu cầu thiết bị, phần mềm AWS OpsHub và tiêu chuẩn bảo mật NIST 800-88.</span>
+            <span class="lang-en">Appliance order workflows, AWS OpsHub client management, and NIST 800-88 security.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>AWS Storage Gateway Cheat Sheet</b><br>
+            <span class="lang-vi">Ma trận so sánh chi tiết File Gateway vs Volume Gateway Cached vs Stored.</span>
+            <span class="lang-en">Comparison matrix: File Gateway vs Volume Gateway Cached vs Stored.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>AWS Snowball vs Snowcone vs Snowmobile</b><br>
+            <span class="lang-vi">Bảng tra cứu thông số dung lượng, số vCPUs, RAM và bài toán chi phí di chuyển dữ liệu.</span>
+            <span class="lang-en">Specs cheat sheet: Capacity, vCPU counts, RAM allocations, and migration pricing.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

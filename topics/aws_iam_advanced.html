@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IAM Advanced &amp; AWS Organizations — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 25 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Security, Identity &amp; Compliance</div>
+  <h1>IAM Advanced, AWS Organizations &amp; Identity Center</h1>
+  <p class="lang-vi">Quản trị bảo mật cấp doanh nghiệp: AWS Organizations đa tài khoản, Service Control Policies (SCPs), IAM Permission Boundaries, IAM Identity Center (AWS SSO) và Active Directory cho kỳ thi SAA-C03</p>
+  <p class="lang-en">Enterprise identity and access governance: multi-account AWS Organizations, Service Control Policies (SCPs), IAM Permission Boundaries, IAM Identity Center (AWS SSO), and Active Directory for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · Logic đánh giá quyền hạn IAM</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Answer Mapping · IAM Policy Evaluation Logic</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — SCP KHÔNG BAO GIỜ cấp quyền (Does NOT grant permissions):</b> SCP chỉ đặt ranh giới tối đa (guardrail). Để user thao tác được, phải có CẢ 2: SCP cho phép <b>VÀ</b> IAM policy gán cho user cho phép. Nếu SCP không cho phép, IAM policy dù là AdministratorAccess cũng bị chặn hoàn toàn!</span>
+          <span class="lang-en"><b>Trap 1 — SCPs NEVER grant permissions:</b> SCPs only set maximum guardrails. For a user to act, BOTH are required: SCP must allow it <b>AND</b> IAM policy must allow it. If an SCP does not allow it, even an IAM AdministratorAccess policy is blocked!</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — SCP không áp dụng cho Management Account (Payer Account):</b> SCP chỉ áp dụng cho Member Accounts và các OU con. Tài khoản gốc (Management Account) hoàn toàn miễn nhiễm với SCP. Tuy nhiên, SCP <b>áp dụng cho cả Root User của Member Accounts</b>!</span>
+          <span class="lang-en"><b>Trap 2 — SCPs do NOT apply to the Management (Payer) Account:</b> SCPs only apply to Member Accounts and child OUs. The Management Account is immune to SCPs. However, SCPs <b>DO apply to the root user of Member Accounts</b>!</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — Permission Boundary vs IAM Policy:</b> Permission Boundary đặt trần quyền hạn tối đa cho IAM User/Role, thường dùng khi ủy quyền cho Developer tự tạo IAM Role mà không thể tự leo thang đặc quyền (Privilege Escalation). Quyền thực tế là <b>giao điểm (Intersection)</b> giữa Identity Policy và Permission Boundary.</span>
+          <span class="lang-en"><b>Trap 3 — Permission Boundary vs IAM Policy:</b> Permission Boundaries define maximum allowed permissions for IAM entities, commonly used when delegating role creation to developers without privilege escalation. Effective permissions are the <b>intersection</b> of the identity-based policy and permission boundary.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — AssumeRole vs Resource Policy:</b> Khi AssumeRole, thực thể từ bỏ toàn bộ quyền hạn ban đầu và chỉ nhận quyền hạn của Target Role (Temporary Credentials qua STS). Ngược lại, khi truy cập tài nguyên liên tài khoản qua Resource-based Policy (S3 Bucket Policy, SQS Policy), thực thể giữ nguyên quyền hạn của mình trong tài khoản gốc.</span>
+          <span class="lang-en"><b>Trap 4 — AssumeRole vs Resource-based Policy:</b> When assuming a role, the principal gives up original permissions and takes on only the target role permissions (temporary credentials via STS). In contrast, cross-account access via resource policies (S3 bucket policy, SQS policy) lets the caller keep original permissions.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Giải pháp kiến trúc AWS</span><span class="lang-en">AWS Architectural Solution</span></th>
+        <th style="width:35%"><span class="lang-vi">Lý do chọn &amp; Lưu ý kỹ thuật</span><span class="lang-en">Selection Reason &amp; Exam Trap</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Prevent member accounts from leaving Organization"</b></td>
+        <td><b>SCP Deny <code>organizations:LeaveOrganization</code></b></td>
+        <td>
+          <span class="lang-vi">Gán SCP cấm rời tổ chức tại Root OU hoặc Member Account.</span>
+          <span class="lang-en">Attach SCP denying leave action at Root OU or Member Account.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Delegate IAM role creation to developers without privilege escalation"</b></td>
+        <td><b>IAM Permission Boundary</b></td>
+        <td>
+          <span class="lang-vi">Bắt buộc lập trình viên phải đính kèm Permission Boundary khi tạo IAM Role mới.</span>
+          <span class="lang-en">Mandate developers attach a Permission Boundary when creating new IAM roles.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Single sign-on across 100 AWS accounts with corporate Active Directory / Okta"</b></td>
+        <td><b>AWS IAM Identity Center (AWS SSO)</b></td>
+        <td>
+          <span class="lang-vi">Tích hợp SAML 2.0 / SCIM, phân quyền đa tài khoản bằng Permission Sets.</span>
+          <span class="lang-en">SAML 2.0 / SCIM integration, multi-account access via Permission Sets.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Restrict S3 bucket access only to accounts within our AWS Organization"</b></td>
+        <td><b>Bucket Policy + Condition <code>aws:PrincipalOrgID</code></b></td>
+        <td>
+          <span class="lang-vi">Không cần liệt kê từng Account ID thủ công; tự động áp dụng khi thêm tài khoản mới.</span>
+          <span class="lang-en">No need to list account IDs manually; automatically applies to new accounts.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Connect on-prem Active Directory to AWS without caching credentials or dir sync"</b></td>
+        <td><b>AWS Directory Service: AD Connector</b></td>
+        <td>
+          <span class="lang-vi">Proxy chuyển tiếp yêu cầu xác thực về on-premise AD; không lưu trữ tài khoản trên AWS.</span>
+          <span class="lang-en">Proxy gateway redirecting auth requests to on-prem AD; no credentials stored in AWS.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Two-way forest trust with on-premises Active Directory"</b></td>
+        <td><b>AWS Managed Microsoft AD</b></td>
+        <td>
+          <span class="lang-vi">Triển khai domain controller Windows thực thụ trên VPC hỗ trợ forest trusts.</span>
+          <span class="lang-en">Deploys real Windows domain controllers in VPC supporting forest trusts.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Block all access to unapproved AWS regions across all accounts"</b></td>
+        <td><b>SCP with Condition <code>aws:RequestedRegion</code></b></td>
+        <td>
+          <span class="lang-vi">Áp dụng StringNotEquals Deny tại Root OU ngoại trừ us-east-1 (global IAM/Route53).</span>
+          <span class="lang-en">Apply StringNotEquals Deny at Root OU except us-east-1 (global IAM/Route53).</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE OVERVIEW: MULTI-ACCOUNT GOVERNANCE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🏛️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Mô hình Quản trị Đa tài khoản: AWS Organizations + SCP + IAM Identity Center</span>
+        <span class="lang-en">Multi-Account Governance Architecture: AWS Organizations + SCP + IAM Identity Center</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân tầng cấu trúc OU, cơ chế kế thừa SCP và quản lý truy cập tập trung</span>
+        <span class="lang-en">OU structural hierarchy, SCP inheritance mechanism, and centralized access federation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    subgraph Corporate["Doanh nghiệp / Corporate IdP"]
+        IDP["Azure AD / Okta / On-Prem AD"]
+    end
+
+    subgraph Org["AWS Organization"]
+        subgraph ManagementAccount["Management (Payer) Account"]
+            MASTER["Payer Root / Billing / Org Master<br/>(Miễn nhiễm với SCPs)"]
+            IC["AWS IAM Identity Center (SSO)<br/>Quản lý tập trung Permission Sets"]
+        end
+
+        ROOT_OU["Root OU (FullAWSAccess)"] --> PROD_OU["Production OU"]
+        ROOT_OU --> DEV_OU["Development OU"]
+        ROOT_OU --> SEC_OU["Security OU"]
+
+        subgraph PROD_OU["Production OU (SCP: Deny Region, Deny LeaveOrg)"]
+            ACC_PROD1["Prod App Account<br/>(Root & IAM tuân thủ SCP)"]
+            ACC_PROD2["Prod DB Account<br/>(Root & IAM tuân thủ SCP)"]
+        end
+
+        subgraph DEV_OU["Development OU (SCP: Deny High-Cost Instances)"]
+            ACC_DEV["Dev Sandbox Account<br/>(Permission Boundaries gán cho Devs)"]
+        end
+
+        subgraph SEC_OU["Security OU"]
+            ACC_LOG["Central Log Archive<br/>(S3 Bucket Policy + aws:PrincipalOrgID)"]
+            ACC_SEC["Security Audit Account"]
+        end
+    end
+
+    IDP -->|SAML 2.0 / SCIM| IC
+    IC -.->|Gán quyền truy cập tự động| ACC_PROD1
+    IC -.->|Gán quyền truy cập tự động| ACC_DEV
+    IC -.->|Gán quyền truy cập tự động| ACC_LOG
+
+    classDef mgmt fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef ou fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef idp fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    class MASTER,IC mgmt;
+    class PROD_OU,DEV_OU,SEC_OU ou;
+    class IDP idp;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS ORGANIZATIONS & CONSOLIDATED BILLING -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🏢</div>
+    <div>
+      <div class="ct">1. AWS Organizations &amp; Consolidated Billing</div>
+      <div class="cs">
+        <span class="lang-vi">Quản lý đa tài khoản tập trung và tối ưu hóa chi phí</span>
+        <span class="lang-en">Centralized multi-account management &amp; cost optimization</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa / Core Concept:</b><br>
+    <span class="lang-vi">Dịch vụ quản lý và quản trị tập trung nhiều tài khoản AWS trong một tổ chức (Organization). Bao gồm 1 <b>Management Account</b> (trước đây gọi là Master Account) và nhiều <b>Member Accounts</b> được nhóm thành các <b>Organizational Units (OUs)</b> lồng nhau.</span>
+    <span class="lang-en">Centralized management service to govern multiple AWS accounts in an organization. Consists of 1 <b>Management Account</b> and multiple <b>Member Accounts</b> grouped into nested <b>Organizational Units (OUs)</b>.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Use Cases cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>Consolidated Billing:</b> Gộp hóa đơn thanh toán của toàn bộ tài khoản thành một hóa đơn duy nhất gửi về Management Account.<br>2. <b>Volume Discounts:</b> Tích lũy dung lượng sử dụng (S3, EC2, Data Transfer) trên mọi tài khoản để đạt ngưỡng chiết khấu giá rẻ hơn.<br>3. <b>Reserved Instances / Savings Plans Sharing:</b> Tự động chia sẻ giảm giá RI/Savings Plans chưa dùng giữa các tài khoản trong tổ chức.<br>4. <b>Phân tách môi trường:</b> Tách biệt Production, Development, Security, Audit vào từng tài khoản độc lập để cô lập rủi ro (Blast Radius).</span>
+    <span class="lang-en">1. <b>Consolidated Billing:</b> Combines billing across all accounts into a single monthly invoice for the Management Account.<br>2. <b>Volume Discounts:</b> Aggregates usage across accounts (S3, EC2, Data Transfer) to hit volume pricing tiers.<br>3. <b>RI / Savings Plans Sharing:</b> Automatically shares unused RI/Savings Plans discounts across member accounts.<br>4. <b>Environment Isolation:</b> Isolates Prod, Dev, Security, and Audit into separate accounts to limit blast radius.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Điểm khác biệt / Key Mechanics:</b><br>
+    <span class="lang-vi">Khi tạo Member Account thông qua AWS Organizations, AWS tự động cấu hình IAM Role cross-account <code>OrganizationAccountAccessRole</code> với quyền AdministratorAccess cho phép Management Account quản trị.</span>
+    <span class="lang-en">When creating a member account via Organizations, AWS automatically provisions the <code>OrganizationAccountAccessRole</code> IAM role with AdministratorAccess, allowing the Management Account full administrative access.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Không bao giờ triển khai workload sản xuất (EC2, RDS) trên <b>Management Account</b>! Management Account chỉ dùng cho Billing, quản lý SCPs, AWS Organizations và Identity Center.<br>⚠️ Muốn tắt tính năng chia sẻ RI/Savings Plans giữa các account, phải tắt trong phần Billing Preferences tại Management Account.</span>
+    <span class="lang-en">⚠️ Never run production workloads (EC2, RDS) in the <b>Management Account</b>! Keep it solely for billing, SCP governance, and Identity Center.<br>⚠️ To disable RI/Savings Plans sharing across accounts, turn it off under Billing Preferences in the Management Account.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: SERVICE CONTROL POLICIES (SCPs) -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🛡️</div>
+    <div>
+      <div class="ct">2. Service Control Policies (SCPs)</div>
+      <div class="cs">
+        <span class="lang-vi">Ranh giới kiểm soát tối đa cấp tài khoản (Account Guardrails)</span>
+        <span class="lang-en">Account-level maximum permission guardrails</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa / Core Concept:</b><br>
+    <span class="lang-vi">Chính sách dạng JSON gán vào Root OU, OU con, hoặc trực tiếp vào Member Account để thiết lập ranh giới quyền hạn tối đa (maximum permission boundaries). SCP <b>không bao giờ cấp thêm quyền</b> mà chỉ giới hạn những gì tài khoản được phép làm.</span>
+    <span class="lang-en">JSON policy attached to Root OU, child OUs, or directly to Member Accounts to set maximum permission boundaries. SCPs <b>never grant permissions</b>; they only restrict what an account can do.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Chiến lược triển khai (Strategies):</b><br>
+    <span class="lang-vi">1. <b>Blacklisting (Mặc định AWS):</b> Giữ nguyên policy <code>FullAWSAccess</code> ở Root và chỉ thêm các Explicit Deny (ví dụ: cấm tắt CloudTrail, cấm tạo EC2 ngoài Region us-east-1).<br>2. <b>Whitelisting (Bảo mật tối đa):</b> Gỡ bỏ <code>FullAWSAccess</code> và chỉ Allow danh sách dịch vụ được phê duyệt (ví dụ: chỉ Allow <code>ec2:*</code>, <code>s3:*</code>).<br>3. <b>Bảo vệ an ninh:</b> Ngăn chặn Member Account tự ý rời khỏi tổ chức (<code>organizations:LeaveOrganization</code>) hoặc xóa GuardDuty.</span>
+    <span class="lang-en">1. <b>Blacklisting (AWS Default):</b> Keep default <code>FullAWSAccess</code> at Root and add Explicit Deny rules (e.g. deny disabling CloudTrail, deny regions outside us-east-1).<br>2. <b>Whitelisting (High Security):</b> Remove <code>FullAWSAccess</code> and explicitly Allow only approved services (e.g. allow only <code>ec2:*</code>, <code>s3:*</code>).<br>3. <b>Security Guardrails:</b> Prevent accounts from leaving the org (<code>organizations:LeaveOrganization</code>) or disabling GuardDuty.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Cơ chế kế thừa (Inheritance Hierarchy):</b><br>
+    <span class="lang-vi">Một hành động được cho phép nếu và chỉ nếu nó được phép ở <b>MỌI CẤP</b> từ Root OU &rarr; OU trung gian &rarr; Member Account VÀ không bị Explicit Deny ở bất kỳ cấp nào. Explicit Deny luôn luôn chiến thắng (Explicit Deny trumps everything)!</span>
+    <span class="lang-en">An action is permitted if and only if it is allowed at <b>EVERY LEVEL</b> from Root OU &rarr; Intermediate OU &rarr; Member Account AND has no Explicit Deny anywhere. Explicit Deny always wins!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ SCP <b>áp dụng cho cả Root User</b> của Member Account (điểm cực kỳ hay hỏi).<br>⚠️ SCP <b>không bao giờ áp dụng</b> cho Management (Payer) Account.<br>⚠️ SCP không ảnh hưởng đến Service-Linked Roles được AWS tạo tự động.</span>
+    <span class="lang-en">⚠️ SCPs <b>DO apply to the root user</b> of member accounts (very frequent exam question).<br>⚠️ SCPs <b>NEVER apply</b> to the Management (Payer) Account.<br>⚠️ SCPs do not affect Service-Linked Roles created automatically by AWS.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: IAM PERMISSION BOUNDARIES -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">🧱</div>
+    <div>
+      <div class="ct">3. IAM Permission Boundaries</div>
+      <div class="cs">
+        <span class="lang-vi">Ủy quyền quản trị IAM an toàn không sợ leo thang đặc quyền</span>
+        <span class="lang-en">Safe IAM delegation without privilege escalation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa / Core Concept:</b><br>
+    <span class="lang-vi">Tính năng nâng cao của IAM sử dụng Managed Policy để đặt trần quyền hạn tối đa (maximum permissions) cho một IAM User hoặc IAM Role. Permission Boundary <b>không cấp quyền</b> mà đóng vai trò như một bộ lọc (filter).</span>
+    <span class="lang-en">Advanced IAM feature using managed policies to set the maximum permissions an IAM User or Role can have. Permission boundaries <b>do not grant permissions</b>; they act as a ceiling/filter.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Use Case kinh điển trong đề thi:</b><br>
+    <span class="lang-vi">Công ty muốn <b>ủy quyền cho Developers tự tạo IAM Roles</b> cho ứng dụng Lambda/EC2 của họ, nhưng phải ngăn Developers tạo một Role có quyền AdministratorAccess để tự gán cho bản thân (Privilege Escalation). Giải pháp: Gán IAM Policy cho Developer cho phép <code>iam:CreateRole</code> VỚI điều kiện bắt buộc phải đính kèm Permission Boundary được phê duyệt trước.</span>
+    <span class="lang-en">Classic exam use case: The company wants to <b>delegate IAM role creation to developers</b> for Lambda/EC2, but must prevent developers from creating AdministratorAccess roles for privilege escalation. Solution: Grant developers <code>iam:CreateRole</code> with a condition mandating the attachment of an approved Permission Boundary.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Công thức quyền hạn thực tế (Effective Permissions):</b><br>
+    <span class="lang-vi"><code>Quyền thực tế = Identity-based Policy ∩ Permission Boundary</code> (Giao điểm của 2 tập hợp). Nếu Identity Policy cho phép <code>s3:*</code> và <code>ec2:*</code>, nhưng Permission Boundary chỉ cho phép <code>s3:*</code>, người dùng chỉ thực hiện được các thao tác trên S3!</span>
+    <span class="lang-en"><code>Effective Permissions = Identity-based Policy ∩ Permission Boundary</code> (Intersection). If an identity policy allows <code>s3:*</code> and <code>ec2:*</code>, but the permission boundary only allows <code>s3:*</code>, the user can only perform S3 actions!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Permission Boundaries <b>KHÔNG áp dụng cho IAM Groups</b> (chỉ áp dụng cho Users và Roles).<br>⚠️ Không nhầm lẫn Permission Boundary (cấp thực thể IAM trong 1 account) với SCP (cấp AWS Account/OU trong AWS Organizations).</span>
+    <span class="lang-en">⚠️ Permission boundaries <b>CANNOT be applied to IAM Groups</b> (only Users and Roles).<br>⚠️ Do not confuse Permission Boundaries (IAM entity level inside an account) with SCPs (account/OU level in Organizations).</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS IAM IDENTITY CENTER (AWS SSO) -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🔑</div>
+    <div>
+      <div class="ct">4. AWS IAM Identity Center (AWS SSO)</div>
+      <div class="cs">
+        <span class="lang-vi">Đăng nhập một lần tập trung và liên kết danh tính đa tài khoản</span>
+        <span class="lang-en">Centralized single sign-on &amp; multi-account identity federation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa / Core Concept:</b><br>
+    <span class="lang-vi">Dịch vụ kế thừa của AWS Single Sign-On (AWS SSO), cho phép người dùng đăng nhập 1 lần (Single Sign-On) qua cổng AWS access portal để truy cập vào nhiều tài khoản AWS và ứng dụng đám mây (Salesforce, Microsoft 365, Box).</span>
+    <span class="lang-en">The successor to AWS Single Sign-On (AWS SSO), enabling users to sign in once via the AWS access portal to access multiple AWS accounts and cloud apps (Salesforce, Microsoft 365, Box).</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Nguồn danh tính hỗ trợ (Identity Sources):</b><br>
+    <span class="lang-vi">1. <b>Identity Center directory (Built-in):</b> Quản lý user/group trực tiếp trong IAM Identity Center.<br>2. <b>External Identity Provider (IdP):</b> Kết nối Okta, Azure AD (Entra ID), Ping Identity, OneLogin thông qua chuẩn <b>SAML 2.0</b> và tự động đồng bộ user/group qua <b>SCIM</b>.<br>3. <b>Active Directory:</b> Kết nối với on-premises Microsoft AD qua AWS Directory Service (AD Connector hoặc AWS Managed Microsoft AD).</span>
+    <span class="lang-en">1. <b>Identity Center directory (Built-in):</b> Manage users and groups natively inside Identity Center.<br>2. <b>External IdP:</b> Connect Okta, Azure AD (Entra ID), Ping Identity, OneLogin via <b>SAML 2.0</b> with automated provisioning via <b>SCIM</b>.<br>3. <b>Active Directory:</b> Connect on-premises Microsoft AD via AWS Directory Service (AD Connector or Managed Microsoft AD).</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Cơ chế phân quyền (Permission Sets):</b><br>
+    <span class="lang-vi">Định nghĩa tập hợp quyền hạn (Permission Sets) tại IAM Identity Center. Khi gán Permission Set cho một User/Group trên một AWS Account, AWS tự động tạo IAM Role tương ứng trong Member Account đó mà không cần quản trị IAM thủ công.</span>
+    <span class="lang-en">Permission Sets define collections of IAM policies. When assigning a Permission Set to a user/group on an AWS account, Identity Center automatically provisions the corresponding IAM role in that member account.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ IAM Identity Center được kích hoạt và quản lý từ <b>Management Account</b> của AWS Organizations (hoặc một delegated administrator account).<br>⚠️ Không cần tạo IAM User trong từng Member Account nữa! Toàn bộ người dùng được quản lý tập trung qua Identity Center portal.</span>
+    <span class="lang-en">⚠️ IAM Identity Center is enabled and managed from the <b>Management Account</b> of AWS Organizations (or a delegated admin account).<br>⚠️ No need to create IAM Users inside individual member accounts! Users are centrally federated via the Identity Center portal.</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: ACTIVE DIRECTORY IN AWS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📂</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh: Các tùy chọn AWS Directory Service (Active Directory)</span>
+        <span class="lang-en">Comparison Matrix: AWS Directory Service Options (Active Directory)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân biệt AWS Managed Microsoft AD vs AD Connector vs Simple AD</span>
+        <span class="lang-en">Distinguish AWS Managed Microsoft AD vs AD Connector vs Simple AD</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:22%"><span class="lang-vi">Đặc tính / Tiêu chí</span><span class="lang-en">Feature / Criteria</span></th>
+        <th style="width:26%"><b>AWS Managed Microsoft AD</b></th>
+        <th style="width:26%"><b>AD Connector</b></th>
+        <th style="width:26%"><b>Simple AD</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Bản chất kỹ thuật</b><br><span style="font-size:11px;color:var(--mu)">Technical Architecture</span></td>
+        <td>
+          <span class="lang-vi">Windows Server Active Directory thực thụ do AWS quản lý chạy trên VPC đa AZ.</span>
+          <span class="lang-en">Actual Windows Server Active Directory managed by AWS running across multi-AZ VPC.</span>
+        </td>
+        <td>
+          <span class="lang-vi"><b>Proxy / Gateway chuyển tiếp</b> cuộc gọi xác thực về on-premises Active Directory.</span>
+          <span class="lang-en"><b>Proxy / Gateway gateway</b> forwarding directory requests to on-premises AD.</span>
+        </td>
+        <td>
+          <span class="lang-vi">Thư mục độc lập tương thích Active Directory chạy trên mã nguồn mở <b>Samba 4</b>.</span>
+          <span class="lang-en">Standalone Active Directory compatible directory powered by open-source <b>Samba 4</b>.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Quan hệ tin cậy (Trusts)</b><br><span style="font-size:11px;color:var(--mu)">Forest Trusts</span></td>
+        <td>
+          <span class="lang-vi"><b>Hỗ trợ Forest Trust 1 chiều hoặc 2 chiều</b> kết nối với On-premises AD.</span>
+          <span class="lang-en"><b>Supports one-way or two-way forest trusts</b> with on-premises AD.</span>
+        </td>
+        <td>
+          <span class="lang-vi"><b>Không hỗ trợ trusts</b> (vì bản thân nó chỉ là proxy chuyển tiếp).</span>
+          <span class="lang-en"><b>No trusts supported</b> (acts strictly as an authentication proxy).</span>
+        </td>
+        <td>
+          <span class="lang-vi"><b>Không hỗ trợ trusts</b> (hoàn toàn cô lập).</span>
+          <span class="lang-en"><b>No trusts supported</b> (strictly standalone).</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Lưu trữ thông tin xác thực</b><br><span style="font-size:11px;color:var(--mu)">Credential Storage</span></td>
+        <td>
+          <span class="lang-vi">Lưu trữ người dùng và nhóm trên AWS Cloud.</span>
+          <span class="lang-en">Stores users, groups, and policies on AWS Cloud.</span>
+        </td>
+        <td>
+          <span class="lang-vi"><b>KHÔNG lưu trữ, không cache</b> bất kỳ user credentials nào trên AWS Cloud.</span>
+          <span class="lang-en"><b>DOES NOT store or cache</b> any user credentials in the AWS Cloud.</span>
+        </td>
+        <td>
+          <span class="lang-vi">Lưu trữ trên Samba 4 database trong AWS.</span>
+          <span class="lang-en">Stores data on Samba 4 database in AWS.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Use Case thi cử cốt lõi</b><br><span style="font-size:11px;color:var(--mu)">Core Exam Use Case</span></td>
+        <td>
+          <span class="lang-vi">Cần AD thực thụ trên AWS hỗ trợ schema extensions, MFA, hoặc kết nối Two-way Trust với On-prem AD.</span>
+          <span class="lang-en">Need actual AD in AWS supporting schema extensions, MFA, or Two-way forest trust with on-prem AD.</span>
+        </td>
+        <td>
+          <span class="lang-vi">Doanh nghiệp chỉ muốn dùng tài khoản On-prem AD để đăng nhập AWS WorkSpaces / QuickSight mà không được sao chép AD lên mây.</span>
+          <span class="lang-en">Enterprise wants on-prem AD credentials to sign in to WorkSpaces/QuickSight without replicating AD to cloud.</span>
+        </td>
+        <td>
+          <span class="lang-vi">Môi trường nhỏ, chi phí thấp, chỉ cần tính năng thư mục cơ bản tương thích AD, không cần kết nối on-premise.</span>
+          <span class="lang-en">Small environment, low budget, basic AD compatibility needed, no on-premises connection.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- COMPARISON MATRIX: CROSS-ACCOUNT ACCESS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Truy cập Liên tài khoản (Cross-Account Access): AssumeRole vs Resource-based Policies</span>
+        <span class="lang-en">Cross-Account Access: AssumeRole vs Resource-based Policies</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hai cơ chế chia sẻ tài nguyên giữa các AWS Account khác nhau trong kỳ thi SAA-C03</span>
+        <span class="lang-en">Two core mechanisms for sharing resources across AWS Accounts in SAA-C03</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:20%"><span class="lang-vi">Tiêu chí so sánh</span><span class="lang-en">Comparison Factor</span></th>
+        <th style="width:40%"><b>IAM AssumeRole (AWS STS)</b></th>
+        <th style="width:40%"><b>Resource-based Policy (S3 / SQS / KMS)</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Cơ chế hoạt động</b><br><span style="font-size:11px;color:var(--mu)">Mechanism</span></td>
+        <td>
+          <span class="lang-vi">User trong Account A gọi API <code>sts:AssumeRole</code> để nhận temporary credentials của IAM Role trong Account B.</span>
+          <span class="lang-en">User in Account A calls <code>sts:AssumeRole</code> to receive temporary credentials for an IAM Role in Account B.</span>
+        </td>
+        <td>
+          <span class="lang-vi">Gán policy trực tiếp lên tài nguyên ở Account B (ví dụ: S3 Bucket Policy) cho phép Principal từ Account A truy cập trực tiếp.</span>
+          <span class="lang-en">Attach a policy directly to the resource in Account B (e.g. S3 Bucket Policy) allowing Principal from Account A direct access.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Quyền hạn ban đầu</b><br><span style="font-size:11px;color:var(--mu)">Original Permissions</span></td>
+        <td>
+          <span class="lang-vi"><b>Từ bỏ quyền hạn cũ:</b> Khi đóng vai (Assume Role), thực thể chỉ có quyền hạn được cấp bởi Target Role trong Account B.</span>
+          <span class="lang-en"><b>Relinquishes original permissions:</b> When assuming a role, the principal only has permissions granted by the Target Role.</span>
+        </td>
+        <td>
+          <span class="lang-vi"><b>Giữ nguyên quyền hạn cũ:</b> Thực thể vẫn giữ toàn bộ quyền hạn trong Account A và đồng thời có thêm quyền truy cập tài nguyên ở Account B.</span>
+          <span class="lang-en"><b>Retains original permissions:</b> The principal keeps all Account A permissions while accessing the resource in Account B.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Dịch vụ hỗ trợ</b><br><span style="font-size:11px;color:var(--mu)">Supported Services</span></td>
+        <td>
+          <span class="lang-vi">Áp dụng cho <b>MỌI dịch vụ AWS</b> (vì mọi dịch vụ đều tương tác qua IAM Role).</span>
+          <span class="lang-en">Supported across <b>ALL AWS services</b> (since all services interact with IAM Roles).</span>
+        </td>
+        <td>
+          <span class="lang-vi">Chỉ áp dụng cho các dịch vụ hỗ trợ Resource Policy (Amazon S3, SQS, SNS, KMS, Secrets Manager, Lambda, EventBridge).</span>
+          <span class="lang-en">Only available for services supporting resource policies (S3, SQS, SNS, KMS, Secrets Manager, Lambda, EventBridge).</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Điều kiện cần thiết</b><br><span style="font-size:11px;color:var(--mu)">Requirements</span></td>
+        <td>
+          <span class="lang-vi">Cần cấu hình cả 2 đầu: Account A cho phép User <code>sts:AssumeRole</code> + Trust Policy trong Account B cho phép Account A assume.</span>
+          <span class="lang-en">Both sides needed: Account A permits User <code>sts:AssumeRole</code> + Trust Policy in Account B allows Account A to assume.</span>
+        </td>
+        <td>
+          <span class="lang-vi">Với Amazon S3: Chỉ cần Resource Policy ở Account B VÀ IAM Policy ở Account A cho phép hành động tương ứng.</span>
+          <span class="lang-en">For Amazon S3: Requires Resource Policy in Account B AND IAM Policy in Account A allowing the action.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- IAM POLICY EVALUATION LOGIC -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">⚙️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Quy trình Đánh giá Chính sách IAM (IAM Policy Evaluation Logic)</span>
+        <span class="lang-en">IAM Policy Evaluation Logic Decision Flow</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Thứ tự ưu tiên quyết định Allow hay Deny khi nhiều chính sách cùng áp dụng</span>
+        <span class="lang-en">Priority order determining Allow or Deny when multiple policies apply</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Bắt đầu đánh giá yêu cầu API / API Call Initiated"]) --> DENY_CHECK{"Có Explicit Deny<br/>ở bất kỳ chính sách nào không?"}
+    
+    DENY_CHECK -- "Có (Yes)" --> FINAL_DENY["❌ BỊ TỪ CHỐI (DENIED)<br/>Explicit Deny chiến thắng tất cả"]
+    DENY_CHECK -- "Không (No)" --> SCP_CHECK{"Tổ chức có SCP không?<br/>SCP có cho phép không?"}
+    
+    SCP_CHECK -- "Bị chặn bởi SCP" --> FINAL_DENY
+    SCP_CHECK -- "Được SCP cho phép" --> PB_CHECK{"User/Role có gắn<br/>Permission Boundary không?"}
+    
+    PB_CHECK -- "Bị chặn bởi Boundary" --> FINAL_DENY
+    PB_CHECK -- "Được Boundary cho phép" --> ALLOW_CHECK{"Có Explicit Allow từ<br/>Identity Policy hoặc Resource Policy?"}
+    
+    ALLOW_CHECK -- "Không có Allow nào" --> IMPLICIT_DENY["❌ BỊ TỪ CHỐI (IMPLICIT DENY)<br/>Mặc định không cho phép"]
+    ALLOW_CHECK -- "Có ít nhất 1 Explicit Allow" --> FINAL_ALLOW["✅ ĐƯỢC CHẤP THUẬN (ALLOWED)<br/>Thực thi hành động thành công"]
+
+    classDef deny fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    classDef allow fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef decision fill:#fff8e1,stroke:#ffa000,stroke-width:1px;
+    class FINAL_DENY,IMPLICIT_DENY deny;
+    class FINAL_ALLOW allow;
+    class DENY_CHECK,SCP_CHECK,PB_CHECK,ALLOW_CHECK decision;
+  </div>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các mẫu câu hỏi kinh điển về IAM Advanced, SCPs và Organizations</span>
+        <span class="lang-en">Classic question patterns on Advanced IAM, SCPs, and Organizations</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 ĐIỀU KIỆN IAM CỐT LÕI (IAM CONDITIONS)</span>
+          <span class="lang-en">📌 CORE IAM CONDITION KEYS</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b><code>aws:PrincipalOrgID</code></b>: Giới hạn truy cập tài nguyên (S3 bucket, SQS) chỉ cho các thực thể thuộc về AWS Organization của bạn. Cực kỳ tối ưu khi số lượng account liên tục tăng.</li>
+            <li><b><code>aws:PrincipalOrgPaths</code></b>: Giới hạn truy cập cho một OU cụ thể trong tổ chức (ví dụ chỉ cho phép Prod OU).</li>
+            <li><b><code>aws:RequestedRegion</code></b>: Giới hạn các vùng địa lý AWS được phép tạo tài nguyên (áp dụng trong SCP).</li>
+            <li><b><code>aws:PrincipalArn</code></b>: So khớp ARN chính xác của thực thể gửi yêu cầu.</li>
+            <li><b><code>aws:SourceIp</code></b>: Giới hạn IP công khai được phép gọi API (lưu ý: không hoạt động với VPC Endpoints!).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 QUY TẮC VÀNG THI CỬ (GOLDEN RULES)</span>
+          <span class="lang-en">💡 GOLDEN EXAM RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>1 Account = 1 Bill:</b> Consolidated Billing chỉ có 1 hóa đơn tổng cho Management Account, nhưng chi phí từng account vẫn được bóc tách chi tiết qua AWS Cost Explorer và Cost &amp; Usage Reports (CUR).</li>
+            <li><b>Không bao giờ lưu credentials on-prem lên cloud:</b> Khi đề bài yêu cầu không được đồng bộ password hoặc copy Active Directory lên AWS &rarr; Chọn ngay <b>AD Connector</b>.</li>
+            <li><b>Developer tự do tạo IAM Roles:</b> Đề thi đề cập developers cần quyền tạo IAM role cho microservices nhưng cấm chiếm quyền admin &rarr; Chọn ngay <b>IAM Permission Boundary</b>.</li>
+            <li><b>Đăng nhập AWS bằng Okta/Azure AD:</b> Đề bài yêu cầu quản lý truy cập 50+ tài khoản AWS bằng tài khoản Okta công ty &rarr; Chọn ngay <b>AWS IAM Identity Center (AWS SSO)</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài giảng Udemy liên quan</span>
+        <span class="lang-en">Official AWS references and relevant Udemy lectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Giáo trình Udemy SAA-C03</span>
+        <span class="lang-en">🎓 Udemy SAA-C03 Syllabus</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 25: Identity and Access Management (IAM) - Advanced</b><br>
+            <span class="lang-vi">Toàn bộ 11 bài giảng về AWS Organizations, SCPs, Permission Boundaries &amp; IAM Identity Center.</span>
+            <span class="lang-en">All 11 lectures covering AWS Organizations, SCPs, Permission Boundaries &amp; IAM Identity Center.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS Organizations User Guide</b><br>
+            <span class="lang-vi">Cấu hình OUs, thiết lập Service Control Policies (SCPs) và quản lý Consolidated Billing.</span>
+            <span class="lang-en">Configuring OUs, implementing Service Control Policies (SCPs), and Consolidated Billing.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS IAM Identity Center User Guide</b><br>
+            <span class="lang-vi">Tích hợp IdP ngoài (Okta, Azure AD), phân bổ Permission Sets và quản lý Multi-Account access.</span>
+            <span class="lang-en">External IdP integration (Okta, Azure AD), Permission Sets provisioning, and Multi-Account access.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS Directory Service Administration Guide</b><br>
+            <span class="lang-vi">Thiết lập AWS Managed Microsoft AD và AD Connector kết nối On-Premises Active Directory.</span>
+            <span class="lang-en">Deploying AWS Managed Microsoft AD and AD Connector for on-premises AD integration.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>AWS Organizations &amp; SCP Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng ma trận so sánh chi tiết SCP vs IAM Policy vs Permission Boundary.</span>
+            <span class="lang-en">Comparison matrix: SCPs vs IAM Policies vs Permission Boundaries.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>Cross-Account Access Patterns</b><br>
+            <span class="lang-vi">Hướng dẫn thiết lập STS AssumeRole so với Resource-based Policy chi tiết cho SAA-C03.</span>
+            <span class="lang-en">Detailed guide to STS AssumeRole vs Resource-based Policies for SAA-C03.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

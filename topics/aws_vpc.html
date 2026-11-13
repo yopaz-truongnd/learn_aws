@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Networking — Virtual Private Cloud (VPC) — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 27 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Networking &amp; Content Delivery</div>
+  <h1>Networking — Virtual Private Cloud (VPC)</h1>
+  <p class="lang-vi">Mạng riêng ảo AWS toàn diện: Phân chia Subnet, Cổng Internet &amp; NAT Gateway, Tường lửa SG (Stateful) vs NACL (Stateless), VPC Endpoints, VPC Peering và Transit Gateway cho kỳ thi SAA-C03</p>
+  <p class="lang-en">Comprehensive AWS Virtual Networking: Subnetting, Internet &amp; NAT Gateways, Stateful SG vs Stateless NACL firewalls, VPC Endpoints, VPC Peering, and Transit Gateway for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 5 địa chỉ IP dành riêng trong Subnet</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Answer Mapping · 5 Reserved IP Addresses per Subnet</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — Security Group (Stateful) vs NACL (Stateless):</b> Security Group có trạng thái (Stateful) — nếu inbound cho phép thì outbound phản hồi tự động được cho phép bất kể outbound rule. Ngược lại, NACL <b>phi trạng thái (Stateless)</b> — bắt buộc phải mở CẢ 2: Inbound rule cho cổng dịch vụ (ví dụ port 80/443) <b>VÀ Outbound rule cho Ephemeral Ports (ports 1024-65535)</b> để gói tin phản hồi quay về!</span>
+          <span class="lang-en"><b>Trap 1 — Security Group (Stateful) vs NACL (Stateless):</b> Security Groups are stateful — return traffic is automatically allowed regardless of outbound rules. In contrast, NACLs are <b>stateless</b> — you must explicitly open BOTH: Inbound rules for the service port (e.g. 80/443) <b>AND Outbound rules for Ephemeral Ports (ports 1024-65535)</b> for return traffic!</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — NAT Gateway vs NAT Instance:</b> NAT Gateway là dịch vụ do AWS quản lý hoàn toàn, tự động mở rộng băng thông (lên đến 100 Gbps), độ sẵn sàng cao trong AZ, không cần gán Security Group, bắt buộc đặt ở <b>Public Subnet</b> và gán <b>Elastic IP</b>. NAT Instance là EC2 do người dùng tự quản lý, phải tự tắt Source/Destination Check, không tự scale và dễ thành điểm nghẽn đơn lẻ (SPOF).</span>
+          <span class="lang-en"><b>Trap 2 — NAT Gateway vs NAT Instance:</b> NAT Gateways are fully AWS-managed, auto-scale bandwidth (up to 100 Gbps), highly available per AZ, have no Security Group, and must reside in a <b>Public Subnet</b> with an <b>Elastic IP</b>. NAT Instances are self-managed EC2s requiring Source/Destination Check disabled, with no native HA.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — VPC Peering KHÔNG CÓ tính chất bắc cầu (Non-Transitive):</b> Nếu VPC A kết nối Peering với VPC B, và VPC B kết nối Peering với VPC C, thì <b>VPC A KHÔNG THỂ giao tiếp với VPC C</b> thông qua VPC B! Muốn kết nối hàng chục VPC hình sao (Hub-and-Spoke) có tính bắc cầu xuyên VPC và On-Premises &rarr; Bắt buộc dùng <b>AWS Transit Gateway</b>.</span>
+          <span class="lang-en"><b>Trap 3 — VPC Peering is NON-TRANSITIVE:</b> If VPC A peers with VPC B, and VPC B peers with VPC C, <b>VPC A CANNOT communicate with VPC C</b> through VPC B! To achieve transitive hub-and-spoke routing across dozens of VPCs and on-premises &rarr; You must use <b>AWS Transit Gateway</b>.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — Gateway Endpoint vs Interface Endpoint:</b> Gateway Endpoint hoàn toàn <b>MIỄN PHÍ</b>, hoạt động bằng cách sửa Route Table, và <b>CHỈ hỗ trợ 2 dịch vụ: Amazon S3 và DynamoDB</b>. Toàn bộ các dịch vụ AWS khác (SQS, SNS, Kinesis, CloudWatch, SSM) phải dùng <b>Interface Endpoint (AWS PrivateLink)</b> — tạo ENI với IP riêng trong Subnet và có tính phí theo giờ + dung lượng data.</span>
+          <span class="lang-en"><b>Trap 4 — Gateway Endpoint vs Interface Endpoint:</b> Gateway Endpoints are completely <b>FREE</b>, update Route Tables, and <b>ONLY support 2 services: Amazon S3 and DynamoDB</b>. All other AWS services (SQS, SNS, Kinesis, CloudWatch, SSM) must use <b>Interface Endpoints (AWS PrivateLink)</b> — creating an ENI with a private IP in your subnet, billed hourly + per GB processed.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Giải pháp kiến trúc AWS</span><span class="lang-en">AWS Architectural Solution</span></th>
+        <th style="width:35%"><span class="lang-vi">Lý do chọn &amp; Lưu ý kỹ thuật</span><span class="lang-en">Selection Reason &amp; Exam Trap</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Allow private EC2 to download OS updates without inbound internet access"</b></td>
+        <td><b>NAT Gateway in Public Subnet</b></td>
+        <td>
+          <span class="lang-vi">Gán Elastic IP; Route table của Private Subnet trỏ <code>0.0.0.0/0 &rarr; nat-gateway-id</code>.</span>
+          <span class="lang-en">Attach Elastic IP; Private Subnet route table points <code>0.0.0.0/0 &rarr; nat-gateway-id</code>.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Connect 50 VPCs and on-premises data center with transitive hub-and-spoke routing"</b></td>
+        <td><b>AWS Transit Gateway</b></td>
+        <td>
+          <span class="lang-vi">Đơn giản hóa topo mạng phức tạp, hỗ trợ multicast và kết nối VPN/Direct Connect.</span>
+          <span class="lang-en">Simplifies complex network topology, supports transitive routing, multicast &amp; Direct Connect.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Access Amazon S3 privately from private subnet at lowest cost without Internet Gateway"</b></td>
+        <td><b>Gateway VPC Endpoint for S3</b></td>
+        <td>
+          <span class="lang-vi">Miễn phí 100%, không cần PrivateLink; tự động cập nhật Route Table trong VPC.</span>
+          <span class="lang-en">100% free, no PrivateLink costs; directly updates Route Tables in the VPC.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Block a specific malicious IP address from attacking an entire subnet"</b></td>
+        <td><b>Network ACL (NACL) Deny Rule</b></td>
+        <td>
+          <span class="lang-vi">Security Group không thể Deny cụ thể (chỉ có Allow); chỉ NACL mới có quy tắc Deny rõ ràng.</span>
+          <span class="lang-en">Security Groups cannot explicitly Deny (allow-only); only NACLs support explicit Deny rules.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Capture IP traffic metadata for security investigation and network troubleshooting"</b></td>
+        <td><b>VPC Flow Logs</b></td>
+        <td>
+          <span class="lang-vi">Ghi log chấp nhận/từ chối (ACCEPT/REJECT) gửi về CloudWatch Logs hoặc S3 bucket.</span>
+          <span class="lang-en">Captures ACCEPT/REJECT metadata sent to CloudWatch Logs or Amazon S3 buckets.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"SSH into private EC2 instances without public IP, bastion host, or internet gateway"</b></td>
+        <td><b>EC2 Instance Connect Endpoint or SSM Session Manager</b></td>
+        <td>
+          <span class="lang-vi">Bảo mật tối đa, không cần mở port 22 ra Internet, quản lý qua IAM.</span>
+          <span class="lang-en">Maximum security, no port 22 exposed to internet, governed via IAM.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"5 reserved IP addresses in a CIDR block"</b></td>
+        <td><b>First 4 IPs and Last 1 IP reserved by AWS</b></td>
+        <td>
+          <span class="lang-vi">Ví dụ subnet <code>10.0.0.0/24</code> có 256 IPs &rarr; Chỉ có <b>251 IPs khả dụng</b>.</span>
+          <span class="lang-en">E.g. subnet <code>10.0.0.0/24</code> has 256 IPs &rarr; Only <b>251 usable IPs</b>.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE: COMPLETE VPC TOPOLOGY -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🌐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Mô hình Kiến trúc VPC Hoàn chỉnh (Complete VPC Topology)</span>
+        <span class="lang-en">Complete Multi-Tier VPC Architectural Blueprint</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân tách Public Subnet, Private Subnet, Database Subnet, NAT Gateway và VPC Endpoints</span>
+        <span class="lang-en">Separation of Public, Private, Database Subnets, NAT Gateways, and VPC Endpoints</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    INTERNET(("Internet công cộng<br/>(Public Clients)")) <--> IGW["Internet Gateway (IGW)"]
+
+    subgraph VPC["AWS VPC: 10.0.0.0/16"]
+        IGW <--> RT_PUB["Public Route Table<br/>(0.0.0.0/0 &rarr; IGW)"]
+
+        subgraph PublicSubnet["Public Subnet (10.0.1.0/24)"]
+            ALB["Application Load Balancer (ALB)"]
+            NAT["NAT Gateway (EIP: 54.x.x.x)"]
+            BASTION["Bastion Host (Optional)"]
+        end
+
+        RT_PUB --- PublicSubnet
+
+        subgraph PrivateSubnet["Private Subnet (10.0.2.0/24)"]
+            APP1["EC2 Backend Instance 1"]
+            APP2["EC2 Backend Instance 2"]
+            VPCE_INT["Interface Endpoint (ENI)<br/>SQS / SSM / Kinesis"]
+        end
+
+        subgraph DBSubnet["Isolated Database Subnet (10.0.3.0/24)"]
+            RDS_PRI["Amazon RDS (Primary)"]
+        end
+
+        RT_PRIV["Private Route Table<br/>(0.0.0.0/0 &rarr; NAT Gateway)"] --- PrivateSubnet
+        RT_DB["Database Route Table<br/>(Chỉ có local route 10.0.0.0/16)"] --- DBSubnet
+
+        NAT <-->|Outbound Traffic| RT_PRIV
+        ALB -->|Forward HTTP:8080| APP1
+        ALB -->|Forward HTTP:8080| APP2
+        APP1 -->|SQL:3306| RDS_PRI
+        APP2 -->|SQL:3306| RDS_PRI
+
+        S3_GW["Gateway Endpoint<br/>(com.amazonaws.region.s3)"]
+        RT_PRIV -.->|Traffic S3 nội bộ| S3_GW
+    end
+
+    S3_GW <--> S3["Amazon S3 Bucket"]
+
+    classDef pub fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    classDef priv fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    classDef db fill:#fff3e0,stroke:#f57c00,stroke-width:1px;
+    classDef igw fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    class PublicSubnet pub;
+    class PrivateSubnet priv;
+    class DBSubnet db;
+    class IGW,NAT,S3_GW igw;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: VPC FUNDAMENTALS & SUBNETTING -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📐</div>
+    <div>
+      <div class="ct">1. VPC Fundamentals &amp; 5 Reserved IPs</div>
+      <div class="cs">
+        <span class="lang-vi">Khối mạng CIDR, dải địa chỉ riêng RFC 1918 và quy tắc địa chỉ IP</span>
+        <span class="lang-en">CIDR blocks, RFC 1918 private ranges &amp; IP reservation rules</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Giới hạn CIDR:</b><br>
+    <span class="lang-vi">Mạng riêng ảo cô lập theo từng AWS Region. Kích thước CIDR cho phép từ <b><code>/16</code> (65,536 IPs)</b> đến <b><code>/28</code> (16 IPs)</b>. Dải IP riêng chuẩn RFC 1918: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>. Không thể sửa CIDR chính sau khi tạo, nhưng có thể thêm Secondary CIDR.</span>
+    <span class="lang-en">Logically isolated virtual network per AWS Region. CIDR prefix size allowed between <b><code>/16</code> (65,536 IPs)</b> and <b><code>/28</code> (16 IPs)</b>. Standard RFC 1918 ranges: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>. Primary CIDR cannot be modified, but secondary CIDRs can be added.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>5 địa chỉ IP bị AWS giữ lại trong mỗi Subnet:</b><br>
+    <span class="lang-vi">Với ví dụ Subnet <code>10.0.0.0/24</code> (tổng 256 IPs):<br>1. <code>10.0.0.0</code>: Network Address (Địa chỉ mạng).<br>2. <code>10.0.0.1</code>: VPC Router (Dành cho bộ định tuyến VPC).<br>3. <code>10.0.0.2</code>: AWS DNS Server (AmazonProvidedDNS = VPC base + 2).<br>4. <code>10.0.0.3</code>: AWS Future Use (Dành cho tính năng tương lai).<br>5. <code>10.0.0.255</code>: Network Broadcast Address (AWS không hỗ trợ broadcast, giữ lại).<br>&rarr; <b>Số IP khả dụng = Tổng số IP - 5</b>.</span>
+    <span class="lang-en">For a <code>10.0.0.0/24</code> subnet (256 total IPs):<br>1. <code>10.0.0.0</code>: Network address.<br>2. <code>10.0.0.1</code>: VPC router.<br>3. <code>10.0.0.2</code>: AWS DNS server (VPC base + 2).<br>4. <code>10.0.0.3</code>: AWS future use.<br>5. <code>10.0.0.255</code>: Network broadcast address (not supported, reserved).<br>&rarr; <b>Usable IPs = Total IPs - 5</b>.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Internet Gateway (IGW) vs Route Table:</b><br>
+    <span class="lang-vi">Một VPC chỉ có thể gắn tối đa <b>1 Internet Gateway</b>. Subnet trở thành <b>Public Subnet</b> khi và chỉ khi Route Table gắn với nó có route dẫn <code>0.0.0.0/0 &rarr; igw-xxxx</code>.</span>
+    <span class="lang-en">A VPC can attach at most <b>1 Internet Gateway</b>. A subnet becomes a <b>Public Subnet</b> if and only if its associated Route Table contains a default route pointing <code>0.0.0.0/0 &rarr; igw-xxxx</code>.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề thi hỏi: Cần 29 IP cho các máy chủ, chọn subnet mask nào? &rarr; Cần 29 + 5 = 34 IPs &rarr; CIDR <code>/27</code> (32 IPs) không đủ &rarr; <b>Bắt buộc chọn <code>/26</code> (64 IPs)</b>!</span>
+    <span class="lang-en">⚠️ Exam calculation trap: Need 29 IPs for instances &rarr; Need 29 + 5 = 34 IPs &rarr; <code>/27</code> (32 IPs) is not enough &rarr; <b>Must choose <code>/26</code> (64 IPs)</b>!</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: NAT GATEWAY VS NAT INSTANCE -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔄</div>
+    <div>
+      <div class="ct">2. NAT Gateway vs NAT Instance</div>
+      <div class="cs">
+        <span class="lang-vi">Giải pháp cho phép máy chủ trong Private Subnet đi Internet</span>
+        <span class="lang-en">Outbound internet connectivity for private subnets</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Mục đích:</b><br>
+    <span class="lang-vi">Cho phép các máy chủ trong Private Subnet kết nối outbound ra ngoài Internet (để tải updates, patches, OS packages) nhưng <b>ngăn chặn hoàn toàn các kết nối inbound từ Internet</b> vào các máy chủ này.</span>
+    <span class="lang-en">Allows instances in private subnets to initiate outbound connections to the internet (for software patches, updates) while <b>blocking unsolicited inbound connections from the internet</b>.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Vị trí đặt &amp; Cấu hình Định tuyến:</b><br>
+    <span class="lang-vi">Bắt buộc đặt NAT Gateway trong <b>Public Subnet</b> và gán 1 địa chỉ <b>Elastic IP (EIP)</b> công khai. Trong Route Table của Private Subnet, thêm rule: <code>Destination: 0.0.0.0/0 &rarr; Target: nat-xxxx</code>.</span>
+    <span class="lang-en">Must be deployed into a <b>Public Subnet</b> with an attached <b>Elastic IP (EIP)</b>. In the Private Subnet route table, add route: <code>Destination: 0.0.0.0/0 &rarr; Target: nat-xxxx</code>.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Độ sẵn sàng cao (High Availability across AZs):</b><br>
+    <span class="lang-vi">NAT Gateway có tính sẵn sàng cao <b>trong nội bộ 1 Availability Zone</b>. Nếu AZ đó sập, NAT Gateway sập theo. Để đạt kiến trúc High Availability đa AZ chống chịu thảm họa: <b>Tạo 1 NAT Gateway tại MỖI Availability Zone</b> và định tuyến private subnet tương ứng vào NAT Gateway của cùng AZ đó!</span>
+    <span class="lang-en">NAT Gateways are highly available <b>within a single AZ</b>. If the AZ fails, the NAT Gateway fails. For multi-AZ fault tolerance: <b>Deploy 1 NAT Gateway in EACH Availability Zone</b> and route each AZ's private subnets to their local AZ's NAT Gateway!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ NAT Gateway <b>không cần Security Group</b> (bản thân nó quản lý trạng thái).<br>⚠️ NAT Instance yêu cầu phải tắt <b>Source/Destination Check</b> trên EC2 instance, nếu không gói tin NAT sẽ bị loại bỏ ngay lập tức.</span>
+    <span class="lang-en">⚠️ NAT Gateways <b>do not use Security Groups</b> (managed internally).<br>⚠️ NAT Instances require disabling the <b>Source/Destination Check</b> attribute on the EC2 instance, otherwise packet forwarding fails.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: SECURITY GROUPS VS NACLS -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">🛡️</div>
+    <div>
+      <div class="ct">3. Security Groups (Stateful) vs NACLs (Stateless)</div>
+      <div class="cs">
+        <span class="lang-vi">Hai lớp tường lửa phòng thủ chuyên sâu trong mạng AWS</span>
+        <span class="lang-en">Two-tier defense-in-depth firewalls in AWS VPC</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Phân định cấp độ bảo vệ:</b><br>
+    <span class="lang-vi">1. <b>Security Group (SG):</b> Tường lửa ảo cấp độ <b>Network Interface (ENI) / Instance</b>.<br>2. <b>Network Access Control List (NACL):</b> Tường lửa ảo cấp độ <b>Subnet</b> kiểm soát toàn bộ lưu lượng ra/vào subnet.</span>
+    <span class="lang-en">1. <b>Security Group (SG):</b> Virtual firewall operating at the <b>Network Interface (ENI) / Instance level</b>.<br>2. <b>Network ACL (NACL):</b> Subnet-level firewall controlling all inbound and outbound subnet traffic.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Cơ chế Trạng thái (Statefulness):</b><br>
+    <span class="lang-vi">1. <b>Security Group is Stateful:</b> Nếu request vào được Inbound rule cho phép, gói tin phản hồi (response) sẽ <b>tự động được cho phép đi ra Outbound</b> bất kể luật outbound thế nào.<br>2. <b>NACL is Stateless:</b> Không tự nhớ trạng thái. Phải định nghĩa luật Inbound VÀ luật Outbound độc lập. Gói tin phản hồi từ web server bắt buộc cần Outbound rule mở cho <b>Ephemeral Ports (1024-65535)</b>!</span>
+    <span class="lang-en">1. <b>Security Group is Stateful:</b> If traffic passes an inbound rule, return response traffic is <b>automatically allowed outbound</b> regardless of outbound rules.<br>2. <b>NACL is Stateless:</b> Remembers nothing. Both inbound AND outbound rules must be evaluated. Return web responses require opening <b>Ephemeral Ports (1024-65535)</b> on outbound!</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Thứ tự đánh giá &amp; Luật Deny:</b><br>
+    <span class="lang-vi">1. <b>SG:</b> Không có thứ tự số; toàn bộ rules được đánh giá đồng thời; <b>CHỈ CÓ ALLOW</b> (không thể tạo Deny rule).<br>2. <b>NACL:</b> Đánh giá theo số thứ tự từ thấp đến cao (1 đến 32766); gặp rule đầu tiên khớp sẽ áp dụng ngay; <b>hỗ trợ cả ALLOW và DENY rõ ràng</b>.</span>
+    <span class="lang-en">1. <b>SG:</b> No numerical ordering; all rules evaluated simultaneously; <b>ALLOW RULES ONLY</b> (no explicit deny).<br>2. <b>NACL:</b> Evaluated in numerical order from lowest to highest (1 to 32766); first match wins; <b>supports explicit ALLOW and DENY</b>.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Muốn chặn 1 địa chỉ IP độc hại cụ thể: <b>Bắt buộc dùng NACL Deny Rule</b> (Security Group không làm được điều này).<br>⚠️ Khi tạo Custom NACL mới, mặc định <b>CHẶN TOÀN BỘ</b> lưu lượng (Deny All Inbound &amp; Outbound) cho đến khi thêm rule!</span>
+    <span class="lang-en">⚠️ To block a specific malicious IP address: <b>Must use a NACL Deny Rule</b> (Security Groups cannot deny specific IPs).<br>⚠️ When creating a Custom NACL, it defaults to <b>DENY ALL</b> inbound and outbound traffic until rules are added!</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: VPC ENDPOINTS & PRIVATELINK -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🔌</div>
+    <div>
+      <div class="ct">4. VPC Endpoints: Gateway vs Interface (PrivateLink)</div>
+      <div class="cs">
+        <span class="lang-vi">Truy cập dịch vụ AWS an toàn qua đường mạng riêng không qua Internet</span>
+        <span class="lang-en">Private, secure connectivity to AWS services without traversing Internet</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Lợi ích:</b><br>
+    <span class="lang-vi">Cho phép các máy chủ trong Private Subnet giao tiếp với các dịch vụ AWS được hỗ trợ thông qua đường truyền mạng riêng bảo mật của AWS mà <b>không cần Internet Gateway, NAT Gateway hay VPN</b>. Lưu lượng hoàn toàn nằm trong hạ tầng AWS.</span>
+    <span class="lang-en">Enables private subnet instances to connect to supported AWS services privately over the AWS internal network fabric <b>without needing an IGW, NAT Gateway, or VPN</b>. Traffic never traverses public internet.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Phân biệt Gateway Endpoint vs Interface Endpoint:</b><br>
+    <span class="lang-vi">1. <b>Gateway Endpoint:</b> Hoàn toàn <b>MIỄN PHÍ</b>. Hoạt động như một đích đến trong Route Table (Target: <code>vpce-xxxx</code>). <b>Chỉ hỗ trợ 2 dịch vụ: Amazon S3 và Amazon DynamoDB</b>.<br>2. <b>Interface Endpoint (PrivateLink):</b> Có tính phí ($0.01/giờ + data). Tạo ra một Elastic Network Interface (ENI) với địa chỉ IP riêng trong Subnet của bạn. Hỗ trợ hầu hết các dịch vụ AWS còn lại (SQS, SNS, Kinesis, Secrets Manager, CloudWatch...).</span>
+    <span class="lang-en">1. <b>Gateway Endpoint:</b> Completely <b>FREE</b>. Acts as a route table entry (Target: <code>vpce-xxxx</code>). <b>Only supports 2 services: Amazon S3 and Amazon DynamoDB</b>.<br>2. <b>Interface Endpoint (PrivateLink):</b> Hourly + data processing fees. Provisions an ENI with a private IP in your subnet. Supports nearly all other AWS services (SQS, SNS, Kinesis, Secrets Manager, CloudWatch...).</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Hạn chế kết nối từ On-Premises:</b><br>
+    <span class="lang-vi">Gateway Endpoints <b>KHÔNG THỂ truy cập được từ On-Premises</b> qua Direct Connect hay Site-to-Site VPN (vì Route Table chỉ định tuyến trong VPC). Ngược lại, <b>Interface Endpoints có thể truy cập được từ On-Premises</b> vì nó có địa chỉ IP riêng nội bộ!</span>
+    <span class="lang-en">Gateway Endpoints <b>CANNOT be accessed from on-premises</b> over Direct Connect or VPN (route tables do not extend on-prem). In contrast, <b>Interface Endpoints CAN be accessed from on-prem</b> via private IPs!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề thi hỏi: Truy cập S3 riêng tư từ On-Premise qua Direct Connect &rarr; <b>Bắt buộc dùng S3 Interface Endpoint</b> (không thể dùng Gateway Endpoint).<br>⚠️ Truy cập S3 từ Private Subnet trong VPC với chi phí thấp nhất &rarr; <b>Chọn S3 Gateway Endpoint</b> (miễn phí).</span>
+    <span class="lang-en">⚠️ Question asks: Private S3 access from on-premise over Direct Connect &rarr; <b>Must use S3 Interface Endpoint</b> (Gateway Endpoint cannot bridge on-prem).<br>⚠️ Private S3 access from EC2 inside VPC at lowest cost &rarr; <b>Choose S3 Gateway Endpoint</b> (free).</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: SECURITY GROUPS VS NACLS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh: Security Groups vs Network ACLs (NACLs)</span>
+        <span class="lang-en">Comparison Matrix: Security Groups vs Network ACLs (NACLs)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bảng đối chiếu toàn diện 8 điểm khác biệt then chốt thường xuyên xuất hiện trong đề thi</span>
+        <span class="lang-en">Comprehensive 8-point comparison matrix frequently tested in the SAA-C03 exam</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:25%"><span class="lang-vi">Đặc tính / Tiêu chí</span><span class="lang-en">Feature / Criteria</span></th>
+        <th style="width:37%"><b>Security Group (SG)</b></th>
+        <th style="width:38%"><b>Network ACL (NACL)</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Phạm vi hoạt động (Scope)</b></td>
+        <td>Cấp độ <b>Network Interface (ENI) / Instance</b></td>
+        <td>Cấp độ <b>Subnet</b> (áp dụng cho mọi instance trong subnet)</td>
+      </tr>
+      <tr>
+        <td><b>Cơ chế Trạng thái (Statefulness)</b></td>
+        <td><b>Stateful (Có trạng thái)</b>: Inbound mở thì Outbound phản hồi tự động mở</td>
+        <td><b>Stateless (Phi trạng thái)</b>: Inbound và Outbound phải cấu hình độc lập</td>
+      </tr>
+      <tr>
+        <td><b>Loại quy tắc hỗ trợ</b></td>
+        <td><b>CHỈ CÓ ALLOW</b> (Mặc định Deny All nếu không có rule Allow)</td>
+        <td>Hỗ trợ cả <b>ALLOW và DENY rõ ràng</b></td>
+      </tr>
+      <tr>
+        <td><b>Thứ tự đánh giá quy tắc</b></td>
+        <td>Không có số thứ tự; <b>Đánh giá tất cả rules</b> trước khi quyết định</td>
+        <td><b>Đánh giá theo số thứ tự (1 - 32766)</b>; gặp rule khớp đầu tiên là dừng</td>
+      </tr>
+      <tr>
+        <td><b>Cần mở Ephemeral Ports?</b></td>
+        <td><b>KHÔNG</b> (nhờ cơ chế stateful tự động cho phép gói tin quay về)</td>
+        <td><b>CÓ</b> (Outbound bắt buộc mở cổng 1024-65535 cho traffic web phản hồi)</td>
+      </tr>
+      <tr>
+        <td><b>Hành vi mặc định khi tạo mới</b></td>
+        <td>Inbound: Deny All · Outbound: Allow All</td>
+        <td>Custom NACL: Inbound Deny All · Outbound Deny All</td>
+      </tr>
+      <tr>
+        <td><b>Tham chiếu Security Group khác</b></td>
+        <td><b>ĐƯỢC HỖ TRỢ</b> (ví dụ: ALB SG cho phép EC2 SG trên port 8080)</td>
+        <td><b>KHÔNG HỖ TRỢ</b> (chỉ chấp nhận dải IP CIDR cụ thể)</td>
+      </tr>
+      <tr>
+        <td><b>Use Case thi cử cốt lõi</b></td>
+        <td>Kiểm soát truy cập giữa các tầng kiến trúc (ALB &rarr; App &rarr; DB)</td>
+        <td>Chặn dải IP hacker độc hại cụ thể; tạo DMZ subnet phòng thủ vòng ngoài</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- COMPARISON MATRIX: TRANSIT GATEWAY VS VPC PEERING -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🔀</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh: VPC Peering vs AWS Transit Gateway</span>
+        <span class="lang-en">Comparison Matrix: VPC Peering vs AWS Transit Gateway</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Giải pháp kết nối liên VPC quy mô nhỏ vs quy mô doanh nghiệp lớn</span>
+        <span class="lang-en">Inter-VPC connectivity for small scale vs enterprise scale architectures</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:25%"><span class="lang-vi">Đặc tính / Tiêu chí</span><span class="lang-en">Feature / Criteria</span></th>
+        <th style="width:37%"><b>VPC Peering</b></th>
+        <th style="width:38%"><b>AWS Transit Gateway (TGW)</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Topo kiến trúc (Topology)</b></td>
+        <td>Điểm-tới-điểm (Point-to-point mesh). $N(N-1)/2$ kết nối</td>
+        <td>Mô hình hình sao tập trung (Hub-and-Spoke architecture)</td>
+      </tr>
+      <tr>
+        <td><b>Tính chất bắc cầu (Transitive)</b></td>
+        <td><b>KHÔNG BẮC CẦU (Non-transitive)</b>. A-B và B-C &ne; A-C</td>
+        <td><b>HỖ TRỢ BẮC CẦU (Transitive Routing)</b> đầy đủ</td>
+      </tr>
+      <tr>
+        <td><b>Quy mô kết nối</b></td>
+        <td>Phù hợp cho ít VPCs (2 đến 5 VPCs kết nối trực tiếp)</td>
+        <td>Phù hợp hàng trăm đến hàng ngàn VPCs và On-Premises</td>
+      </tr>
+      <tr>
+        <td><b>Chi phí (Pricing)</b></td>
+        <td><b>Miễn phí thiết lập</b> (chỉ tính tiền Data Transfer inter-AZ/Region)</td>
+        <td>Có phí theo giờ mỗi Attachment + phí Data Processing trên mỗi GB</td>
+      </tr>
+      <tr>
+        <td><b>Hỗ trợ Multicast &amp; Direct Connect</b></td>
+        <td>Không hỗ trợ Multicast; không chia sẻ Direct Connect</td>
+        <td><b>Hỗ trợ IP Multicast</b> và chia sẻ AWS Direct Connect / VPN tập trung</td>
+      </tr>
+      <tr>
+        <td><b>Điều kiện dải CIDR</b></td>
+        <td>Hai VPC <b>tuyệt đối không được trùng dải IP CIDR</b></td>
+        <td>Quản lý định tuyến linh hoạt qua nhiều Transit Gateway Route Tables</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các nguyên tắc cốt lõi về Mạng VPC và Xử lý sự cố kết nối</span>
+        <span class="lang-en">Core principles on VPC Networking &amp; Connectivity Troubleshooting</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 BẪY VPC FLOW LOGS &amp; XỬ LÝ SỰ CỐ</span>
+          <span class="lang-en">📌 VPC FLOW LOGS &amp; TROUBLESHOOTING TRAPS</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Phân tích REJECT trong Flow Logs:</b> Nếu thấy <code>REJECT</code> ở Inbound &rarr; Thường do Security Group hoặc NACL Inbound chặn. Nếu thấy <code>ACCEPT</code> ở Inbound nhưng client bị timeout &rarr; Do <b>NACL Outbound chặn Ephemeral Ports</b>!</li>
+            <li><b>Dữ liệu Flow Logs KHÔNG ghi nhận:</b> Truy vấn DHCP, liên lạc với <code>169.254.169.254</code> (Instance Metadata Service), traffic DNS của Amazon, và lưu lượng xác thực bản quyền Windows.</li>
+            <li><b>Reachability Analyzer:</b> Công cụ kiểm tra cấu hình mạng tĩnh để chẩn đoán xem 2 điểm (EC2 &rarr; IGW/ALB) có đường thông hay không mà không cần gửi gói tin thực tế.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 QUY TẮC VÀNG THIẾT KẾ MẠNG SAA-C03</span>
+          <span class="lang-en">💡 GOLDEN NETWORK DESIGN RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Tam giác định tuyến Public Subnet:</b> Một máy chủ trong public subnet muốn ra được Internet phải có đủ 3 yếu tố: <b>1. Public IPv4/Elastic IP</b>; <b>2. Route Table có <code>0.0.0.0/0 &rarr; IGW</code></b>; <b>3. Security Group &amp; NACL mở port tương ứng</b>.</li>
+            <li><b>Bastion Host trong Public Subnet:</b> Dùng để nhảy (jump box) SSH/RDP vào máy chủ trong Private Subnet. Security Group của Private Subnet chỉ cho phép SSH từ SG của Bastion Host.</li>
+            <li><b>Không bao giờ trùng lặp CIDR:</b> Khi lập kế hoạch VPC Peering, Direct Connect hoặc VPN, <b>tuyệt đối không để dải CIDR trùng lặp (Overlapping CIDR)</b>; nếu trùng lặp bắt buộc phải dùng Private NAT Gateway hoặc PrivateLink.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài giảng Udemy liên quan</span>
+        <span class="lang-en">Official AWS references and relevant Udemy lectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Giáo trình Udemy SAA-C03</span>
+        <span class="lang-en">🎓 Udemy SAA-C03 Syllabus</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 27: Networking - Virtual Private Cloud (VPC)</b><br>
+            <span class="lang-vi">Toàn bộ 39 bài giảng lý thuyết và thực hành cấu hình VPC, Subnets, NAT Gateway &amp; Endpoints.</span>
+            <span class="lang-en">All 39 theoretical and hands-on lectures on VPC, Subnets, NAT Gateways &amp; Endpoints.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>Amazon VPC User Guide</b><br>
+            <span class="lang-vi">Chi tiết cấu hình CIDR, Route Tables, NAT Gateways và Network ACLs.</span>
+            <span class="lang-en">Comprehensive guide on CIDR sizing, Route Tables, NAT Gateways, and Network ACLs.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS Transit Gateway Guide</b><br>
+            <span class="lang-vi">Kiến trúc kết nối Hub-and-Spoke cho mô hình đa tài khoản và hybrid-cloud.</span>
+            <span class="lang-en">Hub-and-spoke transit architecture for multi-account and hybrid-cloud deployments.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>AWS PrivateLink &amp; VPC Endpoints Guide</b><br>
+            <span class="lang-vi">Thiết lập kết nối an toàn tới các dịch vụ AWS và ứng dụng nội bộ qua ENI.</span>
+            <span class="lang-en">Configuring secure connectivity to AWS services and SaaS applications via ENIs.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>Security Group vs NACL Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng so sánh chi tiết và cách xử lý sự cố Ephemeral Ports trong phòng thi.</span>
+            <span class="lang-en">Detailed comparison and Ephemeral Ports troubleshooting guide for the exam.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>AWS VPC Networking Cheat Sheet</b><br>
+            <span class="lang-vi">Tổng hợp kiến trúc VPC Peering, Gateway Endpoints vs Interface Endpoints và Transit Gateway.</span>
+            <span class="lang-en">Complete architectural cheat sheet covering VPC Peering, Endpoints, and Transit Gateway.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

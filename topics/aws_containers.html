@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Containers — ECS, Fargate, ECR &amp; EKS — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="aws_ec2.html" class="nav-back" style="background:var(--blb);color:var(--bl)">
+      <span class="lang-vi">💻 Section 5 &amp; 6: EC2 →</span>
+      <span class="lang-en">💻 Section 5 &amp; 6: EC2 →</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 19 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Containers &amp; Compute</div>
+  <h1>AWS Containers — ECS, Fargate, ECR &amp; EKS</h1>
+  <p class="lang-vi">Kiến trúc điều phối container Docker, Nền tảng Serverless Fargate, Kho lưu trữ ảnh ECR và Kubernetes trên AWS cho kỳ thi SAA-C03</p>
+  <p class="lang-en">Docker container orchestration architectures, Serverless Fargate, ECR image registry, and managed Kubernetes on AWS for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 6 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · 6 Critical Points to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 6 Bẫy đề thi cốt lõi về Container</span>
+          <span class="lang-en">🔴 6 Core Container Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>Task Role vs Task Execution Role (Bẫy số 1):</b><br>
+          &nbsp;&nbsp;- <i>Task Execution Role:</i> Dành cho ECS Agent (kéo ảnh từ ECR, ghi log sang CloudWatch, lấy mật khẩu từ Secrets Manager).<br>
+          &nbsp;&nbsp;- <i>Task Role:</i> Dành cho chính mã ứng dụng bên trong container (gọi S3, DynamoDB, SQS).<br>
+          • <b>Serverless Containers = AWS Fargate:</b> Không cần quản lý máy chủ EC2, không vá lỗi OS, chỉ cần chỉ định vCPU và RAM, trả tiền theo giây.<br>
+          • <b>Dynamic Port Mapping = ALB:</b> Khi chạy nhiều bản sao container trên cùng 1 máy chủ EC2, đặt <code>hostPort: 0</code> và kết nối qua <b>Application Load Balancer</b>.<br>
+          • <b>Lưu trữ dùng chung đa AZ cho Containers = Amazon EFS:</b> Cả ECS EC2 và Fargate đều hỗ trợ mount trực tiếp EFS volume để chia sẻ dữ liệu đọc/ghi đồng thời.<br>
+          • <b>EKS vs ECS:</b> Chọn <b>Amazon EKS</b> khi doanh nghiệp đã có sẵn hệ sinh thái Kubernetes on-premise hoặc muốn di chuyển đa đám mây (Cloud-agnostic). Chọn <b>ECS</b> khi muốn tích hợp sâu và đơn giản với AWS.<br>
+          • <b>AWS App Runner:</b> Dành cho ứng dụng web container đơn giản, hoàn toàn không cần kiến thức về cấu hình cụm ECS/EKS hay VPC phức tạp.
+        </span>
+        <span class="lang-en">
+          • <b>Task Role vs Task Execution Role (#1 Trap):</b><br>
+          &nbsp;&nbsp;- <i>Task Execution Role:</i> For the ECS Agent itself (pulling image from ECR, sending logs to CloudWatch, fetching secrets from Secrets Manager).<br>
+          &nbsp;&nbsp;- <i>Task Role:</i> For application code running inside the container (calling S3, DynamoDB, SQS).<br>
+          • <b>Serverless Containers = AWS Fargate:</b> Zero EC2 provisioning, zero OS patching; simply specify vCPU/RAM and pay per second.<br>
+          • <b>Dynamic Port Mapping = ALB:</b> Running multiple container replicas on a single EC2 host requires <code>hostPort: 0</code> mapped via <b>Application Load Balancer</b>.<br>
+          • <b>Multi-AZ Shared Storage for Containers = Amazon EFS:</b> Both ECS EC2 and Fargate natively mount EFS volumes for shared multi-AZ read/write persistence.<br>
+          • <b>EKS vs ECS:</b> Choose <b>Amazon EKS</b> when migrating existing Kubernetes workloads or requiring cloud-agnostic portability. Choose <b>ECS</b> for simplicity and native AWS integration.<br>
+          • <b>AWS App Runner:</b> Simplest container web runner requiring zero ECS/EKS cluster or VPC orchestration knowledge.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi SAA-C03</span>
+              <span class="lang-en">Exam Scenario / Keyword Pattern</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Core Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Chạy ứng dụng container Docker không muốn quản lý, cấp phát máy chủ hay vá lỗi OS</span>
+              <span class="lang-en">Run Docker containers with zero server provisioning, infrastructure management, or OS patching</span>
+            </td>
+            <td><span class="kw-target">AWS Fargate</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Container cần quyền gọi API DynamoDB và S3 mà không lưu trữ Access Keys trong code</span>
+              <span class="lang-en">Containers need permissions to access DynamoDB and S3 without hardcoding access keys</span>
+            </td>
+            <td><span class="kw-target">ECS Task Role</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">ECS Agent không thể kéo image từ Amazon ECR riêng tư hoặc không ghi được CloudWatch Logs</span>
+              <span class="lang-en">ECS Agent fails to pull private images from ECR or write logs to CloudWatch</span>
+            </td>
+            <td><span class="kw-target">ECS Task Execution Role</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Nhiều container task chạy trên Fargate ở các AZ khác nhau cần chia sẻ chung một ổ đĩa đọc/ghi liên tục</span>
+              <span class="lang-en">Multiple Fargate container tasks across different AZs need shared persistent read/write storage</span>
+            </td>
+            <td><span class="kw-target">Amazon EFS Volume</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Doanh nghiệp chuyển dịch các cụm Kubernetes mã nguồn mở có sẵn từ on-premise lên AWS</span>
+              <span class="lang-en">Enterprise migrating existing open-source Kubernetes clusters from on-premise to AWS</span>
+            </td>
+            <td><span class="kw-target">Amazon EKS</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Lưu trữ hình ảnh Docker bảo mật, quét mã độc lỗ hổng tự động và phân quyền bằng IAM</span>
+              <span class="lang-en">Secure Docker image repository with automatic vulnerability scanning and IAM-based access</span>
+            </td>
+            <td><span class="kw-target">Amazon ECR (Elastic Container Registry)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 0. TÓM TẮT NHANH DỊCH VỤ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 19 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 19 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi: Là gì (Xanh dương) · Dùng khi nào (Xanh lá) · Khác gì (Cam) · Bẫy thi (Đỏ)</span>
+        <span class="lang-en">4 core exam criteria: Definition (Blue) · When to use (Green) · Differences (Amber) · Traps &amp; Keywords (Red)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- COL 1: ECS EC2 Launch Type -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💻 1. ECS (EC2 Launch Type)</span>
+        <span class="lang-en">💻 1. ECS (EC2 Launch Type)</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Mô hình chạy container ECS trên một cụm máy chủ Amazon EC2 do khách hàng tự quản lý (tự chọn AMI, loại máy chủ, cấu hình ổ đĩa EBS và mạng VPC).</p>
+        <p class="lang-en">Running ECS containers on a cluster of Amazon EC2 instances managed by the user (custom AMIs, instance types, EBS volumes, and VPC network configuration).</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi cần tối ưu chi phí tối đa bằng cách tận dụng <b>EC2 Reserved Instances / Savings Plans</b> hoặc <b>Spot Instances</b>, cần can thiệp quyền root hệ điều hành máy chủ chủ, hoặc cần loại instance đặc thù (GPU, ARM Graviton).</p>
+        <p class="lang-en">When optimizing costs with <b>Reserved Instances / Savings Plans</b> or <b>Spot Instances</b>, requiring host OS root access, or needing specialized hardware instances (GPU, ARM Graviton).</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Bạn phải tự cấu hình Auto Scaling cho cụm EC2 (ECS Capacity Providers) và chịu trách nhiệm bảo trì, vá lỗi hệ điều hành. Trả tiền cho toàn bộ máy chủ EC2 kể cả khi container không chạy hết dung lượng.</p>
+        <p class="lang-en">Requires managing underlying EC2 Auto Scaling (Capacity Providers) and OS patching. Billed for the provisioned EC2 instances regardless of actual container utilization.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Muốn chạy nhiều container map cùng port trên 1 EC2 &rarr; Phải dùng <b>Dynamic Port Mapping</b> kết hợp với Application Load Balancer (ALB). Không được dùng Classic Load Balancer!</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Running multiple containers on the same port on a single host requires <b>Dynamic Port Mapping</b> paired with Application Load Balancer (ALB). CLB is unsupported!</p>
+      </div>
+    </div>
+
+    <!-- COL 2: AWS Fargate -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">⚡ 2. AWS Fargate (Serverless)</span>
+        <span class="lang-en">⚡ 2. AWS Fargate (Serverless)</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Mô hình tính toán không máy chủ (Serverless Compute Engine) cho cả Amazon ECS và Amazon EKS. AWS hoàn toàn quản lý hạ tầng phần cứng và hệ điều hành ảo hóa phía dưới.</p>
+        <p class="lang-en">Serverless compute engine for both Amazon ECS and Amazon EKS. AWS entirely manages underlying hardware provisioning, orchestration, and host virtualization.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi doanh nghiệp muốn tập trung 100% vào phát triển ứng dụng container mà không muốn tốn công sức vận hành, vá lỗi OS hay căn chỉnh dung lượng máy chủ (No Infrastructure Management).</p>
+        <p class="lang-en">When businesses want zero infrastructure management overhead—focusing entirely on containerized code without patching OS or capacity-planning server fleets.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">Mỗi Fargate Task chạy trong môi trường vi ảo hóa (microVM) độc lập với ENI riêng trong VPC. Thanh toán chính xác theo số vCPU và GB bộ nhớ RAM tiêu thụ trong thời gian task chạy.</p>
+        <p class="lang-en">Each Fargate Task runs in its own isolated microVM with a dedicated VPC ENI. Billed strictly for vCPU and memory resources consumed per second of task lifetime.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Fargate <b>không hỗ trợ EC2 Instance Store</b>! Nếu container cần lưu trữ dữ liệu bền vững dùng chung giữa nhiều tasks ở các AZ khác nhau &rarr; Phải cấu hình <b>Amazon EFS Volume</b>.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Fargate <b>does not support Instance Store</b>! For cross-AZ persistent shared storage across multiple tasks &rarr; Must configure an <b>Amazon EFS Volume</b>.</p>
+      </div>
+    </div>
+
+    <!-- COL 3: Amazon EKS -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">☸️ 3. Amazon EKS</span>
+        <span class="lang-en">☸️ 3. Amazon EKS</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ quản lý Kubernetes tiêu chuẩn nguồn mở trên đám mây AWS. AWS quản lý tính sẵn sàng cao của cụm điều khiển Kubernetes Control Plane trên đa AZ.</p>
+        <p class="lang-en">Managed standard open-source Kubernetes service on AWS. AWS automatically manages multi-AZ high availability and scaling of the Kubernetes Control Plane.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi doanh nghiệp đang vận hành cụm Kubernetes on-premise cần chuyển lên AWS giữ nguyên các file cấu hình YAML (Pods, Deployments, Services, Helm charts) hoặc yêu cầu khả năng di chuyển đa đám mây.</p>
+        <p class="lang-en">Migrating existing on-premises Kubernetes workloads to AWS maintaining standard YAML manifests (Pods, Deployments, Services, Helm charts) or ensuring multi-cloud portability.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">EKS tính phí cố định <b>$0.10/giờ</b> cho mỗi cụm Control Plane + chi phí tài nguyên Worker Nodes (EC2 hoặc Fargate). Phức tạp hơn ECS nhưng tương thích 100% với hệ sinh thái Kubernetes toàn cầu.</p>
+        <p class="lang-en">EKS charges a fixed <b>$0.10/hr</b> per cluster Control Plane plus compute worker nodes. Steeper learning curve than ECS but 100% compatible with the broader Kubernetes ecosystem.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Đề bài nhắc đến "Kubernetes", "kubectl", "Pod", "Helm" &rarr; Chọn ngay <b>Amazon EKS</b>. Nếu đề bài chỉ nói "Docker container đơn giản, ít công quản lý nhất" &rarr; Chọn <b>Amazon ECS với Fargate</b>.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Scenarios citing "Kubernetes", "kubectl", "Pods", or "Helm" &rarr; Instantly select <b>Amazon EKS</b>. Scenarios wanting "simplest Docker containers with minimal operational effort" &rarr; Select <b>ECS with Fargate</b>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. SƠ ĐỒ QUYẾT ĐỊNH MERMAID: CONTAINER SELECTION -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Cây quyết định kiến trúc: Chọn nền tảng Container tối ưu (Decision Tree)</span>
+        <span class="lang-en">1. Architectural Decision Tree: Choosing the Optimal Container Platform</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Luồng phân loại giữa AWS App Runner, ECS (Fargate vs EC2) và Amazon EKS</span>
+        <span class="lang-en">Inference logic navigating between AWS App Runner, ECS (Fargate vs EC2), and Amazon EKS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Nhu cầu triển khai ứng dụng Container"]) --> Q1{"Doanh nghiệp có yêu cầu sử dụng chuẩn Kubernetes không?"}
+
+    %% Nhánh 1: Kubernetes
+    Q1 -- "Có (Cần tương thích Kubernetes / K8s tools)" --> EKS["<b>Amazon EKS</b><br>• Quản lý Control Plane tự động<br>• Worker Nodes: EC2 hoặc Fargate<br>• Chuẩn mã nguồn mở K8s"]
+
+    %% Nhánh 2: Không cần K8s
+    Q1 -- "Không (Dùng chuẩn AWS Docker Native)" --> Q2{"Mức độ kiểm soát hạ tầng mong muốn?"}
+
+    Q2 -- "Ứng dụng web/API đơn giản, không muốn quản lý VPC/Cluster" --> APPRUNNER["<b>AWS App Runner</b><br>• Tự động build từ code hoặc container<br>• Tự động co giãn &amp; cấp phát URL HTTPS"]
+
+    Q2 -- "Cần kiến trúc Microservices chuyên sâu trên Amazon ECS" --> Q3{"Chính sách quản lý máy chủ &amp; Chi phí?"}
+
+    Q3 -- "Không muốn quản lý EC2 / Không vá OS / Trả theo task" --> ECS_FARGATE["<b>ECS với AWS Fargate Launch Type</b><br>• Serverless Container 100%<br>• Cách ly vi ảo hóa (MicroVM)<br>• Tự co giãn theo task"]
+
+    Q3 -- "Muốn kiểm soát máy chủ / Dùng RI, Spot / Tùy biến đĩa &amp; OS" --> ECS_EC2["<b>ECS với EC2 Launch Type</b><br>• Quản lý cụm máy chủ EC2<br>• Hỗ trợ GPU, ARM Graviton<br>• Dynamic Port Mapping với ALB"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class ECS_FARGATE,APPRUNNER awsBox;
+    class ECS_EC2 optBox;
+    class EKS warnBox;
+  </div>
+</div>
+
+<!-- 2. PHÂN BIỆT RÕ: TASK ROLE VS TASK EXECUTION ROLE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--rdb)">🔐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bẫy đề thi số 1: Phân biệt ECS Task Role vs ECS Task Execution Role</span>
+        <span class="lang-en">2. #1 Exam Trap: ECS Task Role vs ECS Task Execution Role</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Hiểu đúng bản chất của 2 IAM Role trong ECS Task Definition để không mất điểm oan</span>
+        <span class="lang-en">Accurately distinguishing the 2 IAM Roles in ECS Task Definitions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🤖 1. ECS Task Execution Role (Dành cho ECS Infrastructure Agent)</span>
+          <span class="lang-en">🤖 1. ECS Task Execution Role (For ECS Agent Infrastructure)</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Bản chất:</b> Role này được cấp cho <b>chính ECS Container Agent</b> (tiến trình nền của AWS) để nó có thể thay mặt bạn chuẩn bị và khởi chạy container.<br>
+          • <b>Các quyền cấp trong role:</b><br>
+          &nbsp;&nbsp;1. Kéo Docker image từ kho lưu trữ riêng tư <b>Amazon ECR</b> (<code>ecr:GetAuthorizationToken</code>, <code>ecr:BatchGetImage</code>).<br>
+          &nbsp;&nbsp;2. Gửi nhật ký container lên <b>Amazon CloudWatch Logs</b> (<code>logs:CreateLogStream</code>, <code>logs:PutLogEvents</code>).<br>
+          &nbsp;&nbsp;3. Lấy chuỗi kết nối cơ sở dữ liệu và mật khẩu từ <b>AWS Secrets Manager</b> hoặc <b>SSM Parameter Store</b> đưa vào biến môi trường.
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Essence:</b> Assumed by the <b>ECS Container Agent itself</b> to provision, launch, and bootstrap container tasks on your behalf.<br>
+          • <b>Permissions granted:</b><br>
+          &nbsp;&nbsp;1. Pulling private container images from <b>Amazon ECR</b>.<br>
+          &nbsp;&nbsp;2. Streaming container logs to <b>Amazon CloudWatch Logs</b>.<br>
+          &nbsp;&nbsp;3. Injecting database credentials from <b>AWS Secrets Manager</b> or <b>SSM Parameter Store</b> into container environment variables.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">📦 2. ECS Task Role (Dành cho mã nguồn ứng dụng chạy bên trong)</span>
+          <span class="lang-en">📦 2. ECS Task Role (For Application Code Inside Container)</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Bản chất:</b> Role này được cấp cho <b>chính ứng dụng đang chạy bên trong container</b>.<br>
+          • <b>Các quyền cấp trong role:</b><br>
+          &nbsp;&nbsp;1. Gửi và nhận tin nhắn từ hàng đợi <b>Amazon SQS</b>.<br>
+          &nbsp;&nbsp;2. Đọc ghi tài liệu trong cơ sở dữ liệu <b>Amazon DynamoDB</b>.<br>
+          &nbsp;&nbsp;3. Upload hoặc download tệp từ <b>Amazon S3 buckets</b>.<br>
+          👉 <b>Nguyên tắc vàng:</b> Nhờ có Task Role, bạn <b>không bao giờ được hard-code Access Keys (AK/SK)</b> vào file cấu hình hay mã nguồn container.
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Essence:</b> Assumed directly by the <b>application code running inside the container</b>.<br>
+          • <b>Permissions granted:</b><br>
+          &nbsp;&nbsp;1. Polling and processing messages from <b>Amazon SQS</b>.<br>
+          &nbsp;&nbsp;2. Reading/writing items to <b>Amazon DynamoDB</b>.<br>
+          &nbsp;&nbsp;3. Uploading and downloading objects in <b>Amazon S3 buckets</b>.<br>
+          👉 <b>Golden Rule:</b> Eliminates the need to ever hardcode AWS API credentials inside container images.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. MA TRẬN SO SÁNH: ECS EC2 VS AWS FARGATE -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Ma trận so sánh chuyên sâu: ECS EC2 Launch Type vs AWS Fargate</span>
+        <span class="lang-en">3. In-Depth Comparison: ECS EC2 Launch Type vs AWS Fargate</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân tích đa chiều về quyền kiểm soát, lưu trữ, khả năng co giãn và mô hình chi phí</span>
+        <span class="lang-en">Multi-dimensional analysis on control, storage, scaling mechanics, and pricing models</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Đặc tính kỹ thuật</span><span class="lang-en">Technical Feature</span></th>
+          <th>ECS EC2 Launch Type</th>
+          <th>AWS Fargate (Serverless)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b><span class="lang-vi">Quản lý máy chủ</span><span class="lang-en">Server Management</span></b></td>
+          <td>Tự quản lý máy chủ EC2 (Vá lỗi OS, cập nhật Docker daemon, cài đặt ECS agent)</td>
+          <td><b>Hoàn toàn không có máy chủ</b> (Serverless 100%, AWS quản lý OS và bảo mật máy chủ chủ)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Mô hình tính phí</span><span class="lang-en">Pricing Model</span></b></td>
+          <td>Trả tiền cho thời gian bật của instance EC2 + ổ đĩa EBS đính kèm (bất kể container chạy ít hay nhiều)</td>
+          <td>Trả tiền chính xác theo <b>vCPU và GB RAM</b> cấp phát tính theo giây task hoạt động</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Quyền truy cập hệ thống</span><span class="lang-en">System Access</span></b></td>
+          <td>Toàn quyền SSH/SSM Session Manager vào hệ điều hành máy chủ chủ, tùy biến kernel</td>
+          <td>Không thể SSH vào host; có thể dùng <i>ECS Exec</i> để mở shell trực tiếp vào bên trong container</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Lưu trữ dữ liệu (Storage)</span><span class="lang-en">Supported Storage</span></b></td>
+          <td>• Amazon EBS volumes (gắn vào host)<br>• Amazon EFS (chia sẻ đa AZ)<br>• <b>EC2 Instance Store</b> (tốc độ cao)</td>
+          <td>• Đĩa tạm mặc định 20 GB (mở rộng tới 200 GB)<br>• <b>Amazon EFS</b> (chia sẻ dữ liệu đa AZ)<br>• <i>Không hỗ trợ Instance Store</i></td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Tối ưu chi phí</span><span class="lang-en">Cost Optimization</span></b></td>
+          <td>Sử dụng Reserved Instances, Savings Plans và EC2 Spot Instances để tiết kiệm tới 90%</td>
+          <td>Sử dụng <b>Fargate Spot</b> (tiết kiệm tới 70% cho tác vụ chịu lỗi gián đoạn) và Compute Savings Plans</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Kết nối mạng &amp; Cổng</span><span class="lang-en">Networking &amp; Ports</span></b></td>
+          <td>Hỗ trợ mạng: <code>bridge</code>, <code>host</code>, <code>none</code>, <code>awsvpc</code>. Dynamic Port Mapping với ALB.</td>
+          <td>Chỉ hỗ trợ duy nhất chế độ <code>awsvpc</code> (mỗi task nhận 1 địa chỉ IP riêng trong subnet).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 4. LƯU TRỮ CHO CONTAINERS: EBS VS EFS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">💾</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Kiến trúc lưu trữ bền vững cho Containers: EBS vs Amazon EFS</span>
+        <span class="lang-en">4. Persistent Storage Architecture for Containers: EBS vs Amazon EFS</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Giải quyết bài toán lưu trữ tệp tin khi container bị hủy hoặc di chuyển sang AZ khác</span>
+        <span class="lang-en">Handling stateful container persistence across task recreation and cross-AZ failover</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">📁 Amazon EFS (Giải pháp chia sẻ tệp đa AZ cho Containers)</span>
+          <span class="lang-en">📁 Amazon EFS (Multi-AZ Shared File Storage for Containers)</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Đặc điểm:</b> Hệ thống tệp POSIX dùng chung hoạt động ở cấp độ Multi-AZ.<br>
+          • <b>Khả năng gắn kết:</b> Cho phép hàng trăm Container Tasks chạy trên cả <b>Fargate và EC2</b> cùng đọc/ghi đồng thời vào một tệp dữ liệu.<br>
+          • <b>Tình huống đề thi:</b> Một ứng dụng WordPress hoặc hệ thống CMS chạy trên ECS Fargate với nhiều bản sao (replicas) phân bổ trên 2 Availability Zones cần truy cập chung một thư mục uploads &rarr; <b>Bắt buộc chọn Amazon EFS</b>.
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Profile:</b> Multi-AZ POSIX network file system.<br>
+          • <b>Attachment concurrency:</b> Allows hundreds of container tasks across both <b>Fargate and EC2</b> to read/write concurrently.<br>
+          • <b>Exam Scenario:</b> A stateful WordPress or CMS deployment on ECS Fargate running across multiple AZs requiring shared media assets &rarr; <b>Must choose Amazon EFS</b>.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">💽 Amazon EBS (Lưu trữ khối gắn theo từng Task)</span>
+          <span class="lang-en">💽 Amazon EBS (Block Storage Attached per Task)</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Đặc điểm:</b> Khối đĩa hiệu năng cao nhưng <b>bị khóa trong 1 Availability Zone (AZ-locked)</b>.<br>
+          • <b>Khả năng gắn kết:</b> ECS hỗ trợ tự động tạo và gắn một ổ đĩa EBS chuyên dụng cho từng Task độc lập.<br>
+          • <b>Giới hạn:</b> Không thể chia sẻ ổ đĩa EBS giữa nhiều tasks ở các AZ khác nhau. Nếu task bị chuyển sang máy chủ ở AZ khác &rarr; Ổ EBS cũ không thể gắn trực tiếp sang AZ mới.
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Profile:</b> High-performance block storage, strictly <b>AZ-locked</b>.<br>
+          • <b>Attachment concurrency:</b> ECS manages dedicated volume provisioning per individual task instance.<br>
+          • <b>Limitations:</b> Cannot share a single volume across tasks in separate AZs. If a task reschedules to a new AZ, the EBS volume cannot follow.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. NGUYÊN TẮC VÀNG — SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Nguyên tắc vàng ra quyết định kiến trúc Container — SAA-C03</span>
+        <span class="lang-en">5. Golden Architectural Decision Rules: Containers — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc bất biến giúp chọn đúng giải pháp container trong 30 giây</span>
+        <span class="lang-en">Inviolable rules to identify the correct container solution in 30 seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="bp">
+      <div class="bn">1</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Container không quản lý máy chủ = Luôn là AWS Fargate</span>
+          <span class="lang-en">Zero Server Management for Containers = Always AWS Fargate</span>
+        </b>
+        <div class="lang-vi">Bất cứ khi nào đề thi nhắc đến: "triển khai container Docker mà không cần quản lý cụm máy chủ", "không phải vá lỗi hệ điều hành", "loại bỏ gánh nặng vận hành hạ tầng" &rarr; Chọn ngay <b>AWS Fargate</b>.</div>
+        <div class="lang-en">Whenever a scenario mentions: "deploy Docker containers without managing server infrastructure", "zero OS patching overhead", "minimize operational burden" &rarr; Immediately select <b>AWS Fargate</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">2</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Cần phân quyền cho code bên trong container = ECS Task Role</span>
+          <span class="lang-en">Granting Permissions to Application Code = ECS Task Role</span>
+        </b>
+        <div class="lang-vi">Không cấp quyền AWS cho EC2 Instance Profile của máy chủ host! Luôn cấp quyền tối thiểu bằng <b>ECS Task Role</b> được định nghĩa trực tiếp trong Task Definition để từng container chỉ có đúng quyền cần thiết.</div>
+        <div class="lang-en">Never assign broad AWS permissions to the host EC2 Instance Profile! Always grant least-privilege permissions through the <b>ECS Task Role</b> defined in the Task Definition.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">3</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Chia sẻ dữ liệu bền vững giữa các Container = Amazon EFS</span>
+          <span class="lang-en">Persistent Shared Data Between Containers = Amazon EFS</span>
+        </b>
+        <div class="lang-vi">Ổ đĩa của container là tạm thời (ephemeral). Nếu nhiều container cần đọc/ghi dữ liệu dùng chung trên nhiều Availability Zones &rarr; Luôn gắn <b>Amazon EFS Volume</b> vào Task Definition.</div>
+        <div class="lang-en">Container local storage is ephemeral. When multi-container replicas require cross-AZ shared persistent read/write access &rarr; Mount an <b>Amazon EFS Volume</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">4</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Tương thích Kubernetes / Helm = Amazon EKS</span>
+          <span class="lang-en">Kubernetes Ecosystem &amp; Tooling = Amazon EKS</span>
+        </b>
+        <div class="lang-vi">Nếu bài thi có các từ khóa đặc trưng của hệ sinh thái Kubernetes: "k8s", "kubectl", "Pod", "Helm Charts", "CRDs" hoặc "tương thích đa đám mây" &rarr; Chọn ngay <b>Amazon EKS</b>.</div>
+        <div class="lang-en">If scenario mentions distinctive Kubernetes terminology: "k8s", "kubectl", "Pod", "Helm Charts", "CRDs", or "multi-cloud portability" &rarr; Always choose <b>Amazon EKS</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">6. Lecture Sources &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu trực tiếp video bài giảng Udemy của Stephane Maarek và tài liệu kỹ thuật chính thức AWS</span>
+        <span class="lang-en">Direct mapping to Stephane Maarek's Udemy lectures and official AWS architectural documentation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Video bài giảng Udemy</span>
+        <span class="lang-en">🎓 Udemy Lecture Sources</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 19 · ECS Overview &amp; Task Definitions</b><br>
+            <span class="lang-vi">Kiến trúc ECS, Task Definitions, Service, Dynamic Port Mapping và ALB.</span>
+            <span class="lang-en">ECS architecture, Task Definitions, Service, Dynamic Port Mapping, and ALB.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">▶️</div>
+          <div>
+            <b>Section 19 · AWS Fargate vs EC2 Launch Type</b><br>
+            <span class="lang-vi">So sánh Fargate Serverless và EC2, Task Role vs Task Execution Role.</span>
+            <span class="lang-en">Fargate Serverless vs EC2 Launch Types, Task Role vs Execution Role deep-dive.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">▶️</div>
+          <div>
+            <b>Section 19 · Amazon ECR &amp; Amazon EKS</b><br>
+            <span class="lang-vi">Kho lưu trữ ảnh ECR, phân quyền IAM và kiến trúc Kubernetes trên Amazon EKS.</span>
+            <span class="lang-en">ECR repositories, IAM permissions, and Kubernetes architecture on Amazon EKS.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 Tài liệu chính thức AWS</span>
+        <span class="lang-en">📖 Official AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>Amazon ECS Best Practices Guide</b><br>
+            <span class="lang-vi">Thiết kế phân quyền IAM, giám sát CloudWatch và tích hợp lưu trữ EFS.</span>
+            <span class="lang-en">IAM permissions architecture, CloudWatch monitoring, and EFS integration.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS Fargate Architecture Patterns</b><br>
+            <span class="lang-vi">Mô hình mạng awsvpc, tự động co giãn với Application Auto Scaling.</span>
+            <span class="lang-en">awsvpc networking architecture, auto-scaling with Application Auto Scaling.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>Amazon EKS User Guide</b><br>
+            <span class="lang-vi">Triển khai Managed Node Groups và Fargate profiles trên Amazon EKS.</span>
+            <span class="lang-en">Deploying Managed Node Groups and Fargate profiles on Amazon EKS.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>ECS vs Fargate vs EKS Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng tra cứu quyết định nhanh giữa các giải pháp container trên AWS.</span>
+            <span class="lang-en">Quick decision cheat sheet comparing container solutions on AWS.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>ECS Task Role vs Task Execution Role</b><br>
+            <span class="lang-vi">Sơ đồ chi tiết luồng xác thực IAM của Container Agent và Application Container.</span>
+            <span class="lang-en">Detailed IAM authentication sequence for Container Agent vs Application Container.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

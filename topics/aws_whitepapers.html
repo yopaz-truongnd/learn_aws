@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Well-Architected Framework &amp; Whitepapers — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 31 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Architecture Strategy &amp; Best Practices</div>
+  <h1>AWS Well-Architected Framework &amp; Whitepapers</h1>
+  <p class="lang-vi">Khung kiến trúc chuẩn AWS 6 Trụ cột: Vận hành xuất sắc, Bảo mật, Độ tin cậy, Hiệu năng, Tối ưu chi phí và Bền vững môi trường cùng các nguyên tắc thiết kế vàng cho SAA-C03</p>
+  <p class="lang-en">The AWS Well-Architected Framework 6 Pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, and Sustainability with golden design principles for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Trụ cột · 6 Trụ cột Well-Architected bắt buộc thuộc</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Pillar Mapping · The 6 Well-Architected Pillars</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — Phân biệt Trụ cột Reliability (Độ tin cậy) vs Operational Excellence (Vận hành):</b> <b>Reliability</b> tập trung vào việc hệ thống tự phục hồi khi có lỗi (Auto Healing, Multi-AZ failover, thử nghiệm quy trình phục hồi). <b>Operational Excellence</b> tập trung vào quản lý mã nguồn hạ tầng (Infrastructure as Code - IaC CloudFormation), thực hiện các thay đổi nhỏ có thể đảo ngược, và học hỏi từ các sự cố vận hành.</span>
+          <span class="lang-en"><b>Trap 1 — Distinguish Reliability vs Operational Excellence:</b> <b>Reliability</b> focuses on automated failure recovery (Auto Healing, Multi-AZ failover, testing recovery procedures). <b>Operational Excellence</b> focuses on running operations as code (IaC CloudFormation), making frequent small reversible changes, and learning from operational failures.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — Trụ cột Sustainability (Bền vững môi trường):</b> Trụ cột thứ 6 mới nhất của AWS. Từ khóa chính: <b>Giảm thiểu phát thải carbon</b>, tối đa hóa hiệu suất sử dụng máy chủ (maximize server utilization), và chuyển đổi workload sang vi xử lý tiết kiệm năng lượng <b>AWS Graviton (tiết kiệm đến 60% năng lượng so với x86)</b>.</span>
+          <span class="lang-en"><b>Trap 2 — Sustainability Pillar:</b> AWS's 6th and newest pillar. Key concepts: <b>Reducing carbon footprint</b>, maximizing resource utilization, and adopting energy-efficient hardware like <b>AWS Graviton ARM processors (using up to 60% less energy than comparable x86)</b>.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — Đánh đổi giữa Cost Optimization và Reliability:</b> Khi đề bài yêu cầu giải pháp có <b>"High Availability" và "Fault Tolerance"</b>, KHÔNG BAO GIỜ chọn Single-AZ hay chỉ dùng Spot Instances thuần túy (Spot có thể bị thu hồi trong 2 phút!). Cần kết hợp On-Demand cho workload nền và Spot cho workload mở rộng.</span>
+          <span class="lang-en"><b>Trap 3 — Cost Optimization vs Reliability Trade-off:</b> When question asks for <b>"High Availability" and "Fault Tolerance"</b>, NEVER pick Single-AZ or 100% Spot Instances (Spot can terminate with 2-minute notice!). Combine On-Demand for baseline capacity and Spot for burst capacity.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — AWS Well-Architected Tool:</b> Công cụ tự phục vụ <b>hoàn toàn miễn phí</b> trong AWS Management Console giúp các kiến trúc sư đánh giá kiến trúc đám mây theo 6 trụ cột thông qua các câu hỏi trắc nghiệm và xuất báo cáo khuyến nghị cải tiến (Milestones &amp; Action Plan).</span>
+          <span class="lang-en"><b>Trap 4 — AWS Well-Architected Tool:</b> A <b>completely free</b> self-service tool in the AWS Management Console helping architects review cloud workloads against the 6 pillars via structured questionnaires, generating milestone reports and actionable remediation guidance.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Trụ cột &amp; Nguyên tắc tương ứng</span><span class="lang-en">Matching Pillar &amp; Principle</span></th>
+        <th style="width:35%"><span class="lang-vi">Dịch vụ AWS triển khai điển hình</span><span class="lang-en">Typical AWS Implementation Service</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Perform operations as code and make frequent, small, reversible changes"</b></td>
+        <td><b>Operational Excellence</b></td>
+        <td>AWS CloudFormation, AWS CodePipeline, CloudWatch</td>
+      </tr>
+      <tr>
+        <td><b>"Apply security at all layers (defense in depth) and keep people away from data"</b></td>
+        <td><b>Security</b></td>
+        <td>IAM, AWS KMS, AWS WAF, AWS Shield, GuardDuty</td>
+      </tr>
+      <tr>
+        <td><b>"Automatically recover from failure and test recovery procedures"</b></td>
+        <td><b>Reliability</b></td>
+        <td>Multi-AZ RDS, Auto Scaling Groups, AWS Fault Injection Simulator</td>
+      </tr>
+      <tr>
+        <td><b>"Democratize advanced technologies, go global in minutes, use serverless"</b></td>
+        <td><b>Performance Efficiency</b></td>
+        <td>AWS Lambda, Amazon CloudFront, DynamoDB DAX, ElastiCache</td>
+      </tr>
+      <tr>
+        <td><b>"Adopt a consumption model and measure overall efficiency"</b></td>
+        <td><b>Cost Optimization</b></td>
+        <td>AWS Cost Explorer, Compute Optimizer, Savings Plans, Spot Instances</td>
+      </tr>
+      <tr>
+        <td><b>"Reduce carbon footprint and adopt energy-efficient processors"</b></td>
+        <td><b>Sustainability</b></td>
+        <td>AWS Graviton3/Graviton4 instances, S3 Lifecycle to Glacier</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE: THE 6 PILLARS VISUALIZATION -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🏛️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Mô hình 6 Trụ cột AWS Well-Architected Framework</span>
+        <span class="lang-en">The 6 Pillars of AWS Well-Architected Framework</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cấu trúc nền móng vững chắc cho mọi hệ thống đám mây cấp doanh nghiệp</span>
+        <span class="lang-en">Foundational architecture pillars for enterprise cloud systems</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    ROOT["HỆ THỐNG ĐÁM MÂY CHUẨN AWS<br/>(AWS Well-Architected Cloud System)"]
+
+    P1["1. Vận hành Xuất sắc<br/>(Operational Excellence)<br/>• Operations as Code<br/>• Anticipate failure"]
+    P2["2. An toàn Bảo mật<br/>(Security)<br/>• Defense in depth<br/>• Zero Trust · KMS"]
+    P3["3. Độ Tin cậy<br/>(Reliability)<br/>• Auto-recovery<br/>• Multi-AZ · Multi-Region"]
+    P4["4. Hiệu năng Cao<br/>(Performance Efficiency)<br/>• Serverless · Caching<br/>• Global low latency"]
+    P5["5. Tối ưu Chi phí<br/>(Cost Optimization)<br/>• Consumption model<br/>• Rightsizing · Savings Plans"]
+    P6["6. Bền vững Môi trường<br/>(Sustainability)<br/>• Maximize utilization<br/>• AWS Graviton ARM"]
+
+    ROOT --> P1
+    ROOT --> P2
+    ROOT --> P3
+    ROOT --> P4
+    ROOT --> P5
+    ROOT --> P6
+
+    classDef c1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef c2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef c3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef c4 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef c5 fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    classDef c6 fill:#e0f2f1,stroke:#00796b,stroke-width:2px;
+    class P1 c1;
+    class P2 c2;
+    class P3 c3;
+    class P4 c4;
+    class P5 c5;
+    class P6 c6;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: OPERATIONAL EXCELLENCE & SECURITY -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚙️</div>
+    <div>
+      <div class="ct">1. Operational Excellence &amp; Security</div>
+      <div class="cs">
+        <span class="lang-vi">Tự động hóa vận hành và an ninh phòng thủ đa tầng</span>
+        <span class="lang-en">Operational automation &amp; multi-tier defense in depth</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Trụ cột 1: Operational Excellence (Vận hành Xuất sắc):</b><br>
+    <span class="lang-vi">Tập trung vào việc thực thi và giám sát hệ thống, liên tục cải tiến quy trình. 5 nguyên tắc vàng: 1. Thực hiện vận hành bằng code (Operations as code - CloudFormation); 2. Tạo thay đổi nhỏ, thường xuyên và có thể đảo ngược; 3. Chuẩn hóa tài liệu vận hành tự động; 4. Dự đoán trước các hỏng hóc; 5. Học hỏi từ các sự cố vận hành.</span>
+    <span class="lang-en">Focuses on running and monitoring systems to continuously improve processes. 5 design principles: 1. Perform operations as code (IaC CloudFormation); 2. Make frequent, small, reversible changes; 3. Refine operations procedures frequently; 4. Anticipate failure; 5. Learn from all operational failures.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Trụ cột 2: Security (An toàn Bảo mật):</b><br>
+    <span class="lang-vi">Bảo vệ thông tin, dữ liệu và hệ thống. 7 nguyên tắc vàng: 1. Xây dựng nền tảng danh tính mạnh (IAM, MFA, Least Privilege); 2. Kích hoạt khả năng truy vết toàn diện (CloudTrail, GuardDuty, VPC Flow Logs); 3. Bảo vệ ở mọi tầng (Defense in depth: WAF, Security Groups, NACLs); 4. Tự động hóa bảo mật (EventBridge + Lambda); 5. Bảo vệ dữ liệu truyền và lưu trữ (TLS, KMS); 6. Giữ con người tránh xa dữ liệu; 7. Chuẩn bị ứng phó sự cố bảo mật.</span>
+    <span class="lang-en">Focuses on protecting information and systems. 7 design principles: 1. Implement a strong identity foundation (IAM, MFA); 2. Enable traceability (CloudTrail, GuardDuty); 3. Apply security at all layers (WAF, SG, NACL); 4. Automate security best practices; 5. Protect data in transit and at rest (KMS); 6. Keep people away from data; 7. Prepare for security events.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Dịch vụ Cốt lõi triển khai:</b><br>
+    <span class="lang-vi">AWS Systems Manager (Session Manager, Patch Manager), AWS Config (đánh giá tuân thủ quy tắc), AWS Security Hub (tổng hợp điểm bảo mật), Amazon GuardDuty và AWS CloudTrail.</span>
+    <span class="lang-en">AWS Systems Manager, AWS Config (compliance auditing), AWS Security Hub (centralized security scores), Amazon GuardDuty, and AWS CloudTrail.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Muốn nhân viên không trực tiếp login SSH/RDP vào máy chủ chứa dữ liệu nhạy cảm &rarr; Chọn <b>AWS Systems Manager Session Manager</b>.</span>
+    <span class="lang-en">⚠️ Question asks: Prevent direct human SSH/RDP access to production instances &rarr; Choose <b>AWS Systems Manager Session Manager</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: RELIABILITY & PERFORMANCE EFFICIENCY -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🛡️</div>
+    <div>
+      <div class="ct">2. Reliability &amp; Performance Efficiency</div>
+      <div class="cs">
+        <span class="lang-vi">Độ tin cậy tự phục hồi và hiệu năng tính toán tối đa</span>
+        <span class="lang-en">Self-healing resilience &amp; maximum computing performance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Trụ cột 3: Reliability (Độ tin cậy):</b><br>
+    <span class="lang-vi">Khả năng của hệ thống phục hồi từ gián đoạn hạ tầng hoặc dịch vụ. 5 nguyên tắc vàng: 1. Tự động phục hồi khi gặp sự cố (Auto Scaling, Multi-AZ failover); 2. Thử nghiệm quy trình phục hồi (Chaos Engineering); 3. Mở rộng theo chiều ngang (Scale horizontally); 4. Ngừng phỏng đoán dung lượng; 5. Quản lý thay đổi bằng tự động hóa.</span>
+    <span class="lang-en">Ability of a system to recover from infrastructure disruptions. 5 principles: 1. Automatically recover from failure (Auto Scaling, Multi-AZ); 2. Test recovery procedures; 3. Scale horizontally; 4. Stop guessing capacity; 5. Manage change through automation.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Trụ cột 4: Performance Efficiency (Hiệu năng):</b><br>
+    <span class="lang-vi">Sử dụng tài nguyên tính toán hiệu quả để đáp ứng yêu cầu hệ thống. 5 nguyên tắc: 1. Phổ cập công nghệ tiên tiến (chuyển sang Managed services / Serverless); 2. Đi ra toàn cầu trong vài phút (CloudFront, Global Accelerator); 3. Sử dụng kiến trúc Serverless (Lambda, Fargate); 4. Thử nghiệm công nghệ mới thường xuyên; 5. Hiểu rõ sự tương thích cơ học giữa dịch vụ và bài toán.</span>
+    <span class="lang-en">Focuses on using computing resources efficiently. 5 principles: 1. Democratize advanced technologies (Managed/Serverless); 2. Go global in minutes (CloudFront, Global Accelerator); 3. Use serverless architectures; 4. Experiment more often; 5. Consider mechanical sympathy.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Dịch vụ Cốt lõi triển khai:</b><br>
+    <span class="lang-vi">Amazon Aurora Multi-AZ &amp; Global Databases, Amazon DynamoDB Global Tables, Auto Scaling Groups, Elastic Load Balancing, Amazon CloudFront, và AWS Fault Injection Simulator (FIS).</span>
+    <span class="lang-en">Amazon Aurora Multi-AZ &amp; Global Databases, DynamoDB Global Tables, Auto Scaling Groups, ELB, CloudFront, and AWS Fault Injection Simulator (FIS).</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Muốn mô phỏng sự cố thực tế để kiểm tra khả năng phục hồi của hệ thống &rarr; Chọn <b>AWS Fault Injection Simulator (FIS)</b>.</span>
+    <span class="lang-en">⚠️ Question asks: Simulate real-world faults to test system recovery mechanisms &rarr; Choose <b>AWS Fault Injection Simulator (FIS)</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: COST OPTIMIZATION & SUSTAINABILITY -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">💰</div>
+    <div>
+      <div class="ct">3. Cost Optimization &amp; Sustainability</div>
+      <div class="cs">
+        <span class="lang-vi">Tối ưu hóa chi phí đám mây và giảm thiểu dấu chân carbon</span>
+        <span class="lang-en">Cloud financial management &amp; environmental sustainability</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Trụ cột 5: Cost Optimization (Tối ưu Chi phí):</b><br>
+    <span class="lang-vi">Khả năng chạy hệ thống với chi phí thấp nhất mà vẫn đáp ứng mục tiêu kinh doanh. 5 nguyên tắc: 1. Chuyển sang mô hình tiêu dùng (Consumption model); 2. Đo lường hiệu quả tổng thể; 3. Ngừng chi tiền cho công việc nặng nhọc không tạo khác biệt; 4. Phân tích và gán chi phí chi tiết (Cost Allocation Tags, Cost Explorer); 5. Quản lý chi phí liên tục.</span>
+    <span class="lang-en">Focuses on running systems to deliver business value at lowest price point. 5 principles: 1. Implement cloud financial management; 2. Adopt a consumption model; 3. Measure overall efficiency; 4. Stop spending money on undifferentiated heavy lifting; 5. Analyze and attribute expenditure.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Trụ cột 6: Sustainability (Bền vững Môi trường):</b><br>
+    <span class="lang-vi">Giảm thiểu tác động môi trường của các dịch vụ đám mây. 6 nguyên tắc: 1. Hiểu rõ tác động môi trường; 2. Thiết lập mục tiêu bền vững; 3. Tối đa hóa hiệu suất sử dụng phần cứng (Right-sizing, Auto Scaling); 4. Áp dụng phần cứng tiết kiệm năng lượng (AWS Graviton); 5. Sử dụng dịch vụ được quản lý; 6. Giảm thiểu tác động hạ tầng của người dùng.</span>
+    <span class="lang-en">Focuses on minimizing environmental impacts of running cloud workloads. 6 principles: 1. Understand your impact; 2. Establish sustainability goals; 3. Maximize utilization (Right-sizing); 4. Anticipate and adopt new efficient hardware (AWS Graviton); 5. Use managed services; 6. Reduce downstream impacts.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Công cụ Phân tích Chi phí cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>AWS Cost Explorer:</b> Xem biểu đồ chi phí lịch sử và dự báo chi phí tương lai.<br>2. <b>AWS Budgets:</b> Đặt ngưỡng cảnh báo ngân sách và tự động kích hoạt hành động khi vượt ngưỡng.<br>3. <b>AWS Compute Optimizer:</b> Dùng Machine Learning đưa ra khuyến nghị chọn đúng kích thước instance (Right-sizing EC2, EBS, Lambda).</span>
+    <span class="lang-en">1. <b>AWS Cost Explorer:</b> Visualizes historical spending and projects future costs.<br>2. <b>AWS Budgets:</b> Sets custom budget thresholds with automated notifications.<br>3. <b>AWS Compute Optimizer:</b> ML-powered recommendations to right-size EC2, EBS, and Lambda.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề bài yêu cầu: Khuyến nghị tối ưu kích thước EC2 bằng AI &rarr; <b>AWS Compute Optimizer</b>.<br>⚠️ Đề bài yêu cầu: Giảm thiểu phát thải carbon và tăng hiệu quả năng lượng &rarr; <b>AWS Graviton Processors</b>.</span>
+    <span class="lang-en">⚠️ Question asks: ML-driven instance sizing recommendations &rarr; <b>AWS Compute Optimizer</b>.<br>⚠️ Question asks: Reduce carbon footprint and energy consumption &rarr; <b>AWS Graviton Processors</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS WELL-ARCHITECTED TOOL -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🛠️</div>
+    <div>
+      <div class="ct">4. AWS Well-Architected Tool</div>
+      <div class="cs">
+        <span class="lang-vi">Công cụ đánh giá kiến trúc và quản lý rủi ro chính thức từ AWS</span>
+        <span class="lang-en">Official architectural review &amp; risk assessment tool</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Bản chất:</b><br>
+    <span class="lang-vi">Dịch vụ quản trị miễn phí trên AWS Management Console giúp các tổ chức đánh giá, đo lường và theo dõi kiến trúc ứng dụng theo 6 trụ cột của AWS Well-Architected Framework.</span>
+    <span class="lang-en">A free governance service in the AWS Management Console helping organizations review, measure, and track their application architectures against the 6 Well-Architected pillars.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Quy trình Đánh giá (Review Workflow):</b><br>
+    <span class="lang-vi">1. <b>Định nghĩa Workload:</b> Khai báo thông tin ứng dụng và môi trường (Production/Non-prod).<br>2. <b>Trả lời bộ câu hỏi chuẩn:</b> Trả lời các câu hỏi về thực tiễn kiến trúc tốt nhất theo từng trụ cột.<br>3. <b>Nhận Báo cáo Cải tiến (Action Plan):</b> Công cụ tự động phân loại các rủi ro Nghiêm trọng (High Risk Issues - HRIs) và Trung bình (Medium Risk Issues - MRIs) kèm hướng dẫn khắc phục chi tiết.<br>4. <b>Lưu Milestones:</b> Lưu mốc tiến độ theo thời gian để theo dõi sự cải thiện của hệ thống.</span>
+    <span class="lang-en">1. <b>Define Workload:</b> Identify application details and environment.<br>2. <b>Answer Questions:</b> Work through structured pillar questions reflecting architectural best practices.<br>3. <b>Generate Improvement Plan:</b> Identifies High Risk Issues (HRIs) and Medium Risk Issues (MRIs) with step-by-step guidance.<br>4. <b>Save Milestones:</b> Record point-in-time snapshots to track architectural progress over time.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Well-Architected Lenses:</b><br>
+    <span class="lang-vi">Mở rộng khung đánh giá cho các lĩnh vực chuyên sâu thông qua các bộ "Lenses": Serverless Lens, SaaS Lens, Machine Learning Lens, Financial Services Lens, IoT Lens và Healthcare Lens.</span>
+    <span class="lang-en">Extends review frameworks for specialized domains via "Lenses": Serverless Lens, SaaS Lens, Machine Learning Lens, Financial Services Lens, IoT Lens, and Healthcare Lens.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Well-Architected Tool <b>hoàn toàn MIỄN PHÍ</b> (chỉ trả tiền nếu có tài nguyên AWS được tạo theo khuyến nghị). Không cần mua license!</span>
+    <span class="lang-en">⚠️ The Well-Architected Tool is <b>100% FREE</b> (you only pay for any resources provisioned during remediation). No licensing required!</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: THE 6 PILLARS SUMMARY -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận Tóm tắt: 6 Trụ cột AWS Well-Architected Framework</span>
+        <span class="lang-en">Summary Matrix: The 6 AWS Well-Architected Framework Pillars</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bảng đối chiếu mục tiêu cốt lõi, nguyên tắc vàng và dịch vụ đại diện</span>
+        <span class="lang-en">Comparison of core objectives, golden design principles, and representative AWS services</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:18%"><span class="lang-vi">Trụ cột</span><span class="lang-en">Pillar</span></th>
+        <th style="width:22%"><span class="lang-vi">Mục tiêu cốt lõi</span><span class="lang-en">Core Focus</span></th>
+        <th style="width:30%"><span class="lang-vi">Nguyên tắc thiết kế vàng</span><span class="lang-en">Golden Design Principles</span></th>
+        <th style="width:30%"><span class="lang-vi">Dịch vụ AWS đại diện</span><span class="lang-en">Representative AWS Services</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>1. Operational Excellence</b></td>
+        <td>Vận hành và giám sát hệ thống để tạo giá trị kinh doanh</td>
+        <td>Operations as code, thay đổi nhỏ có thể đảo ngược, học từ sự cố</td>
+        <td>CloudFormation, Systems Manager, CloudWatch, Config</td>
+      </tr>
+      <tr>
+        <td><b>2. Security</b></td>
+        <td>Bảo vệ dữ liệu, hệ thống và tài sản đám mây</td>
+        <td>Defense in depth, Least privilege, Bảo vệ data at-rest/in-transit</td>
+        <td>IAM, KMS, WAF, Shield, GuardDuty, Macie</td>
+      </tr>
+      <tr>
+        <td><b>3. Reliability</b></td>
+        <td>Phục hồi tự động sau sự cố, đáp ứng nhu cầu mở rộng</td>
+        <td>Tự động phục hồi, Scale horizontally, Kiểm thử lỗi thực tế</td>
+        <td>Auto Scaling, Multi-AZ RDS, Route 53, FIS, DRS</td>
+      </tr>
+      <tr>
+        <td><b>4. Performance Efficiency</b></td>
+        <td>Sử dụng tài nguyên tối ưu, duy trì hiệu quả khi nhu cầu đổi</td>
+        <td>Phổ cập công nghệ (Serverless), Đi ra toàn cầu trong vài phút</td>
+        <td>Lambda, CloudFront, Global Accelerator, ElastiCache, DAX</td>
+      </tr>
+      <tr>
+        <td><b>5. Cost Optimization</b></td>
+        <td>Tránh chi tiêu lãng phí, chỉ trả tiền cho những gì sử dụng</td>
+        <td>Consumption model, Phân bổ chi phí, Stop heavy lifting</td>
+        <td>Cost Explorer, Budgets, Compute Optimizer, Spot Instances</td>
+      </tr>
+      <tr>
+        <td><b>6. Sustainability</b></td>
+        <td>Giảm thiểu phát thải carbon và tác động môi trường</td>
+        <td>Tối đa hóa hiệu suất máy chủ, áp dụng vi xử lý tiết kiệm điện</td>
+        <td>AWS Graviton Processors, S3 Lifecycle Policies</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Cách nhận biết trụ cột mục tiêu trong các câu hỏi kiến trúc</span>
+        <span class="lang-en">Identifying target pillars in scenario-based architectural questions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 ĐỌC KỸ ĐIỀU KIỆN TIÊN QUYẾT ĐỀ THI</span>
+          <span class="lang-en">📌 CAREFULLY READ EXAM MODIFIERS</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>"With the MOST operational efficiency" &rarr;</b> Ưu tiên chọn <b>Serverless hoặc Fully Managed Services</b> (ví dụ: Lambda, Aurora Serverless, S3, DynamoDB) thay vì tự cài đặt phần mềm trên EC2.</li>
+            <li><b>"At the LOWEST cost" &rarr;</b> Ưu tiên chọn <b>Spot Instances, S3 Intelligent-Tiering / Glacier, S3 Gateway Endpoints (miễn phí), SSM Parameter Store Standard (miễn phí)</b>.</li>
+            <li><b>"With the HIGHEST availability / resilience" &rarr;</b> Bắt buộc chọn <b>Multi-AZ hoặc Multi-Region</b> với Auto Scaling Groups trải dài trên tối thiểu 2-3 Availability Zones.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 CHIẾN THUẬT PHÂN TÍCH LỰA CHỌN</span>
+          <span class="lang-en">💡 ANSWER ELIMINATION STRATEGY</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Loại bỏ đáp án không thực tế:</b> Bất kỳ đáp án nào đề xuất cấu hình thủ công định kỳ (như "tạo script bash trên cron job" thay vì dùng EventBridge/DataSync) thường là đáp án sai.</li>
+            <li><b>Loại bỏ giải pháp vi phạm Least Privilege:</b> Đáp án dùng Root Account, cấp quyền `*` trên mọi tài nguyên, hoặc lưu hard-coded credentials trong code là đáp án sai về Security.</li>
+            <li><b>Tôn trọng nguyên tắc Decoupling:</b> Kiến trúc tốt trên AWS luôn sử dụng hàng đợi (SQS/Kinesis) để ngăn chặn hiệu ứng sụp đổ dây chuyền (Cascading Failure).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài giảng Udemy liên quan</span>
+        <span class="lang-en">Official AWS references and relevant Udemy lectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Giáo trình Udemy SAA-C03</span>
+        <span class="lang-en">🎓 Udemy SAA-C03 Syllabus</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 31: Whitepapers and Architectures</b><br>
+            <span class="lang-vi">Hướng dẫn đọc hiểu các Whitepapers quan trọng nhất của AWS cho kỳ thi SAA-C03.</span>
+            <span class="lang-en">Guidance on reviewing high-yield AWS Whitepapers for the SAA-C03 exam.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS Well-Architected Framework Whitepaper</b><br>
+            <span class="lang-vi">Tài liệu kiến trúc gốc phân tích chi tiết 6 trụ cột và các câu hỏi đánh giá chuẩn.</span>
+            <span class="lang-en">Original foundational whitepaper detailing all 6 pillars and assessment questions.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS Well-Architected Tool User Guide</b><br>
+            <span class="lang-vi">Hướng dẫn sử dụng công cụ Well-Architected Tool để tạo Workload và Milestone reviews.</span>
+            <span class="lang-en">User guide on managing Workloads, Milestones, and actionable remediation plans.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>AWS Well-Architected Framework Cheat Sheet</b><br>
+            <span class="lang-vi">Tóm tắt các điểm mấu chốt của 6 trụ cột thường xuất hiện trong đề thi.</span>
+            <span class="lang-en">Key exam summary of the 6 pillars and scenario design principles.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

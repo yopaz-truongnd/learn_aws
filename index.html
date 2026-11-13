@@ -31,14 +31,14 @@
 <!-- Quick Stats -->
 <div class="stats">
   <div class="stat-box">
-    <div class="stat-val">9</div>
+    <div class="stat-val">23</div>
     <div class="stat-lbl lang-vi">Chủ đề hoàn thành</div>
     <div class="stat-lbl lang-en">Completed Topics</div>
   </div>
   <div class="stat-box">
-    <div class="stat-val">16</div>
-    <div class="stat-lbl lang-vi">Chương trọng tâm</div>
-    <div class="stat-lbl lang-en">Core Modules</div>
+    <div class="stat-val">33</div>
+    <div class="stat-lbl lang-vi">Phần giáo trình Udemy</div>
+    <div class="stat-lbl lang-en">Udemy Sections</div>
   </div>
   <div class="stat-box">
     <div class="stat-val">86+</div>
@@ -227,20 +227,20 @@
       </div>
     </a>
 
-    <!-- Section 9 & 20: Databases -->
+    <!-- Section 9: RDS, Aurora, ElastiCache -->
     <a href="topics/aws_databases.html" class="module-item">
       <div class="module-left">
         <div class="module-icon" style="background:var(--blb)">🗄️</div>
         <div>
           <div class="module-title">
-            Section 9 &amp; 20: AWS Databases — RDS, Aurora, RDS Proxy, ElastiCache &amp; DynamoDB
+            Section 9: AWS Fundamentals — RDS, Aurora &amp; ElastiCache
             <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
           </div>
-          <div class="module-desc lang-vi">4-Point Cheat Sheet, RDS Multi-AZ vs Read Replicas, RDS Custom, Aurora (6 copies / Cloning), RDS Proxy, ElastiCache &amp; DynamoDB.</div>
-          <div class="module-desc lang-en">4-Point Cheat Sheet, RDS Multi-AZ vs Read Replicas, RDS Custom, Aurora (6 copies / Cloning), RDS Proxy, ElastiCache &amp; DynamoDB.</div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, RDS Multi-AZ vs Read Replicas, RDS Custom, Aurora 6 copies &amp; Cloning, RDS Proxy, ElastiCache (Redis vs Memcached).</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, RDS Multi-AZ vs Read Replicas, RDS Custom, Aurora 6 copies &amp; Cloning, RDS Proxy, ElastiCache (Redis vs Memcached).</div>
           <div style="font-size:11px;color:var(--bl);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 9 &amp; 20 (Lectures 87–100) · <code>lectures/section-09-rds-aurora-elasticache</code></span>
-            <span class="lang-en">📚 Source: Udemy Section 9 &amp; 20 (Lectures 87–100) · <code>lectures/section-09-rds-aurora-elasticache</code></span>
+            <span class="lang-vi">📚 Nguồn: Udemy Section 9 (Lectures 87–100) · <code>lectures/section-09-rds-aurora-elasticache</code></span>
+            <span class="lang-en">📚 Source: Udemy Section 9 (Lectures 87–100) · <code>lectures/section-09-rds-aurora-elasticache</code></span>
           </div>
         </div>
       </div>
@@ -273,21 +273,43 @@
       </div>
     </div>
 
-    <!-- Section 11 & 13: Amazon S3 -->
+    <!-- Section 11: Classic Solutions Architecture Discussions -->
+    <div class="module-item" style="opacity:.9">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--gy)">🏛️</div>
+        <div>
+          <div class="module-title">
+            Section 11: Classic Solutions Architecture Discussions
+            <span class="tag tb"><span class="lang-vi">Thảo luận</span><span class="lang-en">Discussions</span></span>
+          </div>
+          <div class="module-desc lang-vi">Mô hình kiến trúc Web 3 tầng cổ điển: Stateless web tier, Stateful user session, Database scaling, Caching strategy và thiết kế xử lý tải đột biến.</div>
+          <div class="module-desc lang-en">Classic 3-tier web architecture: Stateless web tier, Stateful user sessions, Database scaling, Caching strategy, and peak traffic absorption.</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 11 · SAA-C03 Classic Application Architecture Patterns</span>
+            <span class="lang-en">📚 Source: Udemy Section 11 · SAA-C03 Classic Application Architecture Patterns</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending"><span class="lang-vi">Ôn tập kiến trúc</span><span class="lang-en">Architecture Review</span></span>
+      </div>
+    </div>
+
+    <!-- Section 12-15: Amazon S3 -->
     <div class="module-item">
       <div class="module-left">
         <div class="module-icon" style="background:var(--blb)">🪣</div>
         <div>
           <div class="module-title">
-            <a href="topics/aws_s3.html" style="color:inherit;text-decoration:none">Section 11 &amp; 13: Amazon S3 &amp; Advanced Storage</a>
+            <a href="topics/aws_s3.html" style="color:inherit;text-decoration:none">Section 12, 13, 14 &amp; 15: Amazon S3 — Fundamentals, Advanced &amp; Security</a>
             <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
             <span class="tag tb">🧪 Lab S3 Web, CORS, MFA &amp; Athena</span>
           </div>
-          <div class="module-desc lang-vi">7 Tầng lưu trữ, Cây quyết định Mermaid, Lifecycle Rules, SSE Encryption, Object Lock (WORM), Nhân bản CRR &amp; Multipart Upload.</div>
-          <div class="module-desc lang-en">7 Storage Classes, Mermaid Decision Tree, Lifecycle Rules, SSE Encryption, Object Lock (WORM), CRR &amp; Multipart Upload.</div>
+          <div class="module-desc lang-vi">7 Tầng lưu trữ, Cây quyết định Mermaid, Lifecycle Rules, SSE Encryption (SSE-S3, KMS, SSE-C), Object Lock (WORM), Nhân bản CRR &amp; Multipart Upload.</div>
+          <div class="module-desc lang-en">7 Storage Classes, Mermaid Decision Tree, Lifecycle Rules, SSE Encryption (SSE-S3, KMS, SSE-C), Object Lock (WORM), CRR &amp; Multipart Upload.</div>
           <div style="font-size:11px;color:var(--bl);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 11 &amp; 13 · Lectures 26098336, 26098348, 26098360, 26098372, 26098384 · <code>aws_document/s3</code> &amp; <code>s3-advanced</code></span>
-            <span class="lang-en">📚 Source: Udemy Section 11 &amp; 13 · Lectures 26098336, 26098348, 26098360, 26098372, 26098384 · <code>aws_document/s3</code> &amp; <code>s3-advanced</code></span>
+            <span class="lang-vi">📚 Nguồn: Udemy Section 12–15 · Lectures 26098336–26098384 · <code>aws_document/s3</code> &amp; <code>s3-advanced</code></span>
+            <span class="lang-en">📚 Source: Udemy Section 12–15 · Lectures 26098336–26098384 · <code>aws_document/s3</code> &amp; <code>s3-advanced</code></span>
           </div>
         </div>
       </div>
@@ -297,20 +319,20 @@
       </div>
     </div>
 
-    <!-- Section 14: CloudFront & Accelerator -->
+    <!-- Section 16: CloudFront & Accelerator -->
     <a href="topics/aws_cloudfront.html" class="module-item">
       <div class="module-left">
         <div class="module-icon" style="background:var(--blb)">🚀</div>
         <div>
           <div class="module-title">
-            Section 14: CloudFront &amp; AWS Global Accelerator
+            Section 16: CloudFront &amp; AWS Global Accelerator
             <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
           </div>
-          <div class="module-desc lang-vi">CloudFront vs Global Accelerator, Cây quyết định Mermaid, Origin Access Control (OAC), Signed URLs/Cookies &amp; Edge Functions.</div>
-          <div class="module-desc lang-en">CloudFront vs Global Accelerator, Mermaid Decision Tree, Origin Access Control (OAC), Signed URLs/Cookies &amp; Edge Functions.</div>
+          <div class="module-desc lang-vi">CloudFront vs Global Accelerator Anycast IP, Cây quyết định Mermaid, Origin Access Control (OAC), Signed URLs/Cookies &amp; CloudFront Functions.</div>
+          <div class="module-desc lang-en">CloudFront vs Global Accelerator Anycast IP, Mermaid Decision Tree, Origin Access Control (OAC), Signed URLs/Cookies &amp; CloudFront Functions.</div>
           <div style="font-size:11px;color:var(--bl);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 14 · Lectures 26098394, 26098404, 26098414, 26098424</span>
-            <span class="lang-en">📚 Source: Udemy Section 14 · Lectures 26098394, 26098404, 26098414, 26098424</span>
+            <span class="lang-vi">📚 Nguồn: Udemy Section 16 · Lectures 26098394, 26098404, 26098414, 26098424</span>
+            <span class="lang-en">📚 Source: Udemy Section 16 · Lectures 26098394, 26098404, 26098414, 26098424</span>
           </div>
         </div>
       </div>
@@ -319,91 +341,359 @@
       </div>
     </a>
 
-    <!-- Section 16: Decoupling -->
-    <a href="topics/lab_decoupling.html" class="module-item">
+    <!-- Section 17: AWS Storage Extras -->
+    <a href="topics/aws_storage_extras.html" class="module-item">
       <div class="module-left">
-        <div class="module-icon" style="background:var(--grb)">📬</div>
+        <div class="module-icon" style="background:var(--blb)">📦</div>
         <div>
           <div class="module-title">
-            Section 16: Decoupling Applications (SQS, SNS, Kinesis, MQ)
-            <span class="tag tg"><span class="lang-vi">Đã có Lab</span><span class="lang-en">Lab Ready</span></span>
+            Section 17: AWS Storage Extras (FSx, Storage Gateway &amp; Snow Family)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
           </div>
-          <div class="module-desc lang-vi">Queue decoupling (SQS Standard vs FIFO, Visibility Timeout, Long Polling), Real-time streaming (Kinesis Producer &amp; Consumer Shards).</div>
-          <div class="module-desc lang-en">Queue decoupling (SQS Standard vs FIFO, Visibility Timeout, Long Polling), Real-time streaming (Kinesis Producer &amp; Consumer Shards).</div>
+          <div class="module-desc lang-vi">Amazon FSx (Windows SMB/AD, Lustre HPC S3, ONTAP, OpenZFS), AWS Storage Gateway (File, Volume, Tape VTL) &amp; Snow Family (Snowcone, Snowball, Snowmobile).</div>
+          <div class="module-desc lang-en">Amazon FSx (Windows SMB/AD, Lustre HPC S3, ONTAP, OpenZFS), AWS Storage Gateway (File, Volume, Tape VTL) &amp; Snow Family (Snowcone, Snowball, Snowmobile).</div>
           <div style="font-size:11px;color:var(--bl);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 16 · <code>aws_document/sqs/sqs.sh</code> &amp; <code>aws_document/kinesis/kinesis-data-streams.sh</code></span>
-            <span class="lang-en">📚 Source: Udemy Section 16 · <code>aws_document/sqs/sqs.sh</code> &amp; <code>aws_document/kinesis/kinesis-data-streams.sh</code></span>
+            <span class="lang-vi">📚 Nguồn: Udemy Section 17: AWS Storage Extras · SAA-C03 Hybrid &amp; Specialized Storage</span>
+            <span class="lang-en">📚 Source: Udemy Section 17: AWS Storage Extras · SAA-C03 Hybrid &amp; Specialized Storage</span>
           </div>
         </div>
       </div>
       <div class="module-right">
-        <span class="btn-open"><span class="lang-vi">🧪 Mở bài thực hành →</span><span class="lang-en">🧪 Open Lab →</span></span>
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
       </div>
     </a>
 
-    <!-- Section 17: Containers -->
-    <div class="module-item" style="opacity:.85">
+    <!-- Section 18: Decoupling -->
+    <div class="module-item">
       <div class="module-left">
-        <div class="module-icon" style="background:var(--gy)">🐳</div>
+        <div class="module-icon" style="background:var(--blb)">📬</div>
         <div>
           <div class="module-title">
-            Section 17: Containers on AWS (ECS, Fargate, ECR, EKS)
-            <span class="tag ty"><span class="lang-vi">Dự kiến</span><span class="lang-en">Planned</span></span>
+            <a href="topics/aws_decoupling.html" style="color:inherit;text-decoration:none">Section 18: Decoupling Applications (SQS, SNS, Kinesis, MQ)</a>
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+            <span class="tag tb">🧪 Lab SQS &amp; Kinesis CLI</span>
           </div>
-          <div class="module-desc lang-vi">Docker container orchestration, ECS EC2 Launch Type vs Serverless Fargate, Kubernetes trên EKS.</div>
-          <div class="module-desc lang-en">Docker container orchestration, ECS EC2 Launch Type vs Serverless Fargate, Kubernetes on EKS.</div>
-          <div style="font-size:11px;color:var(--mu);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 17: Containers on AWS: ECS, Fargate, ECR, EKS</span>
-            <span class="lang-en">📚 Source: Udemy Section 17: Containers on AWS: ECS, Fargate, ECR, EKS</span>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, SQS Standard vs FIFO, Visibility Timeout, DLQ, SNS Pub/Sub Fan-out, Kinesis Shards &amp; Amazon MQ.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, SQS Standard vs FIFO, Visibility Timeout, DLQ, SNS Pub/Sub Fan-out, Kinesis Shards &amp; Amazon MQ.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 18 · <code>aws_document/sqs/sqs.sh</code> &amp; <code>aws_document/kinesis/kinesis-data-streams.sh</code></span>
+            <span class="lang-en">📚 Source: Udemy Section 18 · <code>aws_document/sqs/sqs.sh</code> &amp; <code>aws_document/kinesis/kinesis-data-streams.sh</code></span>
           </div>
         </div>
       </div>
       <div class="module-right">
-        <span class="btn-pending"><span class="lang-vi">Sắp ra mắt</span><span class="lang-en">Coming Soon</span></span>
+        <a href="topics/lab_decoupling.html" class="nav-back" style="background:var(--grb);color:var(--gr)"><span class="lang-vi">🧪 Thực hành</span><span class="lang-en">🧪 Lab</span></a>
+        <a href="topics/aws_decoupling.html" class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></a>
       </div>
     </div>
 
-    <!-- Section 18: Serverless -->
-    <a href="topics/lab_serverless.html" class="module-item">
+    <!-- Section 19: Containers -->
+    <a href="topics/aws_containers.html" class="module-item">
       <div class="module-left">
-        <div class="module-icon" style="background:var(--grb)">⚡</div>
+        <div class="module-icon" style="background:var(--blb)">🐳</div>
         <div>
           <div class="module-title">
-            Section 18 &amp; 19: Serverless (Lambda, API Gateway, Step Functions)
-            <span class="tag tg"><span class="lang-vi">Đã có Lab</span><span class="lang-en">Lab Ready</span></span>
+            Section 19: Containers on AWS (ECS, Fargate, ECR, EKS)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
           </div>
-          <div class="module-desc lang-vi">Event-driven compute với Python Lambda Function, tích hợp Lambda Proxy Integration trên Amazon API Gateway REST API.</div>
-          <div class="module-desc lang-en">Event-driven compute with Python Lambda Function, Lambda Proxy Integration on Amazon API Gateway REST API.</div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, ECS EC2 vs Fargate Serverless, Task Role vs Execution Role, EFS Persistent Storage &amp; Kubernetes EKS.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, ECS EC2 vs Fargate Serverless, Task Role vs Execution Role, EFS Persistent Storage &amp; Kubernetes EKS.</div>
           <div style="font-size:11px;color:var(--bl);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 18 &amp; 19 · <code>aws_document/api-gateway/lambda-code.py</code></span>
-            <span class="lang-en">📚 Source: Udemy Section 18 &amp; 19 · <code>aws_document/api-gateway/lambda-code.py</code></span>
+            <span class="lang-vi">📚 Nguồn: Udemy Section 19: Containers on AWS: ECS, Fargate, ECR, EKS</span>
+            <span class="lang-en">📚 Source: Udemy Section 19: Containers on AWS: ECS, Fargate, ECR, EKS</span>
           </div>
         </div>
       </div>
       <div class="module-right">
-        <span class="btn-open"><span class="lang-vi">🧪 Mở bài thực hành →</span><span class="lang-en">🧪 Open Lab →</span></span>
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
       </div>
     </a>
 
-    <!-- Section 25: VPC & Networking -->
-    <div class="module-item" style="opacity:.85">
+    <!-- Section 20 & 21: Serverless -->
+    <div class="module-item">
       <div class="module-left">
-        <div class="module-icon" style="background:var(--gy)">🌐</div>
+        <div class="module-icon" style="background:var(--blb)">⚡</div>
         <div>
           <div class="module-title">
-            Section 25: Networking — Virtual Private Cloud (VPC)
-            <span class="tag ty"><span class="lang-vi">Dự kiến</span><span class="lang-en">Planned</span></span>
+            <a href="topics/aws_serverless.html" style="color:inherit;text-decoration:none">Section 20 &amp; 21: Serverless Architecture (Lambda, API Gateway, Step Functions &amp; Cognito)</a>
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+            <span class="tag tb">🧪 Lab Lambda &amp; API GW</span>
           </div>
-          <div class="module-desc lang-vi">CIDR, Public/Private Subnets, Internet Gateway, NAT Gateway, NACLs vs SG, VPC Peering, Transit Gateway.</div>
-          <div class="module-desc lang-en">CIDR, Public/Private Subnets, Internet Gateway, NAT Gateway, NACLs vs SG, VPC Peering, Transit Gateway.</div>
-          <div style="font-size:11px;color:var(--mu);margin-top:4px">
-            <span class="lang-vi">📚 Nguồn: Udemy Section 25: Networking - VPC</span>
-            <span class="lang-en">📚 Source: Udemy Section 25: Networking - VPC</span>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, Lambda Limits (15 phút, 10GB RAM), Cold Starts, API Gateway (HTTP vs REST), Step Functions &amp; Cognito (CUP vs Identity Pools).</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, Lambda Limits (15 mins, 10GB RAM), Cold Starts, API Gateway (HTTP vs REST), Step Functions &amp; Cognito (CUP vs Identity Pools).</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 20 &amp; 21 · <code>aws_document/api-gateway/lambda-code.py</code></span>
+            <span class="lang-en">📚 Source: Udemy Section 20 &amp; 21 · <code>aws_document/api-gateway/lambda-code.py</code></span>
           </div>
         </div>
       </div>
       <div class="module-right">
-        <span class="btn-pending"><span class="lang-vi">Sắp ra mắt</span><span class="lang-en">Coming Soon</span></span>
+        <a href="topics/lab_serverless.html" class="nav-back" style="background:var(--grb);color:var(--gr)"><span class="lang-vi">🧪 Thực hành</span><span class="lang-en">🧪 Lab</span></a>
+        <a href="topics/aws_serverless.html" class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></a>
+      </div>
+    </div>
+
+    <!-- Section 22: Databases in AWS (Deep Dive) -->
+    <a href="topics/aws_databases.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">📊</div>
+        <div>
+          <div class="module-title">
+            Section 22: Databases in AWS (DynamoDB, DAX, Redshift, OpenSearch, Neptune &amp; DocumentDB)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">Cơ sở dữ liệu NoSQL DynamoDB (DAX, Global Tables, TTL, Streams), Redshift OLAP Data Warehouse, OpenSearch tìm kiếm &amp; Neptune Graph DB.</div>
+          <div class="module-desc lang-en">NoSQL DynamoDB (DAX, Global Tables, TTL, Streams), Redshift OLAP Data Warehouse, OpenSearch search engine &amp; Neptune Graph DB.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 22 · Đã tích hợp trong <code>topics/aws_databases.html</code></span>
+            <span class="lang-en">📚 Source: Udemy Section 22 · Integrated in <code>topics/aws_databases.html</code></span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 23: Data & Analytics -->
+    <a href="topics/aws_analytics.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">📈</div>
+        <div>
+          <div class="module-title">
+            Section 23: Data &amp; Analytics (Athena, Glue, EMR, Redshift &amp; QuickSight)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, Serverless SQL Athena trên S3, Glue Data Catalog/ETL, EMR Spot Task Nodes &amp; Redshift Spectrum.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, Serverless SQL Athena on S3, Glue Data Catalog/ETL, EMR Spot Task Nodes &amp; Redshift Spectrum.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 23: Data &amp; Analytics</span>
+            <span class="lang-en">📚 Source: Udemy Section 23: Data &amp; Analytics</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 24: AWS Monitoring & Audit -->
+    <a href="topics/aws_monitoring.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--pib)">📡</div>
+        <div>
+          <div class="module-title">
+            Section 24: AWS Monitoring &amp; Audit (CloudWatch, CloudTrail &amp; Config)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, CloudWatch Metrics/Alarms/Logs Insights, CloudTrail API Audit &amp; AWS Config Compliance Rules.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, CloudWatch Metrics/Alarms/Logs Insights, CloudTrail API Audit &amp; AWS Config Compliance Rules.</div>
+          <div style="font-size:11px;color:var(--pi);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 24: AWS Monitoring &amp; Audit: CloudWatch, CloudTrail &amp; Config</span>
+            <span class="lang-en">📚 Source: Udemy Section 24: AWS Monitoring &amp; Audit: CloudWatch, CloudTrail &amp; Config</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 25: IAM - Advanced -->
+    <a href="topics/aws_iam_advanced.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--pib)">🛡️</div>
+        <div>
+          <div class="module-title">
+            Section 25: Identity and Access Management (IAM) - Advanced
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, AWS Organizations &amp; SCP Guardrails, IAM Permission Boundaries, AWS IAM Identity Center &amp; Active Directory.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, AWS Organizations &amp; SCP Guardrails, IAM Permission Boundaries, AWS IAM Identity Center &amp; Active Directory.</div>
+          <div style="font-size:11px;color:var(--pi);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 25: Identity and Access Management (IAM) - Advanced</span>
+            <span class="lang-en">📚 Source: Udemy Section 25: Identity and Access Management (IAM) - Advanced</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 26: AWS Security & Encryption -->
+    <a href="topics/aws_security.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--grb)">🔐</div>
+        <div>
+          <div class="module-title">
+            Section 26: AWS Security &amp; Encryption (KMS, SSM Parameter Store, Shield, WAF)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, Envelope Encryption KMS, SSM vs Secrets Manager, WAF Layer 7, Shield DDoS &amp; Bộ ba AI GuardDuty/Inspector/Macie (Kèm Lab thực hành).</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, KMS Envelope Encryption, SSM vs Secrets Manager, WAF Layer 7, Shield DDoS &amp; GuardDuty/Inspector/Macie AI Triad (Includes Hands-on Lab).</div>
+          <div style="font-size:11px;color:var(--gr);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 26 · Kèm Lab: <a href="topics/lab_security_ssm_kms.html" style="color:var(--gr);text-decoration:underline">lab_security_ssm_kms.html</a></span>
+            <span class="lang-en">📚 Source: Udemy Section 26 · Includes Lab: <a href="topics/lab_security_ssm_kms.html" style="color:var(--gr);text-decoration:underline">lab_security_ssm_kms.html</a></span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 27: Networking - VPC -->
+    <a href="topics/aws_vpc.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">🌐</div>
+        <div>
+          <div class="module-title">
+            Section 27: Networking — Virtual Private Cloud (VPC)
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, CIDR, Public/Private Subnets, NAT Gateway, NACLs vs SG, S3 Gateway vs Interface Endpoints &amp; Transit Gateway.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, CIDR, Public/Private Subnets, NAT Gateway, NACLs vs SG, S3 Gateway vs Interface Endpoints &amp; Transit Gateway.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 27: Networking - VPC</span>
+            <span class="lang-en">📚 Source: Udemy Section 27: Networking - VPC</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 28: Disaster Recovery & Migrations -->
+    <a href="topics/aws_disaster_recovery.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--pib)">🔄</div>
+        <div>
+          <div class="module-title">
+            Section 28: Disaster Recovery &amp; Migrations
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, 4 chiến lược DR (Backup &amp; Restore, Pilot Light, Warm Standby, Multi-Site), RPO vs RTO, AWS DRS, DMS &amp; DataSync.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, 4 DR Strategies (Backup &amp; Restore, Pilot Light, Warm Standby, Multi-Site), RPO vs RTO, AWS DRS, DMS &amp; DataSync.</div>
+          <div style="font-size:11px;color:var(--pi);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 28: Disaster Recovery &amp; Migrations</span>
+            <span class="lang-en">📚 Source: Udemy Section 28: Disaster Recovery &amp; Migrations</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 29: More Solution Architectures -->
+    <a href="topics/aws_solution_architectures.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">📐</div>
+        <div>
+          <div class="module-title">
+            Section 29: More Solution Architectures
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, Kiến trúc HPC (EFA, Cluster Placement, FSx for Lustre), Caching đa tầng, SNS Fan-out &amp; Global Accelerator.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, HPC Architectures (EFA, Cluster Placement, FSx for Lustre), Multi-Tier Caching, SNS Fan-out &amp; Global Accelerator.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 29: More Solution Architectures</span>
+            <span class="lang-en">📚 Source: Udemy Section 29: More Solution Architectures</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 30: Other Services -->
+    <a href="topics/aws_other_services.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--pib)">🧩</div>
+        <div>
+          <div class="module-title">
+            Section 30: Other Services
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, GraphQL AWS AppSync, Máy tính ảo WorkSpaces, AppStream 2.0, Tích hợp SaaS AppFlow &amp; Amazon SES.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, GraphQL AWS AppSync, Virtual Desktops WorkSpaces, AppStream 2.0, SaaS AppFlow &amp; Amazon SES.</div>
+          <div style="font-size:11px;color:var(--pi);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 30: Other Services</span>
+            <span class="lang-en">📚 Source: Udemy Section 30: Other Services</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 31: Whitepapers and Architectures -->
+    <a href="topics/aws_whitepapers.html" class="module-item">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">📜</div>
+        <div>
+          <div class="module-title">
+            Section 31: Whitepapers &amp; Architectures
+            <span class="tag tg"><span class="lang-vi">Đã có</span><span class="lang-en">Available</span></span>
+          </div>
+          <div class="module-desc lang-vi">4-Point Cheat Sheet, AWS Well-Architected Framework (6 Trụ cột: Vận hành, Bảo mật, Tin cậy, Hiệu năng, Chi phí, Bền vững) &amp; Well-Architected Tool.</div>
+          <div class="module-desc lang-en">4-Point Cheat Sheet, AWS Well-Architected Framework (6 Pillars: Ops, Security, Reliability, Performance, Cost, Sustainability) &amp; Well-Architected Tool.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 31: WhitePapers and Architectures</span>
+            <span class="lang-en">📚 Source: Udemy Section 31: WhitePapers and Architectures</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open"><span class="lang-vi">Mở bài học →</span><span class="lang-en">Open Topic →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 32: Preparing for the Exam + Practice Exam -->
+    <a href="topics/aws_practice_exam.html" class="module-item" style="background:linear-gradient(90deg,var(--card),var(--sub));border:1.5px solid var(--bl)">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--blb)">🎓</div>
+        <div>
+          <div class="module-title" style="color:var(--bl)">
+            Section 32: Preparing for the Exam + Practice Exam
+            <span class="tag tg"><span class="lang-vi">Tập thi / Luyện đề</span><span class="lang-en">Practice Exam</span></span>
+          </div>
+          <div class="module-desc lang-vi">Chiến thuật làm bài thi SAA-C03, cách nhận diện từ khóa đề bài, phân tích bẫy câu hỏi tình huống &amp; Đề thi thử hoàn chỉnh 65 câu tính giờ chuẩn đề thật.</div>
+          <div class="module-desc lang-en">SAA-C03 exam strategy, keyword detection in scenario questions, question trap analysis &amp; Full-length 65-question timed practice exam.</div>
+          <div style="font-size:11px;color:var(--bl);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 32: Preparing for the Exam + Practice Exam</span>
+            <span class="lang-en">📚 Source: Udemy Section 32: Preparing for the Exam + Practice Exam</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-open" style="background:var(--bl)"><span class="lang-vi">Luyện đề thi →</span><span class="lang-en">Take Exam →</span></span>
+      </div>
+    </a>
+
+    <!-- Section 33: Congratulations & Next Steps -->
+    <div class="module-item" style="opacity:.9">
+      <div class="module-left">
+        <div class="module-icon" style="background:var(--orb)">🏆</div>
+        <div>
+          <div class="module-title">
+            Section 33: Congratulations &amp; Next Steps
+            <span class="tag to"><span class="lang-vi">Tổng kết</span><span class="lang-en">Completion</span></span>
+          </div>
+          <div class="module-desc lang-vi">Tổng kết thành quả chứng chỉ AWS SAA-C03, hướng dẫn nhận huy hiệu kỹ thuật số Credly và lộ trình nâng cao cấp độ Solutions Architect Professional (SAP-C02) &amp; Specialty.</div>
+          <div class="module-desc lang-en">AWS SAA-C03 certification milestone recap, Credly digital badge guidance, and roadmap towards Solutions Architect Professional (SAP-C02) &amp; Specialty.</div>
+          <div style="font-size:11px;color:var(--or);margin-top:4px">
+            <span class="lang-vi">📚 Nguồn: Udemy Section 33: Congratulations - AWS Certified Solutions Architect Associate</span>
+            <span class="lang-en">📚 Source: Udemy Section 33: Congratulations - AWS Certified Solutions Architect Associate</span>
+          </div>
+        </div>
+      </div>
+      <div class="module-right">
+        <span class="btn-pending"><span class="lang-vi">Về đích</span><span class="lang-en">Finish Line</span></span>
       </div>
     </div>
 

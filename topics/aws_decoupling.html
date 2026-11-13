@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Decoupling — SQS, SNS, Kinesis &amp; Amazon MQ — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+    <a href="lab_decoupling.html" class="nav-back" style="background:var(--grb);color:var(--gr)">
+      <span class="lang-vi">🧪 Thực hành Lab: SQS &amp; Kinesis CLI →</span>
+      <span class="lang-en">🧪 Hands-On Lab: SQS &amp; Kinesis CLI →</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 18 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Application Integration &amp; Messaging</div>
+  <h1>AWS Decoupling Applications — SQS, SNS, Kinesis &amp; Amazon MQ</h1>
+  <p class="lang-vi">Kiến trúc tách rời hệ thống (Decoupling), Hàng đợi tin nhắn phân tán, Mô hình phát tán thông báo Fan-out và Xử lý luồng dữ liệu thời gian thực cho AWS SAA-C03</p>
+  <p class="lang-en">System decoupling architectures, distributed message queues, Pub/Sub Fan-out patterns, and real-time streaming data processing for AWS SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · 6 con số vàng phải thuộc</span>
+        <span class="lang-en">Essential Exam Traps · Keyword &rarr; Answer Mapping · 6 Critical Numbers to Memorize</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Mode Toolbar -->
+  <div class="study-toolbar">
+    <button class="study-btn study-btn-exam" onclick="toggleExamFocus(this)">
+      <span>🎯</span>
+      <span class="lang-vi">Chỉ hiện Điểm hay bị hỏi</span>
+      <span class="lang-en">Focus Exam Traps Only</span>
+    </button>
+    <button class="study-btn" onclick="toggleHideAnswers(this)">
+      <span>👁️</span>
+      <span class="lang-vi">Chế độ Flashcard (Ẩn đáp án)</span>
+      <span class="lang-en">Flashcard Mode (Blur Answers)</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div class="study-focus-banner">
+    <div>
+      <span>🎯 </span>
+      <span class="lang-vi"><b>Chế độ Lọc Đề thi đang BẬT:</b> Đã ẩn toàn bộ lý thuyết nền tảng &amp; tài liệu tham khảo, chỉ hiển thị Bẫy đề thi, Nguyên tắc vàng &amp; Bảng từ khóa.</span>
+      <span class="lang-en"><b>Exam Focus Filter Active:</b> General theory &amp; reference cards hidden. Only Exam Traps, Golden Rules &amp; Keywords shown.</span>
+    </div>
+    <button type="button" class="study-btn" onclick="toggleExamFocus()" style="white-space:nowrap;cursor:pointer;background:var(--card)">
+      <span class="lang-vi">✕ Hiện lại toàn bộ</span>
+      <span class="lang-en">✕ Show All Cards</span>
+    </button>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">🔴 6 Con số vàng &amp; Bẫy đề cốt lõi</span>
+          <span class="lang-en">🔴 6 Golden Numbers &amp; Core Exam Traps</span>
+        </b>
+        <span class="lang-vi">
+          • <b>256 KB:</b> Kích thước tin nhắn tối đa của cả SQS và SNS. Nếu tin &gt; 256 KB &rarr; dùng <b>Amazon S3 Java Extended Client</b> (file lưu trên S3, SQS chỉ giữ con trỏ/pointer).<br>
+          • <b>30 giây &rarr; 12 giờ:</b> <i>Visibility Timeout</i> mặc định là 30s. Nếu consumer cần nhiều thời gian hơn để xử lý &rarr; phải gọi API <code>ChangeMessageVisibility</code> để gia hạn, tránh bị consumer khác đọc trùng.<br>
+          • <b>14 ngày:</b> Thời gian lưu trữ tin nhắn tối đa (Message Retention) của SQS (mặc định 4 ngày).<br>
+          • <b>1 Shard Kinesis = 1 MB/s hoặc 1.000 records/s (Write) và 2 MB/s (Read):</b> Bị lỗi <code>ProvisionedThroughputExceededException</code> &rarr; tăng thêm Shard (Split) hoặc đổi Partition Key phân bố đều hơn.<br>
+          • <b>SNS + SQS Fan-Out:</b> Đẩy 1 tin nhắn từ SNS Topic tới nhiều hàng đợi SQS độc lập. Giúp mở rộng xử lý bất đồng bộ không làm mất dữ liệu.<br>
+          • <b>Amazon MQ:</b> Dùng khi di chuyển ứng dụng doanh nghiệp có sẵn (Legacy/On-prem) sử dụng giao thức <b>JMS, AMQP, MQTT, STOMP</b> mà không muốn viết lại code.
+        </span>
+        <span class="lang-en">
+          • <b>256 KB:</b> Maximum payload size for both SQS and SNS. For payloads &gt; 256 KB &rarr; use <b>Amazon S3 Java Extended Client</b> (store payload in S3, SQS keeps pointer metadata).<br>
+          • <b>30s &rarr; 12 hours:</b> Default <i>Visibility Timeout</i> is 30s. If a worker needs more time &rarr; call <code>ChangeMessageVisibility</code> API to prevent duplicate reads.<br>
+          • <b>14 days:</b> Maximum message retention in SQS (default is 4 days).<br>
+          • <b>1 Kinesis Shard = 1 MB/s or 1,000 records/s (Write) and 2 MB/s (Read):</b> Seeing <code>ProvisionedThroughputExceededException</code> &rarr; split shards or use highly distributed partition keys.<br>
+          • <b>SNS + SQS Fan-Out:</b> Push 1 message to multiple independent SQS queues. Asynchronous decoupling with guaranteed delivery.<br>
+          • <b>Amazon MQ:</b> Managed broker for legacy applications migrating from on-premise using <b>JMS, AMQP, MQTT, STOMP</b> without application rewrites.
+        </span>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="lang-vi">Tình huống / Từ khóa trong đề thi SAA-C03</span>
+              <span class="lang-en">Exam Scenario / Keyword Pattern</span>
+            </th>
+            <th>
+              <span class="lang-vi">Dịch vụ / Đáp án cốt lõi</span>
+              <span class="lang-en">Target Service / Core Answer</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="lang-vi">Ứng dụng web cần lưu đệm request, tải tăng đột biến, xử lý bất đồng bộ, người nhận tự kéo (pull) tin</span>
+              <span class="lang-en">Web app needs buffering against traffic spikes, asynchronous processing, workers pull messages</span>
+            </td>
+            <td><span class="kw-target">Amazon SQS Standard</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Hệ thống tài chính/giao dịch ngân hàng yêu cầu nghiêm ngặt <b>đúng thứ tự</b> và <b>không được trùng lặp</b></span>
+              <span class="lang-en">Financial/banking transactions requiring strict <b>ordering</b> and <b>strictly no duplicates</b></span>
+            </td>
+            <td><span class="kw-target">Amazon SQS FIFO Queue</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Gửi một thông báo đơn lẻ lập tức phát tán đồng thời tới nhiều dịch vụ (email, SMS, Lambda, SQS)</span>
+              <span class="lang-en">Publish single notification immediately fanning out to multiple subscribers (email, SMS, Lambda, SQS)</span>
+            </td>
+            <td><span class="kw-target">Amazon SNS (Pub/Sub)</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Thu thập và phân tích dữ liệu lớn thời gian thực từ hàng triệu thiết bị IoT hoặc clickstream của website</span>
+              <span class="lang-en">Real-time big data ingestion and analytics from millions of IoT devices or website clickstreams</span>
+            </td>
+            <td><span class="kw-target">Amazon Kinesis Data Streams</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Nạp dữ liệu luồng vào S3, Redshift hoặc OpenSearch với cấu hình hoàn toàn Serverless, không cần viết code consumer</span>
+              <span class="lang-en">Serverless ingestion into S3, Redshift, or OpenSearch without writing consumer processing code</span>
+            </td>
+            <td><span class="kw-target">Amazon Kinesis Data Firehose</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="lang-vi">Di chuyển ứng dụng sử dụng giao thức chuẩn công nghiệp (ActiveMQ, RabbitMQ, JMS, MQTT) mà không viết lại code</span>
+              <span class="lang-en">Migrate application relying on industry-standard protocols (ActiveMQ, RabbitMQ, JMS, MQTT) with zero rewrites</span>
+            </td>
+            <td><span class="kw-target">Amazon MQ</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 0. TÓM TẮT NHANH DỊCH VỤ (Service Cheat Sheet - 4 tiêu chí SAA-C03) -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🧭</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tóm tắt nhanh dịch vụ — Section 18 (SAA-C03 Service Cheat Sheet)</span>
+        <span class="lang-en">Quick Service Cheat Sheet — Section 18 (SAA-C03 4-Point Summary)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">4 tiêu chí cốt lõi: Là gì (Xanh dương) · Dùng khi nào (Xanh lá) · Khác gì (Cam) · Bẫy thi (Đỏ)</span>
+        <span class="lang-en">4 core exam criteria: Definition (Blue) · When to use (Green) · Differences (Amber) · Traps &amp; Keywords (Red)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- COL 1: Amazon SQS -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📬 1. Amazon SQS</span>
+        <span class="lang-en">📬 1. Amazon SQS</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Hàng đợi tin nhắn phân tán hoàn toàn được quản lý (Fully Managed Distributed Message Queue). Hoạt động theo mô hình <b>Pull-based</b>: Producer gửi tin vào queue, Consumer chủ động pull tin về xử lý rồi gọi lệnh xóa tin (Delete).</p>
+        <p class="lang-en">Fully managed distributed message queue operating on a <b>Pull-based</b> model: Producers push messages to queue, Consumers poll messages, process them, and explicitly delete them.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi cần tách rời (decouple) hai tầng ứng dụng (ví dụ Web Tier và Worker Tier), lưu đệm yêu cầu khi lưu lượng truy cập tăng vọt, chống quá tải cơ sở dữ liệu hoặc xử lý tác vụ tốn thời gian ở hậu cảnh.</p>
+        <p class="lang-en">Decoupling application layers (e.g. Web Tier from Worker Tier), absorbing unpredictable traffic spikes (buffering), protecting backends, and offloading asynchronous heavy tasks.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">• <b>Standard Queue:</b> Throughput vô hạn, phân phối ít nhất 1 lần (at-least-once delivery), thứ tự có thể xáo trộn.<br>• <b>FIFO Queue:</b> Đúng thứ tự nghiêm ngặt (First-In-First-Out), phân phối chính xác 1 lần (exactly-once), throughput 300–3.000 msg/s.</p>
+        <p class="lang-en">• <b>Standard Queue:</b> Unlimited throughput, at-least-once delivery, best-effort ordering.<br>• <b>FIFO Queue:</b> Strict ordering (FIFO), exactly-once processing, 300–3,000 msgs/s (up to 30,000 with high-throughput mode).</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Consumer xử lý xong mà không gọi <code>DeleteMessage</code> &rarr; Tin nhắn sẽ xuất hiện trở lại trong queue sau khi hết Visibility Timeout! Luôn bật <b>Long Polling</b> (1–20s) để giảm chi phí API rỗng.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> Forgetting to invoke <code>DeleteMessage</code> post-processing causes message to reappear once Visibility Timeout expires! Always enable <b>Long Polling</b> (1–20s) to minimize empty poll costs.</p>
+      </div>
+    </div>
+
+    <!-- COL 2: Amazon SNS -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📢 2. Amazon SNS</span>
+        <span class="lang-en">📢 2. Amazon SNS</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Dịch vụ gửi thông báo theo mô hình <b>Publish/Subscribe (Pub/Sub)</b> hoàn toàn được quản lý. Hoạt động theo cơ chế <b>Push-based</b>: Một Producer gửi tin vào Topic, hệ thống tự động đẩy tin đồng thời tới hàng ngàn Subscriber.</p>
+        <p class="lang-en">Fully managed <b>Publish/Subscribe (Pub/Sub)</b> notification service. Operates on a <b>Push-based</b> model: A single Producer publishes to a Topic, immediately fanning out to thousands of Subscribers.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi một sự kiện xảy ra cần kích hoạt đồng thời nhiều hành động khác nhau (mô hình <b>Fan-out</b>), hoặc gửi thông báo trực tiếp cho người dùng qua SMS, Email thoại, thông báo di động (Mobile Push).</p>
+        <p class="lang-en">Triggering multiple downstream systems concurrently upon a single event (<b>Fan-out pattern</b>), or sending direct end-user notifications via SMS, Email, and Mobile Push.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">SNS không lưu trữ tin nhắn (không có persistence/buffer). Nếu Subscriber offline và không hỗ trợ retry &rarr; tin nhắn bị mất. Muốn lưu trữ an toàn phải kết hợp <b>SNS + SQS Fan-out</b>.</p>
+        <p class="lang-en">SNS has no built-in message persistence buffer. If a subscriber is down without delivery retry &rarr; message is lost. Combine <b>SNS + SQS Fan-out</b> for durable asynchronous processing.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Muốn một hàng đợi chỉ nhận một số loại tin nhắn nhất định từ SNS Topic &rarr; Sử dụng <b>SNS Message Filtering Policy</b> (lọc ở phía SNS), không lọc thủ công ở code ứng dụng.</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> To restrict a queue from receiving irrelevant messages from an SNS Topic &rarr; Apply <b>SNS Message Filtering Policies</b> (server-side filter), avoiding custom code filtering.</p>
+      </div>
+    </div>
+
+    <!-- COL 3: Amazon Kinesis -->
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🌊 3. Amazon Kinesis</span>
+        <span class="lang-en">🌊 3. Amazon Kinesis</span>
+      </div>
+      <div class="tier tier-def">
+        <div class="tier-tag">
+          <span class="lang-vi">Là gì? (Definition)</span>
+          <span class="lang-en">What is it?</span>
+        </div>
+        <p class="lang-vi">Nền tảng xử lý dữ liệu luồng phân tán thời gian thực (Real-time Streaming Platform) quy mô lớn. Hoạt động dựa trên khái niệm <b>Shards</b> (phân mảnh dữ liệu) và duy trì bản ghi theo thứ tự thời gian.</p>
+        <p class="lang-en">Distributed platform for collecting, processing, and analyzing real-time streaming data at massive scale. Built on <b>Shards</b> with sequential, time-ordered record retention.</p>
+      </div>
+      <div class="tier tier-use">
+        <div class="tier-tag">
+          <span class="lang-vi">Dùng khi nào? (When to use)</span>
+          <span class="lang-en">When to use?</span>
+        </div>
+        <p class="lang-vi">Khi cần thu thập hàng trăm nghìn sự kiện/giây từ thiết bị IoT, log truy cập máy chủ, nhật ký giao dịch thương mại điện tử, số liệu tài chính thời gian thực để phân tích ngay lập tức hoặc phát hiện gian lận.</p>
+        <p class="lang-en">Ingesting hundreds of thousands of events/sec from IoT telemetry, server logs, real-time e-commerce clickstreams, and financial tickers for sub-second processing or fraud detection.</p>
+      </div>
+      <div class="tier tier-diff">
+        <div class="tier-tag">
+          <span class="lang-vi">Khác gì? (Key Differences)</span>
+          <span class="lang-en">Key Differences</span>
+        </div>
+        <p class="lang-vi">• <b>Data Streams:</b> Real-time (70ms), người dùng tự quản lý Shard và viết consumer, dữ liệu giữ 1–365 ngày.<br>• <b>Data Firehose:</b> Near real-time (60s buffer), Serverless, tự động nạp thẳng vào S3, Redshift, OpenSearch, Splunk.</p>
+        <p class="lang-en">• <b>Data Streams:</b> Real-time (70ms), manual shard scaling, custom consumers, 1–365 day retention.<br>• <b>Data Firehose:</b> Near real-time (60s buffer), fully serverless auto-loader into S3, Redshift, OpenSearch, Splunk.</p>
+      </div>
+      <div class="tier tier-trap">
+        <div class="tier-tag">
+          <span class="lang-vi">Bẫy thi &amp; Từ khóa (Traps &amp; Keywords)</span>
+          <span class="lang-en">Traps &amp; Keywords</span>
+        </div>
+        <p class="lang-vi">⚠️ <b>Bẫy đề thi:</b> Khi nhiều ứng dụng consumer cần đọc <b>cùng một luồng dữ liệu</b> với độ trễ thấp độc lập nhau &rarr; Dùng Kinesis (cho phép nhiều consumer đọc đi đọc lại bản ghi), SQS thì tin nhắn bị xóa sau khi 1 consumer đọc!</p>
+        <p class="lang-en">⚠️ <b>Exam Trap:</b> When multiple independent applications must replay and consume the <b>exact same streaming dataset</b> concurrently &rarr; Choose Kinesis. In SQS, message vanishes once consumed!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. SƠ ĐỒ QUYẾT ĐỊNH MERMAID: DECOUPLING ARCHITECTURES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🗺️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">1. Cây quyết định kiến trúc: Chọn giải pháp phân tách hệ thống (Decision Tree)</span>
+        <span class="lang-en">1. Architectural Decision Tree: Decoupling &amp; Messaging Pattern Selection</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Luồng suy luận giữa Hàng đợi (SQS), Bắn thông báo (SNS), Luồng dữ liệu (Kinesis) và Giao thức cũ (Amazon MQ)</span>
+        <span class="lang-en">Decision logic navigating Queue (SQS), Notification (SNS), Streaming (Kinesis), and Legacy Brokers (Amazon MQ)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    START(["Nhu cầu tích hợp &amp; Phân tách ứng dụng (Decoupling)"]) --> Q1{"Mô hình truyền tin là gì?"}
+
+    %% Nhánh 1: Queue (Pull)
+    Q1 -- "Hàng đợi xử lý tác vụ (1-to-1, Pull-based)" --> Q2{"Ứng dụng yêu cầu thứ tự &amp; tính tương thích?"}
+    Q2 -- "Cloud-native / Throughput vô hạn / Chấp nhận trùng lặp nhẹ" --> SQS_STD["<b>Amazon SQS Standard</b><br>• At-least-once delivery<br>• Throughput không giới hạn<br>• Lưu đệm &amp; co giãn Worker"]
+    Q2 -- "Bắt buộc chính xác thứ tự &amp; không trùng lặp" --> SQS_FIFO["<b>Amazon SQS FIFO</b><br>• Exactly-once processing<br>• Giữ nghiêm ngặt thứ tự FIFO<br>• Bắt buộc đuôi <code>.fifo</code>"]
+    Q2 -- "Ứng dụng cũ on-prem (JMS, AMQP, MQTT, STOMP)" --> AMQ["<b>Amazon MQ</b><br>• Managed ActiveMQ / RabbitMQ<br>• Không cần viết lại mã nguồn"]
+
+    %% Nhánh 2: Pub/Sub (Push)
+    Q1 -- "Phát tán thông báo (1-to-Many, Push-based)" --> Q3{"Đích đến là gì?"}
+    Q3 -- "Nhiều hàng đợi SQS / Lambda / Email / SMS" --> SNS_FANOUT["<b>Amazon SNS Topic</b><br>• Pub/Sub Fan-Out Pattern<br>• Message Filtering bằng JSON<br>• Đẩy tin tức thì (Push)"]
+
+    %% Nhánh 3: Streaming Big Data
+    Q1 -- "Luồng dữ liệu thời gian thực (Real-time Streaming)" --> Q4{"Nhu cầu lưu trữ &amp; Xử lý đích?"}
+    Q4 -- "Phân tích tức thì (&lt; 100ms) / Custom Consumers" --> KIN_STREAMS["<b>Kinesis Data Streams</b><br>• Shard throughput (1MB In / 2MB Out)<br>• Replay dữ liệu (1–365 ngày)<br>• Nhiều consumer đọc đồng thời"]
+    Q4 -- "Nạp thẳng Serverless vào S3, Redshift, OpenSearch" --> KIN_FIREHOSE["<b>Kinesis Data Firehose</b><br>• Near real-time (buffer 60s)<br>• Tự động co giãn 100%<br>• Tích hợp Lambda chuyển đổi"]
+
+    classDef awsBox fill:#E5F2FC,stroke:#2783DE,stroke-width:2px,color:#2783DE;
+    classDef optBox fill:#E8F1EC,stroke:#46A171,stroke-width:2px,color:#46A171;
+    classDef warnBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px,color:#D5803B;
+    
+    class SQS_STD,SQS_FIFO awsBox;
+    class SNS_FANOUT,AMQ optBox;
+    class KIN_STREAMS,KIN_FIREHOSE warnBox;
+  </div>
+</div>
+
+<!-- 2. MA TRẬN SO SÁNH SQS vs SNS vs KINESIS vs AMAZON MQ -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">2. Bảng ma trận so sánh 4 giải pháp Decoupling của AWS</span>
+        <span class="lang-en">2. Comprehensive Matrix: 4 AWS Decoupling &amp; Messaging Services</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">So sánh toàn diện cơ chế hoạt động, khả năng lưu trữ, quy mô và use-case đề thi SAA-C03</span>
+        <span class="lang-en">Comprehensive comparison of mechanics, persistence, scaling models, and SAA-C03 scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Tiêu chí so sánh</span><span class="lang-en">Criteria</span></th>
+          <th>Amazon SQS</th>
+          <th>Amazon SNS</th>
+          <th>Amazon Kinesis Data Streams</th>
+          <th>Amazon MQ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b><span class="lang-vi">Mô hình truyền tin</span><span class="lang-en">Messaging Model</span></b></td>
+          <td><b>Pull-based</b> (Consumer chủ động thăm dò/poll tin)</td>
+          <td><b>Push-based</b> (Tự động đẩy tin tới Subscribers)</td>
+          <td><b>Pull-based / Stream</b> (Consumer đọc theo Shard Iterator)</td>
+          <td><b>Push &amp; Pull</b> (Tùy theo cấu hình giao thức hàng đợi/topic)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Quan hệ Consumer</span><span class="lang-en">Consumer Relationship</span></b></td>
+          <td>1-to-1 (Tin nhắn bị xóa sau khi 1 worker xử lý xong)</td>
+          <td>1-to-Many (Một tin gửi tới hàng ngàn Subscribers cùng lúc)</td>
+          <td>1-to-Many (Nhiều ứng dụng đọc độc lập cùng một luồng dữ liệu)</td>
+          <td>Hỗ trợ cả Queue (1-to-1) và Topic (1-to-Many)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Lưu trữ dữ liệu (Retention)</span><span class="lang-en">Data Persistence</span></b></td>
+          <td>1 phút &rarr; <b>14 ngày</b> (Mặc định 4 ngày)</td>
+          <td><b>Không lưu trữ</b> (Trừ khi đẩy vào hàng đợi SQS hoặc Kinesis)</td>
+          <td>1 ngày &rarr; <b>365 ngày</b> (Hỗ trợ Replay dữ liệu cũ)</td>
+          <td>Lưu trên EBS volume của máy chủ Broker (tự quản lý)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Kích thước payload</span><span class="lang-en">Max Payload Size</span></b></td>
+          <td>256 KB (Lớn hơn dùng S3 Extended Client)</td>
+          <td>256 KB (Hỗ trợ nén hoặc tham chiếu qua S3)</td>
+          <td>1 MB mỗi record</td>
+          <td>Theo giới hạn của ActiveMQ/RabbitMQ (hàng chục MB)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Khả năng tự co giãn</span><span class="lang-en">Scaling Model</span></b></td>
+          <td>Tự động co giãn 100% (Serverless, Throughput vô hạn)</td>
+          <td>Tự động co giãn 100% (Serverless, hàng triệu msg/giây)</td>
+          <td>Dựa trên số lượng <b>Shards</b> (Cần chia/gộp shard hoặc On-Demand)</td>
+          <td>Chạy trên máy chủ EC2 quản lý (Provisioned Instance, không auto-scale vô hạn)</td>
+        </tr>
+        <tr>
+          <td><b><span class="lang-vi">Tình huống đề thi cốt lõi</span><span class="lang-en">Core Exam Use-case</span></b></td>
+          <td>Lưu đệm worker, co giãn theo độ dài hàng đợi (Queue Depth)</td>
+          <td>Phát tán sự kiện (Fan-out pattern) tới nhiều microservices</td>
+          <td>Xử lý Big Data thời gian thực, IoT telemetry, clickstreams</td>
+          <td>Di chuyển hệ thống on-premise cũ dùng JMS/MQTT mà không sửa mã nguồn</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. MÔ HÌNH KINH ĐIỂN: SNS + SQS FAN-OUT PATTERN -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">3. Mô hình kinh điển trong đề thi: SNS + SQS Fan-Out Pattern</span>
+        <span class="lang-en">3. High-Yield Architectural Pattern: SNS + SQS Fan-Out</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Giải quyết bài toán 1 sự kiện kích hoạt nhiều hệ thống độc lập mà không gây nghẽn và không mất tin</span>
+        <span class="lang-en">Triggering multiple independent consumer pipelines from a single publisher reliably without loss</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="mermaid-diagram">
+flowchart LR
+    PUB["<b>Order Service</b><br>(Publisher)"] -->|Publish| SNS["<b>SNS Topic</b><br>(Orders Topic)"]
+    
+    SNS -->|Fan-Out Push| Q1["<b>SQS Queue 1</b><br>Fraud Detection"]
+    SNS -->|Fan-Out Push| Q2["<b>SQS Queue 2</b><br>Inventory Update"]
+    SNS -->|Fan-Out Push| Q3["<b>SQS Queue 3</b><br>Analytics Service"]
+
+    Q1 -->|Poll &amp; Process| W1["Fraud Workers"]
+    Q2 -->|Poll &amp; Process| W2["Inventory Workers"]
+    Q3 -->|Poll &amp; Process| W3["Analytics Workers"]
+
+    classDef pubBox fill:#E5F2FC,stroke:#2783DE,stroke-width:1.5px;
+    classDef snsBox fill:#FBEBDE,stroke:#D5803B,stroke-width:2px;
+    classDef qBox fill:#E8F1EC,stroke:#46A171,stroke-width:1.5px;
+    
+    class PUB,W1,W2,W3 pubBox;
+    class SNS snsBox;
+    class Q1,Q2,Q3 qBox;
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">💡 Vì sao đề thi SAA-C03 luôn chuộng mô hình này?</span>
+          <span class="lang-en">💡 Why is this pattern an SAA-C03 Favorite?</span>
+        </b>
+        <p class="lang-vi" style="margin-top:6px;line-height:1.6">
+          • <b>Hoàn toàn tách rời (Loose Coupling):</b> Order Service chỉ cần bắn 1 bản tin vào SNS mà không cần biết có bao nhiêu dịch vụ hạ nguồn đang lắng nghe.<br>
+          • <b>Bền vững &amp; Không mất tin:</b> Nếu một Worker của dịch vụ tồn kho (Inventory) bị crash hoặc bảo trì, tin nhắn vẫn được lưu an toàn trong SQS Queue 2 tới 14 ngày.<br>
+          • <b>Co giãn độc lập (Independent Scaling):</b> Mỗi nhóm Worker tự động co giãn theo số lượng tin nhắn trong hàng đợi riêng của mình mà không ảnh hưởng lẫn nhau.<br>
+          • <b>Lọc tin nhắn bằng SNS Filter Policy:</b> Nếu dịch vụ Fraud chỉ cần đơn hàng &gt; $1000, gắn JSON filter trực tiếp vào SQS Subscription mà không tốn tài nguyên lọc ở code.
+        </p>
+        <p class="lang-en" style="margin-top:6px;line-height:1.6">
+          • <b>Loose Coupling:</b> The publisher sends once to SNS with zero awareness of downstream subscriber counts or destinations.<br>
+          • <b>Durability &amp; Fault Tolerance:</b> If Inventory workers crash, messages remain buffered safely in SQS Queue 2 for up to 14 days.<br>
+          • <b>Independent Scaling:</b> Each downstream tier scales independently via CloudWatch metrics (Queue Depth / `ApproximateNumberOfMessagesVisible`).<br>
+          • <b>Server-side Filtering:</b> Apply SNS Subscription Filter Policies so specific queues only receive events matching criteria (e.g. `order_amount &gt; 1000`).
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. CHI TIẾT SQS: VISIBILITY TIMEOUT, DLQ & POLLING -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚙️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">4. Cơ chế hoạt động cốt lõi của SQS: Visibility Timeout, DLQ &amp; Long Polling</span>
+        <span class="lang-en">4. SQS Deep-Dive: Visibility Timeout, Dead Letter Queues &amp; Long Polling</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Ba cấu hình then chốt thường xuyên xuất hiện trong các câu hỏi tình huống xử lý lỗi và tối ưu chi phí</span>
+        <span class="lang-en">Three essential parameters dominating troubleshooting and cost-optimization scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">⏱️ 1. Visibility Timeout &amp; API ChangeMessageVisibility</span>
+          <span class="lang-en">⏱️ 1. Visibility Timeout &amp; ChangeMessageVisibility API</span>
+        </b>
+        <p class="lang-vi">
+          Khi một Consumer đọc tin nhắn từ SQS, tin nhắn <b>không bị xóa ngay</b> mà trở nên "vô hình" (invisible) đối với các Consumer khác trong một khoảng thời gian gọi là <b>Visibility Timeout</b> (mặc định 30s, tối đa 12h).<br>
+          • Nếu Consumer xử lý xong: Gọi <code>DeleteMessage</code> để xóa hẳn.<br>
+          • Nếu Consumer bị sập hoặc xử lý thất bại: Hết thời gian timeout, tin nhắn lại hiện ra để Consumer khác nhận và thử lại.<br>
+          • <b>Bẫy đề thi:</b> Nếu tác vụ cần 2 phút để xử lý nhưng timeout chỉ có 30s &rarr; Tin nhắn sẽ bị đọc lặp lại! Giải pháp: Consumer phải chủ động gọi API <code>ChangeMessageVisibility</code> để kéo dài thời gian trước khi hết hạn.
+        </p>
+        <p class="lang-en">
+          When a consumer polls a message, it is not deleted; it becomes invisible to other consumers for the duration of the <b>Visibility Timeout</b> (default 30s, max 12 hours).<br>
+          • If processing succeeds: Consumer calls <code>DeleteMessage</code>.<br>
+          • If consumer crashes: Timeout expires and message becomes visible again for another worker.<br>
+          • <b>Exam Trap:</b> If processing takes 2 minutes while timeout is 30s &rarr; Message gets processed multiple times! Remedy: Consumer must call <code>ChangeMessageVisibility</code> to extend timeout dynamically.
+        </p>
+      </div>
+
+      <div class="pi pi-exam" style="margin-top:12px">
+        <b>
+          <span class="lang-vi">☠️ 2. Dead Letter Queue (DLQ) &amp; Redrive Policy</span>
+          <span class="lang-en">☠️ 2. Dead Letter Queue (DLQ) &amp; Redrive Policy</span>
+        </b>
+        <p class="lang-vi">
+          Nếu một tin nhắn bị lỗi cú pháp ("Poison Pill") khiến Consumer nào đọc cũng bị crash &rarr; Tin nhắn sẽ quay lại hàng đợi vô tận. Thiết lập <b>Redrive Policy</b> với ngưỡng <code>maxReceiveCount</code> (ví dụ: 5 lần). Nếu bị đọc quá 5 lần mà không xóa thành công &rarr; Tự động đẩy sang <b>Dead Letter Queue (DLQ)</b> để kỹ sư điều tra, không làm tắc nghẽn hàng đợi chính.
+        </p>
+        <p class="lang-en">
+          If a corrupted message ("poison pill") crashes workers repeatedly &rarr; it loops indefinitely. Configure a <b>Redrive Policy</b> with a <code>maxReceiveCount</code> threshold (e.g. 5). Once exceeded, message routes automatically to a <b>Dead Letter Queue (DLQ)</b> for offline diagnosis without stalling the queue.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="pi pi-exam">
+        <b>
+          <span class="lang-vi">⏳ 3. Long Polling (WaitTimeSeconds: 1 &rarr; 20s)</span>
+          <span class="lang-en">⏳ 3. Long Polling (WaitTimeSeconds: 1 &rarr; 20s)</span>
+        </b>
+        <p class="lang-vi">
+          • <b>Short Polling:</b> Consumer gọi API và SQS trả về ngay lập tức, kể cả khi hàng đợi rỗng. Tốn rất nhiều tiền gọi API rỗng và tăng độ trễ.<br>
+          • <b>Long Polling:</b> Consumer giữ kết nối mở và chờ tối đa <b>20 giây</b> (<code>WaitTimeSeconds: 20</code>). Ngay khi có tin nhắn mới vào queue, SQS trả về ngay.<br>
+          👉 <b>Nguyên tắc vàng:</b> Luôn cấu hình Long Polling để <b>giảm chi phí gọi API SQS xuống mức thấp nhất</b> và giảm thiểu độ trễ nhận tin.
+        </p>
+        <p class="lang-en">
+          • <b>Short Polling:</b> API returns immediately even if queue is empty, resulting in massive empty response charges and latency spikes.<br>
+          • <b>Long Polling:</b> Consumer waits up to <b>20 seconds</b> (<code>WaitTimeSeconds: 20</code>) for messages to arrive.<br>
+          👉 <b>Golden Rule:</b> Always configure Long Polling to <b>radically reduce SQS API costs</b> and minimize message processing latency.
+        </p>
+      </div>
+
+      <div class="pi pi-exam" style="margin-top:12px">
+        <b>
+          <span class="lang-vi">🔢 4. SQS FIFO: Message Group ID &amp; Deduplication ID</span>
+          <span class="lang-en">🔢 4. SQS FIFO: Message Group ID &amp; Deduplication ID</span>
+        </b>
+        <p class="lang-vi">
+          • <b>Message Group ID:</b> Các tin nhắn có cùng Group ID sẽ được đảm bảo xử lý nghiêm ngặt theo đúng thứ tự. Cho phép nhiều worker xử lý song song các Group khác nhau.<br>
+          • <b>Message Deduplication ID:</b> Ngăn chặn gửi trùng tin trong cửa sổ <b>5 phút</b>. Có thể tạo thủ công bằng chuỗi băm (SHA-256) hoặc bật tính năng <i>Content-Based Deduplication</i>.
+        </p>
+        <p class="lang-en">
+          • <b>Message Group ID:</b> Messages sharing the same Group ID are processed strictly sequentially. Allows parallel workers across distinct groups.<br>
+          • <b>Message Deduplication ID:</b> Eliminates duplicate sends within a <b>5-minute window</b>. Managed via SHA-256 hashes or <i>Content-Based Deduplication</i>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. KINESIS: DATA STREAMS VS FIREHOSE VS ANALYTICS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🌊</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">5. Phân biệt bộ 3 Kinesis: Data Streams vs Data Firehose vs Data Analytics</span>
+        <span class="lang-en">5. Triad Breakdown: Kinesis Data Streams vs Firehose vs Analytics</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Độ trễ, khả năng tùy biến consumer, lưu trữ dữ liệu và điểm đến tích hợp</span>
+        <span class="lang-en">Latencies, consumer customizability, data retention, and supported integration destinations</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th><span class="lang-vi">Thành phần Kinesis</span><span class="lang-en">Kinesis Service</span></th>
+          <th><span class="lang-vi">Độ trễ xử lý</span><span class="lang-en">Latency</span></th>
+          <th><span class="lang-vi">Quản lý hạ tầng</span><span class="lang-en">Infrastructure</span></th>
+          <th><span class="lang-vi">Consumer &amp; Điểm đến</span><span class="lang-en">Consumers &amp; Targets</span></th>
+          <th><span class="lang-vi">Điểm mấu chốt thi SAA-C03</span><span class="lang-en">High-Yield Exam Focus</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Kinesis Data Streams</b></td>
+          <td><b>Thời gian thực</b> (Sub-second: ~70ms &rarr; 200ms)</td>
+          <td>Quản lý theo <b>Shards</b> (hoặc chế độ On-demand tự động co giãn)</td>
+          <td>Tự viết Consumer (SDK, KCL, Lambda) hoặc đẩy sang Firehose / Analytics</td>
+          <td>Cho phép <b>Replay dữ liệu</b> (giữ từ 1 đến 365 ngày). Nhiều consumer độc lập cùng đọc 1 luồng mà không triệt tiêu tin nhắn.</td>
+        </tr>
+        <tr>
+          <td><b>Kinesis Data Firehose</b></td>
+          <td><b>Gần thời gian thực</b> (Buffer 60s hoặc dung lượng 1–128 MB)</td>
+          <td><b>Serverless hoàn toàn</b> (Tự động co giãn 100%, không cần quản lý Shards)</td>
+          <td>Nạp thẳng vào: <b>Amazon S3, Redshift, OpenSearch, HTTP Endpoints, Datadog/Splunk</b></td>
+          <td>Không có bộ nhớ giữ tin để replay! Có thể gọi <b>AWS Lambda</b> để biến đổi định dạng dữ liệu (JSON &rarr; Parquet) ngay trên đường truyền trước khi nạp.</td>
+        </tr>
+        <tr>
+          <td><b>Kinesis Data Analytics</b> (Amazon Managed Service for Apache Flink)</td>
+          <td><b>Thời gian thực</b> (Sub-second)</td>
+          <td>Serverless chạy Apache Flink hoặc SQL</td>
+          <td>Đọc từ Kinesis Data Streams / MSK và ghi ra Streams / Firehose</td>
+          <td>Chạy các câu lệnh <b>truy vấn SQL chuẩn</b> hoặc mã Flink trên dữ liệu luồng đang bay (Streaming SQL) để tính toán trung bình trượt, phát hiện dị thường.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 6. NGUYÊN TẮC VÀNG — SAA-C03 -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🏆</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">6. Nguyên tắc vàng ra quyết định kiến trúc — SAA-C03</span>
+        <span class="lang-en">6. Golden Architectural Decision Rules — SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc bất biến giúp chọn đúng dịch vụ tích hợp ứng dụng trong 30 giây</span>
+        <span class="lang-en">Inviolable rules to identify the correct integration &amp; messaging architecture in 30 seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="bp">
+      <div class="bn">1</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">1 Publisher &rarr; Nhiều Consumers = SNS Topic + SQS Queues</span>
+          <span class="lang-en">1 Publisher &rarr; Multiple Consumers = SNS Topic + SQS Queues</span>
+        </b>
+        <div class="lang-vi">Nếu đề bài yêu cầu "khi có đơn hàng mới, gửi thông báo cho nhóm vận chuyển, nhóm hóa đơn và gửi SMS cho khách hàng đồng thời mà không nghẽn" &rarr; Chọn mô hình <b>Fan-out: SNS Topic đẩy vào nhiều SQS Queues</b>.</div>
+        <div class="lang-en">When an event requires simultaneous delivery to shipping, billing, and SMS notification without blocking &rarr; Choose <b>Fan-out: SNS Topic pushing to multiple SQS Queues</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">2</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Thứ tự nghiêm ngặt (Strict Order) = SQS FIFO hoặc Kinesis</span>
+          <span class="lang-en">Strict Ordering Requirement = SQS FIFO or Kinesis Data Streams</span>
+        </b>
+        <div class="lang-vi">SQS Standard và SNS Standard <b>không đảm bảo thứ tự 100%</b>. Nếu đề thi có từ khóa "strictly ordered", "first-in-first-out", "no duplicate processing" &rarr; Chỉ chọn <b>SQS FIFO</b> (tên có đuôi <code>.fifo</code>) hoặc <b>Kinesis Data Streams</b> (thứ tự giữ theo Shard).</div>
+        <div class="lang-en">SQS Standard and SNS Standard offer best-effort ordering only. If scenario specifies "strictly ordered", "first-in-first-out", or "exactly-once" &rarr; Must choose <b>SQS FIFO</b> (with <code>.fifo</code> suffix) or <b>Kinesis</b>.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">3</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Nạp thẳng S3/Redshift không viết code = Kinesis Data Firehose</span>
+          <span class="lang-en">Serverless Loading into S3/Redshift without Code = Kinesis Data Firehose</span>
+        </b>
+        <div class="lang-vi">Khi cần chuyển dữ liệu luồng vào S3, Redshift hay OpenSearch mà không muốn tự quản lý máy chủ hay viết mã Consumer &rarr; Luôn chọn <b>Kinesis Data Firehose</b>. Không bao giờ tự viết EC2 consumer nếu Firehose hỗ trợ đích đến đó.</div>
+        <div class="lang-en">When ingesting streams directly into S3, Redshift, or OpenSearch without managing consumer code or instances &rarr; Always choose <b>Kinesis Data Firehose</b>. Never manage custom EC2 consumers when Firehose supports native delivery.</div>
+      </div>
+    </div>
+
+    <div class="bp">
+      <div class="bn">4</div>
+      <div class="bi">
+        <b>
+          <span class="lang-vi">Di chuyển giao thức cũ không sửa code = Amazon MQ</span>
+          <span class="lang-en">Legacy Enterprise Messaging Protocol Migration = Amazon MQ</span>
+        </b>
+        <div class="lang-vi">SQS và SNS sử dụng API độc quyền của AWS. Nếu đề bài nhắc đến việc di chuyển từ on-premises lên cloud mà ứng dụng sử dụng giao thức chuẩn <b>MQTT, AMQP, STOMP, JMS (ActiveMQ / RabbitMQ)</b> mà không được sửa code &rarr; Luôn chọn <b>Amazon MQ</b>.</div>
+        <div class="lang-en">SQS and SNS use proprietary AWS APIs. If a migration prompt mentions industry protocols like <b>MQTT, AMQP, STOMP, JMS (ActiveMQ / RabbitMQ)</b> with zero code rewrite &rarr; Always choose <b>Amazon MQ</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. NGUỒN BÀI GIẢNG & TÀI LIỆU TÌM HIỂU THÊM -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">7. Nguồn bài giảng &amp; Tài liệu tìm hiểu thêm (Further Study Resources)</span>
+        <span class="lang-en">7. Lecture Sources &amp; Further Study Resources</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Đối chiếu trực tiếp video bài giảng Udemy của Stephane Maarek, bài lab thực hành và tài liệu AWS</span>
+        <span class="lang-en">Direct mapping to Stephane Maarek's Udemy lectures, project hands-on labs, and official AWS docs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Video bài giảng Udemy</span>
+        <span class="lang-en">🎓 Udemy Lecture Sources</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 18 · SQS Overview &amp; FIFO</b><br>
+            <span class="lang-vi">Hàng đợi SQS Standard vs FIFO, Visibility Timeout, DLQ và Long Polling.</span>
+            <span class="lang-en">SQS Standard vs FIFO, Visibility Timeout, Dead Letter Queues, and Long Polling.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">▶️</div>
+          <div>
+            <b>Section 18 · SNS &amp; Fan-out Pattern</b><br>
+            <span class="lang-vi">Mô hình Pub/Sub, SNS Topic Subscriptions và kiến trúc Fan-out kết hợp SQS.</span>
+            <span class="lang-en">Pub/Sub architecture, SNS Topic Subscriptions, and SQS Fan-out integration.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">▶️</div>
+          <div>
+            <b>Section 18 · Kinesis &amp; Amazon MQ</b><br>
+            <span class="lang-vi">Kinesis Data Streams, Data Firehose, Shards vs Throughput và Amazon MQ.</span>
+            <span class="lang-en">Kinesis Data Streams, Data Firehose, Shard throughput, and Amazon MQ.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 Tài liệu chính thức AWS</span>
+        <span class="lang-en">📖 Official AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>Amazon SQS Developer Guide</b><br>
+            <span class="lang-vi">Cấu hình Visibility Timeout, Dead Letter Queues và S3 Extended Client.</span>
+            <span class="lang-en">Configuring Visibility Timeouts, Redrive Policies, and S3 Extended Client.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>Amazon SNS Fanout Architecture</b><br>
+            <span class="lang-vi">Thiết kế hệ thống bất đồng bộ chịu tải cao với SNS Filter Policies.</span>
+            <span class="lang-en">Designing high-throughput asynchronous architectures with SNS Filter Policies.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>Kinesis Shard Splitting &amp; Merging</b><br>
+            <span class="lang-vi">Quản lý hiệu năng Shards và xử lý ngoại lệ ProvisionedThroughputExceeded.</span>
+            <span class="lang-en">Managing Shard throughput and handling ProvisionedThroughputExceeded exceptions.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🧪 Bài Lab Thực Hành Trong Dự Án</span>
+        <span class="lang-en">🧪 Project Hands-On Lab</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">🧪</div>
+          <div>
+            <b><a href="lab_decoupling.html" style="color:var(--gr);text-decoration:none">Hands-on Lab 5: SQS &amp; Kinesis CLI →</a></b><br>
+            <span class="lang-vi">Thực hành gửi nhận tin SQS CLI (<code>aws_document/sqs/sqs.sh</code>) và chạy Kinesis Producer/Consumer (<code>aws_document/kinesis/kinesis-data-streams.sh</code>).</span>
+            <span class="lang-en">Hands-on SQS CLI message lifecycle (<code>aws_document/sqs/sqs.sh</code>) and Kinesis stream ingestion (<code>aws_document/kinesis/kinesis-data-streams.sh</code>).</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

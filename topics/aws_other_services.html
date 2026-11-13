@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Other Services — AppSync, WorkSpaces, AppFlow, SES — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 30 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Application Integration &amp; Specialized Services</div>
+  <h1>AWS Other Services — AppSync, WorkSpaces, AppFlow &amp; SES</h1>
+  <p class="lang-vi">Bộ sưu tập các dịch vụ ứng dụng chuyên biệt thường xuyên xuất hiện trong câu hỏi tình huống: GraphQL AWS AppSync, Máy tính ảo WorkSpaces, Tích hợp SaaS AppFlow và Gửi email giao dịch Amazon SES cho kỳ thi SAA-C03</p>
+  <p class="lang-en">Specialized application services frequently appearing in exam scenarios: GraphQL AWS AppSync, virtual desktops Amazon WorkSpaces, no-code SaaS integration Amazon AppFlow, and transactional email Amazon SES for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · Dịch vụ chuyên dụng thường gặp</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Answer Mapping · High-Yield Specialized Services</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — AWS AppSync (GraphQL) vs Amazon API Gateway (REST/WebSocket):</b> Bất cứ khi nào đề thi nhắc đến <b>GraphQL API</b>, <b>đồng bộ dữ liệu ngoại tuyến (Offline data sync) cho mobile apps</b>, hoặc truy xuất dữ liệu từ nhiều nguồn (DynamoDB + Aurora) chỉ với 1 query duy nhất &rarr; <b>Chọn ngay AWS AppSync</b>. API Gateway dùng cho REST API hoặc WebSocket thuần túy.</span>
+          <span class="lang-en"><b>Trap 1 — AWS AppSync (GraphQL) vs Amazon API Gateway (REST/WebSocket):</b> Whenever the exam mentions <b>GraphQL APIs</b>, <b>offline data synchronization for mobile apps</b>, or querying multiple data sources (DynamoDB + Aurora) via a single query &rarr; <b>Choose AWS AppSync</b>. API Gateway is tailored for standard REST or raw WebSocket APIs.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — Amazon WorkSpaces vs Amazon AppStream 2.0:</b> <b>WorkSpaces</b> cung cấp toàn bộ màn hình máy tính để bàn ảo (Full Virtual Desktop - Windows/Linux) bền vững cho nhân viên làm việc từ xa, tích hợp Active Directory. <b>AppStream 2.0</b> chỉ truyền phát trực tuyến <b>một ứng dụng máy tính duy nhất (Single Application Streaming)</b> lên trình duyệt web mà không cần cấp nguyên desktop.</span>
+          <span class="lang-en"><b>Trap 2 — Amazon WorkSpaces vs Amazon AppStream 2.0:</b> <b>WorkSpaces</b> provisions a persistent, full virtual desktop (Windows/Linux) for remote workers with Active Directory integration. <b>AppStream 2.0</b> streams a <b>single application</b> directly into a web browser without provisioning a full desktop environment.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — Amazon AppFlow vs AWS Glue:</b> Cần kết nối và truyền dữ liệu 2 chiều giữa các ứng dụng <b>SaaS bên ngoài (Salesforce, Zendesk, ServiceNow, Slack)</b> và AWS (Amazon S3, Redshift) mà <b>không cần viết code (No-code)</b> qua mạng nội bộ bảo mật PrivateLink &rarr; <b>Chọn Amazon AppFlow</b>! AWS Glue dùng cho ETL dữ liệu lớn nội bộ trên S3/RDS.</span>
+          <span class="lang-en"><b>Trap 3 — Amazon AppFlow vs AWS Glue:</b> Need a <b>no-code, secure two-way integration</b> between <b>external SaaS apps (Salesforce, Zendesk, ServiceNow, Slack)</b> and AWS (S3, Redshift) privately over PrivateLink &rarr; <b>Choose Amazon AppFlow</b>! AWS Glue is tailored for big data ETL across S3 and relational databases.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — Amazon SES vs Amazon SNS vs Amazon Pinpoint:</b> <b>Amazon SES</b> chuyên gửi email giao dịch (hóa đơn, reset password, marketing hàng loạt) hỗ trợ SMTP. <b>Amazon SNS</b> là dịch vụ pub/sub đẩy thông báo ngắn (SMS, Push, Email alert kỹ thuật). <b>Amazon Pinpoint</b> là nền tảng quản lý chiến dịch tiếp thị (Marketing campaigns, phân khúc người dùng, tin nhắn định kỳ).</span>
+          <span class="lang-en"><b>Trap 4 — Amazon SES vs Amazon SNS vs Amazon Pinpoint:</b> <b>Amazon SES</b> is designed for transactional and high-volume email delivery with SMTP support. <b>Amazon SNS</b> is a pub/sub notification service for system alerts, SMS, and push notifications. <b>Amazon Pinpoint</b> is a marketing campaign platform with user segmentation and engagement analytics.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Giải pháp kiến trúc AWS</span><span class="lang-en">AWS Architectural Solution</span></th>
+        <th style="width:35%"><span class="lang-vi">Lý do chọn &amp; Lưu ý kỹ thuật</span><span class="lang-en">Selection Reason &amp; Exam Trap</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Managed GraphQL API with real-time updates and mobile offline data synchronization"</b></td>
+        <td><b>AWS AppSync</b></td>
+        <td>
+          <span class="lang-vi">Sử dụng GraphQL và WebSockets; tự động giải quyết xung đột dữ liệu khi thiết bị online trở lại.</span>
+          <span class="lang-en">Uses GraphQL &amp; WebSockets; automatic client data conflict resolution on reconnect.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Integrate Salesforce data with Amazon Redshift securely without public internet or custom code"</b></td>
+        <td><b>Amazon AppFlow via AWS PrivateLink</b></td>
+        <td>
+          <span class="lang-vi">Tự động hóa truyền dữ liệu SaaS hai chiều, mã hóa KMS, không đi qua Internet công cộng.</span>
+          <span class="lang-en">Automated two-way SaaS data flow, KMS encrypted, bypasses public internet over PrivateLink.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Provision persistent cloud desktops for remote call center staff integrated with on-prem AD"</b></td>
+        <td><b>Amazon WorkSpaces with AD Connector</b></td>
+        <td>
+          <span class="lang-vi">Desktop-as-a-Service (DaaS) đầy đủ; người dùng đăng nhập bằng tài khoản On-Premises AD hiện có.</span>
+          <span class="lang-en">Full DaaS solution; employees sign in with existing on-premises AD credentials.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Stream a single legacy Windows ERP application to external contractors via browser"</b></td>
+        <td><b>Amazon AppStream 2.0</b></td>
+        <td>
+          <span class="lang-vi">Chỉ phát trực tuyến ứng dụng đơn lẻ; dữ liệu không lưu trên máy client cá nhân của nhân sự.</span>
+          <span class="lang-en">Streams single desktop application only; no sensitive data downloaded to client devices.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Send transactional customer emails at scale with incoming email bounce tracking"</b></td>
+        <td><b>Amazon Simple Email Service (SES)</b></td>
+        <td>
+          <span class="lang-vi">Hỗ trợ SMTP / API, tích hợp SNS nhận diện tỉ lệ trả về (Bounce) và khiếu nại (Complaints).</span>
+          <span class="lang-en">Supports SMTP / API, integrates with SNS for bounce and complaint rate monitoring.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Run 100,000 parallel batch computing jobs using containerized tasks on Spot EC2"</b></td>
+        <td><b>AWS Batch</b></td>
+        <td>
+          <span class="lang-vi">Tự động quản lý hàng đợi, phân bổ Compute Environment tối ưu chi phí với Spot Instances.</span>
+          <span class="lang-en">Automated job queue management, dynamically scales Spot EC2 Compute Environments.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE: ENTERPRISE ECOSYSTEM INTEGRATION -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🌐</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Hệ sinh thái Tích hợp Doanh nghiệp (Enterprise Integration Ecosystem)</span>
+        <span class="lang-en">Enterprise Integration Ecosystem: SaaS, Mobile, Desktop &amp; Email</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Mô hình phối hợp giữa AppFlow, AppSync, WorkSpaces và Amazon SES</span>
+        <span class="lang-en">Coordinated workflow between AppFlow, AppSync, WorkSpaces, and Amazon SES</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    subgraph External["Bên ngoài / External &amp; SaaS"]
+        SF["Salesforce / Zendesk / Slack"]
+        MOBILE["Mobile App Clients<br/>(iOS / Android)"]
+        REMOTE_USER["Nhân viên làm việc từ xa<br/>(Remote Workers)"]
+        CUSTOMER["Khách hàng nhận Email<br/>(Email Recipients)"]
+    end
+
+    subgraph AWS_Cloud["AWS Cloud Platform"]
+        APPFLOW["Amazon AppFlow<br/>(No-Code Data Integration)"]
+        APPSYNC["AWS AppSync<br/>(GraphQL + WebSockets)"]
+        WORKSPACES["Amazon WorkSpaces<br/>(Virtual Desktops in VPC)"]
+        SES["Amazon SES<br/>(Email Gateway)"]
+        BATCH["AWS Batch<br/>(Hàng đợi Job xử lý hàng loạt)"]
+        
+        S3["Amazon S3 Data Lake"]
+        REDSHIFT["Amazon Redshift Warehouse"]
+        DDB["Amazon DynamoDB"]
+        AD["AD Connector<br/>(Kết nối On-Premise AD)"]
+    end
+
+    SF <-->|PrivateLink / No Internet| APPFLOW
+    APPFLOW -->|Đồng bộ dữ liệu CRM| S3
+    APPFLOW -->|Phân tích dữ liệu| REDSHIFT
+
+    MOBILE <-->|GraphQL / Offline Sync| APPSYNC
+    APPSYNC <--> DDB
+
+    REMOTE_USER -->|PCoIP / WSP Protocol| WORKSPACES
+    WORKSPACES <--> AD
+
+    BATCH -->|Kích hoạt gửi báo cáo| SES
+    SES -->|Gửi email tự động| CUSTOMER
+
+    classDef ext fill:#f5f5f5,stroke:#9e9e9e,stroke-width:1px;
+    classDef svc fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef store fill:#e8f5e9,stroke:#388e3c,stroke-width:1px;
+    class SF,MOBILE,REMOTE_USER,CUSTOMER ext;
+    class APPFLOW,APPSYNC,WORKSPACES,SES,BATCH svc;
+    class S3,REDSHIFT,DDB,AD store;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AWS APPSYNC -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚡</div>
+    <div>
+      <div class="ct">1. AWS AppSync (GraphQL &amp; Real-time)</div>
+      <div class="cs">
+        <span class="lang-vi">Cổng giao tiếp dữ liệu hiện đại cho ứng dụng web và di động</span>
+        <span class="lang-en">Modern data API layer for web and mobile applications</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Công nghệ:</b><br>
+    <span class="lang-vi">Dịch vụ quản lý GraphQL API cấp doanh nghiệp. Cho phép ứng dụng chỉ truy vấn <b>chính xác những trường dữ liệu cần thiết</b> (không bị over-fetching hay under-fetching như REST). Hỗ trợ cập nhật dữ liệu thời gian thực (Real-time updates) thông qua <b>WebSockets Subscriptions</b>.</span>
+    <span class="lang-en">Enterprise-level managed GraphQL service. Allows apps to request <b>strictly the specific data fields needed</b> (eliminating over-fetching/under-fetching). Supports real-time updates via <b>WebSockets Subscriptions</b>.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Nguồn dữ liệu hỗ trợ (Data Sources):</b><br>
+    <span class="lang-vi">AppSync kết nối trực tiếp với nhiều nguồn dữ liệu mà không cần tầng trung gian: 1. Amazon DynamoDB; 2. Amazon Aurora Serverless; 3. Amazon OpenSearch Service; 4. AWS Lambda; 5. HTTP Endpoints bất kỳ.</span>
+    <span class="lang-en">AppSync natively connects to diverse data sources without boilerplate code: 1. Amazon DynamoDB; 2. Amazon Aurora Serverless; 3. Amazon OpenSearch Service; 4. AWS Lambda; 5. Any HTTP endpoint.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Đồng bộ Ngoại tuyến (Offline Data Synchronization):</b><br>
+    <span class="lang-vi">Tính năng sát thủ cho Mobile Apps: Thiết bị di động có thể đọc và ghi dữ liệu cục bộ khi mất mạng. Khi có kết nối Internet trở lại, AppSync tự động đồng bộ và <b>tự động giải quyết xung đột dữ liệu (Conflict Detection &amp; Resolution)</b>.</span>
+    <span class="lang-en">Killer feature for mobile apps: Devices read and mutate local data when offline. Upon reconnecting to internet, AppSync automatically synchronizes and resolves conflicts (Conflict Detection &amp; Resolution).</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề bài thi có từ khóa <b>"GraphQL"</b> hoặc <b>"Offline synchronization for mobile applications"</b> &rarr; <b>100% chọn AWS AppSync</b> (không chọn API Gateway).</span>
+    <span class="lang-en">⚠️ Question mentions <b>"GraphQL"</b> or <b>"Offline synchronization for mobile applications"</b> &rarr; <b>100% choose AWS AppSync</b> (never API Gateway).</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: WORKSPACES & APPSTREAM -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">💻</div>
+    <div>
+      <div class="ct">2. Amazon WorkSpaces &amp; AppStream 2.0</div>
+      <div class="cs">
+        <span class="lang-vi">Môi trường làm việc ảo từ xa an toàn cho doanh nghiệp</span>
+        <span class="lang-en">Secure enterprise end-user remote computing solutions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Phân định chức năng cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>Amazon WorkSpaces:</b> Dịch vụ Desktop-as-a-Service (DaaS) cung cấp máy tính để bàn ảo hoàn chỉnh chạy Windows hoặc Linux.<br>2. <b>Amazon AppStream 2.0:</b> Dịch vụ truyền phát ứng dụng (Application Streaming) đơn lẻ lên trình duyệt HTML5 của người dùng.</span>
+    <span class="lang-en">1. <b>Amazon WorkSpaces:</b> Desktop-as-a-Service (DaaS) delivering full persistent virtual Windows or Linux desktop environments.<br>2. <b>Amazon AppStream 2.0:</b> Application streaming service delivering individual desktop applications to HTML5 web browsers.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Tích hợp Doanh nghiệp &amp; Bảo mật:</b><br>
+    <span class="lang-vi">Cả hai dịch vụ đều chạy trong <b>VPC của bạn</b> và tích hợp sâu với <b>Active Directory</b> (qua AD Connector hoặc AWS Managed Microsoft AD). Dữ liệu doanh nghiệp không bao giờ được lưu trữ trên thiết bị cá nhân của nhân viên, chống thất thoát dữ liệu (DLP).</span>
+    <span class="lang-en">Both services run inside your <b>VPC</b> and integrate natively with <b>Active Directory</b> (via AD Connector or AWS Managed Microsoft AD). Corporate data never leaves AWS to personal client devices, preventing data loss.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Sự khác biệt về Trạng thái Lưu trữ (Persistence):</b><br>
+    <span class="lang-vi">1. <b>WorkSpaces:</b> Có tính bền vững (Persistent). Dữ liệu, tệp tin và ứng dụng cài đặt được lưu giữ qua các phiên đăng nhập trên EBS volumes.<br>2. <b>AppStream 2.0:</b> Phi trạng thái (Non-persistent). Mỗi phiên làm việc được cấp phát từ một image cơ sở; khi đóng ứng dụng, phiên làm việc bị hủy bỏ (có thể lưu file ra S3 hoặc Google Drive).</span>
+    <span class="lang-en">1. <b>WorkSpaces:</b> Persistent. User profile, files, and installed software persist across sessions on dedicated EBS volumes.<br>2. <b>AppStream 2.0:</b> Non-persistent. Instances are provisioned fresh from a base image and terminated on session close (files saved to S3/Google Drive).</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề bài yêu cầu: Cần cung cấp toàn bộ môi trường desktop hoàn chỉnh cho nhân viên &rarr; Chọn <b>WorkSpaces</b>.<br>⚠️ Đề bài yêu cầu: Cần cho nhà thầu bên ngoài truy cập 1 ứng dụng kế toán cũ mà không cấp desktop &rarr; Chọn <b>AppStream 2.0</b>.</span>
+    <span class="lang-en">⚠️ Question asks: Provide a full virtual desktop experience for employees &rarr; Choose <b>WorkSpaces</b>.<br>⚠️ Question asks: Provide external contractors access to a single legacy accounting app without a desktop &rarr; Choose <b>AppStream 2.0</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AMAZON APPFLOW -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">🔄</div>
+    <div>
+      <div class="ct">3. Amazon AppFlow (No-Code SaaS Integration)</div>
+      <div class="cs">
+        <span class="lang-vi">Kết nối dữ liệu ứng dụng SaaS hai chiều bảo mật không cần viết code</span>
+        <span class="lang-en">Secure, no-code bi-directional SaaS data transfer integration</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Bản chất:</b><br>
+    <span class="lang-vi">Dịch vụ tích hợp dữ liệu được quản lý hoàn toàn cho phép bạn truyền dữ liệu an toàn giữa các ứng dụng <b>Software-as-a-Service (SaaS)</b> như Salesforce, Marketo, Slack, ServiceNow, Zendesk và các dịch vụ AWS như Amazon S3, Amazon Redshift.</span>
+    <span class="lang-en">Fully managed data integration service that securely transfers data between <b>Software-as-a-Service (SaaS)</b> applications (Salesforce, Marketo, Slack, ServiceNow, Zendesk) and AWS services (Amazon S3, Amazon Redshift).</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Tính năng Tự động hóa &amp; Lập lịch:</b><br>
+    <span class="lang-vi">Hỗ trợ 3 cơ chế kích hoạt luồng dữ liệu (Flow Triggers): 1. Chạy theo yêu cầu (On-demand); 2. Chạy theo lịch định kỳ (Scheduled intervals, ví dụ mỗi 1 giờ); 3. Chạy theo sự kiện thực tế (Event-driven, ví dụ khi có Lead mới được tạo trong Salesforce).</span>
+    <span class="lang-en">Supports 3 flow trigger mechanisms: 1. Run on-demand; 2. Run on a schedule (e.g. hourly); 3. Event-driven (e.g. triggered automatically when a new Lead record is created in Salesforce).</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Bảo mật tuyệt đối qua AWS PrivateLink:</b><br>
+    <span class="lang-vi">AppFlow tự động mã hóa dữ liệu khi truyền và khi lưu bằng AWS KMS. Đặc biệt, với các nhà cung cấp SaaS hỗ trợ (như Salesforce), dữ liệu truyền <b>hoàn toàn qua đường mạng riêng AWS PrivateLink</b> mà không bao giờ lộ ra Internet công cộng!</span>
+    <span class="lang-en">AppFlow automatically encrypts data in-transit and at-rest using AWS KMS. Crucially, with supported SaaS providers (like Salesforce), data travels <b>strictly over private AWS PrivateLink connections</b>, never touching the public internet!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề thi hỏi: Đồng bộ dữ liệu Salesforce với S3/Redshift bảo mật <b>không qua internet và không viết code</b> &rarr; <b>Chọn ngay Amazon AppFlow</b>! Không cần viết custom script Python hay Lambda.</span>
+    <span class="lang-en">⚠️ Question asks: Sync Salesforce data to S3/Redshift securely <b>without internet traversal and without custom coding</b> &rarr; <b>Choose Amazon AppFlow</b>! No custom Python/Lambda needed.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: AMAZON SES & PINPOINT -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">📧</div>
+    <div>
+      <div class="ct">4. Amazon SES &amp; Amazon Pinpoint</div>
+      <div class="cs">
+        <span class="lang-vi">Giao tiếp khách hàng qua Email giao dịch và Chiến dịch tiếp thị</span>
+        <span class="lang-en">Customer communications via transactional emails &amp; marketing campaigns</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Phân định chức năng cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>Amazon Simple Email Service (SES):</b> Dịch vụ gửi và nhận email cấp doanh nghiệp chi phí thấp phục vụ cho email giao dịch và email thông báo hàng loạt.<br>2. <b>Amazon Pinpoint:</b> Nền tảng tiếp thị đa kênh (Multi-channel marketing) quản lý chiến dịch tiếp cận khách hàng qua Email, SMS, Push Notifications và Voice.</span>
+    <span class="lang-en">1. <b>Amazon Simple Email Service (SES):</b> Cost-effective, enterprise-scale inbound and outbound email service for transactional emails and notifications.<br>2. <b>Amazon Pinpoint:</b> Multi-channel marketing and engagement platform managing campaigns across Email, SMS, Push Notifications, and Voice.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Amazon SES: Gửi &amp; Nhận Email thông minh:</b><br>
+    <span class="lang-vi">Hỗ trợ giao thức SMTP tiêu chuẩn hoặc gọi qua AWS SDK. Khi nhận email gửi đến domain của bạn, SES có thể kích hoạt quy trình tự động: 1. Lưu email vào Amazon S3; 2. Gọi hàm AWS Lambda để phân tích nội dung; 3. Đẩy thông báo vào Amazon SNS.</span>
+    <span class="lang-en">Supports standard SMTP credentials or AWS SDK API calls. For inbound emails sent to your domain, SES can trigger automated receipt rules: 1. Save email to S3; 2. Execute Lambda function to parse contents; 3. Publish alert to SNS.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Xử lý Tỉ lệ Lỗi (Bounce &amp; Complaint Handling):</b><br>
+    <span class="lang-vi">SES tích hợp sẵn với <b>Amazon SNS</b> để gửi cảnh báo ngay lập tức khi email bị trả lại (Bounces) hoặc người nhận đánh dấu spam (Complaints). Duy trì tỉ lệ bounce thấp (&lt; 5%) là bắt buộc để tránh bị AWS đình chỉ tài khoản gửi thư.</span>
+    <span class="lang-en">SES integrates natively with <b>Amazon SNS</b> to publish real-time notifications for bounced emails and spam complaints. Maintaining a low bounce rate (&lt; 5%) is mandatory to protect sender reputation.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Gửi email thông báo đơn hàng cho khách hàng qua giao thức SMTP &rarr; Chọn <b>Amazon SES</b>.<br>⚠️ Phân khúc khách hàng mục tiêu và gửi tin nhắn đẩy quảng cáo cá nhân hóa theo hành vi &rarr; Chọn <b>Amazon Pinpoint</b>.</span>
+    <span class="lang-en">⚠️ Send order confirmation emails to customers using standard SMTP credentials &rarr; Choose <b>Amazon SES</b>.<br>⚠️ Segment audience target groups and send personalized promotional push notifications &rarr; Choose <b>Amazon Pinpoint</b>.</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: SPECIALIZED SERVICES DECISION -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh: Lựa chọn Dịch vụ Chuyên biệt theo Yêu cầu Bài toán</span>
+        <span class="lang-en">Comparison Matrix: Specialized AWS Services Decision Guide</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tóm tắt các đặc tính cốt lõi để nhận diện đáp án chính xác trong đề thi SAA-C03</span>
+        <span class="lang-en">Summary of distinguishing architectural traits for SAA-C03 exam questions</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:20%"><span class="lang-vi">Dịch vụ AWS</span><span class="lang-en">AWS Service</span></th>
+        <th style="width:20%"><span class="lang-vi">Giao thức / Bản chất</span><span class="lang-en">Protocol / Nature</span></th>
+        <th style="width:30%"><span class="lang-vi">Năng lực đặc trưng</span><span class="lang-en">Distinctive Capability</span></th>
+        <th style="width:30%"><span class="lang-vi">Mẫu câu hỏi thi SAA-C03</span><span class="lang-en">SAA-C03 Question Pattern</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>AWS AppSync</b></td>
+        <td>GraphQL, WebSockets</td>
+        <td>Truy vấn dữ liệu linh hoạt, đồng bộ offline cho thiết bị di động</td>
+        <td>"GraphQL API for mobile app with offline synchronization"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon AppFlow</b></td>
+        <td>No-Code Integration</td>
+        <td>Kết nối 2 chiều SaaS (Salesforce) qua PrivateLink không dùng internet</td>
+        <td>"Transfer Salesforce records to Redshift without custom code"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon WorkSpaces</b></td>
+        <td>PCoIP / WSP (DaaS)</td>
+        <td>Máy tính để bàn Windows/Linux ảo hoàn chỉnh, bền vững, nối AD</td>
+        <td>"Full persistent cloud desktops for call center remote staff"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon AppStream 2.0</b></td>
+        <td>HTML5 Web Streaming</td>
+        <td>Truyền phát 1 ứng dụng desktop duy nhất lên trình duyệt web</td>
+        <td>"Stream a single legacy Windows desktop app to contractors"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon SES</b></td>
+        <td>SMTP, REST Email</td>
+        <td>Gửi/nhận email giao dịch quy mô lớn, theo dõi tỉ lệ bounce</td>
+        <td>"Send automated invoice emails at lowest cost via SMTP"</td>
+      </tr>
+      <tr>
+        <td><b>Amazon Pinpoint</b></td>
+        <td>Marketing Campaigns</td>
+        <td>Phân khúc người dùng, gửi tin nhắn tiếp thị đa kênh (SMS, Push, Email)</td>
+        <td>"Segment mobile users and deliver targeted push campaigns"</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các quy tắc ghi nhớ nhanh cho các dịch vụ phụ trợ</span>
+        <span class="lang-en">Quick memory rules for secondary and specialized services</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 DỊCH VỤ IOT &amp; BATCH</span>
+          <span class="lang-en">📌 IOT &amp; BATCH COMPUTING</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>AWS IoT Core:</b> Kết nối hàng triệu thiết bị cảm biến thông minh qua giao thức <b>MQTT, HTTP, WebSockets</b>. Sử dụng <b>IoT Rules Engine</b> để lọc và đẩy trực tiếp dữ liệu vào Kinesis, DynamoDB hoặc S3.</li>
+            <li><b>AWS Batch:</b> Dành cho các công việc xử lý dữ liệu theo mẻ (Batch Jobs). Tự động phân tích yêu cầu RAM/CPU của task trong hàng đợi để khởi tạo EC2 (hoặc Fargate) phù hợp, ưu tiên dùng <b>Spot Instances để tiết kiệm đến 90%</b> chi phí.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 QUY TẮC GHI NHỚ TỔNG QUÁT</span>
+          <span class="lang-en">💡 GENERAL RECOGNITION RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Mobile Backend as a Service:</b> Nếu đề bài nhắc đến phát triển ứng dụng di động full-stack nhanh chóng &rarr; Xem xét <b>AWS Amplify</b> (tự động cấu hình Cognito cho Auth, AppSync cho GraphQL và DynamoDB).</li>
+            <li><b>Contact Center đám mây:</b> Đề thi nhắc đến hệ thống tổng đài chăm sóc khách hàng đám mây tích hợp tổng đài viên &rarr; Chọn <b>Amazon Connect</b>.</li>
+            <li><b>Kiểm thử ứng dụng di động:</b> Cần test ứng dụng iOS/Android trên hàng trăm thiết bị phần cứng thật trên đám mây &rarr; Chọn <b>AWS Device Farm</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài giảng Udemy liên quan</span>
+        <span class="lang-en">Official AWS references and relevant Udemy lectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Giáo trình Udemy SAA-C03</span>
+        <span class="lang-en">🎓 Udemy SAA-C03 Syllabus</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 30: Other Services</b><br>
+            <span class="lang-vi">Toàn bộ 16 bài giảng về AWS AppSync, WorkSpaces, AppStream, AppFlow, SES và Pinpoint.</span>
+            <span class="lang-en">All 16 lectures covering AWS AppSync, WorkSpaces, AppStream, AppFlow, SES, and Pinpoint.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS AppSync Developer Guide</b><br>
+            <span class="lang-vi">Thiết lập GraphQL schemas, resolvers và cấu hình offline data synchronization.</span>
+            <span class="lang-en">Configuring GraphQL schemas, resolvers, and mobile offline data sync.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>Amazon WorkSpaces Administration Guide</b><br>
+            <span class="lang-vi">Quản lý ảo hóa desktop doanh nghiệp và tích hợp Active Directory Connector.</span>
+            <span class="lang-en">Enterprise virtual desktop deployment and Active Directory Connector integration.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>Amazon AppFlow User Guide</b><br>
+            <span class="lang-vi">Kết nối luồng dữ liệu hai chiều với Salesforce và Redshift qua AWS PrivateLink.</span>
+            <span class="lang-en">Bi-directional data flow setup with Salesforce and Redshift over AWS PrivateLink.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>WorkSpaces vs AppStream 2.0 Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng ma trận so sánh chi tiết và cách chọn dịch vụ chính xác trong đề thi SAA-C03.</span>
+            <span class="lang-en">Detailed comparison matrix and decision criteria for SAA-C03 exam scenarios.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>AWS Specialized Services Summary</b><br>
+            <span class="lang-vi">Tổng hợp các dịch vụ AppSync, AppFlow, SES, Pinpoint và AWS Batch cho SAA-C03.</span>
+            <span class="lang-en">Comprehensive summary of AppSync, AppFlow, SES, Pinpoint, and AWS Batch for SAA-C03.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

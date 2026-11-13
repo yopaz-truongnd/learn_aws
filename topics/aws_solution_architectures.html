@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>More Solution Architectures — HPC, Caching &amp; Event-Driven — SAA-C03</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</head>
+<body>
+<div class="top-nav">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <a href="../index.html" class="nav-back">
+      <span class="lang-vi">← Mục lục khóa học</span>
+      <span class="lang-en">← Course Hub</span>
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:12px;color:var(--mu)">Section 29 · Udemy SAA-C03</span>
+    <div class="lang-switch" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang-val="vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+      <button type="button" class="lang-btn" data-lang-val="en" onclick="setLanguage('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="badge">Architecture Patterns &amp; Best Practices</div>
+  <h1>More Solution Architectures — HPC, Caching &amp; Event-Driven</h1>
+  <p class="lang-vi">Tổng hợp các mẫu kiến trúc giải pháp chuyên sâu: Tính toán hiệu năng cao (HPC), Bộ đệm đa tầng (Multi-tier Caching), Tách rời vi dịch vụ dựa trên sự kiện và Thiết kế chống chịu lỗi toàn cầu cho SAA-C03</p>
+  <p class="lang-en">Comprehensive solution architecture patterns: High-Performance Computing (HPC), multi-tier caching strategies, event-driven microservices decoupling, and resilient global architectures for SAA-C03</p>
+</div>
+
+<div class="grid">
+
+<!-- ⚡ 5-MINUTE REVIEW: ÔN NHANH TRƯỚC PHÒNG THI -->
+<div class="card card-exam full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">⚡</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">⚡ Ôn nhanh 5 phút trước giờ thi (5-Minute SAA-C03 Review)</span>
+        <span class="lang-en">⚡ 5-Minute Exam Quick Review (SAA-C03 High-Yield)</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Bẫy đề thi cốt lõi · Bảng ánh xạ Từ khóa &rarr; Đáp án · Mẫu thiết kế kiến trúc chuẩn AWS</span>
+        <span class="lang-en">Core Exam Traps · Keyword &rarr; Answer Mapping · Standard AWS Architectural Patterns</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="study-toolbar">
+    <button type="button" class="btn-primary" onclick="window.print()">
+      <span class="lang-vi">🖨️ In bản tóm tắt này</span>
+      <span class="lang-en">🖨️ Print Cheat Sheet</span>
+    </button>
+  </div>
+
+  <div class="pi pi-exam">
+    <div class="pit">
+      <span class="lang-vi">🚨 4 BẪY TỬ THẦN CẦN NHỚ TRONG PHÒNG THI</span>
+      <span class="lang-en">🚨 4 DEADLY EXAM TRAPS TO REMEMBER</span>
+    </div>
+    <div class="pic">
+      <ul style="margin:0;padding-left:20px;line-height:1.7">
+        <li>
+          <span class="lang-vi"><b>Bẫy 1 — HPC Mạng: ENA vs EFA:</b> <b>ENA (Elastic Network Adapter)</b> cung cấp tốc độ mạng truyền thống lên tới 100 Gbps cho EC2. Nhưng nếu đề bài có từ khóa <b>MPI (Message Passing Interface)</b>, <b>Node-to-node communication</b>, hoặc <b>Bypass OS kernel</b> cho độ trễ micro-giây &rarr; <b>BẮT BUỘC chọn EFA (Elastic Fabric Adapter)</b>! EFA chỉ chạy trên Linux.</span>
+          <span class="lang-en"><b>Trap 1 — HPC Networking: ENA vs EFA:</b> <b>ENA (Elastic Network Adapter)</b> provides standard high-speed networking up to 100 Gbps. But if question mentions <b>MPI (Message Passing Interface)</b>, <b>Node-to-node communication</b>, or <b>OS kernel bypass</b> for microsecond latency &rarr; <b>MUST choose EFA (Elastic Fabric Adapter)</b>! EFA is Linux-only.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 2 — Bộ nhớ dùng chung HPC: FSx for Lustre:</b> Để đạt hàng triệu IOPS và thông lượng hàng trăm GB/s cho tính toán song song, Machine Learning và mô phỏng tài chính, chọn <b>Amazon FSx for Lustre</b>. Lustre có thể nạp dữ liệu trực tiếp từ <b>Amazon S3</b> và ghi kết quả ngược trở lại S3 trong suốt.</span>
+          <span class="lang-en"><b>Trap 2 — HPC Shared Storage: FSx for Lustre:</b> For millions of IOPS and hundreds of GB/s throughput for parallel processing, Machine Learning, and financial simulations, choose <b>Amazon FSx for Lustre</b>. Lustre seamlessly reads directly from and writes back to <b>Amazon S3</b>.</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 3 — Chiến lược Caching: Cache-Aside vs Write-Through:</b> <b>Cache-Aside (Lazy Loading)</b> chỉ nạp dữ liệu vào cache khi có Cache Miss (tiết kiệm bộ nhớ cache, nhưng có thể đọc dữ liệu cũ - Stale Data). <b>Write-Through</b> ghi đồng thời vào DB và Cache (dữ liệu trong cache luôn mới nhất, nhưng tốn dung lượng lưu dữ liệu ít đọc).</span>
+          <span class="lang-en"><b>Trap 3 — Caching Strategies: Cache-Aside vs Write-Through:</b> <b>Cache-Aside (Lazy Loading)</b> only loads into cache on a cache miss (saves memory, but risks stale reads). <b>Write-Through</b> writes to DB and Cache simultaneously (cache is never stale, but incurs overhead caching rarely read data).</span>
+        </li>
+        <li>
+          <span class="lang-vi"><b>Bẫy 4 — Placement Groups: Cluster vs Spread vs Partition:</b> <b>Cluster</b> gom các EC2 vào cùng 1 rack trong 1 AZ để đạt độ trễ mạng thấp nhất (dùng cho HPC, Big Data). <b>Spread</b> đặt mỗi EC2 trên rack phần cứng riêng biệt (tối đa 7 instances/AZ) để tối đa khả năng chịu lỗi phần cứng. <b>Partition</b> chia nhỏ thành nhiều phân vùng cho HDFS/Hadoop/Cassandra.</span>
+          <span class="lang-en"><b>Trap 4 — Placement Groups: Cluster vs Spread vs Partition:</b> <b>Cluster</b> packs instances onto the same rack within 1 AZ for lowest latency (HPC, Big Data). <b>Spread</b> places each instance on separate hardware racks (max 7 instances/AZ) for fault isolation. <b>Partition</b> divides partitions for HDFS/Hadoop/Cassandra.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="matrix-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th style="width:30%"><span class="lang-vi">Từ khóa trong câu hỏi thi</span><span class="lang-en">Exam Question Keywords</span></th>
+        <th style="width:35%"><span class="lang-vi">Giải pháp kiến trúc AWS</span><span class="lang-en">AWS Architectural Solution</span></th>
+        <th style="width:35%"><span class="lang-vi">Lý do chọn &amp; Lưu ý kỹ thuật</span><span class="lang-en">Selection Reason &amp; Exam Trap</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>"Tightly coupled parallel workload, Message Passing Interface (MPI), microsecond latency"</b></td>
+        <td><b>EC2 Cluster Placement Group + EFA + FSx for Lustre</b></td>
+        <td>
+          <span class="lang-vi">Bộ ba HPC hoàn hảo: Cluster gom phần cứng, EFA bypass kernel, Lustre đọc S3 siêu tốc.</span>
+          <span class="lang-en">The ultimate HPC triad: Cluster colocates hardware, EFA bypasses kernel, Lustre feeds S3 fast.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Decouple image upload and processing with fan-out to multiple worker queues"</b></td>
+        <td><b>Amazon SNS Topic Fan-out to multiple Amazon SQS Queues</b></td>
+        <td>
+          <span class="lang-vi">Một sự kiện SNS được nhân bản tự động tới nhiều queue xử lý độc lập (Thumbnail, AI tag, Archive).</span>
+          <span class="lang-en">One SNS event automatically fans out to multiple independent worker queues.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Cache database query results in-memory to reduce latency from milliseconds to microseconds"</b></td>
+        <td><b>Amazon ElastiCache (Redis) with Cluster Mode Enabled</b></td>
+        <td>
+          <span class="lang-vi">In-memory caching hỗ trợ cấu trúc dữ liệu phức tạp, sharding và sao chép đa AZ.</span>
+          <span class="lang-en">In-memory caching supporting complex data types, sharding, and multi-AZ replication.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Provide static IP address and route traffic to closest regional endpoint via AWS network"</b></td>
+        <td><b>AWS Global Accelerator</b></td>
+        <td>
+          <span class="lang-vi">Cung cấp 2 Anycast Static IPs; định tuyến lưu lượng qua mạng trục toàn cầu của AWS.</span>
+          <span class="lang-en">Provides 2 Anycast Static IPs; routes traffic across the AWS global private fiber backbone.</span>
+        </td>
+      </tr>
+      <tr>
+        <td><b>"Prevent hot partition and handle strict FIFO message ordering per customer"</b></td>
+        <td><b>Amazon SQS FIFO with Message Group ID</b></td>
+        <td>
+          <span class="lang-vi">Nhóm các thông điệp theo Customer ID để xử lý tuần tự theo từng nhóm song song.</span>
+          <span class="lang-en">Groups messages by Customer ID to guarantee ordered processing per customer in parallel.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARCHITECTURE: HPC ON AWS -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">🚀</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Mô hình Kiến trúc Tính toán Hiệu năng cao (HPC Architecture on AWS)</span>
+        <span class="lang-en">High-Performance Computing (HPC) Architecture on AWS</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Kết hợp Cluster Placement Group, EFA, FSx for Lustre và AWS Batch</span>
+        <span class="lang-en">Synergy of Cluster Placement Groups, EFA, FSx for Lustre, and AWS Batch</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-diagram">
+flowchart TD
+    subgraph S3_Store["Kho lưu trữ Dữ liệu Gốc / S3 Data Lake"]
+        S3["Amazon S3 Data Lake<br/>(Lưu trữ hàng PB dữ liệu thô)"]
+    end
+
+    subgraph HPC_VPC["VPC: Tính toán Khoa học &amp; Mô phỏng"]
+        LUSTRE["Amazon FSx for Lustre<br/>(Hàng triệu IOPS · Sub-ms latency)"]
+
+        subgraph CLUSTER["Cluster Placement Group (Single Availability Zone)"]
+            NODE1["EC2 Compute Instance 1<br/>(Hỗ trợ EFA · Linux)"]
+            NODE2["EC2 Compute Instance 2<br/>(Hỗ trợ EFA · Linux)"]
+            NODE3["EC2 Compute Instance 3<br/>(Hỗ trợ EFA · Linux)"]
+        end
+
+        NODE1 <-->|EFA: Bypass OS Kernel<br/>MPI Node-to-Node| NODE2
+        NODE2 <-->|EFA: Bypass OS Kernel<br/>MPI Node-to-Node| NODE3
+        NODE1 <-->|EFA: Bypass OS Kernel<br/>MPI Node-to-Node| NODE3
+
+        LUSTRE <-->|POSIX Direct Mount| NODE1
+        LUSTRE <-->|POSIX Direct Mount| NODE2
+        LUSTRE <-->|POSIX Direct Mount| NODE3
+    end
+
+    S3 <-->|Tự động đồng bộ 2 chiều (Data Repository)| LUSTRE
+
+    classDef s3 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef hpc fill:#fff3e0,stroke:#f57c00,stroke-width:1px;
+    classDef efa fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    class S3 s3;
+    class LUSTRE,NODE1,NODE2,NODE3 hpc;
+    class CLUSTER efa;
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: HPC ON AWS -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚡</div>
+    <div>
+      <div class="ct">1. High-Performance Computing (HPC) on AWS</div>
+      <div class="cs">
+        <span class="lang-vi">Giải pháp cho các bài toán mô phỏng vật lý, tài chính và Machine Learning</span>
+        <span class="lang-en">Solutions for physics simulation, financial modeling &amp; AI/ML workloads</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Thách thức HPC:</b><br>
+    <span class="lang-vi">Workload tính toán hiệu năng cao đòi hỏi hàng ngàn CPU/GPU chạy song song kết nối với nhau với độ trễ mạng thấp nhất có thể (micro-seconds) và hệ thống file chia sẻ thông lượng cực lớn.</span>
+    <span class="lang-en">HPC workloads demand thousands of parallel CPUs/GPUs communicating with ultra-low microsecond network latency and high-throughput shared storage.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Thành phần Mạng &amp; Tính toán cốt lõi:</b><br>
+    <span class="lang-vi">1. <b>Cluster Placement Group:</b> Đặt các máy chủ trong cùng một rack phần cứng ở 1 AZ duy nhất để đạt độ trễ mạng thấp nhất.<br>2. <b>Elastic Fabric Adapter (EFA):</b> Card mạng chuyên dụng cho phép giao tiếp node-to-node thông qua chuẩn <b>MPI (Message Passing Interface)</b>, bỏ qua tầng OS kernel để đạt tốc độ truyền tải tối đa.<br>3. <b>AWS Batch:</b> Dịch vụ quản lý hàng đợi và lập lịch chạy hàng chục ngàn container/job tính toán tự động dựa trên EC2 Spot Instances để tối ưu chi phí.</span>
+    <span class="lang-en">1. <b>Cluster Placement Group:</b> Packs instances close together inside 1 AZ for minimum network latency.<br>2. <b>Elastic Fabric Adapter (EFA):</b> Specialized network interface enabling node-to-node MPI communication by bypassing OS kernel stack.<br>3. <b>AWS Batch:</b> Fully managed batch computing scheduler provisioning Spot EC2 instances dynamically to optimize batch job costs.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Lưu trữ cho HPC (Storage Layer):</b><br>
+    <span class="lang-vi"><b>Amazon FSx for Lustre</b> là lựa chọn số 1 cho HPC. Tương thích chuẩn POSIX, mở rộng thông lượng lên đến hàng trăm GB/s, và có khả năng đọc/ghi trực tiếp và trong suốt với Amazon S3.</span>
+    <span class="lang-en"><b>Amazon FSx for Lustre</b> is the #1 choice for HPC. POSIX-compliant, scales throughput to hundreds of GB/s, with seamless transparent bi-directional sync with Amazon S3.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ EFA <b>chỉ hỗ trợ trên Linux</b> (không hỗ trợ Windows).<br>⚠️ Không thể gom các instance trải dài trên nhiều Availability Zones vào một Cluster Placement Group.</span>
+    <span class="lang-en">⚠️ EFA is <b>supported on Linux only</b> (not available for Windows).<br>⚠️ You cannot span a single Cluster Placement Group across multiple Availability Zones.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: MULTI-TIER CACHING -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🗄️</div>
+    <div>
+      <div class="ct">2. Multi-Tier Caching Architecture</div>
+      <div class="cs">
+        <span class="lang-vi">Tối ưu hóa độ trễ phản hồi từ rìa mạng đến cơ sở dữ liệu</span>
+        <span class="lang-en">Optimizing response latencies from edge to database layer</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Các tầng Caching trong AWS:</b><br>
+    <span class="lang-vi">1. <b>Edge Cache (CloudFront):</b> Lưu trữ nội dung tĩnh và động gần người dùng nhất trên toàn cầu.<br>2. <b>API Gateway Cache:</b> Lưu trữ kết quả phản hồi của API endpoint trong một khoảng thời gian TTL.<br>3. <b>In-Memory Cache (ElastiCache Redis / Memcached):</b> Lưu trữ kết quả truy vấn cơ sở dữ liệu quan hệ (RDS/Aurora).<br>4. <b>DynamoDB Accelerator (DAX):</b> In-memory cache chuyên dụng cho DynamoDB giảm độ trễ từ milliseconds xuống microseconds.</span>
+    <span class="lang-en">1. <b>Edge Cache (CloudFront):</b> Caches static/dynamic web assets globally close to end-users.<br>2. <b>API Gateway Cache:</b> Caches API endpoint responses with configurable TTLs.<br>3. <b>In-Memory Cache (ElastiCache Redis/Memcached):</b> Caches relational DB query results in RAM.<br>4. <b>DynamoDB Accelerator (DAX):</b> Dedicated in-memory cache for DynamoDB reducing read latency to microseconds.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Chiến lược Caching cơ bản:</b><br>
+    <span class="lang-vi">1. <b>Cache-Aside (Lazy Loading):</b> Ứng dụng đọc từ cache &rarr; Nếu Cache Miss thì đọc từ DB &rarr; Ghi ngược vào Cache. Tiết kiệm RAM nhưng lần đọc đầu bị trễ.<br>2. <b>Write-Through:</b> Khi cập nhật dữ liệu, ứng dụng ghi đồng thời vào DB và Cache. Dữ liệu luôn đồng nhất nhưng tốn tài nguyên cache cho dữ liệu ít đọc.</span>
+    <span class="lang-en">1. <b>Cache-Aside (Lazy Loading):</b> App reads cache &rarr; On cache miss, reads DB &rarr; Populates cache. Saves RAM, but initial read incurs latency.<br>2. <b>Write-Through:</b> Writes to DB and Cache simultaneously. Data is never stale, but caches rarely read records.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Redis vs Memcached:</b><br>
+    <span class="lang-vi">Chọn <b>ElastiCache Redis</b> khi cần: Cấu trúc dữ liệu nâng cao (sets, sorted sets, hashes, pub/sub), lưu trữ bền vững (Persistence / AOF / RDB), tự động failover đa AZ, và mã hóa.<br>Chọn <b>Memcached</b> khi chỉ cần: Bộ nhớ đệm key-value đơn giản, thuần in-memory và hỗ trợ đa luồng (multi-threaded).</span>
+    <span class="lang-en">Choose <b>ElastiCache Redis</b> when you need: Advanced data structures (sets, sorted sets, pub/sub), persistence/snapshots, multi-AZ auto failover, and encryption.<br>Choose <b>Memcached</b> when you need: Simple key-value caching, pure in-memory performance, and multi-threading.</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ DAX là in-memory cache <b>chỉ dành riêng cho DynamoDB</b>. Không thể dùng DAX cho Aurora hay RDS! Với Aurora/RDS, luôn dùng ElastiCache.</span>
+    <span class="lang-en">⚠️ DAX is an in-memory cache <b>exclusively built for DynamoDB</b>. Cannot be used with Aurora or RDS! For relational databases, always use ElastiCache.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: MICROSERVICES & EVENT-DRIVEN DECOUPLING -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--pib)">🧩</div>
+    <div>
+      <div class="ct">3. Microservices &amp; Event-Driven Decoupling</div>
+      <div class="cs">
+        <span class="lang-vi">Phân tách vi dịch vụ và xử lý bất đồng bộ quy mô lớn</span>
+        <span class="lang-en">Microservices decoupling and large-scale asynchronous event handling</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Khái niệm Phân tách (Loose Coupling):</b><br>
+    <span class="lang-vi">Thiết kế hệ thống sao cho sự cố hoặc quá tải ở một dịch vụ (ví dụ: Tải ảnh sản phẩm) không làm sập các dịch vụ khác (ví dụ: Thanh toán giỏ hàng). Sử dụng Message Brokers (SQS, SNS, EventBridge) làm vùng đệm trung gian.</span>
+    <span class="lang-en">Architectural pattern ensuring failure or traffic spikes in one microservice (e.g. image processing) does not cascade to others (e.g. checkout). Employs message brokers (SQS, SNS, EventBridge) as buffers.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Mẫu kiến trúc SNS Fan-Out:</b><br>
+    <span class="lang-vi">Khi có đơn hàng mới được tạo, đẩy message vào <b>SNS Topic</b>. SNS tự động sao chép thông điệp (Fan-out) sang nhiều <b>SQS Queues</b> độc lập: Queue 1 cho dịch vụ trừ kho (Inventory), Queue 2 cho dịch vụ xuất hóa đơn (Invoicing), Queue 3 cho dịch vụ gửi email xác nhận (SES). Mỗi worker pool scale độc lập.</span>
+    <span class="lang-en">On new order creation, publish message to an <b>SNS Topic</b>. SNS automatically fans out to multiple independent <b>SQS Queues</b>: Queue 1 for inventory, Queue 2 for invoicing, Queue 3 for email notifications. Each worker pool scales independently.</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>SQS FIFO với Message Group ID:</b><br>
+    <span class="lang-vi">Đảm bảo thứ tự xử lý thông điệp chính xác theo từng khách hàng (Customer ID làm <code>MessageGroupId</code>). Các thông điệp cùng khách hàng được xử lý tuần tự, trong khi các khách hàng khác nhau được xử lý song song bởi nhiều worker!</span>
+    <span class="lang-en">Guarantees strict ordered processing per customer (Customer ID as <code>MessageGroupId</code>). Messages within the same group are processed strictly in-order, while distinct customer groups process in parallel across workers!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Nếu subscriber là HTTPS endpoint hoặc email &rarr; Đẩy trực tiếp từ SNS. Nhưng nếu subscriber cần lưu trữ thông điệp khi hệ thống bận &rarr; <b>Bắt buộc kết hợp SNS &rarr; SQS Queue &rarr; EC2/Lambda</b>.</span>
+    <span class="lang-en">⚠️ If subscriber is HTTPS or email &rarr; Push directly from SNS. But if workers need queuing/buffering during load spikes &rarr; <b>Must use SNS &rarr; SQS &rarr; EC2/Lambda fan-out</b>.</span>
+  </div>
+</div>
+
+<!-- 4-POINT CHEAT SHEET: GLOBAL ACCELERATOR & MULTI-REGION -->
+<div class="card">
+  <div class="ch">
+    <div class="ci" style="background:var(--grb)">🌐</div>
+    <div>
+      <div class="ct">4. AWS Global Accelerator vs CloudFront</div>
+      <div class="cs">
+        <span class="lang-vi">Định tuyến mạng toàn cầu tối ưu hóa hiệu năng và độ tin cậy</span>
+        <span class="lang-en">Global traffic acceleration for performance and high availability</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-def">
+    <b>Định nghĩa &amp; Bản chất:</b><br>
+    <span class="lang-vi">1. <b>AWS Global Accelerator:</b> Dịch vụ mạng định tuyến lưu lượng người dùng qua mạng cáp quang toàn cầu của AWS thông qua <b>2 địa chỉ Anycast Static IPv4</b> tĩnh.<br>2. <b>Amazon CloudFront:</b> Mạng phân phối nội dung (CDN) lưu trữ bộ đệm (Caching) cho nội dung web tĩnh và động tại Edge Locations.</span>
+    <span class="lang-en">1. <b>AWS Global Accelerator:</b> Networking service routing user traffic over AWS global private fiber network using <b>2 static Anycast IPv4 addresses</b>.<br>2. <b>Amazon CloudFront:</b> Content Delivery Network (CDN) caching static and dynamic web content at Edge Locations.</span>
+  </div>
+
+  <div class="tier-use">
+    <b>Giao thức hỗ trợ (Protocol Support):</b><br>
+    <span class="lang-vi">1. <b>CloudFront:</b> Chỉ hỗ trợ giao thức web <b>HTTP / HTTPS</b> và WebSockets.<br>2. <b>Global Accelerator:</b> Hỗ trợ cả <b>TCP và UDP</b> (phù hợp cho game online, IoT, VoIP, video streaming trực tiếp, DNS, non-HTTP applications).</span>
+    <span class="lang-en">1. <b>CloudFront:</b> Optimized strictly for <b>HTTP / HTTPS</b> web traffic and WebSockets.<br>2. <b>Global Accelerator:</b> Supports both <b>TCP and UDP</b> (ideal for gaming, IoT, VoIP, live streaming, DNS, non-HTTP applications).</span>
+  </div>
+
+  <div class="tier-diff">
+    <b>Cơ chế Failover đa vùng:</b><br>
+    <span class="lang-vi">Global Accelerator thực hiện Health Check liên tục tới các Endpoint Groups ở các Region khác nhau. Khi một Region gặp sự cố, Global Accelerator <b>tự động chuyển hướng lưu lượng trong vòng 1 phút</b> mà không phụ thuộc vào thời gian TTL của DNS client!</span>
+    <span class="lang-en">Global Accelerator continuously runs health checks across regional Endpoint Groups. If a region fails, it <b>automatically shifts traffic within 1 minute</b>, completely bypassing client DNS caching/TTL issues!</span>
+  </div>
+
+  <div class="tier-trap">
+    <b>Bẫy đề thi / Exam Traps:</b><br>
+    <span class="lang-vi">⚠️ Đề thi yêu cầu: "Cần 2 địa chỉ IP tĩnh cố định cho khách hàng whitelist trên tường lửa doanh nghiệp và tăng tốc ứng dụng UDP" &rarr; <b>Bắt buộc chọn AWS Global Accelerator</b>!<br>⚠️ Đề thi yêu cầu: "Giảm tải cho máy chủ bằng cách lưu cache video và hình ảnh" &rarr; Chọn <b>CloudFront</b>.</span>
+    <span class="lang-en">⚠️ Question asks: "Need 2 fixed static IPs to whitelist on corporate firewalls and accelerate UDP application" &rarr; <b>Must choose AWS Global Accelerator</b>!<br>⚠️ Question asks: "Offload origin servers by caching videos and images" &rarr; Choose <b>CloudFront</b>.</span>
+  </div>
+</div>
+
+<!-- COMPARISON MATRIX: GLOBAL TRAFFIC ROUTING -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">⚖️</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Ma trận So sánh: Route 53 vs CloudFront vs Global Accelerator</span>
+        <span class="lang-en">Comparison Matrix: Route 53 vs CloudFront vs Global Accelerator</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Phân biệt 3 giải pháp định tuyến lưu lượng toàn cầu trong các kịch bản thi SAA-C03</span>
+        <span class="lang-en">Distinguish 3 global traffic routing services across SAA-C03 exam scenarios</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:22%"><span class="lang-vi">Tiêu chí so sánh</span><span class="lang-en">Comparison Factor</span></th>
+        <th style="width:26%"><b>Amazon Route 53</b></th>
+        <th style="width:26%"><b>Amazon CloudFront</b></th>
+        <th style="width:26%"><b>AWS Global Accelerator</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Cơ chế hoạt động</b></td>
+        <td>Định tuyến DNS (DNS-based routing)</td>
+        <td>Mạng CDN phân phối &amp; Caching tại Edge</td>
+        <td>Định tuyến mạng Anycast IP qua mạng cáp AWS</td>
+      </tr>
+      <tr>
+        <td><b>Giao thức hỗ trợ</b></td>
+        <td>Mọi giao thức (phân giải tên miền)</td>
+        <td><b>HTTP / HTTPS</b>, WebSockets</td>
+        <td><b>TCP, UDP</b> (bao gồm cả HTTP/HTTPS)</td>
+      </tr>
+      <tr>
+        <td><b>Địa chỉ IP cho client</b></td>
+        <td>Trả về IP theo bản ghi DNS (có thể thay đổi)</td>
+        <td>Domain name CloudFront (dải IP dynamic)</td>
+        <td><b>2 địa chỉ Anycast Static IP cố định</b></td>
+      </tr>
+      <tr>
+        <td><b>Tính năng Caching</b></td>
+        <td>Không (chỉ trả lời DNS query)</td>
+        <td><b>CÓ</b> (Edge Location Cache cực mạnh)</td>
+        <td><b>KHÔNG</b> (Proxy mạng thuần túy, không cache)</td>
+      </tr>
+      <tr>
+        <td><b>Tốc độ chuyển đổi Failover</b></td>
+        <td>Chậm hơn (phụ thuộc vào DNS TTL ở máy client)</td>
+        <td>Nhanh qua Origin Failover (HTTP 5xx)</td>
+        <td><b>Rất nhanh (&lt; 1 phút)</b>, độc lập hoàn toàn với DNS</td>
+      </tr>
+      <tr>
+        <td><b>Use Case thi cử cốt lõi</b></td>
+        <td>Định tuyến DNS Geolocation, Weighted, Multi-Value</td>
+        <td>Lưu cache file tĩnh/động cho website toàn cầu</td>
+        <td>Ứng dụng Gaming, VoIP, IoT cần 2 Static IP whitelist</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAM TIPS: BẪY ĐỀ THI & QUY TẮC VÀNG -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--orb)">🎯</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Bẫy đề thi &amp; Quy tắc vàng SAA-C03 (Exam Tips &amp; Golden Rules)</span>
+        <span class="lang-en">Exam Tips &amp; Golden Rules for SAA-C03</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Các mẫu câu hỏi kinh điển về Thiết kế Kiến trúc Giải pháp Tổng thể</span>
+        <span class="lang-en">Classic question patterns on overall solution architecture designs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="pi pi-exam">
+        <div class="pit">
+          <span class="lang-vi">📌 BẪY KIẾN TRÚC HIỆU NĂNG CAO (HPC)</span>
+          <span class="lang-en">📌 HPC ARCHITECTURE TRAPS</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Không bao giờ chọn Spread Placement Group cho HPC:</b> Spread phân tán instances trên các rack khác nhau để tăng độ an toàn, điều này làm tăng độ trễ mạng! HPC luôn dùng <b>Cluster Placement Group</b>.</li>
+            <li><b>Lustre kết nối S3:</b> FSx for Lustre đồng bộ trực tiếp với S3. Bạn có thể tạo Lustre filesystem từ dữ liệu trong S3, chạy tính toán siêu nhanh, và đồng bộ kết quả ngược lại S3 rồi xóa Lustre để tiết kiệm tiền.</li>
+            <li><b>ENA vs EFA:</b> ENA tăng tốc mạng chuẩn IP; EFA dùng giao thức SRD (Scalable Reliable Datagram) bypass Linux kernel dành riêng cho ứng dụng MPI phân tán.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="pi pi-tip">
+        <div class="pit">
+          <span class="lang-vi">💡 QUY TẮC VÀNG THIẾT KẾ PHÂN TÁN</span>
+          <span class="lang-en">💡 DISTRIBUTED DESIGN RULES</span>
+        </div>
+        <div class="pic">
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li><b>Stateless Web Servers:</b> Lưu trữ Session State trong Amazon ElastiCache (Redis) hoặc DynamoDB để người dùng có thể kết nối tới bất kỳ EC2 nào phía sau ALB mà không mất phiên làm việc.</li>
+            <li><b>Bảo vệ Database khỏi đợt sóng tải (Spikes):</b> Đặt SQS Queue ở giữa API và Worker để lưu trữ tạm các yêu cầu ghi dữ liệu; worker đọc từ SQS và ghi tuần tự vào Database.</li>
+            <li><b>Zero Latency Writes với Aurora Global Database:</b> Đọc dữ liệu cục bộ với độ trễ &lt; 1 giây tại secondary regions, ghi dữ liệu về primary region tự động.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER STUDY RESOURCES -->
+<div class="card full">
+  <div class="ch">
+    <div class="ci" style="background:var(--blb)">📚</div>
+    <div>
+      <div class="ct">
+        <span class="lang-vi">Tài nguyên học tập &amp; Liên kết mở rộng</span>
+        <span class="lang-en">Further Study Resources &amp; Documentation</span>
+      </div>
+      <div class="cs">
+        <span class="lang-vi">Tài liệu tham khảo chính thức từ AWS và bài giảng Udemy liên quan</span>
+        <span class="lang-en">Official AWS references and relevant Udemy lectures</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">🎓 Giáo trình Udemy SAA-C03</span>
+        <span class="lang-en">🎓 Udemy SAA-C03 Syllabus</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">▶️</div>
+          <div>
+            <b>Section 29: More Solution Architectures</b><br>
+            <span class="lang-vi">Nghiên cứu ca điển hình về HPC, bộ đệm phân tán, WhatIsMyIP và thiết kế chịu lỗi cao.</span>
+            <span class="lang-en">Case studies on HPC, distributed caching, WhatIsMyIP, and fault-tolerant architectures.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">📖 AWS Documentation</span>
+        <span class="lang-en">📖 AWS Documentation</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📄</div>
+          <div>
+            <b>AWS HPC Lens - Well-Architected Framework</b><br>
+            <span class="lang-vi">Hướng dẫn thiết kế kiến trúc chuẩn cho các hệ thống tính toán hiệu năng cao trên AWS.</span>
+            <span class="lang-en">Best practices guide for architecting High-Performance Computing systems on AWS.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📄</div>
+          <div>
+            <b>AWS Global Accelerator Developer Guide</b><br>
+            <span class="lang-vi">Cấu hình Anycast Static IP, Endpoint Groups và cơ chế failover đa vùng tốc độ cao.</span>
+            <span class="lang-en">Configuring Anycast Static IPs, Endpoint Groups, and rapid cross-region failover.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--orb)">📄</div>
+          <div>
+            <b>Amazon FSx for Lustre User Guide</b><br>
+            <span class="lang-vi">Triển khai hệ thống file Lustre tích hợp S3 Data Repositories cho tác vụ Big Data/AI.</span>
+            <span class="lang-en">Deploying Lustre file systems linked with S3 Data Repositories for Big Data/AI tasks.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colt">
+        <span class="lang-vi">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+        <span class="lang-en">💡 Tutorials Dojo &amp; Cheat Sheets</span>
+      </div>
+      <div class="sl">
+        <div class="sli">
+          <div class="slic" style="background:var(--blb)">📌</div>
+          <div>
+            <b>CloudFront vs Global Accelerator Cheat Sheet</b><br>
+            <span class="lang-vi">Bảng ma trận so sánh chi tiết và cách chọn dịch vụ chính xác trong đề thi SAA-C03.</span>
+            <span class="lang-en">Detailed comparison matrix and decision flowchart for SAA-C03 exam questions.</span>
+          </div>
+        </div>
+        <div class="sli">
+          <div class="slic" style="background:var(--grb)">📌</div>
+          <div>
+            <b>High Performance Computing (HPC) Cheat Sheet</b><br>
+            <span class="lang-vi">Tổng hợp các câu hỏi thi về EFA, Cluster Placement Groups và FSx for Lustre.</span>
+            <span class="lang-en">Compilation of exam questions on EFA, Cluster Placement Groups, and FSx for Lustre.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

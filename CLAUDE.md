@@ -101,79 +101,47 @@ learn_aws/
 
 ---
 
-## Lộ trình các chủ đề tiếp theo (Roadmap for Next Sessions)
+## Lộ trình các chủ đề (Roadmap 33 Sections Chuẩn Udemy SAA-C03)
 
-Đã hoàn thành 9 cheat sheet tương ứng các Section Udemy:
-- ✅ **Section 3:** Global Infrastructure (`topics/aws_global_infra.html`)
-- ✅ **Section 4:** IAM & AWS CLI (`topics/aws_iam.html`)
-- ✅ **Section 5 & 6:** EC2 Fundamentals & SAA Level (`topics/aws_ec2.html`)
-- ✅ **Section 7:** EC2 Instance Storage — EBS & EFS (`topics/aws_storage.html`)
-- ✅ **Section 8:** High Availability & Scalability — ELB & ASG (`topics/aws_elb_asg.html`)
-- ✅ **Section 9 & 20:** AWS Databases — RDS, Aurora, DynamoDB & ElastiCache (`topics/aws_databases.html`)
-- ✅ **Section 10:** Amazon Route 53 (`topics/aws_route53.html`)
-- ✅ **Section 11 & 13:** Amazon S3 & Advanced S3 (`topics/aws_s3.html`)
-- ✅ **Section 14:** CloudFront & Global Accelerator (`topics/aws_cloudfront.html`)
+Giáo trình khóa học Stephane Maarek gồm 33 Phần. Hiện trạng các chủ đề trong dự án:
 
-Khi tiếp tục phiên làm việc mới, hãy đối chiếu danh sách các Section cần làm tiếp dưới đây:
+### Đã hoàn thành Cheat sheet & Sơ đồ kiến trúc (topics/):
+- ✅ **Section 3:** Global Infrastructure (topics/aws_global_infra.html)
+- ✅ **Section 4:** IAM & AWS CLI (topics/aws_iam.html)
+- ✅ **Section 5 & 6:** EC2 Fundamentals & SAA Level (topics/aws_ec2.html)
+- ✅ **Section 7:** EC2 Instance Storage — EBS & EFS (topics/aws_storage.html)
+- ✅ **Section 8:** High Availability & Scalability — ELB & ASG (topics/aws_elb_asg.html)
+- ✅ **Section 9 & 22:** AWS Databases — RDS, Aurora, ElastiCache, DynamoDB (topics/aws_databases.html)
+- ✅ **Section 10:** Amazon Route 53 (topics/aws_route53.html)
+- ✅ **Section 12, 13, 14 & 15:** Amazon S3 (Fundamentals, SDK & Roles, Advanced, Security) (topics/aws_s3.html)
+- ✅ **Section 16:** CloudFront & Global Accelerator (topics/aws_cloudfront.html)
+- ✅ **Section 17:** AWS Storage Extras — FSx, Storage Gateway & Snow Family (topics/aws_storage_extras.html)
+- ✅ **Section 18:** Decoupling Applications — SQS, SNS, Kinesis, MQ (topics/aws_decoupling.html · Lab: topics/lab_decoupling.html)
 
-1. **Section 16: Decoupling Applications (`topics/aws_decoupling.html`)**
-   - *Nguồn:* Udemy Section 16 (Decoupling Applications: SQS, SNS, Kinesis, Active MQ)
-   - Amazon SQS: Standard (at-least-once) vs FIFO (exactly-once, order), DLQ (Dead Letter Queue), Visibility Timeout.
-   - Amazon SNS: Pub/Sub Fan-out pattern, Topic Subscriptions.
-   - Amazon Kinesis: Data Streams (shards, real-time), Firehose (near real-time S3/Redshift loader), Data Analytics.
-2. **Section 17: Containers on AWS (`topics/aws_containers.html`)**
-   - *Nguồn:* Udemy Section 17 (Containers on AWS: ECS, Fargate, ECR, EKS)
-   - ECS (Elastic Container Service): EC2 Launch Type vs Fargate (Serverless container).
-   - ECR (Elastic Container Registry), EKS (Elastic Kubernetes Service).
-3. **Section 18 & 19: Serverless Architecture (`topics/aws_serverless.html`)**
-   - *Nguồn:* Udemy Section 18 (Serverless Overviews) & Section 19 (Serverless Solutions)
-   - AWS Lambda: Concurrency, Cold start, Destinations, Execution limits (15 phút, 10GB RAM).
-   - Amazon API Gateway: REST API, HTTP API, WebSocket, Throttling, API Keys, Caching.
-   - AWS Step Functions: State machines for workflow orchestration.
-4. **Section 23: Monitoring, Audit & Governance (`topics/aws_monitoring.html`)**
-   - *Nguồn:* Udemy Section 23 (AWS Monitoring & Audit)
-   - CloudWatch: Metrics, Alarms, Logs, Synthetics, Container Insights.
-   - CloudTrail: Ghi nhận mọi API calls, Trail bảo mật, phân tích sự cố.
-   - EventBridge: Phản ứng sự kiện thời gian thực (Rule & Target, cron scheduler).
-5. **Section 24: Security, Encryption & Compliance (`topics/aws_security.html`)**
-   - *Nguồn:* Udemy Section 24 (AWS Security & Encryption)
-   - AWS KMS: Customer Master Keys (CMK), Symmetric vs Asymmetric, Automatic Key Rotation.
-   - Secrets Manager (tự động rotate password RDS) vs SSM Parameter Store.
-   - AWS WAF, AWS Shield Standard/Advanced, AWS Network Firewall, AWS GuardDuty, AWS Inspector, AWS Macie.
-6. **Section 25: Networking — Virtual Private Cloud (`topics/aws_vpc.html`)**
-   - *Nguồn:* Udemy Section 25 (Networking - VPC)
-   - CIDR, Public Subnets, Private Subnets, Internet Gateway (IGW), Route Tables.
-   - NAT Gateway (quản lý bởi AWS, Multi-AZ) vs NAT Instance.
-   - Network ACL (NACL - Stateless, Subnet-level, có Deny rules) vs Security Group (SG - Stateful, Instance-level).
-   - VPC Peering, VPC Endpoints (Gateway vs Interface Endpoints / PrivateLink), Transit Gateway.
-7. **Section 26: Disaster Recovery & Data Migration (`topics/aws_disaster_recovery.html`)**
-   - *Nguồn:* Udemy Section 26 (Disaster Recovery & Migrations)
-   - 4 chiến lược DR: Backup & Restore, Pilot Light, Warm Standby, Multi-Region Active-Active.
-   - AWS DRS (Elastic Disaster Recovery), AWS DMS (Database Migration Service), AWS Snow Family, DataSync.
-   - Amazon API Gateway: REST API, HTTP API, WebSocket, Throttling, API Keys, Caching.
-   - AWS Step Functions: State machines for workflow orchestration.
-10. **Section 23: Monitoring, Audit & Governance (`topics/aws_monitoring.html`)**
-    - *Nguồn:* Udemy Section 23 (AWS Monitoring & Audit)
-    - CloudWatch: Metrics, Alarms, Logs, Synthetics, Container Insights.
-    - CloudTrail: Ghi nhận mọi API calls, Trail bảo mật, phân tích sự cố.
-    - EventBridge: Phản ứng sự kiện thời gian thực (Rule & Target, cron scheduler).
-11. **Section 24: Security, Encryption & Compliance (`topics/aws_security.html`)**
-    - *Nguồn:* Udemy Section 24 (AWS Security & Encryption)
-    - AWS KMS: Customer Master Keys (CMK), Symmetric vs Asymmetric, Automatic Key Rotation.
-    - Secrets Manager (tự động rotate password RDS) vs SSM Parameter Store.
-    - AWS WAF, AWS Shield Standard/Advanced, AWS Network Firewall, AWS GuardDuty, AWS Inspector, AWS Macie.
-12. **Section 25: Networking — Virtual Private Cloud (`topics/aws_vpc.html`)**
-    - *Nguồn:* Udemy Section 25 (Networking - VPC)
-    - CIDR, Public Subnets, Private Subnets, Internet Gateway (IGW), Route Tables.
-    - NAT Gateway (quản lý bởi AWS, Multi-AZ) vs NAT Instance.
-    - Network ACL (NACL - Stateless, Subnet-level, có Deny rules) vs Security Group (SG - Stateful, Instance-level).
-    - VPC Peering, VPC Endpoints (Gateway vs Interface Endpoints / PrivateLink), Transit Gateway.
-13. **Section 26: Disaster Recovery & Data Migration (`topics/aws_disaster_recovery.html`)**
-    - *Nguồn:* Udemy Section 26 (Disaster Recovery & Migrations)
-    - 4 chiến lược DR: Backup & Restore, Pilot Light, Warm Standby, Multi-Region Active-Active.
-    - AWS DRS (Elastic Disaster Recovery), AWS DMS (Database Migration Service), AWS Snow Family, DataSync.
+### Đã có Màn hình thực hành Lab chuyên sâu (ws_document/):
+- 🧪 **Lab 1 (Sec 4-5):** EC2 User Data & Instance Metadata CLI (topics/lab_ec2.html)
+- 🧪 **Lab 2 (Sec 7):** EBS Volume Benchmark & EFS Multi-AZ Mount (topics/lab_storage.html)
+- 🧪 **Lab 3 (Sec 10):** Route 53 Multi-AZ Routing Policies (topics/lab_route53.html)
+- 🧪 **Lab 4 (Sec 12-15):** S3 Website, CORS, Pre-signed URL, Athena Access Logs (topics/lab_s3.html)
+- 🧪 **Lab 5 (Sec 18):** SQS CLI & Kinesis Data Streams (topics/lab_decoupling.html)
+- 🧪 **Lab 6 (Sec 20-21):** AWS Lambda & API Gateway Proxy Integration (topics/lab_serverless.html)
+- 🧪 **Lab 7 (Sec 26):** AWS KMS CLI Encryption & SSM Parameter Store (topics/lab_security_ssm_kms.html)
+- 🧪 **Lab 8 (IaC):** CloudFormation Infrastructure as Code (topics/lab_cloudformation.html)
 
----
+### Kế hoạch các Section tiếp theo:
+1. **Section**Section 19: Containers on AWS (topics/aws_containers.html)** — ECS (EC2 vs Fargate), ECR, EKS Kubernetes.
+2. **Section**Section 20 & 21: Serverless Architecture (topics/aws_serverless.html)** — Lambda, API Gateway, Step Functions, Cognito.
+3. **Section 23: Data & Analytics** (topics/aws_analytics.html)** — Athena, AWS Glue, EMR, Redshift, QuickSight.
+4. **Section 24: AWS Monitoring & Audit** (topics/aws_monitoring.html) — CloudWatch (Metrics, Alarms, Logs), CloudTrail API Tracking, AWS Config.
+5. **Section 25: Identity and Access Management (IAM) - Advanced** (topics/aws_iam_advanced.html) — AWS Organizations, SCPs, Permission Boundaries, IAM Identity Center (SSO).
+6. **Section 26: AWS Security & Encryption** (topics/aws_security.html & topics/lab_security_ssm_kms.html) — KMS (Envelope Encryption), SSM Parameter Store, Secrets Manager, AWS Shield, AWS WAF.
+7. **Section 27: Networking — Virtual Private Cloud** (topics/aws_vpc.html) — CIDR, Subnets, IGW, NAT Gateway, NACLs vs SG, VPC Peering, Transit Gateway, VPC Endpoints.
+8. **Section 28: Disaster Recovery & Migrations** (topics/aws_disaster_recovery.html) — 4 DR Strategies (Backup/Restore, Pilot Light, Warm Standby, Multi-Site Active-Active), DRS, DMS, DataSync.
+9. **Section 29: More Solution Architectures** (topics/aws_solution_architectures.html) — Thảo luận kiến trúc hệ thống thực tế.
+10. **Section 30: Other Services** (topics/aws_other_services.html) — AppSync, SES, Batch, WorkSpaces, AppFlow.
+11. **Section 31: Whitepapers and Architectures** (topics/aws_whitepapers.html) — Well-Architected Framework 6 Trụ cột.
+12. **Section 32: Preparing for the Exam + Practice Exam** (topics/aws_practice_exam.html) — Luyện đề thi thử 65 câu tính giờ chuẩn SAA-C03.
+13. **Section 33: Congratulations & Next Steps** — Định hướng SAP-C02 / Specialty.
 
 ## Quy ước thiết kế & Thành phần HTML (Design System)
 

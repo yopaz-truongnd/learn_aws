@@ -49,6 +49,20 @@ learn_aws/
 | [`topics/aws_route53.html`](topics/aws_route53.html) | Dịch vụ DNS Route 53, CNAME vs Alias Record, Cây quyết định Mermaid, 8 Chính sách định tuyến, Health Checks &amp; Khôi phục sự cố thảm họa. |
 | [`topics/aws_s3.html`](topics/aws_s3.html) | Amazon S3 lưu trữ đối tượng, Cây quyết định 7 Storage Classes, Lifecycle Rules, SSE Encryption, Object Lock (WORM), Nhân bản CRR/SRR. |
 | [`topics/aws_cloudfront.html`](topics/aws_cloudfront.html) | Mạng biên toàn cầu, Cây quyết định Mermaid, Ma trận CloudFront vs Global Accelerator, OAC, Signed URLs/Cookies, CloudFront Functions vs Lambda@Edge. |
+| [`topics/aws_storage_extras.html`](topics/aws_storage_extras.html) | Lưu trữ mở rộng &amp; lai: Amazon FSx (Windows SMB/AD, Lustre HPC S3, ONTAP, OpenZFS), AWS Storage Gateway (File, Volume Cached/Stored, Tape VTL) &amp; Snow Family (Snowcone, Snowball Edge, Snowmobile). |
+| [topics/aws_decoupling.html](topics/aws_decoupling.html) | Phân tách hệ thống &amp; Xử lý bất đồng bộ: Amazon SQS (Standard vs FIFO, Visibility Timeout, DLQ), Amazon SNS (Pub/Sub Fan-out), Amazon Kinesis (Shards, Firehose) &amp; Amazon MQ. |
+| [topics/aws_containers.html](topics/aws_containers.html) | Kiến trúc Container: Amazon ECS (EC2 vs Fargate Serverless), Task Role vs Task Execution Role, Dynamic Port Mapping, EFS Shared Storage &amp; Kubernetes Amazon EKS. |
+| [topics/aws_serverless.html](topics/aws_serverless.html) | Kiến trúc Serverless: AWS Lambda (Limits, Cold Starts, Concurrency), Amazon API Gateway (HTTP vs REST), AWS Step Functions &amp; Amazon Cognito (CUP vs Identity Pools). |
+| [topics/aws_analytics.html](topics/aws_analytics.html) | Phân tích dữ liệu &amp; Big Data: Amazon Athena (Serverless SQL S3), AWS Glue (Crawler, Catalog, ETL), Amazon EMR (Spark/Hadoop Spot Nodes) &amp; Amazon Redshift Spectrum. |
+| [topics/aws_monitoring.html](topics/aws_monitoring.html) | Giám sát &amp; Kiểm toán: Amazon CloudWatch (Metrics, Alarms, Logs Insights), AWS CloudTrail (API Audit) &amp; AWS Config (Compliance Rules). |
+| [topics/aws_iam_advanced.html](topics/aws_iam_advanced.html) | Quản trị phân quyền nâng cao: AWS Organizations, Service Control Policies (SCPs), IAM Permission Boundaries, AWS IAM Identity Center (AWS SSO) &amp; Active Directory. |
+| [topics/aws_security.html](topics/aws_security.html) | Bảo mật &amp; Mã hóa: AWS KMS (Envelope Encryption), SSM vs Secrets Manager, AWS WAF, AWS Shield, GuardDuty, Inspector &amp; Macie. |
+| [topics/aws_vpc.html](topics/aws_vpc.html) | Mạng riêng ảo (VPC): CIDR, Public/Private Subnets, NAT Gateway, Security Groups vs NACLs, VPC Endpoints &amp; Transit Gateway. |
+| [topics/aws_disaster_recovery.html](topics/aws_disaster_recovery.html) | Khắc phục thảm họa &amp; Di chuyển: 4 chiến lược DR (Backup &amp; Restore, Pilot Light, Warm Standby, Multi-Site), RPO vs RTO, AWS DRS, DMS &amp; DataSync. |
+| [topics/aws_solution_architectures.html](topics/aws_solution_architectures.html) | Kiến trúc giải pháp: Tính toán hiệu năng cao (HPC), Caching đa tầng, SNS Fan-out &amp; AWS Global Accelerator. |
+| [topics/aws_other_services.html](topics/aws_other_services.html) | Dịch vụ chuyên biệt: GraphQL AWS AppSync, Máy tính ảo WorkSpaces, AppStream 2.0, Amazon AppFlow &amp; Amazon SES. |
+| [topics/aws_whitepapers.html](topics/aws_whitepapers.html) | Khung kiến trúc chuẩn: AWS Well-Architected Framework 6 Trụ cột, Well-Architected Tool &amp; Whitepapers. |
+| [topics/aws_practice_exam.html](topics/aws_practice_exam.html) | Chiến thuật thi cử &amp; Luyện đề: Phân bổ thời gian 130 phút, ESL +30, phương pháp loại trừ POE &amp; 10 câu hỏi mẫu. |
 | [`topics/lab_ec2.html`](topics/lab_ec2.html) | **Hands-on Lab 1:** EC2 User Data (`ec2-user-data.sh`) &amp; Instance Metadata CLI (`ec2-metadata.sh`, IMDSv1/v2). |
 | [`topics/lab_storage.html`](topics/lab_storage.html) | **Hands-on Lab 2:** EBS Volume Benchmark (`commands.txt`, `fio`/`ioping`) &amp; EFS Multi-AZ Shared Mount (`efs.sh`). |
 | [`topics/lab_route53.html`](topics/lab_route53.html) | **Hands-on Lab 3:** Route 53 Multi-AZ/Region Routing Demo với IMDSv1/IMDSv2 User Data (`route53/user-data.sh`). |
@@ -159,21 +173,32 @@ python scripts/clean.py -y
   - *Lectures 56–69:* `26098272` (EBS Overview), `26098276` (EBS Snapshots), `26098280` (AMI Overview), `26098288` (Instance Store), `26098296` (EBS Volume Types), `26098298` (EBS Multi-Attach), `13528122` (EBS Encryption), `13528128` (Amazon EFS), `13528138` (EFS vs EBS)
 - [x] **Section 8:** High Availability & Scalability — ELB & ASG ([`topics/aws_elb_asg.html`](topics/aws_elb_asg.html) · [`lectures/section-08-elb-and-asg`](lectures/section-08-elb-and-asg/README.md))
   - *Lectures 70–86:* `13531374` (HA & Scalability), `13528090` (ELB Overview), `18078003` (ALB), `18078013` (NLB), `28874688` (GWLB), `13528094` (Sticky Sessions), `18078093` (Cross-Zone), `18078099` (SSL & SNI), `18611524` (Connection Draining), `13528102` (ASG), `26148326` (Scaling Policies)
-- [x] **Section 9 & 20:** AWS Databases — RDS, Aurora, RDS Proxy, ElastiCache & DynamoDB ([`topics/aws_databases.html`](topics/aws_databases.html) · [`lectures/section-09-rds-aurora-elasticache`](lectures/section-09-rds-aurora-elasticache/README.md))
+- [x] **Section 9:** AWS Fundamentals — RDS, Aurora, ElastiCache ([topics/aws_databases.html](topics/aws_databases.html) · [lectures/section-09-rds-aurora-elasticache](lectures/section-09-rds-aurora-elasticache/README.md))
   - *Lectures 87–100:* RDS Overview, Multi-AZ vs Read Replicas, RDS Custom, Amazon Aurora, Aurora Cloning/Custom Endpoints, RDS Proxy, ElastiCache (Redis vs Memcached), Important Ports
-- [x] **Section 10:** Amazon Route 53 ([`topics/aws_route53.html`](topics/aws_route53.html) · [`lectures/section-10-route-53`](lectures/section-10-route-53/README.md))
-  - *Lectures 101–120:* `28384280` (DNS), `13528180` (Route 53 Overview), `13528188` (TTL), `13528190` (CNAME vs Alias), `13528200` (Health Checks), `13528204` (Failover), `26099214` (Geoproximity), `37045728` (IP-based), `13528212` (3rd Party Domains), `51771513` (Route 53 Resolver & Hybrid DNS)
-- [x] **Section 11 & 13:** Amazon S3 & Advanced S3 ([`topics/aws_s3.html`](topics/aws_s3.html))
-  - *Lectures:* `26098336` (S3 Overview), `26098348` (Bucket Policies), `26098360` (Storage Classes), `26098372` (Lifecycle), `26098384` (Performance)
-- [x] **Section 14:** CloudFront & Global Accelerator ([`topics/aws_cloudfront.html`](topics/aws_cloudfront.html))
-  - *Lectures:* `26098394` (Overview), `26098404` (S3 & OAC), `26098414` (Signed URLs & Edge), `26098424` (Global Accelerator)
-- [ ] **Section 16:** Decoupling Applications — SQS, SNS, Kinesis, MQ (`topics/aws_decoupling.html`)
-- [ ] **Section 17:** Containers on AWS — ECS, Fargate, ECR, EKS (`topics/aws_containers.html`)
-- [ ] **Section 18 & 19:** Serverless — Lambda, API Gateway, Step Functions (`topics/aws_serverless.html`)
-- [ ] **Section 23:** Monitoring & Audit — CloudWatch, CloudTrail, EventBridge (`topics/aws_monitoring.html`)
-- [ ] **Section 24:** Security & Encryption — KMS, Secrets Manager, WAF, Shield (`topics/aws_security.html`)
-- [ ] **Section 25:** Networking — VPC, Subnets, NAT, SG/NACL, Transit Gateway (`topics/aws_vpc.html`)
-- [ ] **Section 26:** Disaster Recovery & Migrations — DRS, DMS (`topics/aws_disaster_recovery.html`)
+- [x] **Section 10:** Amazon Route 53 ([topics/aws_route53.html](topics/aws_route53.html) · [lectures/section-10-route-53](lectures/section-10-route-53/README.md))
+  - *Lectures 101–120:* 28384280 (DNS), 13528180 (Route 53 Overview), 13528188 (TTL), 13528190 (CNAME vs Alias), 13528200 (Health Checks), 13528204 (Failover), 26099214 (Geoproximity), 37045728 (IP-based), 13528212 (3rd Party Domains), 51771513 (Route 53 Resolver & Hybrid DNS)
+- [x] **Section 11:** Classic Solutions Architecture Discussions
+  - Stateless/Stateful web tier, Database caching, horizontal scaling patterns
+- [x] **Section 12, 13, 14 & 15:** Amazon S3 — Fundamentals, Advanced & Security ([topics/aws_s3.html](topics/aws_s3.html) · Lab: [topics/lab_s3.html](topics/lab_s3.html))
+  - *Lectures:* 26098336 (S3 Overview), 26098348 (Bucket Policies), 26098360 (Storage Classes), 26098372 (Lifecycle), 26098384 (Performance), KMS Encryption, Object Lock
+- [x] **Section 16:** CloudFront & Global Accelerator ([topics/aws_cloudfront.html](topics/aws_cloudfront.html))
+  - *Lectures:* 26098394 (Overview), 26098404 (S3 & OAC), 26098414 (Signed URLs & Edge), 26098424 (Global Accelerator)
+- [x] **Section 17:** AWS Storage Extras — FSx, Storage Gateway, Snow Family ([topics/aws_storage_extras.html](topics/aws_storage_extras.html))
+- [x] **Section 18:** Decoupling Applications — SQS, SNS, Kinesis, MQ ([topics/aws_decoupling.html](topics/aws_decoupling.html) · Lab: [topics/lab_decoupling.html](topics/lab_decoupling.html))
+- [x] **Section 19:** Containers on AWS — ECS, Fargate, ECR, EKS ([topics/aws_containers.html](topics/aws_containers.html))
+- [x] **Section 20 & 21:** Serverless Architecture & Solution Discussions ([topics/aws_serverless.html](topics/aws_serverless.html) · Lab: [topics/lab_serverless.html](topics/lab_serverless.html))
+- [x] **Section 22:** Databases in AWS — DynamoDB, DAX, Redshift, OpenSearch, Neptune ([topics/aws_databases.html](topics/aws_databases.html))
+- [x] **Section 23:** Data & Analytics — Athena, Glue, EMR, QuickSight ([topics/aws_analytics.html](topics/aws_analytics.html))
+- [x] **Section 24:** AWS Monitoring & Audit — CloudWatch, CloudTrail, Config ([topics/aws_monitoring.html](topics/aws_monitoring.html))
+- [x] **Section 25:** Identity and Access Management (IAM) - Advanced — Organizations, SCPs, Identity Center ([topics/aws_iam_advanced.html](topics/aws_iam_advanced.html))
+- [x] **Section 26:** AWS Security & Encryption — KMS, SSM Parameter Store, Shield, WAF (Lab: [topics/lab_security_ssm_kms.html](topics/lab_security_ssm_kms.html) · Cheat sheet: [topics/aws_security.html](topics/aws_security.html))
+- [x] **Section 27:** Networking — Virtual Private Cloud (VPC), Subnets, NAT, SG/NACL, Transit Gateway ([topics/aws_vpc.html](topics/aws_vpc.html))
+- [x] **Section 28:** Disaster Recovery & Migrations — DRS, DMS, DataSync ([topics/aws_disaster_recovery.html](topics/aws_disaster_recovery.html))
+- [x] **Section 29:** More Solution Architectures — HPC, Caching, Event-Driven Decoupling ([topics/aws_solution_architectures.html](topics/aws_solution_architectures.html))
+- [x] **Section 30:** Other Services — AppSync, WorkSpaces, AppFlow, SES, Pinpoint, Batch ([topics/aws_other_services.html](topics/aws_other_services.html))
+- [x] **Section 31:** Whitepapers and Architectures — AWS Well-Architected Framework 6 Trụ cột ([topics/aws_whitepapers.html](topics/aws_whitepapers.html))
+- [x] **Section 32:** Preparing for the Exam + Practice Exam — Chiến thuật thi, ESL +30, phương pháp loại trừ ([topics/aws_practice_exam.html](topics/aws_practice_exam.html))
+- [x] **Section 33:** Congratulations & Next Steps — Tổng kết chứng chỉ AWS SAA-C03, huy hiệu Credly &amp; lộ trình SAP-C02
 
 Chi tiết nội dung cần có của từng Section xem trong [`CLAUDE.md`](CLAUDE.md#lộ-trình-các-chủ-đề-tiếp-theo-roadmap-for-next-sessions).
 
